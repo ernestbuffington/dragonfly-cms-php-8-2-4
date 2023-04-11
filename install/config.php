@@ -3,8 +3,8 @@ if (!defined('INSTALL')) { exit; }
 
 $content = '<?php
 /*
-	Dragonfly™ CMS, Copyright © since 2004
-	http://dragonflycms.org
+	Dragonfly™ CMS, Copyright ©  2004 - 2023
+	https://dragonfly.coders.exchange
 
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version

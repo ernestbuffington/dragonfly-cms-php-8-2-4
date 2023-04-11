@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
@@ -122,12 +122,12 @@ $SESS = Dragonfly::getKernel()->SESSION;
 //\Dragonfly\Page::metatag('dcterms.dateCopyrighted', trim(substr($MAIN_CFG->global->startdate, strpos($MAIN_CFG->global->startdate, ',')+1, 5)));
 \Dragonfly\Page::metatag('robots', 'index, follow');
 \Dragonfly\Page::metatag('rating', 'general');
-\Dragonfly\Page::metatag('generator', 'CPG Dragonfly CMS: Copyright (c) 2003-'.date('Y').' by CPG-Nuke Development Team, http://dragonflycms.org');
+\Dragonfly\Page::metatag('generator', 'CPG Dragonfly CMS: Copyright (c) 2003-'.date('Y').' by CPG-Nuke Development Team, https://dragonfly.coders.exchange');
 //\Dragonfly\Page::metatag('revisit-after', '1 days');
 
 /**
  * Include language to detect languages from browser setting and user preferences
- * Join our language initiative (NLI) http://dragonflycms.org
+ * Join our language initiative (NLI) https://dragonfly.coders.exchange
  */
 $DF->setState(DF::BOOT_ETH);
 $currentlang = Dragonfly::getKernel()->L10N->lng;

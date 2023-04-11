@@ -1,7 +1,7 @@
 <?php
 /*
 	Dragonfly™ CMS, Copyright © since 2016
-	http://dragonflycms.org
+	https://dragonfly.coders.exchange
 
 	Released under GNU GPL version 2 or any later version
 

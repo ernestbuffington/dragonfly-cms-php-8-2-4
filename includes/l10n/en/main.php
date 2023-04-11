@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004-2009 by CPG-Nuke Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
@@ -24,7 +24,7 @@ $LNG = array(
 );
 
 // L10N Admins: change this link if you have documentation available on your support site
-define('_HELP_LINK','http://dragonflycms.org/Wiki.html');
+define('_HELP_LINK','https://dragonfly.coders.exchange/Wiki.html');
 
 define('_DATESTRING','%A, %B %d, %Y (%H:%M:%S)');
 define('_DATESTRING2','%A, %B %d');
@@ -315,7 +315,7 @@ define('_Tell_a_FriendLANG','Tell a Friend');
 define('_Web_LinksLANG','Links');
 define('_Your_AccountLANG','My Account');
 define('_CPG_EventsLANG','Calendar');
-//missing menu vars http://dragonflycms.org/Projects/bugs/id=582.html Thanks Pitcher
+//missing menu vars https://dragonfly.coders.exchange/Projects/bugs/id=582.html Thanks Pitcher
 define('_LanguagesLANG', 'Languages!');
 define('_SmiliesLANG', 'Smilies');
 define('_GroupsLANG','Groups');
@@ -711,4 +711,4 @@ define('_ERROR_ALREADYEXIST','%s already exists');
 define('_TASK_COMPLETED','Operation complete!');
 define('_TASK_CANCELED','Canceled operation!');
 define('_CONFIRM','Confirm');
-define('_FOOTER_COPYRIGHTS', 'Interactive software released under <a href="http://dragonflycms.org/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,	<a href="'.URL::index('credits').'">Code Credits</a>,	<a href="'.URL::index('privacy_policy').'">Privacy Policy</a>');
+define('_FOOTER_COPYRIGHTS', 'Interactive software released under <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,	<a href="'.URL::index('credits').'">Code Credits</a>,	<a href="'.URL::index('privacy_policy').'">Privacy Policy</a>');

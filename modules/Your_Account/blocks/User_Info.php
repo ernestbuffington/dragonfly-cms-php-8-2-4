@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2014 by CPG-Nuke Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Based on "All Info Block" by Alex Hession
    http://www.gnaunited.com

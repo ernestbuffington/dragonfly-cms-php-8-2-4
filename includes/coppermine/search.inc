@@ -3,7 +3,7 @@
    Coppermine Photo Gallery for Dragonfly CMS™
   **************************************************************************
    Port Copyright © 2004-2015 CPG Dev Team
-   http://dragonflycms.org/
+   https://dragonfly.coders.exchange/
   **************************************************************************
    v1.1 © by Grégory Demar http://coppermine.sf.net/
    This program is free software; you can redistribute it and/or modify

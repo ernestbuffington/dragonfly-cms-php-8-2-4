@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
@@ -34,7 +34,7 @@ function footmsg()
 		$GLOBALS['cpgtpl']->S_DEBUG_PHP = isset($S_DEBUG_PHP) ? $S_DEBUG_PHP : false;
 	}
 	return \Dragonfly\Output\HTML::minify('<div class="core_footer">'.implode("<br />\n", $foot).'
-	<div>Interactive software released under <a href="http://dragonflycms.org/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,
+	<div>Interactive software released under <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,
 	<a href="'.URL::index('credits').'">Code Credits</a>,
 	<a href="'.URL::index('privacy_policy').'">Privacy Policy</a></div></div>');
 //	$GLOBALS['DF']->setState(DF::BOOT_DOWN);

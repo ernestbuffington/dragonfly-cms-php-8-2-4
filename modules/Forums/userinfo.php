@@ -3,7 +3,7 @@
   Downloads Pro: Designed exclusively for Dragonfly CMS
   *****************************************************
   Copyright © 2005 - 2006 by Trevor Eckart and DJMaze
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Please see the included LICENSE.txt for the terms and
   conditions that govern your use of this module

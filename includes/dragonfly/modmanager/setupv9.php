@@ -1,7 +1,7 @@
 <?php
 /*********************************************
   Dragonfly CMS, Copyright (c) 2004 by DragonflyCMS Dev. Team.
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version

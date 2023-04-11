@@ -1,7 +1,7 @@
 <?php
 /*********************************************
   CPG DragonflyCMS, Copyright (c) 2011 by DragonflyCMS Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
   Released under GNU GPL version 2 or any later version
 **********************************************/
 if (!class_exists('Dragonfly', false)) { exit; }

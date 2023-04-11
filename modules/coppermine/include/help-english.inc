@@ -3,7 +3,7 @@
    Coppermine Photo Gallery for Dragonfly CMS™
   **************************************************************************
    Port Copyright © 2004-2015 CPG Dev Team
-   http://dragonflycms.org/
+   https://dragonfly.coders.exchange/
   **************************************************************************
    v1.1 © by Grégory Demar http://coppermine.sf.net/
    This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 ****************************************************************************/
 if (!defined('CPG_NUKE')) { exit; }
 
-define("GTDOC_ADMIN_SUMMARY", '<blockquote>This documentation is intended to help you use this photo script, <i>Coppermine</i>. Depending on whether you are logged in as admin or member or anonymous you will see something different on this page. If you have a question that is not answered here please check the forum at <a class="doc_desc" href="http://dragonflycms.org/Forums/viewforum/f=30.html">dragonflycms.org</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#menu">Skip to menu info</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#admenu">Skip to admin menu info</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#config">Skip to config info</a></blockquote>');
+define("GTDOC_ADMIN_SUMMARY", '<blockquote>This documentation is intended to help you use this photo script, <i>Coppermine</i>. Depending on whether you are logged in as admin or member or anonymous you will see something different on this page. If you have a question that is not answered here please check the forum at <a class="doc_desc" href="https://dragonfly.coders.exchange/Forums/viewforum/f=30.html">dragonflycms.org</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#menu">Skip to menu info</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#admenu">Skip to admin menu info</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#config">Skip to config info</a></blockquote>');
 define("GTDOC_USER_SUMMARY", '<blockquote>The program that displays the photos on this site is called <i>Coppermine</i>. This documentation is intended to help you use this photo script to interact with this site.<br /><a href="'.$_SERVER['REQUEST_URI'].'#menu">Skip to menu info</a><br /><a href="'.$_SERVER['REQUEST_URI'].'#admenu">Skip to admin menu info</a><br /></blockquote>');
 define("GTDOC_ANON_SUMMARY", '<blockquote>The program that displays the photos on this site is called <i>Coppermine</i>. This documentation is intended to help you use this photo script to interact with this site. Please <a href="'.Dragonfly\Identity::loginURL().'">login</a> to your account or <a rel="nofollow" href="'.htmlspecialchars(Dragonfly\Identity::getRegisterURL()).'">join</a> to see more information</blockquote>');
 

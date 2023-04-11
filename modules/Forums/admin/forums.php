@@ -14,7 +14,7 @@
 	(at your option) any later version.
 	-------------------
 
-	Modifications made by CPG Dragonfly CMS http://dragonflycms.org
+	Modifications made by CPG Dragonfly CMS https://dragonfly.coders.exchange
 **********************************************************************/
 
 namespace Dragonfly\Module\Forums\Admin;

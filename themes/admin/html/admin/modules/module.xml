@@ -32,7 +32,7 @@
 		<legend i18n:translate="">_TB_INFO</legend>
 
 		<label i18n:translate="">_CREDITS_AUTHORS</label>
-		<a href="http://dragonflycms.org" target="_blank">CPG-Nuke Dev Team</a>
+		<a href="https://dragonfly.coders.exchange" target="_blank">CPG-Nuke Dev Team</a>
 		<br/>
 
 		<label i18n:translate="">_CREDITS_DESC</label>

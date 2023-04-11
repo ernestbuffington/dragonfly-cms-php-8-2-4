@@ -1,7 +1,7 @@
 <?php
 /*
-	Dragonfly™ CMS, Copyright © since 2004
-	http://dragonflycms.org
+	Dragonfly™ CMS, Copyright ©  2004 - 2023
+	https://dragonfly.coders.exchange
 
 	Released under GNU GPL version 2 or any later version
 
@@ -116,7 +116,7 @@ $config_file = is_file(CORE_PATH. 'config_'. $_SERVER['HTTP_HOST']. '.php')
 if ($config_file) {
 	require_once($config_file);
 	if (!defined('DF_MODE_INSTALL')) {
-		exit('Invalid config.php, more details at http://dragonflycms.org/Wiki/id=135/');
+		exit('Invalid config.php, more details at https://dragonfly.coders.exchange/Wiki/id=135/');
 	}
 	\Dragonfly::$URI_ADMIN = '?'. str_replace('.php', '', $adminindex);
 } else {

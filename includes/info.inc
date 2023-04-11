@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  http://dragonflycms.org
+  https://dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
@@ -17,7 +17,7 @@ if ('credits' === $module_name) {
 	echo '<table class="border"><thead>
 	<tr><th width="15%">'._CREDITS_PRODUCT.'</th><th>'._CREDITS_DESC.'</th><th width="15%">'._CREDITS_AUTHORS.'</th></tr>
 	</thead><tbody>
-	<tr><td>Dragonfly™ CMS</td><td>This website engine Copyright &copy; 2003 - '.date('Y').' by CPG-Nuke Dev Team<br />Free Software released under the <a href="http://dragonflycms.org/GNUGPL.html" target="_blank">GNU GPL</a>; either version 2 of the License, or (at your option) any later version. No warranty is given or implied.</td><td><a href="http://dragonflycms.org" target="_blank">CPG-Nuke Dev Team</a></td></tr>
+	<tr><td>Dragonfly™ CMS</td><td>This website engine Copyright &copy; 2003 - '.date('Y').' by CPG-Nuke Dev Team<br />Free Software released under the <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank">GNU GPL</a>; either version 2 of the License, or (at your option) any later version. No warranty is given or implied.</td><td><a href="https://dragonfly.coders.exchange" target="_blank">CPG-Nuke Dev Team</a></td></tr>
 	<tr>
 		<td>Dragonfly™ Logo</td>
 		<td>The logo was designed by Brian Monnone</td>
