@@ -6,6 +6,11 @@
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 
 use Dragonfly\Modules\Private_Messages\Message as Message;
@@ -16,7 +21,7 @@ $counts = $db->uFetchRow("SELECT
 	(SELECT COUNT(pm_id) FROM {$db->TBL->privatemessages_recipients} WHERE user_id = {$userinfo->id} AND pmr_status = ".Message::STATUS_SAVED.")
 ");
 $count = $counts[0] + $counts[1];
-if ($count + count($mark_list) >= $PMCFG->sentbox_max) {
+if ($count + (is_countable($mark_list) ? count($mark_list) : 0) >= $PMCFG->sentbox_max) {
 	cpg_error('Not enough space in savebox to store messages');
 }
 
