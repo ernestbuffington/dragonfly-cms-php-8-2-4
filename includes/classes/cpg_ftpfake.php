@@ -9,6 +9,10 @@
   of the GNU GPL version 2 or any later version
 **********************************************/
 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+
 class cpg_ftpfake {
 
 	private $path;
@@ -94,7 +98,8 @@ class cpg_ftpfake {
 	}
 
 	public function filelist($path='.', $fileinfo=true) {
-		if (!$this->path) return false;
+		$list = [];
+  if (!$this->path) return false;
 		$path = $this->path.(($path[0] == '.') ? '' : "/{$path}");
 		$handle = opendir($path);
 		while (false !== ($file = readdir($handle))) {
@@ -117,7 +122,8 @@ class cpg_ftpfake {
 		return $list;
 	}
 	public function dirlist($path='.', $fileinfo=true) {
-		if (!$this->path) return false;
+		$list = [];
+  if (!$this->path) return false;
 		$path = $this->path.(($path[0] == '.') ? '' : "/{$path}");
 		$handle = opendir($path);
 		//http://us3.php.net/manual/en/function.readdir.php
