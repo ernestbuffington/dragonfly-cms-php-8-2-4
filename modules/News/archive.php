@@ -8,12 +8,17 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 
 $OUT = Dragonfly::getKernel()->OUT;
 \Dragonfly\Page::title($OUT->L10N['_STORIESARCHIVE'], false);
 
-$sa = isset($_GET['sa']) ? $_GET['sa'] : '';
+$sa = $_GET['sa'] ?? '';
 
 if ($sa == 'show_month')
 {
