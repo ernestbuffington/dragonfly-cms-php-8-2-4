@@ -19,6 +19,10 @@
  *
  ***************************************************************************/
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
 
@@ -84,7 +88,7 @@ if (isset($_POST['topic_selected']) && ($select_from || $select_to)) {
 // forum_id
 $forum_id = $_POST->uint('f') ?: $_GET->uint('f');
 if (isset($_POST['fid']) || isset($_GET['fid'])) {
-	$fid = (isset($_POST['fid'])) ? $_POST['fid'] : $_GET['fid'];
+	$fid = $_POST['fid'] ?? $_GET['fid'];
 	if (substr($fid, 0, 1) == 'f') {
 		$forum_id = intval(substr($fid, 1));
 	}
