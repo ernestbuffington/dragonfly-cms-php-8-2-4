@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('settings')) { cpg_error('Access Denied'); }
 
@@ -16,7 +21,8 @@ abstract class Dragonfly_Admin_Avatars
 
 	public static function GET()
 	{
-		$K = \Dragonfly::getKernel();
+		$avatar_usage = [];
+  $K = \Dragonfly::getKernel();
 
 		// This is the variable that points to the path of the avatars
 		// You may need to adjust this to meet your needs ;)
