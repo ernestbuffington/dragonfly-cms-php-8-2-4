@@ -12,6 +12,10 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+
 require(__DIR__ . '/include/load.inc');
 
 if (!can_admin($module_name) && !USER_ADMIN_MODE) {
@@ -52,7 +56,7 @@ if ($album) {
 		cpg_error(PERM_DENIED, 403);
 	}
 } else if (can_admin($module_name)) {
-	$cat = $_POST->uint('cat') ?: $_GET->uint('cat') ?: 0;
+	$cat = ($_POST->uint('cat') ?: $_GET->uint('cat')) ?: 0;
 } else {
 	$cat = \Coppermine::USER_GAL_CAT;
 }
