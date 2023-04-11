@@ -35,9 +35,14 @@ Tables:
 	security_ips
 */
 
+/* Applied rules:
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ */
+ 
 class Security
 {
-	const
+	public const
 		TYPE_DOMAIN_BLOCKED          = 2,
 		TYPE_DOMAIN_REFERER_BLOCKED  = 3,
 		TYPE_DOMAIN_PROTECTED        = 8,
@@ -227,7 +232,7 @@ class Security
 		# Referer spam?
 		if ($MAIN_CFG->_security->referers
 		    && !empty($_SERVER['HTTP_REFERER'])
-		    && false === strpos($_SERVER['HTTP_REFERER'], $MAIN_CFG->server->domain)
+		    && false === strpos($_SERVER['HTTP_REFERER'], (string) $MAIN_CFG->server->domain)
 		    && !static::check_domain($_SERVER['HTTP_REFERER']))
 		{
 			$data['status'] = 801;
