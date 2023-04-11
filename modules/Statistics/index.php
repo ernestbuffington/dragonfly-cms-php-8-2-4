@@ -9,6 +9,10 @@
   of the GNU GPL version 2 or any later version
 **********************************************/
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+
 class Dragonfly_Module_Statistics
 {
 
@@ -314,7 +318,7 @@ class Dragonfly_Module_Statistics
 		if (empty($months)) {
 			$months = Dragonfly::getKernel()->L10N->get('_time','F');
 		}
-		return isset($months[$k]) ? $months[$k] : '';
+		return $months[$k] ?? '';
 	}
 }
 
