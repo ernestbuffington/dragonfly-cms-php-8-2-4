@@ -1,0 +1,233 @@
+
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<script type="text/javascript" tal:condition="topic_icon_options"><![CDATA[
+function iconpreview() {
+	var p = Poodle.$('icon_preview'), i = Poodle.$('topic_icon');
+	if (p && i) {
+		p.attr('src', i.currentOption().data('uri'));
+	}
+}
+Poodle.onDOMReady(function(){iconpreview();});
+]]></script>
+
+<div>
+	<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+	<span tal:replace="php:_BC_DELIM"></span>
+	<a tal:attributes="href U_VIEW_FORUM" tal:content="FORUM_NAME">FORUM_NAME</a><br/>
+	<span tal:replace="structure FORUM_DESC">FORUM_DESC</span>
+</div>
+
+<div tal:condition="POST_PREVIEW_BOX">
+	<h2 i18n:translate="">Preview</h2>
+	<table class="forum-topic-posts flat">
+	<tbody>
+		<tr>
+			<td>
+				<small>
+					<img tal:attributes="src MINI_POST_IMG" alt=""/>
+					<time tal:content="POST_DATE">POST_DATE</time>
+				</small>
+				<hr/>
+				<div class="topic-post-message" tal:content="structure forum_post/message2html">MESSAGE</div>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+</div>
+
+<hr/>
+
+<form tal:attributes="action S_POST_ACTION; data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()" method="post" enctype="multipart/form-data">
+
+<table>
+<tbody>
+	<tr>
+		<td style="width:22%"><b i18n:translate="">Subject</b></td>
+		<td style="width:78%">
+			<input type="text" name="subject" size="45" maxlength="60" style="width:450px" tal:attributes="value forum_post/subject"/>
+		</td>
+	</tr>
+	<tr tal:condition="topic_icon_options">
+		<td><b>Topic icon</b></td>
+		<td>
+			<select style="width:175px" id="topic_icon" name="topic_icon" onclick="iconpreview()">
+				<option value="0">No icon</option>
+				<option tal:repeat="icon topic_icon_options" tal:attributes="value icon/id; selected icon/current; data-uri icon/url" tal:content="icon/name">icon/name</option>
+			</select>
+			<img id="icon_preview" src="" alt=""/>
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align:top"><b i18n:translate="">Message_body</b></td>
+		<td>
+			<textarea name="message" rows="15" cols="35" style="width:99%" class="bbcode" required="" tal:content="forum_post/message"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align:top"><b i18n:translate="">Options</b></td>
+		<td>
+			<label style="display:block;width:auto" tal:condition="board_config/allow_html">
+				<input type="checkbox" name="disable_html" tal:attributes="checked not:forum_post/enable_html"/>
+				<span i18n:translate="">Disable_HTML_post</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="board_config/allow_bbcode">
+				<input type="checkbox" name="disable_bbcode" tal:attributes="checked not:forum_post/enable_bbcode"/>
+				<span i18n:translate="">Disable_BBCode_post</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="board_config/allow_smilies">
+				<input type="checkbox" name="disable_smilies" tal:attributes="checked not:forum_post/enable_smilies"/>
+				<span i18n:translate="">Disable_Smilies_post</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="show_signature_checkbox">
+				<input type="checkbox" name="attach_sig" tal:attributes="checked forum_post/enable_sig"/>
+				<span i18n:translate="">Attach_signature</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="show_notify_checkbox">
+				<input type="checkbox" name="notify" tal:attributes="checked notify_user"/>
+				<span i18n:translate="">Notify</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="show_delete_checkbox">
+				<input type="checkbox" name="delete"/>
+				<span i18n:translate="">Delete_post</span>
+			</label>
+			<label style="display:block;width:auto" tal:condition="topic_types">
+				<span i18n:translate="">Post_topic_as</span>
+				<select name="topictype">
+					<option tal:repeat="type topic_types" tal:attributes="value type/id; selected type/current" tal:content="type/label">type/label</option>
+				</select>
+			</label>
+		</td>
+	</tr>
+</tbody><tbody tal:condition="show_attachments_cp">
+	<tr>
+		<th colspan="2" i18n:translate="">Attach_posting_cp</th>
+	</tr>
+	<tr>
+		<td colspan="2" i18n:translate="">Attach_posting_cp_explain</td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">Options</b></td>
+		<td>
+			<input type="hidden" tal:repeat="field hidden_attachment_fields" tal:attributes="name field/name; value field/value"/>
+			<button type="submit" name="add_attachment_box" i18n:translate="">Add_attachment_title</button>
+			<button tal:condition="attach_row" type="submit" name="posted_attachments_box" i18n:translate="">Posted_attachments</button>
+		</td>
+	</tr>
+</tbody><tbody tal:condition="ADD_ATTACHMENT_BODY">
+	<tr>
+		<th colspan="2" i18n:translate="">Add_attachment_title</th>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div i18n:translate="">Add_attachment_explain</div>
+			<a tal:attributes="href attach_rules_uri" target="_blank" i18n:translate="">Allowed_extensions_and_sizes</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">File_name</b><br/>max <em tal:content="MAX_FILESIZE">0 bytes</em></td>
+		<td><input type="file" name="fileupload" value=""/></td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">File_comment</b></td>
+		<td><textarea name="filecomment" rows="3" cols="35" wrap="virtual"></textarea>
+			<br/>
+			<button type="submit" formenctype="multipart/form-data" name="add_attachment" i18n:translate="">Add_attachment</button>
+		</td>
+	</tr>
+</tbody><tbody tal:condition="attach_row">
+	<tr>
+		<th colspan="2" i18n:translate="">Posted_attachments</th>
+	</tr>
+	<xsl:for-each select="attach_row">
+	<tr>
+		<td><b i18n:translate="">File_name</b></td>
+		<td><a tal:attributes="href attach_row/U_VIEW_ATTACHMENT" target="_blank" tal:content="attach_row/name">attach_row/name</a></td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">File_comment</b></td>
+		<td><textarea name="comment_list[]" rows="3" cols="35" wrap="virtual" tal:content="attach_row/comment">attach_row/comment</textarea></td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">Options</b></td>
+		<td>
+			<button type="submit" tal:attributes="name 'edit_comment[${attach_row/file}]'" i18n:translate="">Update_comment</button>
+			<button tal:condition="attach_row/attach_id" type="submit" tal:attributes="name 'update_attachment[${attach_row/attach_id}]'" formenctype="multipart/form-data" i18n:translate="">Upload_new_version</button>
+			<button type="submit" tal:attributes="name 'del_attachment[${attach_row/file}]'" i18n:translate="">Delete_attachment</button>
+			<button tal:condition="attach_row/DEL_THUMBNAIL" type="submit" tal:attributes="name 'del_thumbnail[${attach_row/file}]'" i18n:translate="">Delete_thumbnail</button>
+		</td>
+	</tr>
+	</xsl:for-each>
+</tbody><tbody tal:condition="topic_poll">
+	<tr>
+		<th colspan="2" i18n:translate="">Add_poll</th>
+	</tr>
+	<tr>
+		<td colspan="2" i18n:translate="">Add_poll_explain</td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">Poll_question</b></td>
+		<td><input type="text" name="poll_title" size="50" maxlength="255" tal:attributes="value topic_poll/title"/></td>
+	</tr>
+	<tr tal:repeat="option poll_options">
+		<td><b i18n:translate="">Poll_option</b></td>
+		<td><input type="text" tal:attributes="name 'poll_option_text[${option/id}]'; value option/text" size="50" maxlength="255"/>
+			<button tal:attributes="name 'del_poll_option[${option/id}]'" i18n:translate="">Delete</button>
+		</td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">Poll_option</b></td>
+		<td><input type="text" name="add_poll_option_text" size="50" maxlength="255" value=""/>
+			<button name="add_poll_option" i18n:translate="">Add_option</button>
+		</td>
+	</tr>
+	<tr>
+		<td><b i18n:translate="">Poll_for</b></td>
+		<td><input type="number" name="poll_length" size="4" min="0" max="999" step="1" tal:attributes="value topic_poll/length"/>
+			<b i18n:translate="">Days</b>
+			<span i18n:translate="">Poll_for_explain</span>
+		</td>
+	</tr>
+	<tr tal:condition="allow_poll_delete">
+		<td><b i18n:translate="">Delete_poll</b></td>
+		<td><input type="checkbox" name="poll_delete"/></td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td></td>
+		<td>
+			<input type="hidden" tal:repeat="field HIDDEN_FORM_FIELDS" tal:attributes="name field/name; value field/value"/>
+			<button name="preview" i18n:translate="">Preview</button>
+			<button accesskey="s" name="post" i18n:translate="">Submit</button>
+		</td>
+	</tr>
+</tfoot>
+</table>
+
+<div style="text-align:right" tal:content="S_TIMEZONE">S_TIMEZONE</div>
+
+</form>
+
+<div tal:replace="structure php:here.toString('forums/jumpbox')"></div>
+
+<div tal:condition="topic_posts">
+	<h2 i18n:translate="Topic_review">Topic review</h2>
+	<table class="forum-topic-posts flat"><thead>
+		<tr>
+			<th style="width:150px; white-space:nowrap;" i18n:translate="">Author</th>
+			<th style="width:100%;" i18n:translate="">Message</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr tal:repeat="post topic_posts">
+			<td style="vertical-align:top"><b tal:content="post/author">post/author</b></td>
+			<td>
+				<small tal:content="post/date">post/date</small>
+				<hr />
+				<span tal:replace="structure post/message"></span>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+</div>

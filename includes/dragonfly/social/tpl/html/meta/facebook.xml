@@ -1,0 +1,2 @@
+<meta property="fb:appid" tal:condition="Social/facebook/appid" tal:attributes="content Social/facebook/appid" />
+<meta property="fb:admins" tal:condition="Social/facebook/adminid" tal:attributes="content Social/facebook/adminid" />

@@ -1,0 +1,351 @@
+
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<div style="margin:5px 0;">
+	<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+	<span tal:replace="php:_BC_DELIM">»</span>
+	<span tal:repeat="forum SF_PARENTS">
+		<a tal:attributes="href forum/uri" tal:content="forum/name">parent name</a>
+		<span tal:replace="php:_BC_DELIM">»</span>
+	</span>
+	<a tal:condition="php:${forum_topic/archive_flag} AND ${forum/isSubForum}" tal:attributes="href forum/archive_uri">
+		<span tal:replace="forum/name">forum/name</span>
+		<span tal:replace="php:_BC_DELIM">»</span>
+		<span i18n:translate="">Archives</span></a>
+	<a tal:condition-else="" tal:attributes="href forum/uri" tal:content="forum/name">forum/name</a>
+</div>
+
+<!--
+<h1><var tal:replace="forum/name">forum/name</var>
+	<span style="float:right">
+		<span tal:condition="forum/isLocked" class="new-topic-locked" i18n:attributes="title 'Forum_locked'" i18n:translate="">Forum_locked</span>
+		<a tal:condition-else="" tal:attributes="href forum/getNewTopicUri" rel="nofollow" class="new-topic" i18n:translate="">Post_new_topic</a>
+	</span>
+</h1>
+<p tal:content="structure forum/desc">forum/desc</p>
+<div style="text-align:right">
+	<a tal:attributes="href U_VIEW_OLDER_TOPIC" i18n:translate="">View_previous_topic</a>
+	::
+	<a tal:attributes="href U_VIEW_NEWER_TOPIC" i18n:translate="">View_next_topic</a>
+</div>
+-->
+<h1>
+	<span tal:condition="forum_topic/archive_flag" i18n:translate="">Archived</span>
+	<span tal:condition="forum_topic/archive_flag" tal:replace="php:_BC_DELIM"></span>
+	<span tal:replace="TOPIC_TITLE">TOPIC_TITLE</span>
+	<span style="float:right" tal:condition="not:forum/isLocked">
+		<span tal:condition="forum_topic/isLocked" class="topic-reply-locked" i18n:translate="">Topic_locked</span>
+		<a tal:condition-else="not:forum_topic/archive_flag" tal:attributes="href forum_topic/getReplyUri" rel="nofollow" class="topic-reply" i18n:translate="">Reply_to_topic</a>
+	</span>
+</h1>
+
+<div tal:content="structure PAGINATION">PAGINATION</div>
+
+<form tal:condition="exists:topic_poll" class="forum-topic-poll border" method="post" tal:attributes="action S_POLL_ACTION">
+<details>
+	<summary><span tal:omit-tag="" i18n:translate="">Poll</span>: <span tal:replace="topic_poll/title">topic_poll/title</span></summary>
+	<div>
+		<table tal:condition="S_POLL_RESULTS"><tbody>
+			<tr tal:repeat="option topic_poll/options">
+				<td tal:content="option/text">option/text</td>
+				<td><meter tal:attributes="value option/votes; max topic_poll/votes_max; title option/percentage"></meter></td>
+				<td tal:content="option/votes">0</td>
+			</tr>
+		</tbody><tfoot>
+			<tr>
+				<td colspan="2"><b i18n:translate="Total_votes">Total Votes</b></td>
+				<td><b tal:content="topic_poll/votes">0</b></td>
+			</tr>
+		</tfoot></table>
+		<table tal:condition-else=""><tbody>
+			<tr tal:repeat="option topic_poll/options">
+				<td style="width:1em"><input type="radio" name="vote_id" tal:attributes="value option/id"/></td>
+				<td tal:content="option/text">option/text</td>
+			</tr>
+		</tbody><tfoot>
+			<tr>
+				<td colspan="2">
+					<button i18n:translate="Submit_vote">Submit Vote</button>
+					<a tal:attributes="href U_VIEW_RESULTS" i18n:translate="View_results">View Results</a>
+				</td>
+			</tr>
+		</tfoot>
+		</table>
+	</div>
+</details>
+</form>
+
+<table class="forum-topic-posts flat">
+<!--
+<thead>
+<tr>
+	<th style="white-space:nowrap;" i18n:translate="">Author</th>
+	<th i18n:translate="">Message</th>
+</tr>
+</thead>
+-->
+<tbody>
+<!-- Here are the posts -->
+<tr tal:repeat="post postrow" tal:attributes="id post/U_POST_ID">
+	<td class="user-profile">
+		<details>
+			<summary tal:content="post/POSTER_NAME"></summary>
+			<small>
+				<span tal:condition="post/poster_is_online" class="user-online" i18n:translate="">Online</span>
+				<span tal:condition-else="" class="user-offline" i18n:translate="">Offline</span>
+				<br/>
+				<span tal:replace="post/POSTER_JOINED">post/POSTER_JOINED</span><br/>
+				<span tal:replace="post/POSTER_POSTS">post/POSTER_POSTS</span><br/>
+				<span tal:replace="post/POSTER_FROM">post/POSTER_FROM</span><br/><br/>
+				<span tal:omit-tag="" tal:repeat="d post/user_details"> <a style="margin-right:0.5em;" tal:condition="d/URL" tal:attributes="href d/URL; target d/TARGET"><img tal:attributes="src d/IMG; alt d/TITLE; title d/TITLE"/></a></span>
+			</small>
+		</details>
+		<img tal:attributes="src post/POSTER_AVATAR_URI" alt=""/><br/>
+		<img tal:condition="post/RANK_IMAGE" tal:attributes="src post/RANK_IMAGE; alt post/POSTER_RANK; title post/POSTER_RANK"/>
+		<span tal:condition-else="" tal:replace="post/POSTER_RANK">post/POSTER_RANK</span>
+		<p>
+			<var tal:replace="post/reputation_up"/> <a tal:attributes="href post/reputation_up_url">👍</a>
+			/
+			<var tal:replace="post/reputation_down"/> <a tal:attributes="href post/reputation_down_url">👎</a>
+		</p>
+	</td>
+	<td class="post">
+		<small>
+			<a tal:attributes="href post/U_MINI_POST; class php:${post/is_new}?'post-unread':'post-read'"><time tal:attributes="datetime post/POST_DATETIME" tal:content="post/POST_DATE">post/POST_DATE</time></a>
+			<span style="float:right">
+				<a class="post_icon_quote" tal:condition="post/quote_uri" tal:attributes="href post/quote_uri" rel="nofollow" title="Reply_with_quote" i18n:attributes="title" i18n:translate="">Reply_with_quote</a>
+				<a class="post_icon_edit" tal:condition="post/edit_uri" tal:attributes="href post/edit_uri" rel="nofollow" title="Edit_delete_post" i18n:attributes="title" i18n:translate="">Edit_delete_post</a>
+				<a class="post_icon_delete" tal:condition="post/delete_uri" tal:attributes="href post/delete_uri" rel="nofollow" title="Delete_post" i18n:attributes="title" i18n:translate="">Delete_post</a>
+				<a class="post_icon_ip" tal:condition="post/view_ip_uri" tal:attributes="href post/view_ip_uri" rel="nofollow" title="View_IP" i18n:attributes="title" i18n:translate="">View_IP</a>
+<!--
+				<a class="post_icon_search" tal:condition="post/search_uri" tal:attributes="href post/search_uri" rel="nofollow" title="Search_user_posts" i18n:attributes="title" i18n:translate="">Search_user_posts</a>
+-->
+			</span>
+		</small>
+		<hr/>
+		<div class="topic-post-message" tal:content="structure post/MESSAGE">post/MESSAGE</div>
+
+		<details class="forum-topic-post-attachment border" tal:repeat="attach post/attachment">
+			<summary>
+				<span tal:omit-tag="" i18n:translate="">Attachment</span>:
+				<span tal:replace="attach/DOWNLOAD_NAME">DOWNLOAD_NAME</span>
+			</summary>
+			<table><tbody>
+			<tr>
+				<td i18n:translate="">Description</td>
+				<td tal:content="attach/COMMENT">COMMENT</td>
+			</tr>
+			<tr tal:condition="attach/S_DEF_CAT">
+				<td i18n:translate="File_name">Filename</td>
+				<td tal:content="attach/DOWNLOAD_NAME">DOWNLOAD_NAME</td>
+			</tr>
+			<tr>
+				<td i18n:translate="">Filesize</td>
+				<td tal:content="attach/FILESIZE">FILESIZE</td>
+			</tr>
+			<tr>
+				<td tal:content="attach/L_DOWNLOADED_VIEWED">L_DOWNLOADED_VIEWED</td>
+				<td tal:content="attach/L_DOWNLOAD_COUNT">L_DOWNLOAD_COUNT</td>
+			</tr>
+			<tr tal:condition="attach/L_ALLOWED">
+				<td colspan="2" style="text-align:center">
+					<img tal:condition="attach/S_IMAGE_CAT" tal:attributes="src attach/U_DOWNLOAD_LINK; alt attach/DOWNLOAD_NAME"/>
+					<a tal:condition-else="attach/S_THUMB_CAT" tal:attributes="href attach/U_DOWNLOAD_LINK" target="_blank"><img tal:attributes="src attach/IMG_THUMB_SRC; alt attach/DOWNLOAD_NAME"/></a>
+					<object tal:condition-else="attach/S_STREAM_CAT" id="wmp" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject">
+						<param name="FileName" tal:attributes="value attach/U_DOWNLOAD_LINK"/>
+						<param name="ShowControls" value="1"/>
+						<param name="ShowDisplay" value="0"/>
+						<param name="ShowStatusBar" value="1"/>
+						<param name="AutoSize" value="1"/>
+						<param name="AutoStart" value="0"/>
+						<param name="Visible" value="1"/>
+						<param name="AnimationStart" value="0"/>
+						<param name="Loop" value="0"/>
+					</object>
+					<object tal:condition-else="attach/S_SWF_CAT" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" tal:attributes="style 'width:${attach/WIDTH}px;height:${attach/HEIGHT}'">
+						<param name="movie" tal:attributes="value attach/U_DOWNLOAD_LINK"/>
+						<param name="loop" value="1"/>
+						<param name="quality" value="high"/>
+						<param name="scale" value="noborder"/>
+						<param name="wmode" value="transparent"/>
+						<param name="bgcolor" value="#000000"/>
+					</object>
+					<div tal:condition-else="attach/S_DEF_CAT">
+						<b tal:condition="attach/L_DENIED" tal:content="attach/L_DENIED">[attach/L_DENIED]</b>
+						<a tal:attributes="href attach/U_DOWNLOAD_LINK; target attach/TARGET_BLANK" tal:content="attach/DOWNLOAD_NAME">DOWNLOAD_NAME</a>
+					</div>
+				</td>
+			</tr>
+			<tr tal:condition-else="">
+				<td colspan="2" style="text-align:center" class="error" tal:content="attach/L_DENIED">denied reason</td>
+			</tr>
+			</tbody></table>
+		</details>
+		<p tal:condition="post/SIGNATURE"><small tal:content="structure post/SIGNATURE"></small></p>
+		<p tal:condition="exists:post/poster_server_specs">
+			<small tal:condition="post/poster_server_specs">Server specs (Server OS / Apache / MySQL / PHP / DragonflyCMS):<br/>
+				<span tal:replace="structure post/poster_server_specs">post/poster_server_specs</span>
+			</small>
+			<small tal:condition-else="" class="error">Please enter your server specs in your <a rel="nofollow" href="?name=Your_Account&amp;edit=profile">user profile</a>! 😢</small>
+		</p>
+		<p tal:condition="post/EDITED_MESSAGE"><small tal:content="structure post/EDITED_MESSAGE"></small></p>
+	</td>
+</tr>
+</tbody><tfoot>
+<tr>
+	<td colspan="2">
+<!--
+	<form method="post" action="">
+	<div style="text-align:center">
+		<span tal:omit-tag="" i18n:translate="Display_posts">Display posts from previous</span>:
+		<select name="postdays">
+			<option value="0"   i18n:translate="">All_Posts</option>
+			<option value="1"   tal:attributes="selected php:  1 == ${posts_days}" tal:content="php:here.L10N.timeReadable(86400, '%d')"></option>
+			<option value="7"   tal:attributes="selected php:  7 == ${posts_days}" tal:content="php:here.L10N.timeReadable(604800, '%d')"></option>
+			<option value="14"  tal:attributes="selected php: 14 == ${posts_days}" tal:content="php:here.L10N.timeReadable(604800*2, '%w')"></option>
+			<option value="30"  tal:attributes="selected php: 30 == ${posts_days}" tal:content="php:here.L10N.timeReadable(2628000, '%m')"></option>
+			<option value="91"  tal:attributes="selected php: 91 == ${posts_days}" tal:content="php:here.L10N.timeReadable(2628000*3, '%m')"></option>
+			<option value="183" tal:attributes="selected php:183 == ${posts_days}" tal:content="php:here.L10N.timeReadable(2628000*6, '%m')"></option>
+			<option value="365" tal:attributes="selected php:365 == ${posts_days}" tal:content="php:here.L10N.timeReadable(31536000, '%y')"></option>
+		</select>
+		<select name="postorder">
+			<option value="asc" i18n:translate="">Oldest_First</option>
+			<option value="desc" tal:attributes="selected php:'DESC' == ${posts_order}" i18n:translate="">Newest_First</option>
+		</select>
+		<button i18n:translate="">Go</button>
+	</div>
+	</form>
+-->
+	<div style="float:right; white-space:nowrap; padding-top:5px;">
+		<small tal:content="S_TIMEZONE">S_TIMEZONE</small><br/>
+		<span tal:condition="PAGINATION" tal:content="structure PAGINATION">PAGINATION</span>
+	</div>
+	<div style="padding:5px 0 5px 0;">
+		<span tal:condition="forum/isLocked" class="new-topic-locked" i18n:attributes="title 'Forum_locked'" i18n:translate="">Forum_locked</span>
+		<span tal:condition-else="">
+			<a tal:attributes="href forum/getNewTopicUri" rel="nofollow" class="new-topic" i18n:translate="">Post_new_topic</a>
+			<span tal:condition="forum_topic/isLocked" class="topic-reply-locked" i18n:translate="">Topic_locked</span>
+			<a tal:condition-else="not:forum_topic/archive_flag" tal:attributes="href forum_topic/getReplyUri" rel="nofollow" class="topic-reply" i18n:translate="">Reply_to_topic</a>
+		</span>
+		<span>
+			<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+			<span tal:replace="php:_BC_DELIM"></span>
+			<span tal:repeat="forum SF_PARENTS">
+				<a tal:attributes="href forum/uri" tal:content="forum/name">parent name</a>
+				<span tal:replace="php:_BC_DELIM">»</span>
+			</span>
+			<a tal:condition="php:${forum_topic/archive_flag} AND ${forum/isSubForum}" tal:attributes="href forum/archive_uri">
+				<span tal:replace="forum/name">forum/name</span>
+				<span tal:replace="php:_BC_DELIM"></span>
+				<span i18n:translate="">Archives</span></a>
+			<a tal:condition-else="" tal:attributes="href forum/uri" tal:content="forum/name">forum/name</a>
+		</span>
+		<br/>
+		<span tal:content="structure PAGE_NUMBER">PAGE_NUMBER</span>
+	</div>
+	</td>
+</tr>
+</tfoot></table>
+
+<form tal:condition="QUICK_REPLY_FORM" tal:attributes="action U_POST_ACTION; data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()" method="post">
+<table class="forum-topic-reply flat"><thead></thead><tbody>
+	<tr>
+		<th colspan="2" i18n:translate="">Quick_Reply</th>
+	</tr>
+	<tr>
+		<td i18n:translate="">Message</td>
+		<td><textarea class="bbcode" name="message" wrap="virtual" required=""></textarea></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Options</td>
+		<td>
+			<label>
+				<input type="checkbox" name="quick_quote" tal:attributes="value S_QREPLY_MSG"/>
+				<span i18n:translate="">Quick_quote</span>
+			</label>
+			<label>
+				<input type="checkbox" name="attach_sig" tal:attributes="checked IDENTITY/attachsig"/>
+				<span i18n:translate="">Attach_signature</span>
+			</label>
+		</td>
+	</tr>
+</tbody><tfoot>
+	<tr>
+		<td></td>
+		<td>
+			<input type="hidden" tal:repeat="field hidden_qreply_fields" tal:attributes="name field/name; value field/value"/>
+			<button type="submit" name="preview" i18n:translate="">Preview</button>
+			<button type="submit" name="post" i18n:translate="">Submit</button>
+		</td>
+	</tr>
+</tfoot></table>
+</form>
+
+<div tal:condition="ARCHIVE_REPLY_FORM">
+	<div tal:condition="forum_topic/archive_id" style="text-align:center;">
+		<b i18n:translate="">Is_revived</b><br />
+		<a tal:attributes="href U_REVIVED_TOPIC"><b i18n:translate="">Revived_click_here</b></a>
+		<br /><br />
+	</div>
+	<form tal:condition-else="" tal:attributes="action U_POST_ACTION; data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()" method="post">
+	<table id="archive_reply">
+	<tbody>
+		<tr>
+			<th colspan="2" i18n:translate="">Archive_Revive</th>
+		</tr>
+		<tr tal:condition="not:IDENTITY/isMember">
+			<td style="text-align:right"><b i18n:translate="">Username</b></td>
+			<td><input type="text" name="username" maxlength="25" value=""/></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align:center" tal:content="structure php:here.L10N.get('Archive_Revive_Notes')">Archive_Revive_Notes</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="2" style="text-align:center">
+				<input type="hidden" tal:repeat="field S_HIDDEN_AREPLY_FIELDS" tal:attributes="name field/name; value field/value"/>
+				<button name="post" i18n:translate="">Click_to_revive</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>
+
+<div tal:condition="not:forum_topic/archive_flag">
+	<div style="white-space:nowrap; float:left;">
+	<small tal:condition="forum_topic/userCanWatch">
+		<a tal:condition="forum_topic/userIsWatching" tal:attributes="href php:URL::index('${forum_topic_uri}&amp;unwatch')" i18n:translate="">Stop_watching_topic</a>
+		<a tal:condition-else="" tal:attributes="href php:URL::index('${forum_topic_uri}&amp;watch')" i18n:translate="">Start_watching_topic</a>
+	</small>
+	<br/><br/>
+	<span class="topic_mod" tal:condition="forum/getUserPermissions/auth_mod">
+		<a tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=archive')" class="topic_mod_archive" i18n:attributes="title 'Archive_topic'" i18n:translate="">Archive_topic</a>
+		<a tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=delete')" class="topic_mod_delete" i18n:attributes="title 'Delete_topic'" i18n:translate="">Delete_topic</a>
+		<a tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=move')" class="topic_mod_move" i18n:attributes="title 'Move_topic'" i18n:translate="">Move_topic</a>
+		<a tal:condition="forum_topic/isLocked" tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=unlock')" class="topic_mod_unlock" i18n:attributes="title 'Unlock_topic'" i18n:translate="">Unlock_topic</a>
+		<a tal:condition-else="" tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=lock')" class="topic_mod_lock" i18n:attributes="title 'Lock_topic'" i18n:translate="">Lock_topic</a>
+		<a tal:attributes="href php:URL::index('&amp;file=modcp&amp;t=${forum_topic/id}&amp;mode=split')" class="topic_mod_split" i18n:attributes="title 'Split_topic'" i18n:translate="">Split_topic</a>
+		<a tal:attributes="href php:URL::index('&amp;file=merge&amp;t=${forum_topic/id}')" class="topic_mod_merge" i18n:attributes="title 'Merge_topics'" i18n:translate="">Merge_topics</a>
+	</span>
+	</div>
+	<div style="white-space:nowrap; float:right; text-align:right;">
+		<div tal:replace="structure php:here.toString('forums/jumpbox')"></div>
+<!--
+		<small>
+			<span tal:replace="structure php:here.L10N[${user_auth/auth_post}?'Rules_post_can':'Rules_post_cannot']">auth_post</span><br/>
+			<span tal:replace="structure php:here.L10N[${user_auth/auth_reply}?'Rules_reply_can':'Rules_reply_cannot']">auth_reply</span><br/>
+			<span tal:replace="structure php:here.L10N[${user_auth/auth_edit}?'Rules_edit_can':'Rules_edit_cannot']">auth_edit</span><br/>
+			<span tal:replace="structure php:here.L10N[${user_auth/auth_delete}?'Rules_delete_can':'Rules_delete_cannot']">auth_delete</span><br/>
+			<span tal:replace="structure php:here.L10N[${user_auth/auth_vote}?'Rules_vote_can':'Rules_vote_cannot']">auth_vote</span><br/>
+			<div tal:condition="not:attach_config/disable_mod">
+				<span tal:replace="structure php:here.L10N[(${user_auth/auth_attachments} AND ${user_auth/auth_post})?'Rules_attach_can':'Rules_attach_cannot']">auth_attachments</span><br/>
+				<span tal:replace="structure php:here.L10N[${user_auth/auth_download}?'Rules_download_can':'Rules_download_cannot']">auth_download</span><br/>
+			</div>
+			<a tal:condition="user_auth/auth_mod" tal:attributes="href php:URL::index('&amp;file=modcp&amp;f=${forum/id}')" tal:content="structure php:sprintf(${L10N/Rules_moderate},'','')">Rules_moderate</a>
+		</small>
+-->
+	</div>
+	<br style="clear:both;"/>
+</div>

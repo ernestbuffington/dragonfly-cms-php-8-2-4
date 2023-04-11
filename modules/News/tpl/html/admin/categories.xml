@@ -1,0 +1,27 @@
+<div class="border">
+	<a href="?admin&amp;op=News&amp;mode=add" i18n:translate="">_ADDSTORY</a> |
+	<a href="?admin&amp;op=News&amp;file=submissions" i18n:translate="">_SUBMISSIONS</a> |
+	<strong i18n:translate="">Categories</strong> |
+	<a href="?admin&amp;op=News&amp;comments" i18n:translate="">Comments</a> |
+	<a href="?admin&amp;op=News&amp;file=config" i18n:translate="">Configuration</a>
+</div>
+
+<form action="?admin&amp;op=News&amp;file=categories&amp;mode=save" method="post">
+<table><thead>
+	<tr><th i18n:translate="">_ASELECTCATEGORY</th><th></th></tr>
+</thead><tbody>
+	<tr tal:repeat="cat news_categories">
+		<td tal:content="cat/title">cat/title</td>
+		<td>
+			<a class="icon-edit" tal:attributes="href '?admin&amp;op=News&amp;file=categories&amp;edit=${cat/id}'" i18n:translate="_EDIT">Edit</a>
+			<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;file=categories&amp;del=${cat/id}'" i18n:translate="_DELETE">Delete</a>
+		</td>
+	</tr>
+</tbody><tfoot>
+	<tr>
+		<td><input type="text" maxlength="20" size="22" name="title"/> <button i18n:translate="">_ADD</button></td>
+		<td></td>
+	</tr>
+</tfoot>
+</table>
+</form>

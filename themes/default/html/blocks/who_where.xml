@@ -1,0 +1,37 @@
+
+<div tal:condition="who_where/members">
+	<b i18n:translate="_BMEM">Members</b>
+	<ul>
+		<li tal:repeat="who who_where/members">
+			<!-- who/user_allow_viewonline -->
+			<a tal:attributes="href php:Dragonfly\Identity::getProfileURL(${who/user_id})" tal:content="who/uname">who/uname</a>
+			&gt;
+			<a tal:attributes="href who/url" tal:content="who/module">who/module</a>
+		</li>
+	</ul>
+</div>
+
+<div tal:condition="who_where/bots">
+	<b i18n:translate="_BOTS">Bots</b>
+	<ul>
+		<li tal:repeat="who who_where/bots">
+			<a tal:attributes="href who/host_addr_url" tal:content="who/uname">who/uname</a>
+			&gt;
+			<a tal:attributes="href who/url" tal:content="who/module">who/module</a>
+		</li>
+	</ul>
+</div>
+
+<div tal:condition="who_where/anonymous">
+	<b i18n:translate="_BVIS">Visitors</b>
+	<ul>
+		<li tal:repeat="who who_where/anonymous">
+			<span tal:condition="who/host_addr"><a tal:attributes="href who/host_addr_url" tal:content="who/host_addr">who/host_addr</a>:</span>
+			<a tal:attributes="href who/url" tal:content="who/module">who/module</a>
+		</li>
+	</ul>
+</div>
+
+<div tal:condition="who_where/hidden">
+	<b i18n:translate="_BHID">Hidden</b>: <var tal:replace="who_where/hidden">$who_where/hidden</var>
+</div>

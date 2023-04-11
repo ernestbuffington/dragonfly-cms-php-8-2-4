@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<database version="1.0" name="coppermine" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<table name="cpg_categories" datamode="ON-EMPTY">
+		<col name="cid"/>
+		<col name="catname"/>
+		<col name="description"/>
+		<col name="stat_uptodate"/>
+		<tr><td>1</td><td>User galleries</td><td>This category contains albums that belong to Coppermine users.</td><td>0</td></tr>
+	</table>
+
+	<table name="cpg_config" datamode="ON-EMPTY">
+		<col name="name"/>
+		<col name="value"/>
+		<tr><td>albums_per_page</td><td>12</td></tr>
+		<tr><td>album_list_cols</td><td>2</td></tr>
+		<tr><td>display_pic_info</td><td>1</td></tr>
+		<tr><td>alb_list_thumb_size</td><td>50</td></tr>
+		<tr><td>allowed_img_types</td><td>JPG/GIF/PNG</td></tr>
+		<tr><td>allow_private_albums</td><td>1</td></tr>
+		<tr><td>caption_in_thumbview</td><td>1</td></tr>
+		<tr><td>debug_mode</td><td>1</td></tr>
+		<tr><td>default_sort_order</td><td>na</td></tr>
+		<tr><td>filter_bad_words</td><td>0</td></tr>
+		<tr><td>fullpath</td><td>uploads/coppermine/</td></tr>
+		<tr><td>gallery_description</td><td>Your online photo album</td></tr>
+		<tr><td>gallery_name</td><td>Coppermine Photo Gallery</td></tr>
+		<tr><td>jpeg_qual</td><td>80</td></tr>
+		<tr><td>keep_votes_time</td><td>30</td></tr>
+		<tr><td>main_page_layout</td><td>breadcrumb/catlist/alblist/lastalb,1/lastup,1/lastcom,1/topn,1/toprated,1/random,1/favpics,3</td></tr>
+		<tr><td>make_intermediate</td><td>1</td></tr>
+		<tr><td>max_com_lines</td><td>10</td></tr>
+		<tr><td>max_com_size</td><td>512</td></tr>
+		<tr><td>max_com_wlength</td><td>38</td></tr>
+		<tr><td>max_img_desc_length</td><td>512</td></tr>
+		<tr><td>max_tabs</td><td>12</td></tr>
+		<tr><td>max_upl_width_height</td><td>2048</td></tr>
+		<tr><td>min_votes_for_rating</td><td>1</td></tr>
+		<tr><td>normal_pfx</td><td>normal_</td></tr>
+		<tr><td>picture_width</td><td>400</td></tr>
+		<tr><td>randpos_interval</td><td>5</td></tr>
+		<tr><td>read_exif_data</td><td>0</td></tr>
+		<tr><td>reg_requires_valid_email</td><td>1</td></tr>
+		<tr><td>subcat_level</td><td>2</td></tr>
+		<tr><td>theme</td><td>default</td></tr>
+		<tr><td>thumbcols</td><td>4</td></tr>
+		<tr><td>thumbrows</td><td>3</td></tr>
+		<tr><td>thumb_method</td><td></td></tr>
+		<tr><td>thumb_pfx</td><td>thumb_</td></tr>
+		<tr><td>thumb_width</td><td>100</td></tr>
+		<tr><td>userpics</td><td>uploads/coppermine/userpics/</td></tr>
+		<tr><td>user_field1_name</td><td></td></tr>
+		<tr><td>user_field2_name</td><td></td></tr>
+		<tr><td>user_field3_name</td><td></td></tr>
+		<tr><td>user_field4_name</td><td></td></tr>
+		<tr><td>display_comment_count</td><td>0</td></tr>
+		<tr><td>display_film_strip</td><td>1</td></tr>
+		<tr><td>max_film_strip_items</td><td>5</td></tr>
+		<tr><td>first_level</td><td>1</td></tr>
+		<tr><td>show_private</td><td>0</td></tr>
+		<tr><td>thumb_use</td><td>any</td></tr>
+		<tr><td>comment_email_notification</td><td>0</td></tr>
+		<tr><td>disable_flood_protection</td><td>0</td></tr>
+		<tr><td>nice_titles</td><td>1</td></tr>
+		<tr><td>seo_alts</td><td>0</td></tr>
+		<tr><td>read_iptc_data</td><td>0</td></tr>
+		<tr><td>picinfo_display_favorites</td><td>1</td></tr>
+		<tr><td>picinfo_display_filename</td><td>0</td></tr>
+		<tr><td>picinfo_display_album_name</td><td>1</td></tr>
+		<tr><td>picinfo_display_file_size</td><td>0</td></tr>
+		<tr><td>picinfo_display_dimensions</td><td>0</td></tr>
+		<tr><td>allow_anon_fullsize</td><td>1</td></tr>
+		<tr><td>right_blocks</td><td>0</td></tr>
+		<tr><td>avatar_private_album</td><td>0</td></tr>
+		<tr><td>watermark</td><td>0</td></tr>
+		<tr><td>fullsize_slideshow</td><td>0</td></tr>
+	</table>
+
+	<table name="cpg_usergroups" datamode="ON-EMPTY">
+		<col name="group_id"/>
+		<col name="group_name"/>
+		<col name="group_quota"/>
+		<col name="has_admin_access"/>
+		<col name="can_rate_pictures"/>
+		<col name="can_send_ecards"/>
+		<col name="can_post_comments"/>
+		<col name="can_upload_pictures"/>
+		<col name="can_create_albums"/>
+		<col name="pub_upl_need_approval"/>
+		<col name="priv_upl_need_approval"/>
+		<tr><td>1</td><td>Administrators</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+		<tr><td>2</td><td>Registered</td><td>1024</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+		<tr><td>3</td><td>Anonymous</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+		<tr><td>4</td><td>Banned</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+	</table>
+
+</database>

@@ -1,0 +1,11 @@
+<nav class="graph">
+<span tal:repeat="cat adminmenugraph" tal:omit-tag="">
+<details tal:condition="cat/current" open="">
+	<summary tal:content="cat/title"></summary>
+	<a tal:repeat="item cat/items" class="adminitem" tal:attributes="href item/link/url;target item/link/target">
+		<img tal:attributes="src item/image" alt=""/><br/>
+		<span tal:content="item/title"></span>
+	</a>
+</details>
+</span>
+</nav>

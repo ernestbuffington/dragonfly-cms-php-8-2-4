@@ -1,0 +1,52 @@
+<form tal:attributes="action U_SAVECOMM" method="post">
+<table class="border">
+<tbody>
+	<tr>
+		<td i18n:translate="">_DISPLAYMODE</td>
+		<td><select name="umode">
+			<option value="nested" i18n:translate="">_NESTED</option>
+			<option value="flat" tal:attributes="selected php:'flat' == ${IDENTITY/umode}" i18n:translate="">_FLAT</option>
+			<option value="nocomments" tal:attributes="selected php:'nocomments' == ${IDENTITY/umode}" i18n:translate="">_NOCOMMENTS</option>
+		</select></td>
+	</tr><tr>
+		<td i18n:translate="">_SORTORDER</td>
+		<td><select name="uorder">
+			<option value="0" i18n:translate="">_OLDEST</option>
+			<option value="1" tal:attributes="selected php:1 == ${IDENTITY/uorder}" i18n:translate="">_NEWEST</option>
+			<option value="2" tal:attributes="selected php:2 == ${IDENTITY/uorder}" i18n:translate="">_HIGHEST</option>
+		</select></td>
+	</tr><tr>
+<!--
+		<td><span i18n:translate="">_THRESHOLD</span><br />
+			<span i18n:translate="">_SCORENOTE</span><br />
+			<span i18n:translate="">_COMMENTSWILLIGNORED</span>
+		</td>
+		<td><select name="thold">
+			<option value="-1" i18n:translate=""> _UNCUT</option>
+			<option value="0" tal:attributes="selected php:0 == ${IDENTITY/thold}" i18n:translate="">_EVERYTHING</option>
+			<option value="1" tal:attributes="selected php:1 == ${IDENTITY/thold}" i18n:translate="">_FILTERMOSTANON</option>
+			<option value="2" tal:attributes="selected php:2 == ${IDENTITY/thold}">+2</option>
+			<option value="3" tal:attributes="selected php:3 == ${IDENTITY/thold}">+3</option>
+			<option value="4" tal:attributes="selected php:4 == ${IDENTITY/thold}">+4</option>
+			<option value="5" tal:attributes="selected php:5 == ${IDENTITY/thold}">+5</option>
+		</select></td>
+	</tr><tr>
+-->
+		<td i18n:translate="">_NOSCORES</td>
+		<td><input name="noscore" type="checkbox" tal:attributes="checked IDENTITY/noscore"/></td>
+	</tr><tr>
+		<td i18n:translate="">_MAXCOMMENT</td>
+		<td><input type="number" name="commentmax" tal:attributes="value IDENTITY/commentmax" size="11" maxlength="11"/>
+			<em i18n:translate="">_BYTESNOTE</em>
+		</td>
+	</tr>
+</tbody><tfoot>
+	<tr>
+		<td></td>
+		<td>
+			<button i18n:translate="">_SAVECHANGES</button>
+			<button type="reset" i18n:translate="">_RESET</button>
+		</td>
+	</tr>
+</tfoot>
+</table></form>

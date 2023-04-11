@@ -1,0 +1,24 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">Forum_Prune</h1>
+
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Select_a_Forum</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td><select name="f">
+					<option value="0" i18n:translate="">All_Forums</option>
+					<optgroup tal:repeat="category board_categories" tal:attributes="label category/title" label="category/title">
+						<option tal:repeat="forum category/forums" tal:attributes="value forum/id" tal:content="forum/name">forum/name</option>
+					</optgroup>
+				</select>
+				<button i18n:translate="">Look_up_Forum</button>
+			</td>
+		</tr>
+	</tbody></table>
+	</form>
+</div>

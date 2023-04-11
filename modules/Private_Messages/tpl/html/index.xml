@@ -1,0 +1,143 @@
+<nav class="main pm" style="z-index:1">
+<ul>
+	<li><a onclick="">Information</a>
+		<ul>
+			<li><a tal:attributes="href IDENTITY/profile_uri">My profile</a></li>
+			<li><a tal:attributes="href php:URL::index('coppermine&amp;file=users&amp;id=${IDENTITY/id}')">My gallery</a></li>
+		</ul>
+	</li><li><a onclick="">Configuration</a>
+		<ul>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=profile')">Profile</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=private')">Private</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=reg_details')">Registration</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=prefs')">Preferences</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=avatar')">Avatar</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=edithome')">Homepage</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=preferences')">News comments</a></li>
+		</ul>
+	</li><li><a onclick="">Private Messages</a>
+		<ul>
+			<li>
+				<a tal:attributes="href php:URL::index('&amp;file=compose')">
+					<img src="cdn://modules/Private_Messages/images/24x24/new.png" alt="New" title="New"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=inbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/inbox.png" alt="Inbox" title="Inbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=sentbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/sentbox.png" alt="Sentbox" title="Sentbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=outbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/outbox.png" alt="Outbox" title="Outbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=savebox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/savebox.png" alt="Savebox" title="Savebox"/></a>
+			</li>
+		</ul>
+	</li><li><a tal:attributes="href php:Dragonfly\Identity::logoutURL()">Logout</a></li>
+</ul>
+</nav>
+
+<div class="table1">
+
+<div>
+<span class="pm_boxes">
+	<a tal:attributes="href php:URL::index('&amp;file=compose')">
+		<img src="cdn://modules/Private_Messages/images/48x48/new.png" alt="New" title="New"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='compose'" i18n:translate="">New</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=inbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/inbox.png" alt="Inbox" title="Inbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='inbox'" i18n:translate="">Inbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=sentbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/sentbox.png" alt="Sentbox" title="Sentbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='sentbox'" i18n:translate="">Sentbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=outbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/outbox.png" alt="Outbox" title="Outbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='outbox'" i18n:translate="">Outbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=savebox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/savebox.png" alt="Savebox" title="Savebox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='savebox'" i18n:translate="">Savebox</strong>
+		</a>
+</span>
+
+<span class="pm_meter">
+	<meter min="0" value="0" high="90" low="75" optimum="0" tal:content="folder/quota"
+		tal:attributes="value folder/total_pms;
+						max folder/max;
+						title folder/quota;
+						style 'width:${pmcfg/graphic_length}${pmcfg/graphic_style}'"></meter>
+</span>
+</div>
+
+<hr style="clear:both"/>
+
+<form id="privmsgs_list" method="post" action="" accept-charset="utf-8">
+<table>
+<thead tal:condition="listrow">
+	<tr tal:condition="pm_pagination/items">
+		<td colspan="7" class="pagination" style="text-align:right">
+			<a class="prev" tal:attributes="href pm_pagination/prev" tal:condition="pm_pagination/prev">◀</a>
+			<a tal:repeat="item pm_pagination/items" tal:attributes="href item/uri" tal:content="item/page"></a>
+			<a class="next" tal:attributes="href pm_pagination/next" tal:condition="pm_pagination/next">▶</a>
+		</td>
+	</tr>
+	<tr>
+		<th style="width:25%">
+			<span tal:condition="php:${folder/name}=='inbox' || ${folder/name}=='savebox'" i18n:translate="_FROM" tal:omit-tag="">From header</span>
+			<span tal:condition="php:${folder/name}=='sentbox' || ${folder/name}=='outbox'" i18n:translate="_TO" tal:omit-tag="">To header</span>
+		</th>
+		<th style="width:60%" i18n:translate="_SUBJECT">Subject header</th>
+		<th style="width:5%" i18n:translate="Mark"></th>
+	</tr>
+</thead><tbody>
+	<tr tal:condition="not:listrow">
+		<td colspan="3" style="text-align:center;font-weight:bold" i18n:translate="No_messages_folder">No Messages</td>
+	</tr>
+	<tr tal:condition="listrow" tal:repeat="row listrow">
+		<td>
+			<a tal:attributes="href row/U_FROM_USER_PROFILE"><strong tal:omit-tag="not:row/unread" tal:content="row/username">Username</strong></a>
+		</td>
+		<td>
+			<a tal:attributes="href row/U_READ"><strong tal:omit-tag="not:row/unread" tal:content="row/subject">Subject</strong></a><br />
+			<span tal:content="row/date"></span>
+		</td>
+		<td>
+			<input type="checkbox" name="mark[]" tal:attributes="value row/id" />
+		</td>
+	</tr>
+</tbody><tfoot tal:condition="listrow">
+	<tr style="vertical-align:top">
+		<td>
+			<select name="msgdays"><option tal:repeat="option msgdays" tal:attributes="selected option/current; value option/value" tal:content="option/label"></option></select>
+		</td>
+		<td colspan="2">
+			<select name="order_by"><option tal:repeat="option order_by" tal:attributes="selected option/current; value option/value" tal:content="option/label"></option></select>
+			<select name="asc_desc">
+				<option value="desc" i18n:translate="">Desc</option>
+				<option value="asc" tal:attributes="selected php:'ASC' == ${order_dir}" i18n:translate="">Asc</option>
+			</select>
+			<div style="float:right">
+				<a href="javascript:Poodle.$('privmsgs_list').checkAll('mark[]');" i18n:translate="Mark_all">Mark all</a> ::
+				<a href="javascript:Poodle.$('privmsgs_list').uncheckAll('mark[]');" i18n:translate="Unmark_all">Unmark all</a>
+				<br/>
+				<select name="do_with_marked">
+					<option value=""></option>
+					<option tal:condition="php:${folder/name}=='inbox' || ${folder/name}=='savebox'" value="save" i18n:translate="Save_marked">Save Marked</option>
+					<option value="delete" i18n:translate="Delete_marked">Delete Marked</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+	<tr><td colspan="3" style="text-align:center"><button i18n:translate="_SUBMIT"/></td></tr>
+	<tr tal:condition="pm_pagination/items">
+		<td colspan="7" class="pagination" style="text-align:right">
+			<a class="prev" tal:attributes="href pm_pagination/prev" tal:condition="pm_pagination/prev">◀</a>
+			<a tal:repeat="item pm_pagination/items" tal:attributes="href item/uri" tal:content="item/page"></a>
+			<a class="next" tal:attributes="href pm_pagination/next" tal:condition="pm_pagination/next">▶</a>
+		</td>
+	</tr>
+</tfoot>
+</table>
+</form>
+
+</div>

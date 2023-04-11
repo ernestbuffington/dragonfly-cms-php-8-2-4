@@ -1,0 +1,38 @@
+<h2 tal:condition="album_name" tal:content="album_name">album_name</h2>
+<table class="flat">
+<thead tal:condition="thumbnails_sort"><tr><th colspan="0" style="text-align:right">
+	<form tal:condition="thumbnails_sort" action="index.php" method="get">
+	<input type="hidden" name="name" tal:attributes="value thumbnails_sort/name"/>
+	<input type="hidden" name="file" value="thumbnails"/>
+	<input type="hidden" name="album" tal:attributes="value thumbnails_sort/album"/>
+	<input type="hidden" name="page" tal:attributes="value thumbnails_sort/page"/>
+	 <select name="sort" class="sortorder_options" onchange="submit();">
+		 <option tal:repeat="option thumbnails_sort/options"
+			tal:attributes="value option/value; selected option/selected" tal:content="option/label"></option>
+	 </select>
+	</form>
+</th></tr></thead>
+<tbody>
+	<tr tal:repeat="row thumbnails_rows">
+		<td tal:repeat="thumbnail row" class="thumb_cell" tal:attributes="style 'width:${thumbnail_column_width}%'">
+			<a tal:condition="thumbnail/url" tal:attributes="href thumbnail/url"><img tal:attributes="src thumbnail/image/src; title thumbnail/image/title" alt=""/></a><br/>
+			<span tal:condition="thumbnail/title" class="thumb_title" tal:content="structure thumbnail/title">thumbnail/title</span>
+			<span tal:condition="thumbnail/caption" class="thumb_caption" tal:content="structure thumbnail/caption">thumbnail/caption</span>
+		</td>
+	</tr>
+</tbody>
+<tfoot tal:condition="thumbnails_pagination">
+	<tr>
+		<td colspan="0" style="padding: 0">
+			<table class="flat"><tbody>
+				<tr>
+					<td style="vertical-align:middle;white-space: nowrap"><b tal:content="thumbnails_stats"></b></td>
+					<td tal:repeat="item thumbnails_pagination/items" class="navmenu" style="text-align:center;vertical-align:middle">
+						<a tal:omit-tag="item/current" tal:attributes="href item/uri" tal:content="item/page">1</a>
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tfoot>
+</table>

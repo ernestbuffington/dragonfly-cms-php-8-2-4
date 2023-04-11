@@ -1,0 +1,34 @@
+<rss tal:attributes="version S_VERSION" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+ <title tal:content="S_TITLE">{S_TITLE}</title>
+ <link tal:content="S_LINK">{S_LINK}</link>
+ <description tal:content="S_DESCRIPTION">{S_DESCRIPTION}</description>
+ <language tal:content="S_LANGUAGE">{S_LANGUAGE}</language>
+ <pubDate tal:content="S_PUBDATE">{S_PUBDATE}</pubDate>
+ <ttl tal:content="S_TTL">{S_TTL}</ttl>
+ <generator tal:content="S_GENERATOR">{S_GENERATOR}</generator>
+ <copyright tal:content="S_COPYRIGHT">{S_COPYRIGHT}</copyright>
+ <category tal:content="S_CATEGORY">{S_CATEGORY}</category>
+ <docs tal:content="S_DOCS">{S_DOCS}</docs>
+ <image>
+  <url tal:content="S_IMG">{S_IMG}</url>
+  <title tal:content="S_TITLE">{S_TITLE}</title>
+  <link tal:content="S_LINK">{S_LINK}</link>
+ </image>
+ <atom:link tal:attributes="href S_ATOM_LINK" rel="self" type="application/rss+xml" />
+ <item tal:repeat="item items">
+  <title tal:content="item/title">{item/title}</title>
+  <link tal:content="item/link">{item/link}</link>
+  <description tal:content="item/description">{item/description}</description>
+  <!-- optional elements -->
+  <guid tal:condition="item/guid" tal:content="item/guid">{item/guid}</guid>
+  <author tal:condition="item/author" tal:content="item/author">{item/author}</author>
+  <category tal:condition="item/category" tal:content="item/category">{item/category}</category>
+  <comments tal:condition="item/comments" tal:content="item/comments">{item/comments}</comments>
+  <enclosure tal:condition="item/enclosure" tal:content="item/enclosure">{item/enclosure}</enclosure>
+  <pubDate tal:condition="item/pubDate" tal:content="item/pubDate">{item/pubDate}</pubDate>
+  <quid tal:condition="item/quid" tal:content="item/quid">{item/quid}</quid>
+  <source tal:condition="item/source" tal:content="item/source">{item/source}</source>
+ </item>
+</channel>
+</rss>

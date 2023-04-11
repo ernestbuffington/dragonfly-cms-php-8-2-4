@@ -1,0 +1,33 @@
+
+<div class="border" tal:condition="CONFIG/global/update_monitor">
+	<p style="text-align:center">
+		<strong i18n:translate="_UM">Dragonfly Update Service</strong>
+	</p>
+	<p style="text-align:center" tal:condition="not:CPG/update_monitor">
+		<img src="cdn://images/update/error.png" alt=""/><br/><br/>
+		<span tal:replace="php:_UM_F"></span>
+	</p>
+	<div tal:condition="CPG/update_monitor">
+		<p style="text-align:center" tal:condition="CPG/update_monitor/using_latest">
+			<img src="cdn://images/update/green.png" alt=""/><br/><br/>
+			<span style="color: #009933;">
+				<strong>
+					<span tal:replace="php:_UM_G"></span>
+					(<span tal:replace="php:CPG_NUKE"></span><span tal:condition="CPG/update_monitor/using_scm"> SCM</span>)
+				</strong>
+			</span>
+		</p>
+		<p style="text-align:center" tal:condition="not:CPG/update_monitor/using_latest">
+			<img src="cdn://images/update/red.png" alt=""/><br/><br/>
+			<span style="color: #ae0000;"><strong tal:content="php:sprintf(_UM_R, ${CPG/update_monitor/current}, ${CPG/update_monitor/url})"></strong></span>
+		</p>
+		<fieldset tal:repeat="msg CPG/update_monitor/msg">
+			<legend tal:content="msg/title"></legend>
+			<p tal:content="bbcode msg/desc"></p>
+			<p>
+				<span i18n:translate="">_POSTEDON</span>
+				<span tal:replace="php:here.L10N.date('F d, Y', ${msg/date})"></span>
+			</p>
+		</fieldset>
+	</div>
+</div>

@@ -1,0 +1,46 @@
+
+<div class="border">
+<table>
+<thead>
+	<tr>
+		<!--<th tal:condition="L10N/multilingual"></th>-->
+		<th i18n:translate="_ARTICLES">Articles</th>
+		<th style="text-align:center" i18n:translate="_COMMENTS">comments</th>
+		<th style="text-align:center" i18n:translate="_READS">reads</th>
+		<th style="text-align:center" i18n:translate="_USCORE">Score</th>
+		<th style="text-align:center" i18n:translate="_DATE">Date</th>
+	</tr>
+</thead><tbody>
+	<tr tal:repeat="story stories">
+		<!--<td tal:condition="L10N/multilingual">
+			<img src="images/language/flag-$alanguage.png" alt="$alt_language" title="$alt_language"/>
+		</td>-->
+		<td>
+			<span tal:condition="story/catid">
+				<a tal:attributes="href php:URL::index('News&amp;catid=${story/catid}')"><i tal:content="story/cat_title">story/cat_title</i></a>:
+			</span>
+			<a tal:attributes="href php:URL::index('News&amp;file=article&amp;sid=${story/sid}')"
+				tal:content="story/title">story/title</a>
+		</td>
+		<td style="text-align:center" tal:content="story/comments">story/comments</td>
+		<td style="text-align:center" tal:content="story/counter">story/counter</td>
+		<td style="text-align:center" tal:content="story/rated">story/rated</td>
+		<td style="text-align:center" tal:content="php:here.L10N.date('Y-m-d', ${story/ptime})">01-14-2013</td>
+	</tr>
+</tbody>
+</table>
+</div>
+
+<div class="border" style="text-align:center;" tal:condition="exists:archive_pagination">
+	<a tal:condition="archive_pagination/prev" tal:attributes="href archive_pagination/prev" i18n:translate="">_PREVIOUSPAGE</a>
+	<i tal:condition="php:${archive_pagination/prev} and ${archive_pagination/next}">|</i>
+	<a tal:condition="archive_pagination/next" tal:attributes="href archive_pagination/next" i18n:translate="">_NEXTPAGE</a>
+</div>
+
+<div class="border" style="text-align:center;">
+	<form action="URL::index('Search')" method="post"><div>
+		<input type="text" name="search" size="30" maxlength="255" />
+		<input type="hidden" name="modules[]" value="News" />
+		<button i18n:translate="">Search</button>
+	</div></form>
+</div>

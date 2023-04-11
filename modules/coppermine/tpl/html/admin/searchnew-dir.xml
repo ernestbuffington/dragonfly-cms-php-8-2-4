@@ -1,0 +1,45 @@
+
+<form class="border" method="post" action="">
+<table>
+<thead>
+	<tr>
+		<th colspan="3" i18n:translate="">LIST_NEW_PIC</th>
+	</tr>
+</thead>
+<tbody tal:repeat="dir cpg_dirs">
+	<tr><th colspan="0">
+		<var tal:replace="dir/label">Put pictures of "userpics/*/" into</var>
+		<select tal:attributes="name 'dir[${dir/id}]'">
+			<option value="0" i18n:translate="">SELECT_ALBUM</option>
+			<optgroup tal:repeat="user cpg_albums" tal:attributes="label user/name">
+				<option tal:repeat="album user/albums" tal:attributes="value album/0; selected album/2" tal:content="album/1">album</option>
+			</optgroup>
+		</select>
+	</th></tr>
+	<tr tal:condition="dir/warning"><td colspan="0" class="error" tal:content="dir/warning">dir/warning</td></tr>
+	<tr tal:repeat="pic dir/pictures">
+		<td><input type="checkbox" tal:attributes="name 'pics[${pic/dir_id}][]'; value pic/value"/></td>
+		<td style="width:100%">
+			<a tal:attributes="onclick pic/onclick" href="javascript:;" tal:content="pic/name">pic/name</a>
+		</td>
+		<td>
+			<a tal:attributes="onclick pic/onclick" href="javascript:;"><img alt="" tal:attributes="src pic/img"/></a>
+		</td>
+	</tr>
+</tbody>
+<tbody tal:condition="not:cpg_dirs">
+	<tr>
+		<td colspan="0" style="text-align:center">
+			<br/><br/>
+			<b i18n:translate="">NO_PIC_FOUND</b>
+			<br/><br/><br/>
+		</td>
+	</tr>
+</tbody>
+<tfoot tal:condition-else="">
+	<tr>
+		<td colspan="0"><button type="submit" name="insert" i18n:translate="">INSERT_SELECTED</button></td>
+	</tr>
+</tfoot>
+</table>
+</form>

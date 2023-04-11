@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="bbgroups" engine="InnoDB">
+		<col name="group_id" type="SERIAL"/>
+		<col name="group_type" type="TINYINT" default="1"/>
+		<col name="group_name" type="VARCHAR" length="40" default=""/>
+		<col name="group_description" type="TEXT"/>
+		<col name="group_moderator" type="INT" default="0"/>
+		<col name="group_single_user" type="TINYINT" default="1"/>
+		<col name="group_upload_quota" type="INT" default="0" comment="size in MiB"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="group_id"/>
+		</key>
+		<key name="group_single_user">
+			<col name="group_single_user"/>
+		</key>
+	</table>
+
+	<table name="bbuser_group" engine="InnoDB">
+		<col name="group_id" type="INT" default="0"/>
+		<col name="user_id" type="INT" default="0"/>
+		<col name="user_pending" type="TINYINT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="group_id"/>
+			<col name="user_id"/>
+		</key>
+		<key name="group_id">
+			<col name="group_id"/>
+		</key>
+		<key name="user_id">
+			<col name="user_id"/>
+		</key>
+	</table>
+
+</database>

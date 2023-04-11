@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="stats_counters" engine="myisam">
+		<col name="sc_type" type="TINYINT" comment="1=browser, 2=OS, 3=bot"/>
+		<col name="sc_value" type="VARCHAR" length="80" default=""/>
+		<col name="sc_hits" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="sc_type"/>
+			<col name="sc_value"/>
+		</key>
+	</table>
+
+	<table name="stats_hour" engine="myisam">
+		<col name="year" type="SMALLINT" default="0"/>
+		<col name="month" type="TINYINT" default="0"/>
+		<col name="date" type="TINYINT" default="0"/>
+		<col name="hour" type="TINYINT" default="0"/>
+		<col name="hits" type="INT" default="0"/>
+		<key name="i_statsh_full_date">
+			<col name="date"/>
+			<col name="hour"/>
+			<col name="month"/>
+			<col name="year"/>
+		</key>
+		<key name="i_statsh_year_month">
+			<col name="year"/>
+			<col name="month"/>
+		</key>
+	</table>
+
+</database>

@@ -1,0 +1,14 @@
+<table tal:condition="B_PAGINATION"><tbody><tr>
+<td tal:condition="PAGINATION_PREV" class="pagneutral">
+	<a tal:attributes="href PAGINATION_PREV; title L_PREVIOUS"><b>«</b></a>
+</td>
+<td><br /></td>
+<xsl:for-each select="pagination">
+	<td tal:condition="pagination/URL" class="paginact"><a tal:attributes="href pagination/URL" tal:content="pagination/PAGE">1</a></td>
+	<td tal:condition-else="" class="pagact" tal:content="pagination/PAGE">1</td>
+</xsl:for-each>
+<td><br /></td>
+<td tal:condition="PAGINATION_NEXT" class="pagneutral">
+	<a tal:attributes="href PAGINATION_NEXT; title L_NEXT"><b>»</b></a>
+</td>
+</tr></tbody></table>

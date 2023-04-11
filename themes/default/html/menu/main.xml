@@ -1,0 +1,37 @@
+<ul>
+	<li tal:repeat="cat main">
+		<a tal:define="link cat/link" tal:attributes="itemprop link/itemprop;rel link/rel;href link/url;target link/target;class link/css_class">
+			<span tal:condition="link/url" tal:content="cat/title" itemprop="name"></span>
+			<span tal:condition="not:link/url" tal:replace="cat/title"></span>
+		</a>
+		<ul tal:condition="cat/items">
+			<li tal:repeat="item cat/items" tal:attributes="class item/css_class">
+				<a tal:condition="item/title" tal:define="link item/link" tal:attributes="itemprop link/itemprop;rel link/rel;href link/url;target link/target;class link/css_class">
+				<span tal:condition="link/url" tal:content="item/title" itemprop="name"></span>
+				<span tal:condition="not:link/url" tal:replace="item/title"></span>
+				</a>
+				<ul tal:condition="item/items">
+					<li tal:repeat="sub item/items" tal:attributes="class sub/css_class">
+						<a tal:condition="sub/title" tal:content="sub/title" tal:define="link sub/link" tal:attributes="itemprop link/itemprop;rel link/rel;href link/url;target link/target">
+						<span tal:condition="link/url" tal:content="sub/title" itemprop="name"></span>
+						<span tal:condition="not:link/url" tal:replace="sub/title"></span></a>
+						<ul tal:condition="sub/items">
+							<li tal:repeat="sub sub/items" tal:attributes="class sub/css_class">
+								<a tal:condition="sub/title" tal:content="sub/title" tal:define="link sub/link" tal:attributes="itemprop link/itemprop;rel link/rel;href link/url;target link/target">
+								<span tal:condition="link/url" tal:content="sub/title" itemprop="name"></span>
+								<span tal:condition="not:link/url" tal:replace="sub/title"></span></a>
+								<ul tal:condition="sub/items">
+									<li tal:repeat="sub sub/items" tal:attributes="class sub/css_class">
+										<a tal:content="sub/title" tal:define="link sub/link" tal:attributes="itemprop link/itemprop;rel link/rel;href link/url;target link/target">
+										<span tal:condition="link/url" tal:content="sub/title" itemprop="name"></span>
+										<span tal:condition="not:link/url" tal:replace="sub/title"></span></a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>

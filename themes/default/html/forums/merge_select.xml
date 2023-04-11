@@ -1,0 +1,48 @@
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<form action="" method="post">
+<table><tbody>
+<tr>
+	<td><a tal:attributes="href U_INDEX" tal:content="L_INDEX">Forum Index</a></td>
+	<td>
+		<select tal:replace="structure S_FORUM_SELECT"></select>
+		<button name="go" i18n:translate="">Go</button>
+		<div>
+			<button tal:condition="PREV_PAGE" name="page_prev">«</button>
+			<var tal:replace="structure PAGINATION"></var>
+			<button tal:condition="NEXT_PAGE" name="page_next">»</button>
+		</div>
+	</td>
+</tr>
+</tbody></table>
+
+<table class="forum-topics">
+<thead>
+	<tr>
+		<th colspan="3" tal:content="merge_topics_title">merge_topics_title</th>
+		<th i18n:translate="">Replies</th>
+		<th i18n:translate="">Last_Post</th>
+	</tr>
+</thead><tbody tal:condition="merge_topics">
+	<tr tal:repeat="topic merge_topics">
+		<td><input type="radio" name="topic_selected" tal:attributes="value topic/id"/></td>
+		<td><img tal:attributes="src topic/image/src; alt topic/image/alt; title topic/image/alt"/></td>
+		<td><a tal:attributes="href topic/uri" tal:content="topic/title">topic/title</a></td>
+		<td tal:content="topic/replies">0</td>
+		<td><time tal:attributes="datetime topic/last_post_time" tal:content="php:here.L10N.timeReadable(time() - ${topic/last_post_time}, '%x ago')"></time></td>
+	</tr>
+</tbody><tbody tal:condition-else=""><tr>
+	<td colspan="0" i18n:translate="">No_search_match</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+	<td colspan="0">
+		<input type="hidden" tal:repeat="field MERGE_HIDDEN_FIELDS" tal:attributes="name field/name; value field/value"/>
+		<button tal:condition="merge_topics" i18n:translate="">Select</button>
+		<button name="cancel" i18n:translate="">Cancel</button>
+	</td>
+</tr>
+</tfoot>
+</table>
+</form>

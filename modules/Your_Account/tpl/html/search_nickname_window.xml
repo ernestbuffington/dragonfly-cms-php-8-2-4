@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title tal:content="CONFIG/global/sitename">CONFIG/global/sitename</title>
+	<link rel="stylesheet" tal:attributes="href '${THEME_PATH}/style/style.css'" type="text/css"/>
+	<script type="text/javascript">
+	function refresh_nickname(selected_nickname)
+	{
+		var f = opener.document.forms, i = f.length;
+		while (i--) {
+			if (f[i].username) {
+				f[i].username.value = selected_nickname;
+			}
+		}
+		opener.focus();
+		window.close();
+	}
+	</script>
+</head>
+<body class="main">
+<form method="post" name="searchform" action="">
+<h2 i18n:translate="">Find a nickname</h2>
+<div>
+	<input type="text" name="nickname" tal:attributes="value search_nickname"/>
+	<button name="search" i18n:translate="">Search</button>
+	<br />
+	<span i18n:translate="">Use * as a wildcard for partial matches</span>
+	<br />
+	<div tal:condition="found_users">
+		<br />
+		<select name="nickname_list" tal:condition="found_users">
+			<option tal:repeat="user found_users" tal:attributes="value user/username" tal:content="user/username">user/username</option>
+		</select>
+		<button type="button" onClick="refresh_nickname(this.form.nickname_list.options[this.form.nickname_list.selectedIndex].value);return false;" i18n:translate="">Select</button>
+		<br />
+	</div>
+	<div tal:condition-else="search_nickname" class="error">
+		No matches found.
+	</div>
+	<br />
+	<a href="javascript:window.close();" i18n:translate="">Close Window</a>
+</div>
+</form>
+</body></html>

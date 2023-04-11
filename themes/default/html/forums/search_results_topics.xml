@@ -1,0 +1,38 @@
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+
+<h1 tal:content="L_SEARCH_MATCHES">L_SEARCH_MATCHES</h1>
+
+<table class="border"><thead>
+	<tr>
+		<th style="width:1px"></th>
+		<th style="width:1px"></th>
+		<th style="white-space:nowrap;" i18n:translate="">Forum</th>
+		<th style="white-space:nowrap;" i18n:translate="">Topic</th>
+		<th style="white-space:nowrap;" i18n:translate="">Last_Post</th>
+	</tr>
+</thead><tbody>
+	<tr tal:repeat="topic searchresults">
+		<td style="text-align:center"><img tal:attributes="src topic/TOPIC_FOLDER_IMG; alt topic/L_TOPIC_FOLDER_ALT"/></td>
+		<td style="text-align:center" tal:content="structure topic/TOPIC_ICON">topic/TOPIC_ICON</td>
+		<td><a tal:attributes="href topic/U_VIEW_FORUM" tal:content="topic/FORUM_NAME">topic/FORUM_NAME</a></td>
+		<td>
+			<a tal:attributes="href topic/U_VIEW_TOPIC" tal:content="topic/TOPIC_TITLE">topic/TOPIC_TITLE</a>
+			<div tal:condition="topic/GOTO_PAGE" tal:content="structure topic/GOTO_PAGE">topic/GOTO_PAGE</div>
+		</td>
+		<td style="white-space:nowrap;"><a tal:attributes="href topic/U_LAST_POST" tal:content="topic/LAST_POST_TIME">topic/LAST_POST_TIME</a></td>
+	</tr>
+</tbody></table>
+
+<table><tbody>
+	<tr>
+		<td style="vertical-align:top" tal:content="structure PAGE_NUMBER">PAGE_NUMBER</td>
+		<td style="text-align:right;vertical-align:top;white-space:nowrap;">
+			<span tal:content="structure PAGINATION">PAGINATION</span><br />
+			<span tal:content="S_TIMEZONE">S_TIMEZONE</span>
+		</td>
+	</tr>
+</tbody></table>
+
+<div tal:replace="structure php:here.toString('forums/jumpbox')"></div>

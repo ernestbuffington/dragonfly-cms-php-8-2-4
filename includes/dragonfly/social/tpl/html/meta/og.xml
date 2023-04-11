@@ -1,0 +1,13 @@
+<meta property="og:title" tal:attributes="content og/title" />
+<meta property="og:type" tal:attributes="content og/type" />
+<meta property="og:image" tal:repeat="image og/images" tal:attributes="content image" />
+<meta property="og:url" tal:attributes="content og/url" />
+
+<meta property="og:description" tal:condition="og/description" tal:attributes="content og/description" />
+<meta property="og:determiner" tal:condition="og/determiner" tal:attributes="content og/determiner" />
+<meta property="og:locale" tal:condition="og/locale" tal:attributes="content og/locale" />
+<meta property="og:locale:alternate" tal:condition="og/locale_alternate" tal:repeat="alt og/locale_alternate" tal:attributes="content alt" />
+<meta property="og:site_name" tal:condition="og/site_name" tal:attributes="content og/site_name" />
+
+<meta property="og:audio" tal:condition="og/audio" tal:attributes="content og/audio" />
+<meta property="og:video" tal:condition="og/video" tal:attributes="content og/video" />

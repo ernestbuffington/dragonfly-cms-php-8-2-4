@@ -1,0 +1,26 @@
+<p style="text-align:center;" tal:condition="ecard/href_ecard"><a tal:attributes="href ecard/href_ecard" i18n:translate="VIEW_ECARD">If the e-card does not display correctly, click this link</a></p>
+
+<table cellpadding="1" style="margin:0;"><tbody>
+<tr>
+	<td bgcolor="#000000">
+		<table cellpadding="10" style="background:#FFFFFF;"><tbody>
+			<tr>
+				<td valign="top">
+					<img tal:attributes="src ecard/pic_url" border="1" alt=""/><br/>
+				</td>
+				<td valign="top" width="200" style="height:250px;">
+					<div style="text-align:right;"><img src="cdn://themes/default/images/coppermine/stamp.gif" alt=""/></div>
+					<br/>
+					<b tal:content="ecard/greetings">ecard/greetings</b>
+					<p tal:content="structure ecard/message">ecard/message</p>
+
+					<span tal:content="ecard/sender_name">ecard/sender_name</span>
+					(<span tal:content="ecard/sender_email">ecard/sender_email</span>)
+				</td>
+			</tr>
+		</tbody></table>
+	</td>
+</tr>
+</tbody></table>
+
+<p align="center"><a tal:attributes="href php:URL::index('',1,1)" i18n:translate="VIEW_MORE_PICS">Click this link to view more pictures !</a></p>

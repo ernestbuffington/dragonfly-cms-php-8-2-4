@@ -1,0 +1,35 @@
+<div class="border">
+	<a href="?admin&amp;op=News&amp;mode=add" i18n:translate="_ADDSTORY">Add Story</a> |
+	<strong i18n:translate="">_SUBMISSIONS</strong> |
+	<a href="?admin&amp;op=News&amp;file=categories" i18n:translate="">Categories</a> |
+	<a href="?admin&amp;op=News&amp;comments" i18n:translate="">Comments</a> |
+	<a href="?admin&amp;op=News&amp;file=config" i18n:translate="">Configuration</a>
+</div>
+
+<div class="border" tal:condition="news_submissions/count">
+	<table><thead>
+		<tr>
+			<th style="width:100%" i18n:translate="">_TITLE</th>
+			<th i18n:translate="">_LANGUAGE</th>
+			<th>Date</th>
+			<th style="min-width:4em"></th>
+		</tr>
+	</thead><tbody>
+	<tr tal:repeat="story news_submissions">
+		<td><a tal:attributes="href '?admin&amp;op=News&amp;file=submissions&amp;id=${story/qid}'" tal:content="php:${story/subject}?:_NOSUBJECT">story/subject</a></td>
+		<td tal:content="php:${story/alanguage}?:_ALL">all</td>
+		<td tal:content="php:here.L10N.date('Y-m-d',${story/timestamp})">0000-00-00</td>
+		<td style="text-align:right">
+			<a class="icon-edit" tal:attributes="href '?admin&amp;op=News&amp;file=submissions&amp;id=${story/qid}'" i18n:attributes="title '_EDIT'" i18n:translate="">_EDIT</a>
+			<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;file=submissions&amp;id=${story/qid}&amp;del'" i18n:attributes="title '_DELETE'" i18n:translate="">_DELETE</a>
+		</td>
+	</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="0" style="text-align:right"><a href="?admin&amp;op=News&amp;file=submissions&amp;del=all').'">_DELETE _ALL</a></td>
+		</tr>
+	</tfoot></table>
+</div>
+<div class="border" tal:condition-else="" tal:content="php:sprintf(_ERROR_NONE_TO_DISPLAY,strtolower(_NEWSUBMISSIONS))">
+	There are no new stories submissions to display
+</div>

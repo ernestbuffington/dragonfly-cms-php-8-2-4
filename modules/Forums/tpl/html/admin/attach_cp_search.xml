@@ -1,0 +1,95 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="Control_panel_title">File Attachment Control Panel</h1>
+
+	<p i18n:translate="Control_panel_explain">Here you can view and manage all attachments based on Users, Attachments, Views etc...</p>
+
+	<p>
+		<span i18n:translate="View">View</span>:
+		<a tal:attributes="href U_VIEW_STATS" i18n:translate="View_Statistic">Statistics</a>
+		| <a tal:attributes="href U_VIEW_SEARCH" i18n:translate="View_Search">Search</a>
+		| <a tal:attributes="href U_VIEW_USERNAME" i18n:translate="View_Username">Username</a>
+		| <a tal:attributes="href U_VIEW_ATTACHMENTS" i18n:translate="View_Attachments">Attachments</a>
+	</p>
+
+	<form method="post" action="">
+
+	<table><thead>
+		<tr>
+			<th colspan="2" i18n:translate="Attach_search_query"></th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td><div i18n:translate="File_name"></div><i i18n:translate="Search_wildcard_explain"></i></td>
+			<td><input type="text" name="search_keyword_fname"/></td>
+		</tr>
+		<tr>
+			<td><div i18n:translate="File_comment"></div><i i18n:translate="Search_wildcard_explain"></i></td>
+			<td><input type="text" name="search_keyword_comment"/></td>
+		</tr>
+		<tr>
+			<td><div i18n:translate="Search_author"></div><i i18n:translate="Search_wildcard_explain"></i></td>
+			<td><input type="text" name="search_author"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Size_greater_than"></td>
+			<td><input type="number" name="search_size_smaller" min="0"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Size_smaller_than"></td>
+			<td><input type="number" name="search_size_greater" min="1"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Count_smaller_than"></td>
+			<td><input type="number" name="search_count_smaller" min="1"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Count_greater_than"></td>
+			<td><input type="number" name="search_count_greater" min="0"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="More_days_old"></td>
+			<td><input type="number" name="search_days_greater" min="0"/></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="2" i18n:translate="Search_options"></th>
+		</tr>
+		<tr>
+			<td i18n:translate="Forum"></td>
+			<td><select name="search_forum">
+				<option value="-1" i18n:translate="All_available">All available</option>
+				<option tal:repeat="forum search_forums" tal:attributes="value forum/id" tal:content="forum/name"></option>
+			</select></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Category"></td>
+			<td><select name="search_cat">
+				<option value="-1" i18n:translate="All_available">All available</option>
+				<option tal:repeat="category search_categories" tal:attributes="value category/id" tal:content="category/title"></option>
+			</select></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Select_sort_method"></td>
+			<td><select name="mode">
+				<option tal:repeat="field attach_sort_fields" tal:attributes="value field/value; selected field/current" tal:content="field/label"></option>
+			</select></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Order"></td>
+			<td><select name="order">
+				<option value="ASC" i18n:translate="">Ascending</option>
+				<option value="DESC" tal:attributes="selected attach_sort_desc" i18n:translate="">Descending</option>
+			</select></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="2">
+				<button name="search" i18n:translate="">Search</button>
+			</td>
+		</tr>
+	</tfoot></table>
+
+	</form>
+</div>

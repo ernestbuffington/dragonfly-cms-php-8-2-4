@@ -1,0 +1,57 @@
+
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<h1><a tal:attributes="href php:URL::index()" tal:content="L_INDEX">{L_INDEX}</a> :: <var i18n:translate="">Archives</var></h1>
+
+<table class="forum-forums">
+	<thead>
+	<tr>
+		<th colspan="2"><var i18n:translate="">Forum</var> <var i18n:translate="">Archives</var></th>
+		<th i18n:translate="">Topics</th>
+		<th i18n:translate="">Posts</th>
+	</tr>
+	</thead>
+	<tbody tal:repeat="category categories">
+		<tr>
+			<th colspan="4" tal:content="category/title">category/title</th>
+<!--			<th colspan="5"><a tal:attributes="href category/u_view" tal:content="category/title">category/title</a></th> -->
+		</tr>
+		<tr tal:repeat="forum category/forums">
+			<td class="c" style="width:50px"><img tal:attributes="src forum/folder_image; alt forum/folder_alt"/></td>
+			<td tal:condition="forum/IS_LINK" colspan="4">
+				<a tal:attributes="href forum/U_VIEWFORUM" tal:content="forum/forum_name">forum/forum_name</a><br/>
+				<small tal:content="structure forum/forum_desc">forum/forum_desc</small>
+			</td>
+			<td tal:condition-else="">
+				<a tal:attributes="href forum/U_VIEWARCHIVE" tal:content="forum/forum_name">forum/forum_name</a>
+				<div style="font-size:smaller">
+					<div tal:content="structure forum/forum_desc">forum/forum_desc</div>
+					<div tal:condition="forum/SUB_FORUMS"><b tal:content="forum/subforums_lang">forum/subforums_lang</b>: <span tal:replace="structure forum/subforums_list">forum/subforums_list</span></div>
+					<div tal:condition="forum/moderator_list"><b tal:content="forum/l_moderators">forum/l_moderators</b>: <span tal:replace="structure forum/moderator_list">forum/moderator_list</span></div>
+				</div>
+			</td>
+			<td tal:condition="not:forum/IS_LINK" class="c" tal:content="forum/archive_topics">forum/archive_topics}</td>
+			<td tal:condition="not:forum/IS_LINK" class="c" tal:content="forum/archive_posts">forum/archive_posts}</td>
+		</tr>
+	</tbody>
+	<tbody tal:condition="not:categories">
+		<tr>
+			<td colspan="4" class="c" i18n:translate="No_forums">This board has no forums</td>
+		</tr>
+	</tbody>
+</table>
+
+<details>
+	<summary i18n:translate="_TB_INFO">Information</summary>
+	<table><tbody><tr>
+		<td><img tal:attributes="src board_images/forum" alt="No new posts" title="No new posts" style="vertical-align:middle;" i18n:attributes="alt 'No_new_posts'; title 'No_new_posts'"/>
+			<span tal:omit-tag="" i18n:translate="No_new_posts">No new posts</span></td>
+		<td><img tal:attributes="src board_images/forum_locked" alt="Forum is locked" title="Forum is locked" style="vertical-align:middle;" i18n:attributes="alt 'Forum_is_locked'; title 'Forum_is_locked'"/>
+			<span tal:omit-tag="" i18n:translate="Forum_is_locked">Forum is locked</span></td>
+	</tr><tr>
+		<td><img tal:attributes="src board_images/forum_sub" alt="Subforum no new posts" title="Subforum no new posts" style="vertical-align:middle;" i18n:attributes="alt 'No_new_sub_posts'; title 'No_new_sub_posts'"/>
+			<span tal:omit-tag="" i18n:translate="No_new_sub_posts">Subforum no new posts</span></td>
+		<td><img tal:attributes="src board_images/forum_locked_sub" alt="Subforum is locked" title="Subforum is locked" style="vertical-align:middle;" i18n:attributes="alt 'Subforum_is_locked'; title 'Subforum_is_locked'"/>
+			<span tal:omit-tag="" i18n:translate="Subforum_is_locked">Subforum is locked</span></td>
+	</tr></tbody></table>
+</details>

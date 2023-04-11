@@ -1,0 +1,22 @@
+
+<form tal:attributes="action php:URL::index('Surveys')" method="post">
+	<input type="hidden" name="pollid" value="story_poll/id"/>
+	<input type="hidden" name="forwarder" tal:attributes="value php:URL::index('Surveys&amp;pollid=${story_poll/id}&amp;op=results')"/>
+	<b tal:content="story_poll/title">story_poll/title</b>
+	<p>
+		<label tal:repeat="o story_poll/options">
+			<input type="radio" name="vote_id" tal:attributes="value o/id"/>
+			<span tal:replace="o/text">option</span>
+		</label>
+	</p>
+	<div style="text-align:center;">
+		<button type="submit" i18n:translate="_VOTE">Vote</button>
+		<p><b>
+			<a tal:attributes="href php:URL::index('Surveys&amp;pollid=${story_poll/id}&amp;op=results')" i18n:translate="_RESULTS">Results</a>
+			::
+			<a tal:attributes="href php:URL::index('Surveys')" i18n:translate="_POLLS">Polls</a>
+		</b></p>
+		<b tal:content="php:here.L10N.plural(${story_poll/votes}, '%d votes')">0 votes</b>
+		<div tal:condition="story_poll/comments" tal:content="php:here.L10N.plural(${story_poll/comments}, '%d comments')">0 comments</div>
+	</div>
+</form>

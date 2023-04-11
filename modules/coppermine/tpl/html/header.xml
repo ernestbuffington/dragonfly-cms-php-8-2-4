@@ -1,0 +1,20 @@
+
+<div class="border topmenu">
+<!--
+	<a href="'.URL::index("&cat=$my_gallery_id").'" title="'.MY_GAL_TITLE.'">'.MY_GAL_LNK.'</a>
+	<a href="'.URL::index("&file=upload").'" title="'.UPLOAD_PIC_TITLE.'">'.UPLOAD_PIC_LNK.'</a>
+-->
+	<a tal:attributes="href php:URL::index('&amp;file=thumbnails${gallery/meta_lnk}&amp;meta=lastup')" i18n:translate="">LASTUP_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=thumbnails${gallery/meta_lnk}&amp;meta=lastcom')" i18n:translate="">LASTCOM_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=thumbnails${gallery/meta_lnk}&amp;meta=topn')" i18n:translate="">TOPN_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=thumbnails${gallery/meta_lnk}&amp;meta=toprated')" i18n:translate="">TOPRATED_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=thumbnails&amp;meta=favpics')" i18n:translate="">FAV_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=search')" i18n:translate="">SEARCH_LNK</a>
+	<a tal:attributes="href php:URL::index('&amp;file=help')" class="helplink"><img src="images/icons/16x16/info.png" i18n:attributes="alt 'HELP_TITLE'"/></a>
+</div>
+<div tal:condition="coppermine_breadcrumbs" class="border">
+	<span tal:omit-tag="" tal:repeat="crumb coppermine_breadcrumbs">
+		<var tal:condition="repeat/crumb/index" tal:replace="php:_BC_DELIM"/> <a tal:omit-tag="not:crumb/href" tal:attributes="href crumb/href" tal:content="crumb/title">crumb/title</a>
+	</span>
+</div>
+<div tal:replace="structure '&lt;div class=&quot;border&quot;&gt;'"></div>

@@ -1,0 +1,1 @@
+CHMOD this directory to 700 (if fails, try 755 else 777) to activate forum attachments

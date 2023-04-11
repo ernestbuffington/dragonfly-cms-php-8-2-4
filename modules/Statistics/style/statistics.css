@@ -1,0 +1,213 @@
+.statistics caption {
+	padding:15px;
+	font-size: 9pt
+}
+.statistics td:first-child, .statistics td:last-child {
+	width:33%
+}
+
+.statistics th {
+	text-align:center
+}
+.statistics td {
+	vertical-align:top
+}
+.statistics i {
+	width: 20px;
+	height: 18px;
+	margin: 0;
+	display: inline-block;
+	background-image: url("./modules/Statistics/sprite.png");
+	background-repeat: no-repeat;
+	vertical-align:bottom;
+}
+.statistics meter {
+	width:200px
+}
+.stats-other, .stats-elinks, .stats-devontech {
+	background-position: 0px -60px;
+}
+/* misc */
+.misc-articles {
+	background-position: 0px -80px;
+}
+.misc-authors {
+	background-position: -20px -80px;
+}
+.misc-comments {
+	background-position: -40px -80px;
+}
+.misc-news {
+	background-position: -60px -80px;
+}
+.misc-sections {
+	background-position: -80px -80px;
+}
+.misc-topics {
+	background-position: -100px -80px;
+}
+.misc-users {
+	background-position: -120px -80px;
+}
+.misc-waiting {
+	background-position: -140px -80px;
+}
+
+/* os */
+.stats-aix {
+	background-position: 0px -40px;
+}
+.stats-amiga {
+	background-position: -20px -40px;
+}
+.stats-beos {
+	background-position: -40px -40px;
+}
+.stats-darwin {
+	background-position: -60px -40px;
+}
+.stats-freebsd {
+	background-position: -80px -40px;
+}
+.stats-irix {
+	background-position: -100px -40px;
+}
+.stats-linux {
+	background-position: -120px -40px;
+}
+.stats-mac {
+	background-position: -140px -40px;
+}
+.stats-morphos {
+	background-position: -160px -40px;
+}
+.stats-netbsd {
+	background-position: -180px -40px;
+}
+.stats-openbsd {
+	background-position: -200px -40px;
+}
+.stats-os2 {
+	background-position: -220px -40px;
+}
+.stats-sunos {
+	background-position: -240px -40px;
+}
+.stats-windows {
+	background-position: -260px -40px;
+}
+.stats-android {
+	background-position: -280px -40px;
+}
+
+/* browsers */
+.stats-avant {
+	background-position: 0px -20px;
+}
+.stats-bot {
+	background-position: -20px -20px;
+}
+.stats-camino {
+	background-position: -40px -20px;
+}
+.stats-crazy {
+	background-position: -60px -20px;
+}
+.stats-dillo {
+	background-position: -80px -20px;
+}
+.stats-bot {
+	background-position: -20px -20px;
+}
+.stats-epiphany {
+	background-position: -120px -20px;
+}
+.stats-firefox {
+	background-position: -140px -20px;
+}
+.stats-galeon {
+	background-position: -160px -20px;
+}
+.stats-ibrowse {
+	background-position: -180px -20px;
+}
+.stats-irider {
+	background-position: -200px -20px;
+}
+.stats-k-meleon {
+	background-position: -220px -20px;
+}
+.stats-konqueror {
+	background-position: -240px -20px;
+}
+.stats-linspire {
+	background-position: -260px -20px;
+}
+.stats-lynx {
+	background-position: -280px -20px;
+}
+.stats-maxthon {
+	background-position: -300px -20px;
+}
+.stats-mozilla {
+	background-position: -320px -20px;
+}
+.stats-msie {
+	background-position: -340px -20px;
+}
+.stats-chrome {
+	background-position: -360px -20px;
+}
+.stats-netcaptor {
+	background-position: -20px -60px;
+}
+.stats-netscape {
+	background-position: -40px -60px;
+}
+.stats-omniweb {
+	background-position: -60px -60px;
+}
+.stats-opera {
+	background-position: -80px -60px;
+}
+.stats-multizilla {
+	background-position: -100px -60px;
+}
+.stats-playstation {
+	background-position: -120px -60px;
+}
+.stats-safari {
+	background-position: -140px -60px;
+}
+.stats-seamonkey {
+	background-position: -160px -60px;
+}
+.stats-shiira {
+	background-position: -180px -60px;
+}
+.stats-sputnik {
+	background-position: -200px -60px;
+}
+.stats-voyager {
+	background-position: -220px -60px;
+}
+.stats-w3m {
+	background-position: -240px -60px;
+}
+.stats-wap {
+	background-position: -260px -60px;
+}
+.stats-webwasher {
+	background-position: -280px -60px;
+}
+/* bots */
+.stats-google, .stats-googlebot, .stats-googlebot-mobile  {
+	background-position: -20px 0px;
+}
+.stats-yahoo {
+	background-position: -40px 0px;
+}
+.stats-bing, .stats-bingbot, .stats-bingpreview, .stats-msnbot, .stats-msnbot-media  {
+	background-position: -60px 0px;
+}
+

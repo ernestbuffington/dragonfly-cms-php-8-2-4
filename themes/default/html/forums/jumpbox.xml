@@ -1,0 +1,8 @@
+
+<form tal:condition="S_JUMPBOX_SELECT" method="post" tal:attributes="action S_JUMPBOX_ACTION" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+	<div style="white-space:nowrap; text-align:right;">
+		<span tal:omit-tag="" i18n:translate="">Jump_to</span>:
+		<select tal:replace="structure S_JUMPBOX_SELECT"></select>
+		<button i18n:translate="">Go</button>
+	</div>
+</form>

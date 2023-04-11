@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="poll_check">
+		<col name="poll_id" type="INT"/>
+		<col name="user_id" type="INT"/>
+		<col name="time" type="INT"/>
+		<col name="ip" type="VARBINARY" length="46" nullable="true"/>
+	</table>
+
+	<table name="poll_data">
+		<col name="poll_id" type="INT"/>
+		<col name="vote_id" type="INT"/>
+		<col name="option_text" type="VARCHAR" length="150"/>
+		<col name="option_count" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="poll_id"/>
+			<col name="vote_id"/>
+		</key>
+	</table>
+
+	<table name="poll_desc">
+		<col name="poll_id" type="SERIAL"/>
+		<col name="poll_title" type="VARCHAR" length="150" default=""/>
+		<col name="poll_ptime" type="INT" default="0"/>
+		<col name="time_stamp" type="INT" default="0"/>
+		<col name="voters" type="INT" default="0"/>
+		<col name="planguage" type="VARCHAR" length="6" default=""/>
+		<col name="artid" type="INT" default="0"/>
+		<col name="comments" type="TINYINT" default="0" comment="allowed or not"/>
+		<col name="anonymous" type="TINYINT" default="0" comment="allowed or not"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="poll_id"/>
+		</key>
+		<key name="poll_ptime">
+			<col name="poll_ptime"/>
+		</key>
+	</table>
+
+	<table name="pollcomments">
+		<col name="tid" type="SERIAL"/>
+		<col name="pid" type="INT" default="0" comment="parent id"/>
+		<col name="poll_id" type="INT" default="0"/>
+		<col name="date" type="INT" default="0"/>
+		<col name="remote_ip" type="VARCHAR" length="46"/>
+		<col name="comment" type="TEXT"/>
+		<col name="score" type="TINYINT" default="0"/>
+		<col name="user_id" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="tid"/>
+		</key>
+		<key name="pid">
+			<col name="pid"/>
+		</key>
+		<key name="poll_id">
+			<col name="poll_id"/>
+		</key>
+	</table>
+
+	<table name="pollcomments_scores">
+		<col name="comment_id" type="INT"/>
+		<col name="identity_id" type="INT"/>
+		<col name="comment_score" type="TINYINT"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="comment_id"/>
+			<col name="identity_id"/>
+		</key>
+	</table>
+
+</database>

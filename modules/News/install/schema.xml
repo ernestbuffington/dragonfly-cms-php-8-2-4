@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="comments">
+		<col name="tid" type="SERIAL"/>
+		<col name="pid" type="INT" default="0"/>
+		<col name="sid" type="INT" default="0"/>
+		<col name="date" type="INT" default="0"/>
+		<col name="remote_ip" type="VARCHAR" length="46"/>
+		<col name="comment" type="TEXT"/>
+		<col name="score" type="TINYINT" default="0"/>
+		<col name="user_id" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="tid"/>
+		</key>
+		<key name="pid">
+			<col name="pid"/>
+		</key>
+		<key name="sid">
+			<col name="sid"/>
+		</key>
+	</table>
+
+	<table name="comments_scores">
+		<col name="comment_id" type="INT"/>
+		<col name="identity_id" type="INT"/>
+		<col name="comment_score" type="TINYINT"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="comment_id"/>
+			<col name="identity_id"/>
+		</key>
+	</table>
+
+	<table name="queue">
+		<col name="qid" type="SERIAL"/>
+		<col name="uid" type="INT" default="0"/>
+		<col name="uname" type="VARCHAR" length="40" default=""/>
+		<col name="subject" type="VARCHAR" length="100" default=""/>
+		<col name="story" type="TEXT" nullable="true"/>
+		<col name="storyext" type="TEXT"/>
+		<col name="timestamp" type="INT" default="1133334197"/>
+		<col name="topic" type="TINYINT" default="0"/>
+		<col name="alanguage" type="VARCHAR" length="6" default=""/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="qid"/>
+		</key>
+		<key name="uid">
+			<col name="uid"/>
+		</key>
+		<key name="uname">
+			<col name="uname"/>
+		</key>
+		<key name="i_alanguage">
+			<col name="alanguage"/>
+		</key>
+	</table>
+
+	<table name="related">
+		<col name="rid" type="SERIAL"/>
+		<col name="tid" type="INT" default="0"/>
+		<col name="name" type="VARCHAR" length="30" default=""/>
+		<col name="url" type="VARCHAR" length="200" default=""/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="rid"/>
+		</key>
+		<key name="tid">
+			<col name="tid"/>
+		</key>
+	</table>
+
+	<table name="stories">
+		<col name="sid" type="SERIAL"/>
+		<col name="catid" type="INT" default="0"/>
+		<col name="identity_id" type="INT" default="0"/>
+		<col name="aid" type="VARCHAR" length="30" default=""/>
+		<col name="title" type="VARCHAR" length="80" default=""/>
+		<col name="ptime" type="INT" default="0" comment="Publish time" oldname="time"/>
+		<col name="hometext" type="TEXT" nullable="true"/>
+		<col name="bodytext" type="TEXT" nullable="true"/>
+		<col name="comments" type="INT" default="0"/>
+		<col name="counter" type="INT" default="0"/>
+		<col name="topic" type="TINYINT" default="1"/>
+		<col name="informant" type="VARCHAR" length="40" default=""/>
+		<col name="notes" type="TEXT" nullable="true"/>
+		<col name="ihome" type="TINYINT" default="0"/>
+		<col name="alanguage" type="VARCHAR" length="6" default=""/>
+		<col name="acomm" type="TINYINT" default="0"/>
+		<col name="poll_id" type="INT" default="0"/>
+		<col name="score" type="INT" default="0"/>
+		<col name="ratings" type="INT" default="0"/>
+		<col name="associated" type="TEXT" nullable="true"/>
+		<col name="display_order" type="TINYINT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="sid"/>
+		</key>
+		<key name="catid">
+			<col name="catid"/>
+		</key>
+		<key name="counter">
+			<col name="counter"/>
+		</key>
+		<key name="topic">
+			<col name="topic"/>
+		</key>
+		<key name="ihome">
+			<col name="ihome"/>
+		</key>
+		<key name="i_alanguage">
+			<col name="alanguage"/>
+		</key>
+	</table>
+
+	<table name="stories_cat">
+		<col name="catid" type="SERIAL"/>
+		<col name="title" type="VARCHAR" length="20" default=""/>
+		<col name="counter" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="catid"/>
+		</key>
+	</table>
+
+	<table name="topics">
+		<col name="topicid" type="SERIAL"/>
+		<col name="topicimage" type="VARCHAR" length="20" default="" nullable="true"/>
+		<col name="topictext" type="VARCHAR" length="40" default="" nullable="true"/>
+		<col name="counter" type="INT" default="0"/>
+		<key name="PRIMARY" type="PRIMARY">
+			<col name="topicid"/>
+		</key>
+	</table>
+
+</database>

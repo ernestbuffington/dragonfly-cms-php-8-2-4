@@ -1,0 +1,141 @@
+
+<div class="border" tal:condition="active_banners/count">
+	<table>
+	<caption i18n:translate="_ACTIVEBANNERS2">Active Banners</caption>
+	<thead>
+		<tr>
+			<th i18n:translate="_IMAGE">Image</th>
+			<th i18n:translate="_IMPRESSIONS">Impressions</th>
+			<th i18n:translate="_IMPLEFT">Imp. Left</th>
+			<th i18n:translate="_CLICKS">Clicks</th>
+			<th i18n:translate="_CLICKSPERCENT">% Clicks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr tal:repeat="banner active_banners">
+			<td>
+				<a tal:condition="banner/textban" tal:attributes="href banner/clickurl" tal:content="banner/text_title">banner/text_title</a>
+				<a tal:condition="not:banner/textban" tal:attributes="href banner/clickurl"><img tal:attributes="src banner/imageurl" alt=""/></a>
+			</td>
+			<td><span tal:content="banner/impmade">0</span></td>
+			<td>
+				<span tal:condition="not:banner/imptotal" i18n:translate="_UNLIMITED">Unlimited</span>
+				<span tal:condition="banner/imptotal" tal:content="php:${banner/imptotal}-${banner/impmade}">0</span>
+			</td>
+			<td tal:content="banner/clicks">0</td>
+			<td>
+				<span tal:condition="not:banner/impmade">0</span>
+				<span tal:condition="banner/impmade" tal:content="php:substr(100 * ${banner/clicks} / ${banner/impmade}, 0, 5)">0</span>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<br/>
+</div>
+
+<div class="border" tal:condition="inactive_banners/count">
+	<table>
+	<caption i18n:translate="_INACTIVEBANNERS">Inactive Banners</caption>
+	<thead>
+		<tr>
+			<th i18n:translate="_IMAGE">Image</th>
+			<th i18n:translate="_IMPRESSIONS">Impressions</th>
+			<th i18n:translate="_IMPLEFT">Imp. Left</th>
+			<th i18n:translate="_CLICKS">Clicks</th>
+			<th i18n:translate="_CLICKSPERCENT">% Clicks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr tal:repeat="banner inactive_banners">
+			<td>
+				<a tal:condition="banner/textban" tal:attributes="href banner/clickurl" tal:content="banner/text_title">banner/text_title</a>
+				<a tal:condition="not:banner/textban" tal:attributes="href banner/clickurl"><img tal:attributes="src banner/imageurl" alt=""/></a>
+			</td>
+			<td><span tal:content="banner/impmade">0</span></td>
+			<td>
+				<span tal:condition="not:banner/imptotal" i18n:translate="_UNLIMITED">Unlimited</span>
+				<span tal:condition="banner/imptotal" tal:content="php:${banner/imptotal}-${banner/impmade}">0</span>
+			</td>
+			<td tal:content="banner/clicks">0</td>
+			<td>
+				<span tal:condition="not:banner/impmade">0</span>
+				<span tal:condition="banner/impmade" tal:content="php:substr(100 * ${banner/clicks} / ${banner/impmade}, 0, 5)">0</span>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<br/>
+</div>
+
+<div class="border" tal:condition="not:php:${active_banners/count}+${inactive_banners/count}">
+	<span i18n:translate="_NO_BANNERS">There are no banners yet for</span>
+	<span tal:content="IDENTITY/nickname">IDENTITY/nickname</span>
+</div>
+
+<form action="" method="post">
+<fieldset>
+	<legend><strong i18n:translate="_ADDNEWBANNER">Add a New Banner</strong></legend>
+
+	<label for="type" i18n:translate="_TYPE">Type</label>
+	<select name="type">
+		<option value="0" i18n:translate="_NORMAL">Normal</option>
+		<option value="1" i18n:translate="_BLOCK">Block</option>
+	</select>
+	<select name="textban">
+		<option value="0" i18n:translate="_IMAGE_BANNER">Image Banner</option>
+		<option value="1" i18n:translate="_TEXT_BANNER">Text Banner</option>
+	</select>
+
+	<br/><br/>
+
+	<fieldset>
+		<legend><strong i18n:translate="_IMAGE_BANNER">Image Banner</strong></legend>
+		<table><tbody>
+		<tr>
+			<td style="width:20em" i18n:translate="_IMAGEURL">Image URL</td>
+			<td><input type="url" name="imageurl" size="50" maxlength="255"/></td>
+		</tr><tr>
+			<td i18n:translate="_ALTERNATETEXT">Alternate Text</td>
+			<td><input type="text" name="alttext" size="50" maxlength="255"/></td>
+		</tr>
+		</tbody></table>
+	</fieldset>
+
+	<br/>
+
+	<fieldset>
+		<legend><strong i18n:translate="_TEXT_BANNER">Text Banner</strong></legend>
+		<table><tbody>
+		<tr>
+			<td style="width:20em" i18n:translate="_TEXT_TITLE">Banner Text</td>
+			<td><textarea name="text_title" rows="2" cols="44" maxlength="144"></textarea></td>
+		</tr><tr>
+			<td i18n:translate="_TEXT_WIDTH">Text Box Width</td>
+			<td><input type="number" min="16" name="text_width" size="7" maxlength="3"/></td>
+		</tr><tr>
+			<td i18n:translate="_TEXT_HGT">Text Box Height</td>
+			<td><input type="number" min="16" name="text_height" size="7" maxlength="3"/></td>
+		</tr><tr>
+			<td i18n:translate="_TEXT_COLOR">Text Color</td>
+			<td><input type="color" name="text_clr" size="7" maxlength="6"/></td>
+		</tr><tr>
+			<td i18n:translate="_TEXT_BACKGROUND">Background of Banner</td>
+			<td><input type="color" name="text_bg" size="7" maxlength="6"/></td>
+		</tr>
+		</tbody></table>
+	</fieldset>
+
+	<br/>
+
+	<table><tbody>
+	<tr>
+		<td style="width:20em" i18n:translate="_CLICKURL">Click URL</td>
+		<td><input type="url" name="clickurl" size="50" maxlength="255" required=""/></td>
+	</tr><tr>
+		<td i18n:translate="_IMPRESSIONS_WANTED">Impressions You Want to purchase</td>
+		<td><input type="number" min="0" value="0" name="imptotal" size="10" maxlength="12"/></td>
+	</tr>
+	</tbody></table>
+	<button name="add_banner" i18n:translate="_SUBMIT">Submit</button>
+</fieldset>
+</form>

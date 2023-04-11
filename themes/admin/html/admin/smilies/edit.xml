@@ -1,0 +1,30 @@
+
+<div class="border">
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th colspan="2">Smiley Configuration</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td>Smiley Code</td>
+			<td><input type="text" name="smile_code" tal:attributes="value smiley/code"/></td>
+		</tr>
+		<tr>
+			<td>Smiley Image File</td>
+			<td><select name="smile_url">
+					<option tal:repeat="image smiley_images" tal:attributes="value image; selected php:${image}==${smiley/smile_url}" tal:content="image"></option>
+				</select>
+				<img id="smiley_image" alt="" tal:attributes="src '${smilies_path}${smiley/smile_url}'"/>
+			</td>
+		</tr>
+		<tr>
+			<td>Smiley Emotion</td>
+			<td><input type="text" name="smile_emotion" tal:attributes="value smiley/emoticon"/></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="2"><button i18n:translate="_SAVECHANGES">Save Changes</button></td>
+		</tr>
+	</tfoot></table></form>
+</div>

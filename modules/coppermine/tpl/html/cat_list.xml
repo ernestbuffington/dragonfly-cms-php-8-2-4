@@ -1,0 +1,22 @@
+<table class="flat" tal:condition="gallery_categories"><thead>
+	<tr>
+		<th style="width:80%" i18n:translate="">CATEGORY</th>
+		<th style="width:10%" i18n:translate="">ALBUMS</th>
+		<th style="width:10%" i18n:translate="">PICTURES</th>
+	</tr>
+</thead>
+<tbody tal:repeat="category gallery_categories">
+	<tr>
+		<td><a tal:attributes="href category/link"><b tal:content="category/name">category/name</b></a>
+			<div tal:content="bbcode category/description">{CAT_DESC}</div></td>
+		<td tal:content="structure category/album_count">{ALB_COUNT}</td>
+		<td tal:content="structure category/pic_count">{PIC_COUNT}</td>
+	</tr>
+	<tr tal:condition="category/albums">
+		<td colspan="3" tal:content="structure category/albums" style="padding-left:2em">{CAT_ALBUMS}</td>
+	</tr>
+</tbody><tfoot>
+	<tr>
+		<td colspan="3" tal:content="structure gallery_statistics">{STATISTICS}</td>
+	</tr>
+</tfoot></table>

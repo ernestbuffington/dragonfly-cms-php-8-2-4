@@ -1,0 +1,43 @@
+
+<form action="" method="post">
+<table>
+<tbody>
+	<tr>
+		<td colspan="2">These fields are not able to be modified by the users. Here you can set their status and other options that are not given to users.</td>
+	</tr><tr>
+		<td>Can send Private Messages</td>
+		<td>
+			<input type="radio" name="user_allow_pm" value="1" tal:attributes="checked userinfo/user_allow_pm"/> <span i18n:translate="_YES">Yes</span>
+			<input type="radio" name="user_allow_pm" value="0" tal:attributes="checked not:userinfo/user_allow_pm"/> <span i18n:translate="_NO">No</span>
+		</td>
+	</tr><tr>
+		<td>Can display avatar</td>
+		<td>
+			<input type="radio" name="user_allowavatar" value="1" tal:attributes="checked userinfo/user_allowavatar"/> <span i18n:translate="_YES">Yes</span>
+			<input type="radio" name="user_allowavatar" value="0" tal:attributes="checked not:userinfo/user_allowavatar"/> <span i18n:translate="_NO">No</span>
+		</td>
+	</tr><tr>
+		<td>Rank Title</td>
+		<td><select name="user_rank">
+			<option tal:repeat="rank ranks" tal:attributes="value rank/value; selected rank/current" tal:content="rank/title">rank title</option>
+		</select></td>
+	</tr><tr>
+		<td i18n:translate="_SUSPENDUSER">Suspend User</td>
+		<td>
+			<label><input type="radio" name="user_suspend" value="1" tal:attributes="checked not:userinfo/user_level"/> <span i18n:translate="_YES">Yes</span></label>
+			<label><input type="radio" name="user_suspend" value="0" tal:attributes="checked userinfo/user_level"/> <span i18n:translate="_NO">No</span></label>
+		</td>
+	</tr><tr>
+		<td i18n:translate="_SUSPENDREASON">Reason for Suspension</td>
+		<td><textarea name="suspendreason" rows="5" cols="40" wrap="virtual" tal:content="userinfo/susdel_reason"></textarea></td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td colspan="2" style="text-align:center">
+			<button type="submit" i18n:translate="_SAVECHANGES">Save Changes</button>
+			<button type="reset" i18n:translate="_RESET">Reset</button>
+		</td>
+	</tr>
+</tfoot>
+</table></form>

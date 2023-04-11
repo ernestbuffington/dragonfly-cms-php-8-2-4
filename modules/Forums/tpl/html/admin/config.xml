@@ -1,0 +1,199 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="General_Config">General Configuration</h1>
+
+	<p i18n:translate="Config_explain">The form below will allow you to customize all the general board options. For User and Forum configurations use the related links on the left hand side.</p>
+
+	<form action="" method="post">
+	<table>
+	<tbody>
+		<tr>
+			<th colspan="3" i18n:translate="General_settings">General Board Settings</th>
+		</tr>
+		<tr>
+			<td i18n:translate="Flood_Interval">Flood Interval</td>
+			<td><input type="number" min="1" size="3" maxlength="4" name="flood_interval" tal:attributes="value forum_cfg/flood_interval"/></td>
+			<td><i class="infobox"><span i18n:translate="Flood_Interval_explain">Number of seconds a user must wait between posts</span></i></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Topics_per_page">Topics Per Page</td>
+			<td><input type="number" min="1" name="topics_per_page" size="3" maxlength="4" tal:attributes="value forum_cfg/topics_per_page"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Posts_per_page">Posts Per Page</td>
+			<td><input type="number" min="1" name="posts_per_page" size="3" maxlength="4" tal:attributes="value forum_cfg/posts_per_page"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Hot_threshold">Posts for Popular Threshold</td>
+			<td><input type="number" min="1" name="hot_threshold" size="3" maxlength="4" tal:attributes="value forum_cfg/hot_threshold"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Date_format">Date Format</td>
+			<td><input type="text" name="default_dateformat" tal:attributes="value forum_cfg/default_dateformat"/></td>
+			<td><i class="infobox"><span tal:content="structure php:here.L10N['Date_format_explain']">The syntax used is identical to the PHP <a href="http://php.net/date">date()</a> function.</span></i></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Enable_archive">Enable Forum Archiving</td>
+			<td><input type="radio" name="archive_enable" value="1" tal:attributes="checked forum_cfg/archive_enable"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="archive_enable" value="0" tal:attributes="checked not:forum_cfg/archive_enable"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Enable_prune">Enable Forum Pruning</td>
+			<td><input type="radio" name="prune_enable" value="1" tal:attributes="checked forum_cfg/prune_enable"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="prune_enable" value="0" tal:attributes="checked not:forum_cfg/prune_enable"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Recycle_allow">Allow Topic/Post Recycling</td>
+			<td><input type="radio" name="allow_topic_recycle" value="1" tal:attributes="checked forum_cfg/allow_topic_recycle"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_topic_recycle" value="0" tal:attributes="checked not:forum_cfg/allow_topic_recycle"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Recycle_forum">Select a forum for recycled topics/posts (beware the permissions you set)</td>
+			<td><select name="topic_recycle_forum">
+				<option value="0" i18n:translate="Select_forum">Select a forum</option>
+				<option tal:repeat="forum recycle_forums" tal:attributes="selected forum/current; value forum/id" tal:content="forum/name"></option>
+			</select></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Restricted_group">Restricted Group</td>
+			<td><select name="restricted_group" tal:define="restricted_group forum_cfg/restricted_group">
+				<option value="0">[none]</option>
+				<option tal:repeat="group php:Dragonfly\Groups::getAll()" tal:attributes="value group/id; selected php:${restricted_group} == ${group/id}" tal:content="group/label">No Group</option>
+			</select></td>
+			<td><i class="infobox"><span i18n:translate="Restricted_group_explain">The chosen group loses privileges in all forums where authorization levels are set to REG.</span></i></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="3" i18n:translate="Abilities_settings"></th>
+		</tr>
+		<tr>
+			<td i18n:translate="">Hide new users from public view</td>
+			<td><input type="number" min="0" name="user_reg_date_age" size="2" maxlength="2" tal:attributes="value forum_cfg/user_reg_date_age"/> days</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Max_poll_options">Max number of poll options</td>
+			<td><input type="number" min="1" name="max_poll_options" size="4" maxlength="4" tal:attributes="value forum_cfg/max_poll_options"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_HTML">Allow HTML</td>
+			<td><input type="radio" name="allow_html" value="1" tal:attributes="checked forum_cfg/allow_html"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_html" value="0" tal:attributes="checked not:forum_cfg/allow_html"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allowed_tags">Allowed HTML tags</td>
+			<td><input type="text" size="30" maxlength="255" name="allow_html_tags" tal:attributes="value forum_cfg/allow_html_tags" pattern="[a-z][,a-z0-6]+"/></td>
+			<td><i class="infobox"><span i18n:translate="Allowed_tags_explain">Separate tags with commas</span></i></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_BBCode">Allow BBCode</td>
+			<td><input type="radio" name="allow_bbcode" value="1" tal:attributes="checked forum_cfg/allow_bbcode"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_bbcode" value="0" tal:attributes="checked not:forum_cfg/allow_bbcode"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_smilies">Allow Smilies</td>
+			<td><input type="radio" name="allow_smilies" value="1" tal:attributes="checked forum_cfg/allow_smilies"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_smilies" value="0" tal:attributes="checked not:forum_cfg/allow_smilies"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_sig">Allow Signatures</td>
+			<td><input type="radio" name="allow_sig" value="1" tal:attributes="checked forum_cfg/allow_sig"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_sig" value="0" tal:attributes="checked not:forum_cfg/allow_sig"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_forum_watch">Allow Forum Watch</td>
+			<td><input type="radio" name="allow_forum_watch" value="1" tal:attributes="checked forum_cfg/allow_forum_watch"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_forum_watch" value="0" tal:attributes="checked not:forum_cfg/allow_forum_watch"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Edit_last_post_only">Restrict user edits, when allowed, to the last post.</td>
+			<td><input type="radio" name="edit_last_post_only" value="1" tal:attributes="checked forum_cfg/edit_last_post_only"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="edit_last_post_only" value="0" tal:attributes="checked not:forum_cfg/edit_last_post_only"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="enable_ropm_quick_reply">Enable Quick Reply</td>
+			<td><input type="radio" name="ropm_quick_reply" value="1" tal:attributes="checked forum_cfg/ropm_quick_reply"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="ropm_quick_reply" value="0" tal:attributes="checked not:forum_cfg/ropm_quick_reply"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="3">View online status</th>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_online_posts">Display member online status in each post.</td>
+			<td><input type="radio" name="allow_online_posts" value="1" tal:attributes="checked forum_cfg/allow_online_posts"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_online_posts" value="0" tal:attributes="checked not:forum_cfg/allow_online_posts"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_online_index">Display users currently online</td>
+			<td><input type="radio" name="allow_online_index" value="1" tal:attributes="checked forum_cfg/allow_online_index"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_online_index" value="0" tal:attributes="checked not:forum_cfg/allow_online_index"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Online_index_group">Select group allowed to view users currently online</td>
+			<td><select name="online_index_group" tal:define="online_index_group forum_cfg/online_index_group">
+				<optgroup tal:repeat="groups php:\Dragonfly\Groups::getSystem()" tal:attributes="label groups/label">
+					<option tal:repeat="group groups/groups" tal:attributes="value group/id; selected php:${online_index_group} == ${group/id}" tal:content="group/label"></option>
+				</optgroup>
+			</select></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Allow_online_today">Display users online for today</td>
+			<td><input type="radio" name="allow_online_today" value="1" tal:attributes="checked forum_cfg/allow_online_today"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="allow_online_today" value="0" tal:attributes="checked not:forum_cfg/allow_online_today"/> <span i18n:translate="_NO">No</span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Online_today_group">Select group allowed to view users online today</td>
+			<td><select name="online_today_group" tal:define="online_today_group forum_cfg/online_today_group">
+				<optgroup tal:repeat="groups php:\Dragonfly\Groups::getSystem()" tal:attributes="label groups/label">
+					<option tal:repeat="group groups/groups" tal:attributes="value group/id; selected php:${online_today_group} == ${group/id}" tal:content="group/label"></option>
+				</optgroup>
+			</select></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Admin_color">Administrator Color</td>
+			<td><input type="color" name="admin_color" tal:attributes="value forum_cfg/admin_color"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Moderator_color">Moderator Color</td>
+			<td><input type="color" name="moderator_color" tal:attributes="value forum_cfg/moderator_color"/></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Member_color">Member Color</td>
+			<td><input type="color" name="member_color" tal:attributes="value forum_cfg/member_color"/></td>
+			<td></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="2">
+				<button i18n:translate="">Submit</button>
+				<button type="reset" i18n:translate="">Reset</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>

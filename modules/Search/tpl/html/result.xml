@@ -1,0 +1,35 @@
+
+<h1>
+	<var tal:omit-tag="" i18n:translate="">_SEARCHRESULTS</var> :
+	<var tal:replace="search_query">search_query</var>
+</h1>
+<div tal:repeat="search searches">
+	<h2>
+		<var tal:omit-tag="" i18n:translate="">_SEARCHRESULTS</var>
+		<var tal:omit-tag="" i18n:translate="">_IN</var>
+		<var tal:replace="search/title"></var>
+	</h2>
+	<div class="border">
+		<div tal:repeat="result search/result">
+			<h3 tal:condition="exists:result/results_header" tal:content="result/results_header">result/results_header</h3>
+			<div tal:condition="exists:result/html" tal:replace="result/html">result/html</div>
+			<div tal:condition-else="">
+				<div tal:condition="exists:result/header" tal:content="result/header">result/header</div>
+				<a tal:attributes="href result/url" class="option"><strong tal:content="result/title">result/title</strong></a>
+				<br />
+				<div style="padding-left:2em;">
+					<div tal:condition="exists:result/short_text" tal:content="structure result/short_text">result/short_text</div>
+					<div tal:condition="exists:result/footer" tal:content="structure result/footer">result/footer</div>
+				</div>
+				<div tal:condition="exists:result/results_footer" tal:content="result/results_footer">result/results_footer</div>
+			</div>
+		</div>
+		<div style="text-align:center;" tal:condition="search/link_prev | search/link_next">
+			<a tal:replace="structure search/link_prev"></a>
+			<a tal:replace="structure search/link_next"></a>
+		</div>
+	</div>
+</div>
+<div tal:condition="not:searches" class="border" style="text-align:center;">
+	<strong i18n:translate="">_NOMATCHES</strong>
+</div>

@@ -1,0 +1,32 @@
+
+<div class="table1" id="admin-l10n">
+<form action="" method="post">
+
+	<table><thead>
+		<tr>
+			<th>RFC 1766</th>
+			<th i18n:translate="">Language</th>
+			<th i18n:translate="">Active</th>
+			<th i18n:translate="">Default</th>
+			<th></th>
+		</tr>
+	</thead><tbody>
+		<tr tal:repeat="lang languages">
+			<td tal:content="lang/rfc1766"></td>
+			<td tal:content="lang/label"></td>
+			<td><input type="checkbox" name="l10n[active][]" value="" tal:attributes="value lang/id; checked lang/active"/></td>
+			<td><input type="radio" name="l10n[default]" value="" tal:attributes="value lang/rfc1766; checked lang/default"/></td>
+			<td><a tal:attributes="href '?admin&amp;op=l10n&amp;translate=${lang/rfc1766}'" i18n:translate="">translate</a></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="4">
+				<button type="reset" i18n:translate="">Cancel changes</button>
+				<button i18n:translate="">Save</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+
+</form>
+</div>

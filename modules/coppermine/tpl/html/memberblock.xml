@@ -1,0 +1,7 @@
+<xsl:for-each select="coppermine_member_menu/items" as="item">
+<a tal:attributes="href item/uri" tal:content="item/name">link</a><br />
+</xsl:for-each>
+<hr tal:condition="php:${coppermine_member_menu/items} and ${coppermine_member_menu/admin}"/>
+<xsl:for-each select="coppermine_member_menu/admin" as="item">
+<a tal:attributes="href item/uri" tal:content="item/name">link</a><br />
+</xsl:for-each>

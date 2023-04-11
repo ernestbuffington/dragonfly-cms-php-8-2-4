@@ -1,0 +1,48 @@
+<div class="border">
+	<a href="?admin&amp;op=News&amp;mode=add" i18n:translate="">_ADDSTORY</a> |
+	<a href="?admin&amp;op=News&amp;file=submissions" i18n:translate="">_SUBMISSIONS</a> |
+	<a href="?admin&amp;op=News&amp;comments" i18n:translate="">Comments</a> |
+	<strong i18n:translate="">Configuration</strong>
+</div>
+
+<div class="border">
+	<form action="" method="post">
+	<table>
+		<tbody>
+			<tr>
+				<td i18n:translate="_STORIESHOME"></td>
+				<td><input type="number" name="news[storyhome]" tal:attributes="value CONFIG/global/storyhome" min="0" max="30" step="1" size="4"/></td>
+			</tr><tr>
+				<td i18n:translate="_OLDSTORIES"></td>
+				<td><input type="number" name="news[oldnum]" tal:attributes="value CONFIG/global/oldnum" min="0" max="50" step="1" size="4"/></td>
+			</tr><tr>
+				<td i18n:translate="_ALLOWANONPOST"></td>
+				<td><input type="checkbox" name="news[anonpost]" value="1" tal:attributes="checked CONFIG/global/anonpost"/></td>
+			</tr><tr>
+				<td i18n:translate="_COMMENTSARTICLES"></td>
+				<td><input type="checkbox" name="news[articlecomm]" value="1" tal:attributes="checked CONFIG/global/articlecomm"/></td>
+			</tr><tr>
+				<td i18n:translate="_NOTIFYSUBMISSION"></td>
+				<td><input type="checkbox" name="news[notify]" value="1" tal:attributes="checked CONFIG/global/notify"/></td>
+			</tr><tr>
+				<td i18n:translate="_EMAIL2SENDMSG"></td>
+				<td><input type="email" name="news[notify_email]" tal:attributes="value CONFIG/global/notify_email" size="35" maxlength="255" /></td>
+			</tr><tr>
+				<td i18n:translate="_EMAILSUBJECT"></td>
+				<td><input type="text" name="news[notify_subject]" tal:attributes="value CONFIG/global/notify_subject" size="35" maxlength="255" /></td>
+			</tr><tr>
+				<td i18n:translate="_EMAILMSG"></td>
+				<td><textarea name="news[notify_message]" cols="32" rows="8" tal:content="CONFIG/global/notify_message"></textarea></td>
+			</tr><tr>
+				<td i18n:translate="_EMAILFROM"></td>
+				<td><input type="email" name="news[notify_from]" tal:attributes="value CONFIG/global/notify_from" size="35" maxlength="255" /></td>
+			</tr>
+		</tbody>
+		<tfoot><tr>
+			<td colspan="2">
+				<button type="submit" i18n:translate="_SAVECHANGES"/>
+				<button type="reset" i18n:translate="_RESET"/>
+			</td>
+		</tr></tfoot>
+	</table></form>
+</div>

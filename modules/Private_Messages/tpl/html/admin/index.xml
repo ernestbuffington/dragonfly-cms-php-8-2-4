@@ -1,0 +1,69 @@
+
+<h1 i18n:translate="">Configuration</h1>
+
+<form method="post" action="" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+<table><tbody tal:define="pmconf CONFIG/Private_Messages">
+	<tr>
+		<td i18n:translate="">Inbox limit</td>
+		<td style="width:14em"><input type="number" min="1" maxlength="4" style="width:4em" name="inbox_max" tal:attributes="value pmconf/inbox_max"/></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Sentbox limit</td>
+		<td><input type="number" min="1" maxlength="4" style="width:4em" name="sentbox_max" tal:attributes="value pmconf/sentbox_max"/></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Outbox limit</td>
+		<td><input type="number" min="1" maxlength="4" style="width:4em" name="outbox_max" tal:attributes="value pmconf/outbox_max"/></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Savebox limit</td>
+		<td><input type="number" min="1" maxlength="4" style="width:4em" name="savebox_max" tal:attributes="value pmconf/savebox_max"/></td>
+	</tr>
+	<tr>
+		<td>
+			<div i18n:translate="">Statistic box length</div>
+		</td>
+		<td>
+			<input type="number" name="graphic_length" min="10" style="width:4em" maxlength="4" tal:attributes="value pmconf/graphic_length"/>
+			<select name="graphic_style">
+				<option value="px" tal:attributes="selected php:'px'==${pmconf/graphic_style}">px</option>
+				<option value="%" tal:attributes="selected php:'%'==${pmconf/graphic_style}">%</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div i18n:translate="">Messages per page</div>
+		</td>
+		<td>
+			<input type="number" name="per_page" min="1" style="width:4em" maxlength="3" tal:attributes="value pmconf/per_page"/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div i18n:translate="">Flood interval</div>
+			<i i18n:translate="">Flood explain</i>
+		</td>
+		<td>
+			<input type="number" name="flood_interval" min="5" style="width:4em" maxlength="3" tal:attributes="value pmconf/flood_interval"/>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Allow BBCode</td>
+		<td>
+			<input type="checkbox" name="allow_bbcode" tal:attributes="checked pmconf/allow_bbcode"/>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="Allow smilies"></td>
+		<td>
+			<input type="checkbox" name="allow_smilies" tal:attributes="checked pmconf/allow_smilies"/>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="submit"/> <input type="reset"/>
+		</td>
+	</tr>
+</tbody></table>
+</form>

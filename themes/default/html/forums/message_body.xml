@@ -1,0 +1,3 @@
+<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+<h1 tal:content="MESSAGE_TITLE">MESSAGE_TITLE</h1>
+<div class="border" style="text-align:center" tal:content="structure MESSAGE_TEXT">MESSAGE_TEXT</div>

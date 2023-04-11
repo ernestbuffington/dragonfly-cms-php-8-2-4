@@ -1,0 +1,28 @@
+<div class="border">
+	<span tal:replace="sitename"></span> <span tal:replace="php:_STATS"></span>
+	<br />
+	<span i18n:translate="">_WERECEIVED</span>
+	<strong tal:content="total">0</strong>
+	<span i18n:translate="">_PAGESVIEWS</span> <span tal:replace="startdate"></span>
+
+	<p tal:condition="main_stats">
+		<a tal:attributes="href php:URL::index('&amp;details=1')" tal:content="php:_VIEWDETAILED"></a>
+	</p>
+
+	<p tal:condition="details">
+		<span i18n:translate="">_TODAYIS</span>: <span tal:replace="today">date</span>
+		<br />
+		<span i18n:translate="">_MOSTMONTH</span>: <span tal:replace="topMonth">Top month</span>
+		<br />
+		<span i18n:translate="">_MOSTDAY</span>: <span tal:replace="topDay">Top day</span>
+		<br />
+		<span i18n:translate="">_MOSTHOUR</span>: <span tal:replace="topHour">Top hour</span>
+		<br />
+		<a tal:attributes="href php:URL::index()"><em i18n:translate="">_BACKTOMAIN</em></a>
+	</p>
+
+	<p tal:condition="stats">
+		<a tal:attributes="href php:URL::index()"><em i18n:translate="">_BACKTOMAIN</em></a> |
+		<a tal:attributes="href php:URL::index('&amp;details=')" i18n:translate="">_VIEWDETAILED</a>
+	</p>
+</div>

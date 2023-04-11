@@ -1,0 +1,8 @@
+<div>
+	Congratulations,<br/>
+	<br/>
+	Your request to join the "<var tal:replace="GROUP_NAME">{GROUP_NAME}</var>" group on <var tal:replace="CONFIG/global/sitename">{SITENAME}</var> has been approved.<br/>
+	Click on the following link to see your group membership.<br/>
+	<br/>
+	<a tal:attributes="href U_GROUPCP" tal:content="U_GROUPCP">{U_GROUPCP}</a>
+</div>

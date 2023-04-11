@@ -1,0 +1,34 @@
+<table class="flat">
+<tbody>
+	<tr tal:repeat="row thumbnails_rows">
+		<td tal:repeat="thumbnail row" class="thumb_cell" tal:attributes="style 'vertical-align:bottom;width:${thumbnail_column_width}%'">
+			<a tal:condition="thumbnail/url" tal:attributes="href thumbnail/url"><img tal:attributes="src thumbnail/image/src; title thumbnail/image/title" alt=""/></a><br/>
+			<table tal:condition="thumbnail/url" class="user_thumb_infobox"><tbody>
+				<tr class="user_thumb_infobox">
+					<td><a class="user_thumb_infobox" tal:attributes="href thumbnail/USER_PROFILE_LINK" tal:content="thumbnail/username">username</a></td>
+				</tr>
+				<tr>
+					<td tal:content="thumbnail/ALBUMS">0 album(s)</td>
+				</tr>
+				<tr>
+					<td tal:content="thumbnail/PICTURES">0 picture(s)</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody>
+<tfoot tal:condition="thumbnails_pagination">
+	<tr>
+		<td colspan="0" style="padding: 0">
+			<table class="flat"><tbody>
+				<tr>
+					<td style="vertical-align:middle;white-space: nowrap"><b tal:content="thumbnails_stats"></b></td>
+					<td tal:repeat="item thumbnails_pagination/items" class="navmenu" style="text-align:center;vertical-align:middle">
+						<a tal:omit-tag="item/current" tal:attributes="href item/uri" tal:content="item/page">1</a>
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tfoot>
+</table>

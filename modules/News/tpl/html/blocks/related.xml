@@ -1,0 +1,9 @@
+
+<ul>
+	<li tal:repeat="link story_related/items"><a tal:attributes="href link/url" target="_blank" tal:content="link/name">name</a></li>
+	<li><a tal:attributes="href U_NEWTOPIC"><var tal:omit-tag="" i18n:translate="_MOREABOUT">More about</var>
+		<var tal:replace="news_article/topictext">news_article/topictext</var></a></li>
+</ul>
+<hr style="width:95%;"/>
+<b><var tal:omit-tag="" i18n:translate="_MOSTREAD">Most read story about</var> <var tal:replace="news_article/topictext">news_article/topictext</var>:</b><br/>
+<a tal:attributes="href php:URL::index('&amp;file=article&amp;sid=${story_related/mostread/id}')" tal:content="story_related/mostread/title">title</a>

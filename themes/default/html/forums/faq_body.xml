@@ -1,0 +1,14 @@
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+<a tal:attributes="href U_INDEX" class="nav" tal:content="L_INDEX">L_INDEX</a>
+
+<h1 tal:content="L_FAQ_TITLE">L_FAQ_TITLE</h1>
+
+<xsl:for-each select="faq_block">
+<h2 tal:content="faq_block/BLOCK_TITLE">faq_block/BLOCK_TITLE</h2>
+<div class="border">
+	<details style="margin:0.5em 0" tal:repeat="entry faq_block/faq_row">
+		<summary tal:content="entry/FAQ_QUESTION">entry/FAQ_QUESTION</summary>
+		<div style="margin:1em" tal:content="structure entry/FAQ_ANSWER">entry/FAQ_ANSWER</div>
+	</details>
+</div>
+</xsl:for-each>

@@ -1,0 +1,58 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="Forum_admin">Forum Administration</h1>
+
+	<p i18n:translate="Forum_admin_explain">From this panel you can add, delete, edit, re-order and re-synchronise categories and forums</p>
+
+	<form method="post" action="">
+	<table>
+	<thead>
+		<tr>
+			<th colspan="4" i18n:translate="Forum_admin">Forum Administration</th>
+			<th i18n:translate="Read">Read</th>
+			<th i18n:translate="Post">Post</th>
+		</tr>
+	</thead>
+	<tbody tal:repeat="cat board_categories">
+		<tr class="blockhead">
+			<td colspan="3"><b><a tal:attributes="href cat/U_VIEW" tal:content="cat/title">cat/title</a></b></td>
+			<td style="white-space:nowrap">
+				<a class="icon-edit" tal:attributes="href cat/U_EDIT" i18n:attributes="title 'Edit'" i18n:translate="Edit">Edit</a>
+				<a class="icon-delete" tal:attributes="href cat/U_DELETE" i18n:attributes="title 'Delete'" i18n:translate="Delete">Delete</a>
+				<a class="icon-up" tal:attributes="href cat/U_MOVE_UP" i18n:attributes="title 'Move_up'" i18n:translate="Move_up">Move up</a>
+				<a class="icon-down" tal:attributes="href cat/U_MOVE_DOWN" i18n:attributes="title 'Move_down'" i18n:translate="Move_down">Move down</a>
+			</td>
+			<td colspan="2"></td>
+		</tr>
+		<tr tal:repeat="forum cat/forums">
+			<td><a tal:attributes="href forum/U_VIEW" target="_new" tal:content="structure forum/NAME">forum/NAME</a>
+				<br/><i tal:content="structure forum/DESC">forum/DESC</i></td>
+			<td tal:content="forum/NUM_TOPICS">forum/NUM_TOPICS</td>
+			<td tal:content="forum/NUM_POSTS">forum/NUM_POSTS</td>
+			<td style="white-space:nowrap">
+				<a class="icon-edit" tal:attributes="href forum/U_EDIT" i18n:attributes="title 'Edit'" i18n:translate="Edit">Edit</a>
+				<a class="icon-delete" tal:attributes="href forum/U_DELETE" i18n:attributes="title 'Delete'" i18n:translate="Delete">Delete</a>
+				<a class="icon-up" tal:attributes="href forum/U_MOVE_UP" i18n:attributes="title 'Move_up'" i18n:translate="Move_up">Move up</a>
+				<a class="icon-down" tal:attributes="href forum/U_MOVE_DOWN" i18n:attributes="title 'Move_down'" i18n:translate="Move_down">Move down</a>
+				<a class="icon-sync" tal:attributes="href forum/U_RESYNC" i18n:attributes="title 'Resync'" i18n:translate="">Resync</a>
+			</td>
+			<td><a tal:attributes="href forum/U_PERMS" tal:content="forum/AUTH_READ">forum/AUTH_READ</a></td>
+			<td><a tal:attributes="href forum/U_PERMS" tal:content="forum/AUTH_POST">forum/AUTH_POST</a></td>
+		</tr>
+		<tr>
+			<td colspan="7"><input type="text" tal:attributes="name 'forumname[${cat/id}]'"/>
+				<button tal:attributes="name 'addforum[${cat/id}]'" i18n:translate="Create_forum">Create new forum</button>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="7">
+				<input type="text" name="categoryname"/>
+				<button name="addcategory" i18n:translate="Create_category">Create new category</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table></form>
+</div>

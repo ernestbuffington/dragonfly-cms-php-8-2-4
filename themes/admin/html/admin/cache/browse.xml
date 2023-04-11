@@ -1,0 +1,33 @@
+
+<div class="border">
+	<ul class="tree">
+		<li tal:repeat="item cache_tree" tal:attributes="class php:is_array(${item})?'unfolds':null">
+			<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+			<ul tal:condition="php:is_array(${item})" >
+				<li tal:repeat="item item" tal:attributes="class php:is_array(${item})?'unfolds':null">
+					<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+					<ul tal:condition="php:is_array(${item})" >
+						<li tal:repeat="item item" tal:attributes="class php:is_array(${item})?'unfolds':null">
+							<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+							<ul tal:condition="php:is_array(${item})" >
+								<li tal:repeat="item item" tal:attributes="class php:is_array(${item})?'unfolds':null">
+									<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+									<ul tal:condition="php:is_array(${item})" >
+										<li tal:repeat="item item" tal:attributes="class php:is_array(${item})?'unfolds':null">
+											<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+											<ul tal:condition="php:is_array(${item})" >
+												<li tal:repeat="item item" tal:attributes="class php:is_array(${item})?'unfolds':null">
+													<a tal:content="php:is_array(${item})?${repeat/item/key}:${item}">name</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>

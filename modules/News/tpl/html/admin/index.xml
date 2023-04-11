@@ -1,0 +1,69 @@
+<div class="border">
+	<a href="?admin&amp;op=News&amp;mode=add" i18n:translate="">_ADDSTORY</a> |
+	<a href="?admin&amp;op=News&amp;file=submissions" i18n:translate="">_SUBMISSIONS</a> |
+	<a href="?admin&amp;op=News&amp;file=categories" i18n:translate="">Categories</a> |
+	<a href="?admin&amp;op=News&amp;comments" i18n:translate="">Comments</a> |
+	<a href="?admin&amp;op=News&amp;file=config" i18n:translate="">Configuration</a>
+</div>
+
+<fieldset>
+	<legend i18n:translate="">_AUTOMATEDARTICLES</legend>
+	<table tal:condition="scheduled_stories/num_rows"><tbody>
+		<tr tal:repeat="story scheduled_stories">
+			<td tal:content="story/title">title</td>
+			<td tal:content="php:here.L10N.date('DATE_F', ${story/ptime})">ptime</td>
+			<td tal:content="story/alanguage" style="width:24px">language</td>
+			<td tal:condition="php:can_admin('news')" style="width:60px">
+				<a class="icon-edit" tal:attributes="href '?admin&amp;op=News&amp;edit=${story/sid}'" i18n:attributes="title '_EDIT'" i18n:translate="_EDIT">Edit</a>
+				<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;del=${story/sid}'" i18n:attributes="title '_DELETE'" i18n:translate="_DELETE">Delete</a>
+			</td>
+		</tr>
+	</tbody></table>
+	<div tal:condition="not:scheduled_stories/num_rows" tal:content="php:sprintf(_ERROR_NONE_TO_DISPLAY,strtolower(_AUTOMATEDARTICLES))"></div>
+</fieldset>
+
+<fieldset>
+	<legend i18n:translate="">_STICKY</legend>
+	<table tal:condition="sticky_stories/num_rows"><tbody>
+		<tr tal:repeat="story sticky_stories">
+			<td><a tal:attributes="href '?name=News&amp;file=article&amp;sid=${story/sid}'" tal:content="story/title">title</a></td>
+			<td tal:content="story/alanguage" style="width:24px">language</td>
+<!--
+			<td>
+			if ($sid1) {
+				echo '<a href="'.htmlspecialchars(URL::admin("News&disporder=$disporder&sidori=$sid&disporderrep=$disporder1&sidrep=$sid1"))."\" class="icon-up">_ARTICLEUP</a>";
+			}
+			if ($sid2 && $disporder3 <> '0') {
+				echo '<a href="'.htmlspecialchars(URL::admin("News&disporder=$disporder&sidori=$sid&disporderrep=$disporder3&sidrep=$sid2"))."\" class="icon-down">_ARTICLEDOWN</a>";
+			}
+			</td>
+-->
+			<td tal:content="story/display_order" style="width:24px">0</td>
+			<td><a tal:condition="story/poll_id" tal:attributes="href '?admin&amp;op=Surveys&amp;edit=${story/poll_id}'">poll</a></td>
+			<td tal:condition="php:can_admin('news')" style="width:60px">
+				<a class="icon-edit" tal:attributes="href '?admin&amp;op=News&amp;edit=${story/sid}'" i18n:attributes="title '_EDIT'" i18n:translate="_EDIT">Edit</a>
+				<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;del=${story/sid}'" i18n:attributes="title '_DELETE'" i18n:translate="_DELETE">Delete</a>
+				<a class="icon-thumbtack" tal:attributes="href '?admin&amp;op=News&amp;unstick=${story/sid}'" i18n:attributes="title '_UNSTICK'" i18n:translate="_UNSTICK">Unstick</a>
+			</td>
+		</tr>
+	</tbody></table>
+	<div tal:condition="not:sticky_stories/num_rows" tal:content="php:sprintf(_ERROR_NONE_TO_DISPLAY,strtolower(_STICKY))"></div>
+</fieldset>
+
+<fieldset>
+	<legend i18n:translate="">_ARTICLES</legend>
+	<table tal:condition="stories/num_rows"><tbody>
+		<tr tal:repeat="story stories">
+			<td><a tal:attributes="href '?name=News&amp;file=article&amp;sid=${story/sid}'" tal:content="story/title">title</a></td>
+			<td tal:content="story/alanguage" style="width:24px">language</td>
+			<td tal:content="story/display_order" style="width:24px">0</td>
+			<td><a tal:condition="story/poll_id" tal:attributes="href '?admin&amp;op=Surveys&amp;edit=${story/poll_id}'">poll</a></td>
+			<td tal:condition="php:can_admin('news')" style="width:60px">
+				<a class="icon-edit" tal:attributes="href '?admin&amp;op=News&amp;edit=${story/sid}'" i18n:attributes="title '_EDIT'" i18n:translate="_EDIT">Edit</a>
+				<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;del=${story/sid}'" i18n:attributes="title '_DELETE'" i18n:translate="_DELETE">Delete</a>
+				<a class="icon-thumbtack" tal:attributes="href '?admin&amp;op=News&amp;stick=${story/sid}'" i18n:attributes="title '_STICK'" i18n:translate="_STICK">Sticky</a>
+			</td>
+		</tr>
+	</tbody></table>
+	<div tal:condition="not:stories/num_rows" tal:content="php:sprintf(_ERROR_NONE_TO_DISPLAY,strtolower(_STICKY))"></div>
+</fieldset>

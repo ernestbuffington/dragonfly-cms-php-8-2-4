@@ -1,0 +1,55 @@
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<form tal:attributes="action S_ACTION" method="post">
+
+<a tal:attributes="href U_INDEX" tal:content="L_INDEX">Forum Index</a>
+
+<table>
+<thead>
+	<tr>
+		<th colspan="2" i18n:translate="Merge_topics">Merge topic</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td><span i18n:translate="Merge_title">New topic title</span>
+			<br />
+			<small i18n:translate="">Merge_title_explain</small>
+		</td>
+		<td><input type="text" name="topic_title" tal:attributes="value TOPIC_TITLE"/></td>
+	</tr>
+	<tr>
+		<td><span i18n:translate="Merge_topic_from">Topic to merge</span>
+			<br />
+			<small i18n:translate="">Merge_topic_from_explain</small>
+		</td>
+		<td>
+			<input type="text" name="from_topic" tal:attributes="value FROM_TOPIC"/>
+			<button name="select_from" i18n:translate="">Select</button>
+		</td>
+	</tr>
+	<tr>
+		<td><span i18n:translate="Merge_topic_to">Destination topic</span>
+			<br />
+			<small i18n:translate="">Merge_topic_to_explain</small>
+		</td>
+		<td>
+			<input type="text" name="to_topic" tal:attributes="value TO_TOPIC"/>
+			<button name="select_to" i18n:translate="">Select</button>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="">Leave_shadow_topic</td>
+		<td><input type="checkbox" name="shadow" tal:attributes="checked SHADOW"/></td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td></td>
+		<td>
+			<button i18n:translate="">Submit</button>
+		</td>
+	</tr>
+</tfoot>
+</table>
+</form>

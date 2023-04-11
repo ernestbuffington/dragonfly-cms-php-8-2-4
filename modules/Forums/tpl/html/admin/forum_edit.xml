@@ -1,0 +1,96 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 tal:condition="forum/id" i18n:translate="Edit_forum"></h1>
+	<h1 tal:condition="not:forum/id" i18n:translate="Create_forum"></h1>
+
+	<p i18n:translate="Forum_edit_delete_explain"></p>
+
+	<form action="" method="post">
+	<table><thead>
+		<tr>
+			<th colspan="3" i18n:translate="Forum_settings"></th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td i18n:translate="Forum_name"></td>
+			<td colspan="2"><input type="text" size="25" name="forumname" tal:attributes="value forum/name"/></td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top" i18n:translate="Forum_desc"></td>
+			<td colspan="2"><textarea rows="5" cols="45" wrap="virtual" name="forumdesc" tal:content="forum/desc"></textarea></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Category"></td>
+			<td colspan="2"><select name="c" tal:content="structure php:Dragonfly\Module\Forums\Admin\Categories::getList(${forum/cat_id},1)"></select></td>
+		</tr>
+		<tr>
+			<td i18n:translate="Forum_status"></td>
+			<td colspan="2"><select name="forumstatus">
+				<option value="0" i18n:translate="Status_unlocked">Unlocked</option>
+				<option value="1" tal:attributes="selected forum/status" i18n:translate="Status_locked">Locked</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td rowspan="3" style="vertical-align:top" i18n:translate="">Type</td>
+			<td colspan="2">
+				<select name="forumtype">
+					<option tal:repeat="type forum/getTypeOptions" tal:attributes="value type/value; selected type/current; disabled type/disabled" tal:content="type/name"></option>
+				</select>
+				<hr/><b>Normal Forum:</b> use this if this forum is a sub-forum or normal forum.
+				<br/><br/><b>Parent Forum:</b> if selected means it contains sub-forums and the option is locked from changes.
+				<br/><br/><b>Local or Remote URL:</b> select either option above, then add the <b>URL Link</b> below.
+				<hr/>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="pid">Parent Forum</label></td>
+			<td><select id="pid" name="parentid" tal:content="structure php:Dragonfly\Module\Forums\Admin\Forums::getParentsList(${forum/cat_id},${forum/parent_id})"></select>
+				<div>required if this forum is to be a sub-forum.</div>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="flink">URL Link</label></td>
+			<td><input id="flink" type="text" name="forumlink" tal:attributes="value forum/link"/>
+				<div>select Local or Remote above - forum name will link to this.</div>
+			</td>
+		</tr>
+		<tr>
+			<td rowspan="3" style="vertical-align:top" i18n:translate="Forum_pruning"></td>
+			<td i18n:translate="Enabled"></td>
+			<td><input type="checkbox" name="prune_enable" tal:attributes="checked forum/prune_enable"/></td>
+		</tr>
+		<tr>
+			<td i18n:translate="prune_days"></td>
+			<td><input type="number" min="1" name="prune_days" tal:attributes="value forum/prune_days" size="4"/> <span i18n:translate="">Days</span></td>
+		</tr>
+		<tr>
+			<td i18n:translate="prune_freq"></td>
+			<td><input type="number" min="1" name="prune_freq" tal:attributes="value forum/prune_freq" size="4"/> <span i18n:translate="">Days</span></td>
+		</tr>
+		<tr>
+			<td rowspan="3" style="vertical-align:top" i18n:translate="Forum_archiving"></td>
+			<td i18n:translate="Enabled"></td>
+			<td><input type="checkbox" name="archive_enable" tal:attributes="checked forum/archive_enable"/></td>
+		</tr>
+			<tr>
+				<td i18n:translate="archive_days"></td>
+				<td><input type="number" min="1" name="archive_days" tal:attributes="value forum/archive_days" size="4"/> <span i18n:translate="">Days</span></td>
+			</tr>
+			<tr>
+				<td i18n:translate="archive_freq"></td>
+				<td><input type="number" min="1" name="archive_freq" tal:attributes="value forum/archive_freq" size="4"/> <span i18n:translate="">Days</span></td>
+			</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="3">
+				<input type="hidden" name="mode" value="saveforum"/>
+				<input tal:condition="forum/id" type="hidden" name="forum_id" tal:attributes="value forum/id"/>
+				<button tal:condition="forum/id" i18n:translate="">Update</button>
+				<button tal:condition="not:forum/id" i18n:translate="">Create</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>

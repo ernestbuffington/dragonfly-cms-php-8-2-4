@@ -1,0 +1,23 @@
+
+<div class="table1" tal:condition="CONFIG/member/allowuserreg">
+	<h3 style="text-align:center;">You must
+		<a rel="nofollow" tal:attributes="href php:\Dragonfly\Identity::getRegisterURL()" i18n:translate="">register</a>
+		before you can create advertisements!</h3>
+</div>
+
+<div class="table1" tal:condition="all_active_banners/count" style="text-align:center;">
+	<br />
+	<p><span tal:omit-tag="" i18n:translate="_ALL">_ALL</span> <span tal:omit-tag="" i18n:translate="_BANNERS">_ALL</span></p>
+	<p tal:repeat="banner all_active_banners">
+		<table tal:condition="banner/textban"
+			tal:attributes="style 'margin:auto; width:${banner/text_width}px; border:0; height:${banner/text_height}px; background:#${banner/text_bg};'">
+		<tbody>
+			<tr>
+				<td><a tal:attributes="href banner/clickurl; style 'color:#${banner/text_clr}'"
+					tal:content="banner/text_title">banner/text_title</a></td>
+			</tr>
+		</tbody>
+		</table>
+		<a tal:condition="not:banner/textban" tal:attributes="href banner/clickurl"><img tal:attributes="src banner/imageurl" alt=""/></a>
+	</p>
+</div>

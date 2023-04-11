@@ -1,0 +1,32 @@
+<div class="border">
+<form method="post" action="" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+<fieldset>
+	<legend i18n:translate="_FEEDBACKTITLE">Feedback Form</legend>
+	<div class="content" i18n:translate="_FEEDBACKNOTE">All comments and suggestions about this web site are very welcome and a valuable source of information for us. Thanks!</div>
+	<br/>
+	<label>
+		<span i18n:translate="_YOURNAME">Your Name</span>
+		<input type="text" name="sender_name" tal:attributes="value S_SENDER" size="30" maxlength="255" required=""/>
+	</label>
+	<br/>
+
+	<label>
+		<span i18n:translate="_YOUREMAIL">Your Email</span>
+		<input type="email" name="sender_email" tal:attributes="value S_SENDER_MAIL" size="30" maxlength="255" required=""/>
+	</label>
+	<br/>
+
+	<label tal:condition="IDENTITY/isAdmin">
+		<span i18n:translate="_SEND_TO">Send To:</span>
+		<input type="text" name="send_to" size="30" maxlength="255"/>
+	</label>
+	<br/>
+
+	<strong i18n:translate="_MESSAGE">Message</strong><br/>
+	<textarea name="message" tal:attributes="class php:${allow_bbcode}?'bbcode':null" cols="63" rows="15" tal:content="S_MESSAGE" required=""></textarea>
+	<br/><br/>
+
+	<button i18n:translate="_SEND">Send</button>
+</fieldset>
+</form>
+</div>

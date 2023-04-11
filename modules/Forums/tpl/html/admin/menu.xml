@@ -1,0 +1,36 @@
+
+	<nav class="menu"><ul>
+		<li><var tal:omit-tag="" i18n:translate="">_BBFORUMS</var>
+			<ul>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=forums')" i18n:translate="">Manage</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=forumauth')" i18n:translate="">Auth_Control_Forum</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=forum_archive')" i18n:translate="">Archive</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=forum_prune')" i18n:translate="">Prune</a></li>
+				<li><hr/></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=config')" i18n:translate="">Configuration</a></li>
+				<li><hr/></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=words')" i18n:translate="">Word_Censor</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=topic_icons')" i18n:translate="">Topic_icons</a></li>
+			</ul>
+		</li>
+		<li><var tal:omit-tag="" i18n:translate="">_BMEM</var>
+			<ul>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=user_forums')" i18n:translate="">User_Forum_Privileges</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=ug_auth&amp;mode=user')" i18n:translate="">Auth_Control_User</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=ug_auth&amp;mode=group')" i18n:translate="">Auth_Control_Group</a></li>
+			</ul>
+		</li>
+		<li><var tal:omit-tag="" i18n:translate="">Attachments</var>
+			<ul>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=attach_cp')" i18n:translate="">Control_Panel</a></li>
+				<li><hr/></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=attachments&amp;mode=manage')" i18n:translate="">Attach_settings</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=attachments&amp;mode=shadow')" i18n:translate="">Shadow_attachments</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=attachments&amp;mode=sync')" i18n:translate="">Sync_attachments</a></li>
+				<li><hr/></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=extensions&amp;mode=extensions')" i18n:translate="">Extension_control</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=extensions&amp;mode=groups')">Extension group manage</a></li>
+				<li><a tal:attributes="href php:URL::admin('&amp;do=extensions&amp;mode=forbidden')" i18n:translate="">Forbidden_extensions</a></li>
+			</ul>
+		</li>
+	</ul></nav>

@@ -1,0 +1,22 @@
+<div class="border">
+	<a href="?admin&amp;op=packagemanager&amp;list">list</a> |
+	<a href="?admin&amp;op=packagemanager&amp;installed">Installed</a> |
+<!--
+	<a href="?admin&amp;op=packagemanager&amp;upgrade">Updates</a> |
+-->
+	<a href="?admin&amp;op=packagemanager&amp;settings">settings</a>
+</div>
+
+<div class="border">
+	Free disk space:
+	<meter tal:attributes="value disk_space/free; max disk_space/total" min="0"></meter>
+	<var tal:replace="php:here.L10N.filesizeToHuman(${disk_space/free})">0</var> free
+
+<!--
+	<a href="?admin&amp;op=packagemanager&amp;type=l10n">Localization</a> |
+	<a href="?admin&amp;op=packagemanager&amp;type=module">Modules</a> |
+	<a href="?admin&amp;op=packagemanager&amp;type=theme">Themes</a> |
+	<a href="?admin&amp;op=packagemanager&amp;type=block">Blocks</a> |
+	<a href="?admin&amp;op=packagemanager&amp;type=other">Others</a> |
+-->
+</div>

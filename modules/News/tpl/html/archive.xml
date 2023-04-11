@@ -1,0 +1,26 @@
+
+<div class="border">
+	<p style="text-align:center;" i18n:translate="_SELECTMONTH2VIEW">Please select the month you want to see:</p>
+
+	<div tal:repeat="year stories_archive_years">
+		<h2 tal:content="year/label">2013</h2>
+		<ul>
+			<li tal:repeat="month year/months">
+				<a tal:attributes="href month/url" tal:content="month/label">January</a>
+				(<i tal:replace="month/stories"></i>)
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div class="border">
+	<div style="text-align:center;">
+		<form action="Search" method="post"><div>
+			<input type="text" name="search" size="30" maxlength="255"/>
+			<input type="hidden" name="modules[]" value="News"/>
+			<button i18n:translate="_SEARCH">Search</button>
+		</div></form>
+		<br/><br/>
+		[ <a href="?name=News&amp;file=archive&amp;sa=show_all" i18n:translate="_SHOWALLSTORIES">Show ALL Stories</a> ]
+	</div>
+</div>

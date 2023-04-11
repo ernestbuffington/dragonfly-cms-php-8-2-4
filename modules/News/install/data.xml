@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="stories" datamode="ON-EMPTY">
+		<col name="aid" type="VARCHAR" length="30" default=""/>
+		<col name="title" type="VARCHAR" length="80" default="" nullable="true"/>
+		<col name="ptime" type="INT" default="1133334197"/>
+		<col name="hometext" type="TEXT" nullable="true"/>
+		<col name="informant" type="VARCHAR" length="40" default=""/>
+		<col name="ihome" type="TINYINT" default="0"/>
+		<tr>
+			<td>Dragonfly CMS Team</td>
+			<td>Welcome to Dragonfly CMS</td>
+			<td israw="true">UNIX_TIMESTAMP()</td>
+			<td>[url=http://dragonflycms.org]Dragonfly CMS[/url] is a powerful CMS which delivers the features and bug fixes that you really need. Using Dragonfly, you will enjoy enhanced speed, security, and multiple integrated features. You'll instantly fall in love with its sleek interface, carefully designed modules, fast page loads, and high standards for security.\r\n\r\nThere are two flavors of Dragonfly ready for immediate deployment—the stable build and the SCM build. We recommend the stable build for production websites, but if you're feeling bold, try the development build, our latest and potentially greatest work. However, it could be unstable and may contain bugs. More information on our SCM can be found [url=http://dragonflycms.org/Wiki/id=40.html]here[/url].\r\n\r\nWe wish you luck with your new website, and thanks for joining our global community.\r\n\r\n[url=http://dragonflycms.org/Wiki/id=22.html]Dragonfly CMS Team[/url]'</td>
+			<td>Dragonfly CMS Team</td>
+			<td>1</td>
+		</tr>
+	</table>
+
+	<table name="topics" datamode="ON-EMPTY">
+		<col name="topicimage"/>
+		<col name="topictext"/>
+		<tr><td>dragonfly.png</td><td>Dragonfly™</td></tr>
+	</table>
+
+
+</database>

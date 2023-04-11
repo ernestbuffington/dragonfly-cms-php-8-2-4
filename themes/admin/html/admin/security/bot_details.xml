@@ -1,0 +1,22 @@
+
+<fieldset style="border:1px solid #069;width:75%;">
+<legend>Details: <var tal:replace="S_BOT_NAME">S_BOT_NAME</var></legend>
+<dl>
+	<xsl:if test="S_BOT_UA"><dt>User-Agent:</dt><dd tal:content="S_BOT_UA">S_BOT_UA</dd></xsl:if>
+	<xsl:if test="S_BOT_DNS"><dt>Servers:</dt><dd tal:content="S_BOT_DNS">S_BOT_DNS</dd></xsl:if>
+	<xsl:if test="U_BOT_HOME"><dt i18n:translate="_TB_INFO">Info</dt><dd><a tal:attributes="href U_BOT_HOME" tal:content="U_BOT_HOME">U_BOT_HOME</a></dd></xsl:if>
+	<xsl:if test="S_BOT_DESC"><dt i18n:translate="_DESCRIPTION">Description</dt><dd tal:content="S_BOT_DESC">S_BOT_DESC</dd></xsl:if>
+	<xsl:for-each select="log">
+	<dt>Requests:</dt>
+	<dd>
+		Time: <var tal:replace="log/TIME">log/TIME</var><br/>
+		Username: <var tal:replace="log/USER">log/USER</var><br/>
+		User Agent: <var tal:replace="log/UA">log/UA</var><br/>
+		Method: <var tal:replace="log/METHOD">log/METHOD</var><br/>
+		Requested URI: <var tal:replace="log/URI">log/URI</var><br/>
+		Referrer: <var tal:replace="log/REFERER">log/REFERER</var><br/>
+		Proxy: <var tal:replace="log/PROXY">log/PROXY</var>
+	</dd>
+	</xsl:for-each>
+</dl>
+</fieldset>

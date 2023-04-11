@@ -1,0 +1,76 @@
+
+<h1><var tal:omit-tag="" i18n:translate="UACP">User Attachment Control Panel</var> ::
+	<var tal:replace="USERNAME">USERNAME</var>
+</h1>
+
+<script type="text/javascript"><![CDATA[
+	function select_switch(status)
+	{
+		for (i = 0; i < document.attach_list.length; ++i)
+		{
+			document.attach_list.elements[i].checked = status;
+		}
+	}
+]]></script>
+
+<form method="post" name="attach_list" action="">
+<table><tbody>
+	<tr>
+		<td style="white-space:nowrap;">
+			<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+		</td>
+		<td style="text-align:right;white-space:nowrap;">
+			<var tal:omit-tag="" i18n:translate="Select_sort_method">Select sort method</var>:
+			<select name="mode">
+				<option tal:repeat="mode uacp_sort_modes" tal:attributes="value mode/value; selected mode/selected" tal:content="mode/label">Filename</option>
+			</select>
+			<select name="order">
+				<option value="ASC" i18n:translate="">Ascending</option>
+				<option value="DESC" tal:attributes="selected not:uacp_sort_asc" i18n:translate="">Descending</option>
+			</select>
+			<button i18n:translate="">Submit</button>
+		</td>
+	</tr>
+</tbody></table>
+
+<table>
+<thead>
+	<tr>
+		<th i18n:translate="">File_name</th>
+		<th i18n:translate="">Topic</th>
+		<th i18n:translate="">Filesize</th>
+		<th i18n:translate="">Downloaded</th>
+		<th i18n:translate="">Sort_Time</th>
+		<th i18n:translate="">Delete</th>
+	</tr>
+</thead><tbody>
+	<tr tal:repeat="attachment attachrow">
+		<td><a tal:attributes="href attachment/U_VIEW_ATTACHMENT" target="_blank" tal:content="attachment/upload_name">attachment/FILENAME</a></td>
+		<td><a tal:attributes="href attachment/U_VIEW_POST" target="_blank" tal:content="attachment/topic_title">attachment/topic_title</a></td>
+		<td tal:content="attachment/SIZE" style="text-align:center">attachment/SIZE</td>
+		<td tal:content="attachment/download_count" style="text-align:center">attachment/download_count</td>
+		<td tal:content="attachment/POST_TIME" style="text-align:center">attachment/POST_TIME</td>
+		<td style="text-align:center"><input type="checkbox" name="delete_id_list[]" tal:attributes="value attachment/attach_id"/></td>
+	</tr>
+</tbody><tfoot>
+	<tr>
+		<td colspan="0" style="text-align:right">
+			<b><a href="javascript:select_switch(true);" i18n:translate="">Mark_all</a>
+			:: <a href="javascript:select_switch(false);" i18n:translate="">Unmark_all</a></b>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="0" style="text-align:right">
+			<button name="delete" i18n:translate="">Delete_marked</button>
+		</td>
+	</tr>
+</tfoot></table>
+
+<table tal:condition="PAGE_NUMBER"><tbody>
+	<tr>
+		<td tal:content="structure PAGE_NUMBER">Page 1 of 1</td>
+		<td style="text-align:right" tal:content="structure PAGINATION">PAGINATION</td>
+	</tr>
+</tbody></table>
+
+</form>

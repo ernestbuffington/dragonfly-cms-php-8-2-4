@@ -1,0 +1,21 @@
+<nav class="vertical" itemscope="" itemtype="http://schema.org/SiteNavigationElement">
+	<ul tal:repeat="cat vertical">
+		<li>
+			<img tal:condition="cat/image" tal:attributes="src cat/image;alt cat/title"/>
+			<a tal:condition="cat/image" tal:attributes="href cat/link/url; target cat/link/target; class cat/css_class">
+				<span tal:condition="link/url" tal:content="cat/title" itemprop="name"></span>
+				<span tal:condition="not:link/url" tal:replace="cat/title"></span>
+			</a>
+			<hr tal:condition="not:cat/title"/>
+			<ul tal:condition="cat/items">
+				<li tal:repeat="item cat/items">
+					<img tal:condition="item/image" tal:attributes="src item/image;alt item/title"/>
+					<a tal:attributes="itemprop item/link/itemprop;rel item/link/rel;href item/link/url; target item/link/target; class item/css_class">
+						<span tal:condition="item/link/url" tal:content="item/title" itemprop="name"></span>
+						<span tal:condition="not:item/link/url" tal:replace="item/title"></span>
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</nav>

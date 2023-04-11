@@ -1,0 +1,91 @@
+<ul class="tabs">
+	<li id="social-config"><a href="?admin&amp;op=social">Options</a>
+		<div class="table1">
+			<form method="post" accept-charset="utf-8" action="?admin&amp;op=social">
+				<table>
+					<tbody>
+						<tr>
+							<td style="width:300px" i18n:translate="Mode"></td>
+							<td>
+								<select name="config[mode]">
+									<option tal:repeat="mode form/mode" tal:content="mode"
+									tal:attributes="value repeat/mode/key; selected php:${repeat/mode/key}==${social/config/mode}"></option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<button type="reset" i18n:translate="_RESET"></button>
+								<button i18n:translate="_SAVECHANGES"></button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+	</li>
+
+	<li id="social-adapters"><a href="?admin&amp;op=social#social-adapters">Adapters</a>
+		<div class="table1">
+			<form tal:repeat="adapter social/adapters" method="post" accept-charset="utf-8" action="?admin&amp;op=social">
+				<table class="table1">
+				<thead>
+					<tr class="blockhead">
+						<th colspan="2" class="toggle" tal:attributes="id 'toggle${repeat/adapter/key}'">
+							<span tal:content="repeat/adapter/key" tal:omit-tag="">Service</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody tal:attributes="id repeat/adapter/key">
+					<p tal:repeat="config adapter" tal:omit-tag="">
+					<tr tal:condition="php:'active' == ${repeat/config/key}">
+						<td style="width:300px" i18n:translate="">Active</td>
+						<td>
+							<input type="radio" tal:attributes="name 'adapters[${repeat/adapter/key}][active]'; checked config" value="1" i18n:translate="Yes"/>
+							<input type="radio" tal:attributes="name 'adapters[${repeat/adapter/key}][active]'; checked not:config" value="0" i18n:translate="No"/>
+						</td>
+					</tr>
+					<tr tal:condition="php:'active' != ${repeat/config/key}">
+						<td style="width:300px" tal:content="repeat/config/key"></td>
+						<td><input type="text" tal:attributes="name 'adapters[${repeat/adapter/key}][${repeat/config/key}]'; value config"/></td>
+					</tr>
+					</p>
+					<tr>
+						<td colspan="2">
+							<button type="reset" i18n:translate="">Reset</button>
+							<button i18n:translate="">Save</button>
+						</td>
+					</tr>
+				</tbody>
+				</table>
+			</form>
+		</div>
+	</li>
+
+	<li id="social-plugins"><a href="?admin&amp;op=social#social-plugins">Plugins</a>
+		<div class="table1">
+			<form method="post" accept-charset="utf-8" action="?admin&amp;op=social">
+				<table>
+					<tbody>
+						<tr tal:repeat="plugin social/plugins">
+							<td style="width:300px" tal:content="plugin/n"></td>
+							<td><input type="checkbox" tal:attributes="name 'plugins[${repeat/plugin/key}]'; checked plugin/active"/></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<button type="reset" i18n:translate="_RESET"></button>
+								<button i18n:translate="_SAVECHANGES"></button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+	</li>
+</ul>
+
+

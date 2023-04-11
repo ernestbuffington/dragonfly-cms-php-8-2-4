@@ -1,0 +1,25 @@
+
+<form action="" method="post">
+<div class="table1">
+	<div tal:repeat="option poll/options">
+		<label style="width:auto;">
+			<input type="radio" name="vote_id" tal:attributes="value option/id"/>
+			<span tal:content="option/label">option text</span>
+		</label>
+	</div>
+
+	<div style="text-align:center;">
+		<input name="pollid" type="hidden" tal:attributes="value poll/id"/>
+		<button i18n:translate="_VOTE">Vote</button>
+		<br/><br/>
+	</div>
+
+	<div style="text-align:center;">
+		<a tal:attributes="href '?name=Surveys&amp;pollid=${poll/id}&amp;op=results'" i18n:translate="_RESULTS">Results</a>
+		:: <a href="?name=Surveys" i18n:translate="_POLLS">Polls</a>
+		<br/>
+		<span tal:content="poll/votes_txt">0 votes</span>
+		<span tal:condition="poll/comments" tal:content="'/ ${poll/comments_count_txt}'">0 comments</span>
+	</div>
+</div>
+</form>

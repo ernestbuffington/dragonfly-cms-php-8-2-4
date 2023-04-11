@@ -1,0 +1,16 @@
+
+<form action="" method="post">
+<div class="border">
+	<input size="25" type="text" name="search" value="" />
+	<button i18n:translate="_SEARCH">Search</button>
+	<p><strong i18n:translate="_SEARCHONLYIN">Search only in these areas:</strong></p>
+
+	<fieldset tal:repeat="mod search_modules">
+		<legend>
+			<input type="checkbox" name="modules[]" tal:attributes="value mod/module"/>
+			<span  tal:content="mod/title">mod/title</span>
+		</legend>
+		<div tal:content="structure mod/search_options">mod/search_options</div>
+	</fieldset>
+</div>
+</form>

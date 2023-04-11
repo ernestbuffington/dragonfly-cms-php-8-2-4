@@ -1,0 +1,23 @@
+<div class="border">
+<table class="statistics">
+<tbody tal:repeat="section metered">
+	<tr>
+		<th colspan="3">
+			<span tal:replace="section/title">Section title</span> -
+			<span tal:replace="section/total_hits">Section total hits</span>
+			<span tal:replace="php:_HITS">Hits</span>
+		</th>
+	</tr>
+	<tr tal:repeat="row section/rows">
+		<td style="white-space:nowrap">
+			<i tal:attributes="class 'stats-${row/class}'"></i>
+			<a tal:attributes="href php:URL::index(${row/url})" tal:content="row/name" tal:omit-tag="not:row/url"></a>
+		</td>
+		<td tal:define="perc php:round(100 * ${row/hits}/${section/total_hits},2)">
+			<meter min="0" tal:content="'${perc}%'" tal:attributes="max section/most_hits; value row/hits; title '${perc}%'">Percentuage</meter>
+		</td>
+		<td tal:content="row/hits"></td>
+	</tr>
+</tbody>
+</table>
+</div>

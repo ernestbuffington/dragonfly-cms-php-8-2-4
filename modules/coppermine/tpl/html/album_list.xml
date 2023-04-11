@@ -1,0 +1,48 @@
+<table class="flat"><tbody>
+	<tr tal:condition="albums_statistics">
+		<td colspan="0" style="text-align:center">
+			<b tal:content="albums_statistics"></b>
+		</td>
+	</tr>
+	<tr tal:repeat="row album_rows">
+		<td tal:repeat="album row" tal:attributes="style 'width:${album_column_width}%;vertical-align:top'">
+			<table class="flat" tal:condition="album/aid"><tbody>
+			<tr>
+				<th colspan="0">
+					<a tal:attributes="href album/uri" tal:content="album/album_title">album title</a>
+					<span tal:condition="album/album_adm_menu" style="float:right">
+						<a class="icon-edit" tal:attributes="href album/album_adm_menu/edit_images_uri" title="EDIT_PICS" i18n:attributes="title" i18n:translate="">EDIT_PICS</a>
+						<a class="icon-edit" tal:attributes="href album/album_adm_menu/edit_album_uri" title="MODIFY" i18n:attributes="title" i18n:translate="">MODIFY</a>
+						<a class="icon-delete" tal:attributes="href album/album_adm_menu/del_album_uri" title="DELETE" i18n:attributes="title" i18n:translate="">DELETE</a>
+					</span>
+				</th>
+			</tr>
+			<tr>
+				<td style="text-align:center;vertical-align:middle" class="thumbnails">
+					<a tal:attributes="href album/uri" class="albums"><img tal:attributes="src album/image/src; title album/image/title" alt=""/></a>
+				</td>
+				<td></td>
+				<td style="width:100%;vertical-align:top">
+					<p tal:content="bbcode album/album_desc">album desc</p>
+					<p tal:content="album/album_info">album info</p>
+				</td>
+			</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody>
+<tfoot tal:condition="albums_pagination">
+	<tr>
+		<td colspan="0" style="padding: 0">
+			<table class="flat"><tbody>
+				<tr>
+					<td style="vertical-align:middle;white-space: nowrap"><b tal:content="albums_stats"></b></td>
+					<td tal:repeat="item albums_pagination/items" class="navmenu" style="text-align:center;vertical-align:middle">
+						<a tal:omit-tag="item/current" tal:attributes="href item/uri" tal:content="item/page">1</a>
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tfoot>
+</table>

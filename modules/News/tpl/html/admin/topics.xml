@@ -1,0 +1,30 @@
+
+<div class="border">
+	<table><tbody>
+	<tr tal:repeat="topic topics">
+		<td><img tal:attributes="src topic/image" alt=""/></td>
+		<td tal:content="topic/text">topic/text</td>
+		<td>
+			<a class="icon-edit" tal:attributes="href php:URL::admin('&amp;file=topics&amp;id=${topic/id}')" i18n:translate="_EDIT">Edit</a>
+			<a class="icon-delete" tal:attributes="href php:URL::admin('&amp;file=topics&amp;delete=${topic/id}')" i18n:translate="_DELETE">Delete</a>
+		</td>
+	</tr>
+	</tbody></table>
+</div>
+
+<form action="" method="post">
+<fieldset>
+	<legend i18n:translate="_ADDATOPIC">Add a New Topic</legend>
+
+	<label for="topictext" i18n:translate="_TOPICNAME">Topic Name</label>
+	<input type="text" name="topictext" id="topictext" size="41" maxlength="40"/>
+	<br />
+	<label for="topicimage" i18n:translate="_TOPICIMAGE">Topic Image</label>
+	<select id="topicimage" name="topicimage">
+		<option tal:repeat="image topicimages" tal:content="image"></option>
+	</select>
+	<br />
+	<br />
+	<button name="createTopic" i18n:translate="_ADDTOPIC">Add Topic</button>
+</fieldset>
+</form>

@@ -1,0 +1,39 @@
+
+<div class="border">
+	<div style="text-align:center;">
+		From this page you can add, remove and edit the smilies that your users can use in various places across your site
+		<br/>
+		Smilies are stored in the "<i tal:replace="smilies_path">images/smiles/</i>" directory
+		<br/><br/>
+	</div>
+
+	<form action="" method="post" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+	<table>
+		<thead><tr>
+			<th >Code</th>
+			<th >Smile</th>
+			<th >Emotion</th>
+			<th>Action</th>
+		</tr>
+	</thead><tbody id="smilies">
+		  <tr tal:repeat="smiley smilies">
+			<td tal:content="smiley/code">roll:</td>
+			<td>
+				<input type="hidden" name="smilies[]" tal:attributes="value smiley/smilies_id"/>
+				<img alt="" src="images/smiles/icon_rolleyes.gif" tal:attributes="src '${smilies_path}${smiley/smile_url}'"/></td>
+			<td tal:content="smiley/emoticon">Rolls eyes</td>
+			<td><a class="icon-edit" tal:attributes="href '?admin&amp;op=smilies&amp;edit=${smiley/smilies_id}'" i18n:translate="_EDIT">Edit</a>
+				<a class="icon-delete" tal:attributes="href '?admin&amp;op=smilies&amp;delete=${smiley/smilies_id}'" i18n:translate="_DELETE">Delete</a></td>
+		</tr>
+	</tbody><tfoot>
+		<tr><td colspan="5">
+			<button name="updatesmiles">Update</button>
+			<button type="button" formaction="?admin&amp;op=smilies&amp;add" formmethod="get">Add new Smiley</button>
+		</td></tr>
+	</tfoot>
+	</table>
+
+	<br/>Note: Smiley packs are "phpBB Smiley Pack (.pak)" compatible
+
+	</form>
+</div>

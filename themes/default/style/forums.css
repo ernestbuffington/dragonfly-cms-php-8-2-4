@@ -1,0 +1,195 @@
+
+.forum-forums th { white-space:nowrap; }
+.forum-forums td { width:1px; white-space:nowrap; }
+.forum-forums td:nth-child(2) { width:100%; white-space:normal; }
+
+.forum-topics th { white-space:nowrap; }
+.forum-topics td { width:1px; white-space:nowrap; }
+.forum-topics td:nth-child(3) { width:100%; }
+
+table.forum-topic-posts { table-layout:fixed; }
+.forum-topic-posts hr { clear:both; border:0; border-top:1px dashed #ccc; }
+.forum-topic-posts > tbody > tr > td,
+.forum-topic-reply > tbody > tr > td { vertical-align:top; width:150px; }
+.forum-topic-posts > tbody > tr > td + td,
+.forum-topic-reply > tbody > tr > td + td { width:auto; }
+
+.forum-topic-posts > tbody > tr > td { border-bottom: 1px solid #CCC; padding-top:1em; padding-bottom:1em; }
+.forum-topic-posts .highlight { color:#FFA34F; }
+.forum-topic-posts img { max-width: 100%; }
+.forum-topic-posts .user-profile details { position: relative; margin-bottom: 0.5em; }
+.forum-topic-posts .user-profile details summary { font-weight: bolder; }
+.forum-topic-posts .user-profile details summary + * {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    left: 1em;
+    line-height: 1.5;
+    padding: 0.5em;
+    position: absolute;
+    top: 2em;
+    width: 20em;
+}
+
+.forum-topic-poll { margin: 1em; }
+.forum-topic-poll div { margin: 1em; }
+
+.forum-topic-post-attachment { border-radius: 5px; margin: 1em; }
+.forum-topic-post-attachment td { width: 15%; }
+.forum-topic-post-attachment td + td { width: 85%; }
+
+.forum-topic-reply textarea { width: 99%; height: 140px; }
+.forum-topic-reply label { display: block; width: auto; }
+
+.topic_mod a {
+	background-repeat: no-repeat;
+	display:inline-block;
+	height:18px;
+	line-height:18px;
+	overflow: hidden;
+	text-indent: 16px;
+	width:16px;
+}
+.topic_mod_archive { background-image: url('../images/forums/topic_archive.gif'); }
+.topic_mod_delete  { background-image: url('../images/forums/topic_delete.gif'); }
+.topic_mod_move    { background-image: url('../images/forums/topic_move.gif'); }
+.topic_mod_unlock  { background-image: url('../images/forums/topic_unlock.gif'); }
+.topic_mod_lock    { background-image: url('../images/forums/topic_lock.gif'); }
+.topic_mod_split   { background-image: url('../images/forums/topic_split.gif'); }
+.topic_mod_merge   { background-image: url('../images/forums/topic_merge.gif'); }
+
+a[class^="post_icon_"] {
+	background-repeat: no-repeat;
+	display:inline-block;
+	height:18px;
+	line-height:18px;
+	overflow: hidden;
+	text-indent: 59px;
+	width:59px;
+}
+a.post_icon_quote   { background-image: url('../images/forums/lang_en/icon_quote.gif'); }
+a.post_icon_edit    { background-image: url('../images/forums/lang_en/icon_edit.gif'); }
+a.post_icon_delete  { background-image: url('../images/forums/icon_delete.gif');  width:16px; }
+a.post_icon_ip      { background-image: url('../images/forums/lang_en/icon_ip.gif'); width:16px; }
+a.post_icon_search  { background-image: url('../images/forums/lang_en/icon_search.gif'); }
+
+.new-topic, .topic-reply, .new-topic-locked, .topic-reply-locked {
+	background-repeat: no-repeat;
+	display:inline-block;
+	height:25px;
+	line-height:25px;
+	overflow: hidden;
+	text-indent: 82px;
+	vertical-align:middle;
+	width:82px;
+}
+.new-topic {
+	background-image: url('../images/forums/lang_en/new-topic.png');
+}
+.topic-reply {
+	background-image: url('../images/forums/lang_en/reply.png');
+}
+.new-topic-locked,
+.topic-reply-locked {
+	background-image: url('../images/forums/lang_en/reply-locked.png');
+}
+
+.user-online, .user-offline,
+.post-unread, .post-read {
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 16px;
+}
+
+.user-online {
+	background-image: url('../images/forums/icon_online.gif');
+}
+.user-offline {
+	background-image: url('../images/forums/icon_offline.gif');
+}
+
+.post-unread {
+	background-image: url('../images/forums/icon_minipost_new.png');
+}
+.post-read {
+	background-image: url('../images/forums/icon_minipost.png');
+}
+
+[class^="forum-icon"] {
+	display: inline-block;
+	vertical-align: middle;
+	height: 32px;
+	width: 32px;
+}
+.forum-icon            { background-image: url('../images/forums/forum.png'); }
+.forum-icon-new        { background-image: url('../images/forums/forum_new.png'); }
+.forum-icon-locked     { background-image: url('../images/forums/forum_locked.png'); }
+.forum-icon-link       { background-image: url('../images/forums/forum_link.png'); }
+.forum-icon-sub        { background-image: url('../images/forums/forum_sub.png'); }
+.forum-icon-new-sub    { background-image: url('../images/forums/forum_new_sub.png'); }
+.forum-icon-locked-sub { background-image: url('../images/forums/forum_locked_sub.png'); }
+
+[class^="forum-topic-icon"] {
+	display: inline-block;
+	vertical-align: middle;
+	height: 22px;
+	width: 22px;
+}
+.forum-topic-icon            { background-image: url('../images/forums/topic.png'); }
+.forum-topic-icon-new        { background-image: url('../images/forums/topic_new.png'); }
+.forum-topic-icon-announce   { background-image: url('../images/forums/topic_announce.png'); }
+.forum-topic-icon-sticky     { background-image: url('../images/forums/topic_sticky.png'); }
+.forum-topic-icon-hot        { background-image: url('../images/forums/topic_hot.png'); }
+.forum-topic-icon-hot-new    { background-image: url('../images/forums/topic_hot_new.png'); }
+.forum-topic-icon-locked     { background-image: url('../images/forums/topic_locked.png'); }
+.forum-topic-icon-locked-new { background-image: url('../images/forums/topic_locked_new.png'); }
+
+.forums-info-icons {
+	white-space:nowrap;
+	width:40%;
+	float:left;
+}
+.forums-info-perms {
+	white-space:nowrap;
+	width:50%;
+	float:right;
+	text-align:right;
+}
+
+@media only screen and (max-width: 800px)
+{
+	.forum-forums th + th,
+	.forum-forums td + td + td,
+	.forum-topics th + th,
+	.forum-topics td:nth-of-type(2),
+	.forum-topics td + td + td + td {
+		display: none;
+	}
+	.forums-info-icons,
+	.forums-info-perms {
+		width:auto;
+	}
+	.forum-topic-posts,
+	.forum-topic-posts > tbody,
+	.forum-topic-posts > tbody > tr,
+	.forum-topic-posts > tbody > tr > td {
+		display: block;
+		padding: 0;
+		width: 100%;
+	}
+	.forum-topic-posts > tbody > tr > td:not(.post) {
+		border: none;
+		position: relative;
+	}
+	.forum-topic-posts .user-profile > * {
+		display: none;
+	}
+	.forum-topic-posts .user-profile details {
+		display: inline-block;
+	}
+	.forum-topic-posts .user-profile p {
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 2px;
+	}
+}

@@ -1,0 +1,55 @@
+<div tal:condition="not:view_story" class="table1" tal:content="structure php:_SUBMITADVICE">
+	Please use the form below to complete your article, double checking it for proper grammar and spelling<br/>
+	Please take note that we do not publish all articles that we receive<br/>
+	Our staff will review your article and may edit it's content based on grammar and spelling mistakes
+</div>
+
+<fieldset tal:condition="view_story">
+	<legend i18n:translate="_PREVIEW">Preview</legend>
+	<div style="text-align:center;" i18n:translate="_CHECKSTORY">_CHECKSTORY</div>
+	<div tal:condition="not:story/topic" style="text-align:center;" i18n:translate="_SELECTTOPIC">_SELECTTOPIC</div>
+	<img tal:condition="story/topicimage" tal:attributes="src 'images/topics/${story/topicimage}'" style="float:right" alt=""/>
+	<b tal:content="story/title"></b>
+	<p tal:content="structure story/hometext"></p>
+	<p tal:content="structure story/bodytext"></p>
+</fieldset>
+
+<form method="post" action="?name=News&amp;file=submit" id="submitnews" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+<fieldset>
+	<legend i18n:translate="_Submit_NewsLANG">Submit News</legend>
+
+	<label i18n:translate="_TITLE">Title</label>
+	<input type="text" name="title" tal:attributes="value story/title"/>
+	<br/>
+
+	<label i18n:translate="_TOPIC">Topic</label>
+	<select name="topic">
+		<option i18n:translate="_SELECTTOPIC">Select Topic</option>
+		<option tal:repeat="topic topics" tal:attributes="selected php:${topic/id}==${story/topic}; value topic/id" tal:content="topic/label">Dragonfly</option>
+	</select>
+	<br/>
+
+	<div tal:condition="CONFIG/global/multilingual">
+		<label i18n:translate="_LANGUAGE">Language</label>
+		<select name="language">
+			<option value="" i18n:translate="_ALL">all</option>
+			<option tal:repeat="lng L10N/getActiveList" tal:attributes="value lng/value; selected php:${lng/value}==${story/language}" tal:content="lng/label"></option>
+		</select>
+		<br/>
+	</div>
+
+	<label i18n:translate="_STORYTEXT">Story Text</label>
+	<textarea class="wysiwyg" style="width:99%" name="hometext" rows="15" cols="80" wrap="virtual" tal:content="story/hometext"></textarea>
+	<br/>
+
+	<label i18n:translate="_EXTENDEDTEXT">Extended Text</label>
+	<textarea class="wysiwyg" style="width:99%" name="bodytext" rows="25" cols="80" wrap="virtual" tal:content="story/bodytext"></textarea>
+	<br/>
+
+	<div style="text-align:center;">
+		<button i18n:translate="_PREVIEW">Preview</button>
+		<button tal:condition="view_story" name="save" i18n:translate="_OK">Ok</button>
+	</div>
+
+</fieldset>
+</form>

@@ -1,0 +1,91 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">Manage_extension_groups</h1>
+
+	<p i18n:translate="">Manage_extension_groups_explain</p>
+
+	<div tal:condition="ERROR_MESSAGE" class="error" tal:content="structure ERROR_MESSAGE">ERROR_MESSAGE</div>
+
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th colspan="2" i18n:translate="">Extension_group</th>
+			<th i18n:translate="">Special_category</th>
+			<th i18n:translate="">Allowed</th>
+			<th i18n:translate="">Download_mode</th>
+			<th i18n:translate="">Max_groups_filesize</th>
+			<th i18n:translate="">Allowed_forums</th>
+			<th i18n:translate="">Delete</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td></td>
+			<td><input type="text" size="20" maxlength="100" name="add_extension_group"/></td>
+			<td><select name="add_category">
+				<option tal:repeat="cat group_categories" tal:attributes="value cat/id" tal:content="cat/label"></option>
+			</select></td>
+			<td><input type="checkbox" name="add_allowed"/></td>
+			<td><select name="add_download_mode">
+				<option value="1">inline</option>
+				<option value="2">physical</option>
+			</select></td>
+			<td><input type="text" size="3" maxlength="15" name="add_max_filesize" tal:attributes="value MAX_FILESIZE"/>
+				<select tal:replace="structure S_FILESIZE"></select></td>
+			<td></td>
+			<td><button name="add_extension_group_check" i18n:translate="">Add_new</button></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="9" i18n:translate="">Manage_extension_groups</th>
+		</tr>
+	</tbody>
+	<tbody tal:repeat="group ext_groups">
+		<tr>
+			<td>
+				<b><a tal:attributes="href group/U_VIEWGROUP" tal:content="group/CAT_BOX">+</a></b>
+			</td>
+			<td>
+				<input type="text" size="20" maxlength="100" tal:attributes="name 'ext_groups[${group/group_id}][group_name]'; value group/group_name"/>
+			</td>
+			<td>
+				<select tal:attributes="name 'ext_groups[${group/group_id}][cat_id]'">
+					<option tal:repeat="cat group_categories" tal:attributes="value cat/id; selected php:${cat/id}==${group/cat_id}" tal:content="cat/label"></option>
+				</select>
+			</td>
+			<td>
+				<input type="checkbox" tal:attributes="name 'ext_groups[${group/group_id}][allow_group]'; value group/group_id; checked group/allow_group"/>
+			</td>
+			<td>
+				<select tal:attributes="name 'ext_groups[${group/group_id}][download_mode]'">
+					<option value="1">inline</option>
+					<option value="2" tal:attributes="selected group/download_mode">physical</option>
+				</select>
+			</td>
+			<td>
+				<input type="text" size="3" maxlength="15" tal:attributes="name 'ext_groups[${group/group_id}][max_filesize]'; value group/max_filesize"/>
+				<select tal:replace="structure group/S_FILESIZE"></select>
+			</td>
+			<td>
+				<a tal:attributes="href group/U_FORUM_PERMISSIONS" i18n:translate="">Ext_group_permissions</a>
+			</td>
+			<td>
+				<input type="checkbox" name="delete_extgroups[]" tal:attributes="value group/group_id"/>
+			</td>
+		</tr>
+		<tr tal:repeat="item group/extensions">
+			<td></td>
+			<td tal:content="item/EXTENSION">ext</td>
+			<td colspan="7" tal:content="item/EXPLANATION">EXPLANATION</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="9" style="height:29px;">
+				<button type="reset" i18n:translate="">Reset</button>
+				<button i18n:translate="">Submit</button>
+			</td>
+		</tr>
+	</tfoot></table>
+	</form>
+</div>

@@ -1,0 +1,14 @@
+User-agent: Baidu
+Disallow: /
+
+User-agent: *alexa*
+Disallow: /
+
+User-agent: Googlebot-Image
+Disallow: /
+
+User-agent: Fasterfox
+Disallow: /
+
+User-agent: *
+Crawl-delay: 20

@@ -1,0 +1,14 @@
+
+<div tal:replace="structure php:here.toString('pagination')"></div>
+
+<p tal:condition="not:list_values" style="font-weight:bold">No data to display.</p>
+<table tal:condition-else="">
+<thead><tr>
+	<th tal:repeat="cell list_header" tal:content="cell/S_TITLE">cell/S_TITLE</th>
+</tr></thead><tbody>
+<tr tal:repeat="row list_values" tal:attributes="class row/S_CLASS">
+	<td tal:repeat="cell row/item" tal:attributes="class cell/S_CLASS" tal:content="structure cell/S_DATA">cell/S_DATA</td>
+</tr>
+</tbody></table>
+
+<div tal:replace="structure php:here.toString('pagination')"></div>

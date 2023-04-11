@@ -1,0 +1,7 @@
+# CPG Dragonfly CMS
+# Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+# Released under the GNU GPL version 2 or any later version
+
+<filesmatch "\.php$">
+deny from all
+</filesmatch>

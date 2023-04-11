@@ -1,0 +1,57 @@
+
+<div class="border">
+
+<form action="" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+<table><tbody>
+	<tr>
+		<td colspan="2" i18n:translate="">_MA_ITEMS_REQUIRED</td>
+	</tr>
+	<tr tal:repeat="field registerinfo">
+		<td style="width:38%">
+			<var tal:replace="field/label"></var>:
+			<br tal:condition="field/note"/><em tal:content="field/note"></em>
+		</td>
+		<td>
+			<input tal:attributes="type field/type; name field/name; id 'register-${field/name}'; maxlength field/length; required field/required; pattern field/pattern"/>
+			<span tal:condition="field/info" class="infobox"><span tal:content="field/info">info</span></span>
+		</td>
+	</tr>
+</tbody>
+<tbody tal:repeat="section register_sections">
+	<tr tal:condition="section/label"><th colspan="2" tal:content="section/label"></th></tr>
+	<tr tal:repeat="field section/fields">
+		<td>
+			<var tal:replace="field/label">field label</var>
+			<br tal:condition="field/note"/><em tal:content="structure field/note">field note</em>
+		</td>
+		<td tal:define="type field/type">
+			<input tal:condition="php:0==${type}" type="text" tal:attributes="name field/name; maxlength field/size; value field/value; required field/required"/>
+			<span tal:condition-else="php:1==${type}">
+				<input type="radio" value="1" tal:attributes="name field/name; checked field/checked; required field/required"/><span i18n:translate="_YES">yes</span>
+				<input type="radio" value="0" tal:attributes="name field/name; checked not:field/checked; required field/required"/><span i18n:translate="_NO">no</span>
+			</span>
+			<textarea tal:condition-else="php:2==${type}" tal:attributes="name field/name; required field/required" tal:content="field/value" style="width: 300px" rows="6" cols="30"></textarea>
+			<input tal:condition-else="php:4==${type}" type="number" tal:attributes="name field/name; maxlength field/size; value field/value; required field/required" style="width: 100px"/>
+			<span tal:condition-else="php:5==${type}">
+				<input type="radio" value="m" tal:attributes="name field/name; checked php:'m'==${field/value}; required field/required"/><span i18n:translate="_MALE">male</span>
+				<input type="radio" value="f" tal:attributes="name field/name; checked php:'f'==${field/value}; required field/required"/><span i18n:translate="_FEMALE">female</span>
+			</span>
+			<input tal:condition-else="php:6==${type}" type="date" tal:attributes="name field/name; value field/value; required field/required" style="width: 100px" maxlength="10" placeholder="2010-10-24"/>
+			<select tal:condition-else="php:8==${type}" tal:attributes="name field/name; required field/required">
+				<option tal:repeat="option field/options" tal:attributes="value option/value; selected option/selected" tal:content="option/label">theme</option>
+			</select>
+		</td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td colspan="2" style="text-align:center">
+			<input type="hidden" name="terms_coppa" tal:attributes="value php:empty($_POST['terms_coppa'])?0:1"/>
+			<button i18n:translate="_SUBMIT" formmethod="post">Submit</button>
+			<button type="reset" i18n:translate="_RESET">Reset</button>
+		</td>
+	</tr>
+</tfoot></table>
+</form>
+
+</div>

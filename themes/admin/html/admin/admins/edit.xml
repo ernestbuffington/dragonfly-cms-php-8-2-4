@@ -1,0 +1,63 @@
+<div class="border" tal:condition="php:can_admin()">
+	<form action="" method="post" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+	<fieldset>
+		<legend i18n:translate="_MODIFYINFO">Modify Info</legend>
+
+		<label for="add_aid" i18n:translate="_NICKNAME">Nickname</label>
+		<span tal:content="admin/aid"></span>
+		<br/>
+
+		<label for="chng_email" i18n:translate="_EMAIL">Email</label>
+		<input type="email" maxlength="255" size="31" id="chng_email" name="email" tal:attributes="value admin/email"/>
+
+		<div tal:condition="php:can_admin()">
+			<label for="radmin[]" i18n:translate="_PERMISSIONS">Permissions</label>
+			<select multiple="multiple" size="10" id="radmin[]" name="radmin[]">
+				<option tal:repeat="op admin_ops" tal:attributes="value repeat/op/key; selected op" tal:content="repeat/op/key">blocks</option>
+			</select>
+			<br/>
+
+			<label for="radminsuper" i18n:translate="_SUPERUSER">Super User</label>
+			<input type="checkbox" value="1" id="radminsuper" name="radminsuper" tal:attributes="checked admin/radminsuper;title php:_SUPERWARNING"/>
+			<br/>
+		</div>
+
+		<label for="chng_pwd" i18n:translate="_PASSWORD">Password</label>
+		<input type="password" id="chng_pwd" name="pwd" tal:attributes="pattern admin_pass_pattern"/>
+		<span class="infobox"><span tal:content="admin_pass_info">admin_pass_info</span></span>
+		<br/>
+		<label for="chng_pwd2" i18n:translate="_RETYPEPASSWD">Retype Password</label>
+		<input type="password" id="chng_pwd2" name="pwd2" tal:attributes="pattern admin_pass_pattern"/>
+		<i i18n:translate="_FORCHANGES">(For Changes Only)</i>
+		<br/>
+		<br/>
+
+		<label for="totp_2fa">Two-factor authentication</label>
+		<div style="display:inline-block">
+			TOTP: <button tal:condition="admin/totp_2fa" name="deactivate_totp" i18n:translate="">Deactivate</button>
+				  <button tal:condition-else="" name="activate_totp" i18n:translate="">Activate</button>
+		</div>
+		<div tal:condition="admin/totp_2fa" style="margin-left:200px">
+			<div tal:content="admin/totp_2fa"></div>
+			<div tal:content="admin/totp_2fa_qr" style="margin:1em 0;font-family:monospace;letter-spacing:0em;line-height:1em;white-space:pre-wrap;"></div>
+		</div>
+		<div tal:condition-else="" style="margin-left:200px">WARNING!
+			When activated, store the code in a secure place or you can't login when your authenticator is lost.
+			You also must have a phone app like:
+			<ul>
+				<li>FreeOTP:
+					<a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">Android</a>
+					/ <a href="https://itunes.apple.com/nl/app/freeotp-authenticator/id872559395">iOS</a>
+				</li>
+				<li>Google Authenticator:
+					<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Android</a>
+					/ <a href="https://itunes.apple.com/nl/app/google-authenticator/id388497605">iOS</a>
+				</li>
+			</ul>
+		</div>
+		<br/>
+		<br/>
+
+		<button i18n:translate="_SAVECHANGES">Save Changes</button>
+	</fieldset></form>
+</div>

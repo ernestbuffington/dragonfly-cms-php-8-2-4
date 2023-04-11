@@ -1,0 +1,74 @@
+<div class="border" tal:condition="CONFIG/global/update_monitor">
+	<p style="text-align:center">
+		<strong i18n:translate="_UM">Dragonfly Update Service</strong>
+	</p>
+	<p style="text-align:center" tal:condition="not:CPG/update_monitor">
+		<img src="cdn://images/update/error.png" alt=""/><br/><br/>
+		<span tal:replace="php:_UM_F"></span>
+	</p>
+	<div tal:condition="CPG/update_monitor">
+		<p style="text-align:center" tal:condition="CPG/update_monitor/using_latest">
+			<img src="cdn://images/update/green.png" alt=""/><br/><br/>
+			<span style="color: #009933;">
+				<strong>
+					<span tal:replace="php:_UM_G"></span>
+					(<span tal:replace="php:CPG_NUKE"></span><span tal:condition="CPG/update_monitor/using_scm"> SCM</span>)
+				</strong>
+			</span>
+		</p>
+		<p style="text-align:center" tal:condition="not:CPG/update_monitor/using_latest">
+			<img src="cdn://images/update/red.png" alt=""/><br/><br/>
+			<span style="color: #ae0000;"><strong tal:content="php:sprintf(_UM_R, ${CPG/update_monitor/current}, ${CPG/update_monitor/url})"></strong></span>
+		</p>
+		<fieldset tal:repeat="msg CPG/update_monitor/msg">
+			<legend tal:content="msg/title"></legend>
+			<p tal:content="bbcode msg/desc"></p>
+			<p>
+				<span i18n:translate="">_POSTEDON</span>
+				<span tal:replace="php:here.L10N.date('F d, Y', ${msg/date})"></span>
+			</p>
+		</fieldset>
+	</div>
+</div>
+
+<div class="border" style="text-align:center;">
+	<strong i18n:translate="_WHOSONLINE">Who's Online</strong>
+	<br/><br/>
+	<strong i18n:translate="_BON">Online Now</strong>
+	<br/>
+	<span tal:replace="php:_BMEM"/>: <strong tal:content="online_num/0"></strong> |
+	<span tal:replace="php:_BVIS"/>: <strong tal:content="online_num/1"></strong> |
+	<span tal:replace="php:_BOTS"/>: <strong tal:content="online_num/3"></strong> |
+	<span tal:replace="php:_STAFF"/>: <strong tal:content="online_num/2"></strong><br/>
+	<br/>
+	<strong i18n:translate="_BMEMP">Membership</strong><br/>
+	<span tal:replace="php:_BTD"/>: <strong tal:content="new_members/today"></strong> |
+	<span tal:replace="php:_BYD"/>: <strong tal:content="new_members/yesterday"></strong>
+</div>
+
+<div class="border" style="text-align:center;">
+	<strong i18n:translate="_DEFHOMEMODULE">Default Homepage Module</strong>
+	<br/><br/>
+	[ <strong tal:content="php:str_replace('_',' ',${CONFIG/global/main_module})"></strong> ]
+	<span tal:condition="php:can_admin()">
+		[ <a href="?admin&amp;op=modules" i18n:translate="_CHANGE">Change</a> ]
+	</span>
+</div>
+
+<div class="border" style="text-align:center;">
+	<strong i18n:translate="_NP_ADMIN">Notepad</strong>
+	<br/><br/>
+	<form action="" method="post">
+	<div tal:condition="CONFIG/notepad/lock">
+		<strong style="color: #ff0000" i18n:translate="_NP_LOCKED"></strong>
+		<p tal:content="CONFIG/notepad/text"></p>
+		<button name="np_unlock" i18n:translate="_NP_UNLOCK" tal:condition="php:can_admin()"></button>
+	</div>
+	<div tal:condition="not:CONFIG/notepad/lock">
+		<textarea name="np_notes" rows="9" cols="50" tal:content="CONFIG/notepad/text"></textarea>
+		<br/><br/>
+		<button name="np_save" i18n:translate="_NP_SAVE"></button>
+		<button name="np_lock" i18n:translate="_NP_LOCK" tal:condition="php:can_admin()"></button>
+	</div>
+	</form>
+</div>

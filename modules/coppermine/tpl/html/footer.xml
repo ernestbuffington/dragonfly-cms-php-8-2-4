@@ -1,0 +1,23 @@
+
+<div tal:replace="structure '&lt;/div&gt;'"></div>
+
+<table class="border" tal:condition="gallery_debug">
+	<caption>Debug Information</caption>
+	<tbody>
+		<tr><th colspan="2">CPG Config</th></tr>
+		<tr><td>TABLE_PICTURES</td><td tal:content="gallery_debug/config/TABLE_PICTURES"></td></tr>
+		<tr><td>TABLE_ALBUMS</td><td tal:content="gallery_debug/config/TABLE_ALBUMS"></td></tr>
+		<tr><td>TABLE_COMMENTS</td><td tal:content="gallery_debug/config/TABLE_COMMENTS"></td></tr>
+		<tr><td>TABLE_CATEGORIES</td><td tal:content="gallery_debug/config/TABLE_CATEGORIES"></td></tr>
+		<tr><td>TABLE_CONFIG</td><td tal:content="gallery_debug/config/TABLE_CONFIG"></td></tr>
+		<tr><td>TABLE_VOTES</td><td tal:content="gallery_debug/config/TABLE_VOTES"></td></tr>
+		<tr><td>allow_private_albums</td><td tal:content="gallery_debug/config/allow_private_albums"></td></tr>
+		<tr><td>fullpath</td><td tal:content="gallery_debug/config/fullpath"></td></tr>
+		<tr><td>USER_IN_GROUPS</td><td tal:content="gallery_debug/user_groups"></td></tr>
+		<tr><td>Language Directory</td><td tal:content="gallery_debug/language_dir"></td></tr>
+	</tbody><tbody>
+		<tr><th colspan="2">Queries</th></tr>
+		<tr><td style="vertical-align:top">GET</td><td><pre tal:content="gallery_debug/GET"></pre></td></tr>
+		<tr><td style="vertical-align:top">POST</td><td><pre tal:content="gallery_debug/POST"></pre></td></tr>
+	</tbody>
+</table>

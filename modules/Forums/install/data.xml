@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="bbconfig" onduplicate="IGNORE">
+		<col name="config_name"/>
+		<col name="config_value"/>
+		<tr><td>admin_color</td><td>red</td></tr>
+		<tr><td>allow_bbcode</td><td>1</td></tr>
+		<tr><td>allow_forum_watch</td><td>1</td></tr>
+		<tr><td>allow_html</td><td>0</td></tr>
+		<tr><td>allow_html_tags</td><td>b,i,pre</td></tr>
+		<tr><td>allow_online_index</td><td>0</td></tr>
+		<tr><td>allow_online_posts</td><td>0</td></tr>
+		<tr><td>allow_online_today</td><td>0</td></tr>
+		<tr><td>allow_sig</td><td>1</td></tr>
+		<tr><td>allow_smilies</td><td>1</td></tr>
+		<tr><td>allow_topic_recycle</td><td>0</td></tr>
+		<tr><td>archive_enable</td><td>0</td></tr>
+		<tr><td>board_startdate</td><td israw="true">UNIX_TIMESTAMP()</td></tr>
+		<tr><td>default_dateformat</td><td>D M d, Y g:i a</td></tr>
+		<tr><td>edit_last_post_only</td><td>0</td></tr>
+		<tr><td>flood_interval</td><td>15</td></tr>
+		<tr><td>hot_threshold</td><td>25</td></tr>
+		<tr><td>max_poll_options</td><td>10</td></tr>
+		<tr><td>member_color</td><td>blue</td></tr>
+		<tr><td>moderator_color</td><td>green</td></tr>
+		<tr><td>online_index_group</td><td>0</td></tr>
+		<tr><td>online_today_group</td><td>0</td></tr>
+		<tr><td>posts_per_page</td><td>15</td></tr>
+		<tr><td>prune_enable</td><td>0</td></tr>
+		<tr><td>restricted_group</td><td>0</td></tr>
+		<tr><td>ropm_quick_reply</td><td>1</td></tr>
+		<tr><td>topic_recycle_forum</td><td>0</td></tr>
+		<tr><td>topics_per_page</td><td>50</td></tr>
+		<tr><td>user_reg_date_age</td><td>0</td></tr>
+	</table>
+
+	<table name="bbtopic_icons" datamode="ON-EMPTY">
+		<col name="forum_id"/>
+		<col name="icon_url"/>
+		<col name="icon_name"/>
+		<tr><td>-1</td><td>images/icons/misc/asterisk.gif</td><td>asterisk</td></tr>
+		<tr><td>-1</td><td>images/icons/misc/arrow_bold_ltr.gif</td><td>Arrow ltr</td></tr>
+		<tr><td>-1</td><td>images/icons/smile/exclaim.gif</td><td>Exclamation</td></tr>
+		<tr><td>-1</td><td>images/icons/smile/question.gif</td><td>Questionmark</td></tr>
+		<tr><td>-1</td><td>images/icons/smile/idea.gif</td><td>Idea</td></tr>
+	</table>
+
+	<table name="bbattachments_config" onduplicate="IGNORE">
+		<col name="config_name"/>
+		<col name="config_value"/>
+		<tr><td>upload_dir</td><td>uploads/forums</td></tr>
+		<tr><td>topic_icon</td><td>images/icons/icon_clip.gif</td></tr>
+		<tr><td>display_order</td><td>0</td></tr>
+		<tr><td>max_attachments</td><td>3</td></tr>
+		<tr><td>disable_mod</td><td>0</td></tr>
+		<tr><td>show_apcp</td><td>0</td></tr>
+		<tr><td>attach_version</td><td>2.3.9</td></tr>
+		<tr><td>img_display_inlined</td><td>1</td></tr>
+		<tr><td>img_max_width</td><td>0</td></tr>
+		<tr><td>img_max_height</td><td>0</td></tr>
+		<tr><td>img_link_width</td><td>0</td></tr>
+		<tr><td>img_link_height</td><td>0</td></tr>
+		<tr><td>img_create_thumbnail</td><td>0</td></tr>
+		<tr><td>img_min_thumb_filesize</td><td>12000</td></tr>
+	</table>
+
+	<table name="bbforbidden_extensions" datamode="ON-EMPTY">
+		<col name="extension"/>
+		<tr><td>php</td></tr>
+		<tr><td>phtml</td></tr>
+		<tr><td>pl</td></tr>
+		<tr><td>asp</td></tr>
+		<tr><td>cgi</td></tr>
+	</table>
+
+	<table name="bbextension_groups" datamode="ON-EMPTY">
+		<col name="group_id"/>
+		<col name="group_name"/>
+		<col name="cat_id"/>
+		<col name="allow_group"/>
+		<col name="download_mode"/>
+		<col name="forum_permissions"/>
+		<tr><td>1</td><td>Images</td><td>1</td><td>1</td><td>1</td><td></td></tr>
+		<tr><td>2</td><td>Archives</td><td>0</td><td>1</td><td>1</td><td></td></tr>
+		<tr><td>3</td><td>Plain Text</td><td>0</td><td>0</td><td>1</td><td></td></tr>
+		<tr><td>4</td><td>Documents</td><td>0</td><td>0</td><td>1</td><td></td></tr>
+	</table>
+
+	<table name="bbextensions" datamode="ON-EMPTY">
+		<col name="group_id"/>
+		<col name="extension"/>
+		<tr><td>1</td><td>gif</td></tr>
+		<tr><td>1</td><td>png</td></tr>
+		<tr><td>1</td><td>jpeg</td></tr>
+		<tr><td>1</td><td>jpg</td></tr>
+		<tr><td>2</td><td>7z</td></tr>
+		<tr><td>2</td><td>bz2</td></tr>
+		<tr><td>2</td><td>gz</td></tr>
+		<tr><td>2</td><td>rar</td></tr>
+		<tr><td>2</td><td>tbz</td></tr>
+		<tr><td>2</td><td>tgz</td></tr>
+		<tr><td>2</td><td>tar</td></tr>
+		<tr><td>2</td><td>zip</td></tr>
+		<tr><td>3</td><td>c</td></tr>
+		<tr><td>3</td><td>cpp</td></tr>
+		<tr><td>3</td><td>h</td></tr>
+		<tr><td>3</td><td>hpp</td></tr>
+		<tr><td>3</td><td>txt</td></tr>
+		<tr><td>4</td><td>doc</td></tr>
+		<tr><td>4</td><td>ods</td></tr>
+		<tr><td>4</td><td>odt</td></tr>
+		<tr><td>4</td><td>pdf</td></tr>
+		<tr><td>4</td><td>xls</td></tr>
+	</table>
+
+</database>

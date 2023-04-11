@@ -1,0 +1,32 @@
+<h1>Avatar Management</h1>
+
+<p>The table below shows all currently stored uploaded avatars. These are only the avatars which were selected to be
+uploaded by users, this will not show avatars currently in the gallery. If any of the listed avatars are no longer used
+by any user an option to delete it will appear. This is a permanent delete, once you have selected to delete an
+avatar it will be removed from the server and no longer be available. You will be prompted for confirmation (requires
+Javascript).</p>
+
+<table><thead>
+	<tr>
+		<th style="width:40%" i18n:translate="">Avatar</th>
+		<th style="width:20%" i18n:translate="_FILESIZE">File Size</th>
+		<th style="width:20%" i18n:translate="">Username</th>
+		<th style="width:20%" i18n:translate="_EDIT">Edit</th>
+	</tr>
+</thead><tbody>
+	<tr tal:repeat="avatar avatars">
+		<td><img tal:attributes="src avatar/AVATAR_IMG" alt=""/>
+			<div tal:content="avatar/FILENAME"></div></td>
+		<td tal:content="avatar/SIZE"></td>
+		<td tal:content="avatar/USERNAME"></td>
+		<td>
+			<a tal:condition="avatar/EDIT" tal:attributes="href avatar/EDIT" i18n:translate="_EDITUSER">Edit User</a>
+			<a tal:condition="avatar/DELETE" tal:attributes="href avatar/DELETE" i18n:translate="_DELETE">Delete</a>
+		</td>
+	</tr>
+</tbody></table>
+
+<div class="pagination" tal:condition="avatars_pagination/items">
+	<a tal:repeat="item avatars_pagination/items" tal:attributes="href item/uri" tal:content="item/page"></a>
+	<a class="next" tal:attributes="href avatars_pagination/next" tal:condition="avatars_pagination/next">▶</a>
+</div>

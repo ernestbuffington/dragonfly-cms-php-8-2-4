@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html
+	xmlns:tal="http://xml.zope.org/namespaces/tal"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+	tal:attributes="lang L10N/lng">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title tal:content="subject"></title>
+</head>
+<body tal:content="structure body">
+	<!-- $MAIL->body = 'CONTENT GOES HERE'; -->
+</body>
+</html>

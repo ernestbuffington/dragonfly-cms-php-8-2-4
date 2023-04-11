@@ -1,0 +1,15 @@
+<nav class="vtextonly" itemscope="" itemtype="http://schema.org/SiteNavigationElement">
+	<ul tal:repeat="cat vtextonly">
+		<li>
+			<span tal:content="cat/title"></span>
+			<ul tal:condition="cat/items">
+				<li tal:repeat="item cat/items">
+					<a tal:attributes="itemprop item/link/itemprop;rel item/link/rel;href item/link/url; target item/link/target; class item/css_class">
+						<span tal:condition="item/link/url" tal:content="item/title" itemprop="name"></span>
+						<span tal:condition="not:item/link/url" tal:replace="item/title"></span>
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</nav>

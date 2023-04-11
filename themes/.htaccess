@@ -1,0 +1,23 @@
+# CPG Dragonfly CMS
+# Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+# Released under the GNU GPL version 2 or any later version
+
+<filesmatch "\.php$">
+deny from all
+</filesmatch>
+
+<filesmatch "\.html$">
+deny from all
+</filesmatch>
+
+<IfModule mod_expires.c>
+ <IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|gif)$">
+  Header set Cache-Control "public"
+  </FilesMatch>
+ </IfModule>
+ ExpiresByType image/jpg A1814400
+ ExpiresByType image/jpeg A1814400
+ ExpiresByType image/png A1814400
+ ExpiresByType image/gif A1814400
+</IfModule>

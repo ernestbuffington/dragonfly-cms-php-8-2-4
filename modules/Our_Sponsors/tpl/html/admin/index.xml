@@ -1,0 +1,61 @@
+
+<h2 style="text-align:center;" i18n:translate="_BANNERS">Banners</h2>
+<div class="border">
+	<table><thead><tr>
+<!--
+		<th i18n:translate="_ADVERT">Advertisement</th>
+-->
+		<th i18n:translate="_CLIENTNAME">Client Name</th>
+		<th i18n:translate="_IMPRESSIONS">Impressions</th>
+		<th i18n:translate="_IMPLEFT">Imp. Left</th>
+		<th i18n:translate="_CLICKS">Clicks</th>
+		<th i18n:translate="_CLICKSPERCENT">% Clicks</th>
+		<th i18n:translate="_TYPE">Type</th>
+		<th i18n:translate="_STATUS">Status</th>
+		<th>Text</th>
+		<th></th>
+	</tr></thead><tbody>
+	<tr tal:repeat="banner banners">
+<!--
+		<td>
+			<div tal:condition="banner/textban" tal:attributes="style 'width:${banner/text_width}px; height:${banner/text_height}px; background-color:${banner/text_bg}'; color:${banner/text_clr}'" tal:content="banner/text_title"></div>
+			<img tal:condition-else="" tal:attributes="src banner/imageurl; alt banner/imageurl"/>
+		</td>
+-->
+		<td tal:content="banner/username">banner/username</td>
+		<td tal:content="banner/impmade">banner/impmade</td>
+		<td tal:content="banner/imp_left">banner/imp_left</td>
+		<td tal:content="banner/clicks">banner/clicks</td>
+		<td tal:content="php:round(100 * ${banner/clicks} / ${banner/impmade}, 2)">0%</td>
+		<td tal:content="banner/type">banner/type</td>
+		<td>
+			<a tal:condition="banner/active" tal:attributes="href '?admin&amp;op=Our_Sponsors&amp;id=${banner/bid}&amp;active=0'" i18n:attributes="title '_DEACTIVATE'" i18n:translate="_ACTIVE">Active</a>
+			<a tal:condition-else="" tal:attributes="href '?admin&amp;op=Our_Sponsors&amp;id=${banner/bid}&amp;active=1'" i18n:attributes="title '_ACTIVATE'" i18n:translate="_INACTIVE">Inactive</a>
+		</td>
+		<td><input type="checkbox" disabled="" tal:attributes="checked banner/textban"/></td>
+		<td>
+			<a class="icon-edit" tal:attributes="href '?admin&amp;op=Our_Sponsors&amp;id=${banner/bid}'" i18n:translate="_EDIT">Edit</a>
+			<a class="icon-delete" tal:attributes="href '?admin&amp;op=Our_Sponsors&amp;id=${banner/bid}&amp;delete'" i18n:translate="_DELETE">Delete</a>
+		</td>
+	</tr>
+	</tbody></table>
+</div>
+
+<h2 style="text-align:center;" i18n:translate="">_ADVERTISINGCLIENTS</h2>
+<div class="border">
+	<table><thead><tr>
+		<th i18n:translate="_CLIENTNAME">Client Name</th>
+		<th i18n:translate="_ACTIVEBANNERS2">Active Banners</th>
+		<th i18n:translate="_INACTIVEBANNERS">Inactive Banners</th>
+		<th i18n:translate="_CONTACTNAME">Contact Name</th>
+		<th i18n:translate="_CONTACTEMAIL">Contact Email</th>
+	</tr></thead><tbody>
+	<tr tal:repeat="client banner_clients">
+		<td tal:content="client/username">client/username</td>
+		<td tal:content="client/active">client/active</td>
+		<td tal:content="client/inactive">client/inactive</td>
+		<td tal:content="client/name">client/name</td>
+		<td><a tal:attributes="href 'mailto:${client/user_email}'" tal:content="client/user_email">client/user_email</a></td>
+	</tr>
+	</tbody></table>
+</div>

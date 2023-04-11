@@ -1,0 +1,76 @@
+
+<form method="post" action="">
+	<table>
+	<thead>
+		<tr>
+			<th colspan="2" i18n:tranlate="UPDATE">Update album</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th colspan="2" i18n:tranlate="GENERAL_SETTINGS">General settings</th>
+		</tr>
+		<tr>
+			<td style="width:40%" i18n:tranlate="">Title</td>
+			<td>
+				<input type="text" style="width: 100%" name="title" tal:attributes="value album/title"/>
+			</td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="">Category</td>
+			<td>
+				<select name="category">
+					<option tal:repeat="cat album_categories" tal:attributes="value cat/id; selected cat/current" tal:content="cat/name">* No category *</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="">Description</td>
+			<td>
+				<textarea name="description" style="width:100%;" tal:content="album/description"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="">Thumbnail</td>
+			<td>
+				<img tal:attributes="src album_thumb" id="album_thumb" alt=""/><br />
+				<select name="thumb" onchange="$('album_thumb').attr('src',this.currentOption().attr('data-image'));">
+					<option tal:repeat="option album_thumbs" tal:attributes="value option/value; selected option/selected; data-image option/image" tal:content="option/label">Last uploaded</option>
+				</select>
+			</td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="2" i18n:tranlate="ALB_PERM">Permissions for this album</th>
+		</tr>
+		<tr>
+			<td>Album can be viewed by</td>
+			<td>
+				<select name="visibility">
+					<option tal:repeat="option visibility_options" tal:attributes="value option/value; selected option/selected" tal:content="option/label"> - Album 2</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="MOD_CAN_UPLOAD">Visitors can upload pictures</td>
+			<td><input type="checkbox" name="uploads" tal:attributes="checked album/uploads"/></td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="CAN_POST_COMMENTS">Visitors can post comments</td>
+			<td><input type="checkbox" name="comments" tal:attributes="checked album/comments"/></td>
+		</tr>
+		<tr>
+			<td i18n:tranlate="MOD_CAN_RATE">Visitors can rate pictures</td>
+			<td><input type="checkbox" name="votes" tal:attributes="checked album/votes"/></td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td></td>
+			<td>
+				<button type="submit" name="update" i18n:tranlate="">Save</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+</form>

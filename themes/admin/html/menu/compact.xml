@@ -1,0 +1,18 @@
+<nav class="compact">
+	<a style="float: left;overflow:hidden" href="?admin" class="dflogo"><img style="height:1.9em;margin-left:2px" src="./images/logo.png" alt=""/></a>
+	<input type="checkbox" id="nav-main"/><label for="nav-main"></label>
+ <ul class="menuList">
+  <li tal:repeat="cat adminmenucompact">
+   <a tal:attributes="href cat/link/url"><span tal:replace="cat/title"></span></a>
+   <ul tal:condition="cat/items">
+    <li tal:repeat="item cat/items" tal:attributes="class item/css_class;style 'background-image: url(${item/image})'">
+     <a tal:condition="item/title" tal:content="item/title"
+     	  tal:attributes="href item/link/url; target item/link/target; class item/link/css_class"></a>
+     <hr tal:condition="not:item/title"/>
+     <ul tal:condition="item/items">
+      <li tal:repeat="sub item/items" tal:attributes="class sub/css_class">
+       <a tal:condition="sub/title"
+          tal:attributes="href sub/link/url" tal:content="sub/title"></a>
+       </li></ul></li></ul></li><li class="admin_logout"><a href="?admin&amp;op=logout" i18n:attributes="title" title="_ADMINLOGOUT" i18n:translate="_ADMINLOGOUT">Logout</a></li>
+ </ul>
+</nav>

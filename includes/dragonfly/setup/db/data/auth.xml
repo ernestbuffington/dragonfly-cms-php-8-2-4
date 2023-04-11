@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="auth_providers" onduplicate="IGNORE">
+		<col name="auth_provider_id"/>
+		<col name="auth_provider_class"/>
+		<col name="auth_provider_mode"/>
+		<col name="auth_provider_name"/>
+		<col name="auth_provider_is_2fa"/>
+		<tr><td>1</td><td>Poodle\Auth\Provider\Database</td><td>3</td><td>Database</td><td>0</td></tr>
+		<tr><td>2</td><td>Poodle\Auth\Provider\OpenID</td><td>1</td><td>OpenID</td><td>0</td></tr>
+		<tr><td>3</td><td>Poodle\Auth\Provider\Facebook</td><td>0</td><td>Facebook</td><td>0</td></tr>
+		<tr><td>4</td><td>Poodle\Auth\Provider\OIDC\Google</td><td>0</td><td>Google+</td><td>0</td></tr>
+		<tr><td>5</td><td>Poodle\Auth\Provider\SoundCloud</td><td>0</td><td>SoundCloud</td><td>0</td></tr>
+		<tr><td>6</td><td>Poodle\Auth\Provider\OIDC\Yahoo</td><td>0</td><td>Yahoo!</td><td>0</td></tr>
+		<tr><td>7</td><td>Poodle\Auth\Provider\TOTP</td><td>0</td><td>TOTP 2FA</td><td>1</td></tr>
+	</table>
+
+	<table name="auth_providers_detect" onduplicate="IGNORE">
+		<col name="auth_provider_id"/>
+		<col name="auth_detect_name"/>
+		<col name="auth_detect_regex"/>
+		<col name="auth_detect_discover_uri"/>
+		<tr><td>2</td><td>AOL</td><td>openid.aol.com/(.+)</td><td>https://api.screenname.aol.com/auth/openid/xrds?id=$1</td></tr>
+		<tr><td>4</td><td>Google</td><td>(.+)@g(oogle)?mail\.com</td><td>acct:$1@gmail.com</td></tr>
+		<tr><td>2</td><td>MySpace</td><td>www\.myspace\.com/(.+)</td><td>https://www.myspace.com/$1</td></tr>
+		<tr><td>6</td><td>Yahoo!</td><td>(.+)@yahoo\.com</td><td>acct:$1@yahoo.com</td></tr>
+	</table>
+
+	<table name="config_custom" onduplicate="IGNORE">
+		<col name="cfg_name"/>
+		<col name="cfg_field"/>
+		<col name="cfg_value"/>
+		<tr><td>auth</td><td>attempts</td><td>3</td></tr>
+		<tr><td>auth</td><td>attempts_timeout</td><td>30</td></tr>
+		<tr><td>auth</td><td>default_pass_hash_algo</td><td>bcrypt</td></tr>
+		<tr><td>auth</td><td>https</td><td>0</td></tr>
+		<tr><td>auth_cookie</td><td>class</td><td>Dragonfly\Identity\Cookie</td></tr>
+		<tr><td>auth_facebook</td><td>appId</td><td></td></tr>
+		<tr><td>auth_facebook</td><td>appSecret</td><td></td></tr>
+		<tr><td>auth_oidc_google</td><td>client_id</td><td></td></tr>
+		<tr><td>auth_oidc_google</td><td>client_secret</td><td></td></tr>
+	</table>
+
+<!--
+	<sql>
+		<query>
+			INSERT IGNORE INTO {identities} (
+				identity_id, user_ctime, user_nickname, user_nickname_lc, user_email, user_type, user_givenname, user_surname, user_language, user_last_visit
+			) SELECT
+				user_id, user_regdate, username, LOWER(username), LOWER(user_email), user_level, name, '', 'en', user_lastvisit
+			FROM {users}
+			WHERE user_id>1
+		</query>
+	</sql>
+-->
+
+</database>

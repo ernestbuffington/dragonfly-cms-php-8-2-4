@@ -1,0 +1,28 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="Edit_Category">Edit Category</h1>
+
+	<p i18n:translate="Edit_Category_explain">The form below will allow you to delete a forum (or category) and decide where you want to put all topics (or forums) it contained.</p>
+
+	<form action="" method="post">
+	<table><thead>
+		<tr>
+			<th colspan="2" i18n:translate="Edit_Category">Edit Category</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td i18n:translate="">Category</td>
+			<td><input type="text" size="25" name="cat_title" tal:attributes="value forums_category/cat_title"/></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="mode" value="modcat"/>
+				<button i18n:translate="">Update</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>

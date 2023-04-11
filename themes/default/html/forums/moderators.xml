@@ -1,0 +1,23 @@
+
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<a href="{U_INDEX}" i18n:translate="_ForumsLANG">Forum Index </a>
+
+<table class="border">
+<tbody tal:repeat="cat forum_moderators">
+	<tr><th colspan="2"><a tal:attributes="href cat/href" tal:content="cat/title">cat/title</a></th></tr>
+	<tr tal:repeat="forum cat/forums">
+		<td style="vertical-align:top;width:1px"><img tal:attributes="src forum/image_src; forum/image_alt" alt=""/></td>
+		<td>
+			<a tal:attributes="href forum/href" tal:content="forum/name">forum/name</a>
+			- <span tal:content="structure forum/moderators">forum/moderators</span>
+			<ul tal:condition="forum/subforums">
+				<li tal:repeat="forum forum/subforums">
+					<a tal:attributes="href forum/href" tal:content="forum/name">forum/name</a>
+					- <span tal:content="structure forum/moderators">forum/moderators</span>
+				</li>
+			</ul>
+		</td>
+	</tr>
+</tbody>
+</table>

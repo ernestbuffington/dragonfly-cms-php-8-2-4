@@ -1,0 +1,9 @@
+
+<form method="post" tal:attributes="action gallery_search_action">
+<fieldset>
+	<legend i18n:translate="">S_SEARCH</legend>
+	<input type="hidden" name="type" value="full"/>
+	<input type="hidden" name="meta" value="search"/>
+	<input type="text" name="search" maxlength="255" value=""/>
+	<button i18n:translate="">Search</button>
+</fieldset></form>

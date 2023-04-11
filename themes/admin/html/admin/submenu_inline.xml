@@ -1,0 +1,9 @@
+
+<h3><a tal:attributes="href U_ACP_PAGE" tal:content="S_ACP_PAGE">S_ACP_PAGE</a></h3>
+
+<div class="admin-sub-menu">|
+<xsl:for-each select="submenu_inline">
+	<a tal:attributes="href submenu_inline/U_DETAILS" tal:content="submenu_inline/S_NAME">submenu_inline/S_NAME</a> |
+</xsl:for-each>
+</div>
+<hr />

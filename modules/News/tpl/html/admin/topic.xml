@@ -1,0 +1,48 @@
+
+<form action="" method="post">
+<fieldset>
+	<legend i18n:translate="_EDITTOPIC">Edit Topic</legend>
+
+	<label for="topictext" i18n:translate="_TOPICNAME">Topic Name</label>
+	<input type="text" name="topictext" id="topictext" size="41" maxlength="40" tal:attributes="value topic/text"/>
+	<br />
+
+	<label for="topicimage" i18n:translate="_TOPICIMAGE">Topic Image</label>
+	<select id="topicimage" name="topicimage">
+		<option tal:repeat="image topicimages" tal:attributes="selected php:${image}==${topic/image}" tal:content="image"></option>
+	</select>
+
+	<br />
+	<br />
+
+	<button name="saveTopic" i18n:Translate="_SAVECHANGES">Save Changes</button>
+</fieldset>
+</form>
+
+<form action="" method="post">
+<fieldset>
+	<legend i18n:translate="_ACTIVERELATEDLINKS">Active Related Links</legend>
+	<table tal:condition="topic_links"><thead>
+	<tr>
+		<th i18n:translate="_SITENAME">Site Name</th>
+		<th i18n:translate="_URL">URL</th>
+		<th></th>
+	</tr>
+	</thead><tbody>
+		<tr tal:repeat="link topic_links">
+			<td tal:content="link/name">link/name</td>
+			<td><a tal:attributes="href link/url" tal:content="link/url">link/url</a></td>
+			<td>
+				<a class="icon-edit" tal:attributes="href php:URL::admin('&amp;file=topics&amp;id=${topic/id}&amp;related=${link/id}')" i18n:translate="_EDIT">Edit</a>
+				<a class="icon-delete" tal:attributes="href php:URL::admin('&amp;file=topics&amp;rdelete=${link/id}')" i18n:translate="_DELETE">Delete</a>
+			</td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td><input type="text" name="name" size="30" maxlength="30" /></td>
+			<td><input type="url" name="url" size="50" maxlength="200" placeholder="http://" /></td>
+			<td><button name="addRelated" i18n:Translate="_ADD">Add</button></td>
+		</tr>
+	</tfoot></table>
+</fieldset>
+</form>

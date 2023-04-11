@@ -1,0 +1,81 @@
+
+<div class="border">
+<table><thead>
+	<tr>
+		<th i18n:translate="">_TITLE</th>
+		<th i18n:translate="">_LANGUAGE</th>
+		<th i18n:translate="" style="white-space:nowrap;">_VIEW</th>
+		<th i18n:translate="">_ACTIVE</th>
+		<th i18n:translate="">_FUNCTIONS</th>
+	</tr>
+</thead><tbody>
+
+	<tr tal:repeat="msg messages">
+		<td style="width:100%;" tal:content="msg/title">Welcome!</td>
+		<td tal:content="msg/mlanguage">All</td>
+		<td style="white-space:nowrap;" tal:content="msg/view_group">All Visitors</td>
+		<td>
+			<a tal:attributes="href msg/uri_status">
+				<img tal:condition="msg/active" src="images/checked.gif" title="_ACTIVE" alt="_ACTIVE" i18n:attributes="title;alt"/>
+				<img tal:condition="not:msg/active" src="images/unchecked.gif" alt="_INACTIVE" title="_INACTIVE" i18n:attributes="title;alt"/>
+			</a>
+		</td>
+		<td>
+			<a class="icon-edit" tal:attributes="href msg/uri_edit">Edit</a>
+			<a class="icon-delete" tal:attributes="href msg/uri_delete">Delete</a>
+		</td>
+	</tr>
+</tbody></table>
+</div>
+
+<br/>
+
+<form name="message" action="?admin&amp;op=messages&amp;edit=0" method="post">
+<fieldset>
+	<legend i18n:translate="">_ADDMSG</legend>
+
+	<p>
+		<strong i18n:translate="">_MESSAGETITLE</strong><br/>
+		<input type="text" name="title" value="" size="50" maxlength="100"/>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_MESSAGECONTENT</strong>
+		<textarea class="bbcode" name="content" rows="15" wrap="virtual" cols="63"></textarea>
+	</p>
+
+	<p tal:condition="L10N/multilingual">
+		<strong i18n:translate="">_LANGUAGE</strong>
+		<select name="language">
+			<option value="" i18n:translate="">All</option>
+			<option tal:repeat="lng L10N/getActiveList" tal:attributes="value lng/value" tal:content="lng/label"></option>
+		</select>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_EXPIRATION</strong>
+		<input name="expire_days" type="number" min="0" step="1"/> <span i18n:translate="">_DAYS</span>
+		(0 = <span i18n:translate="">_UNLIMITED</span>)
+	</p>
+
+	<p>
+		<strong i18n:translate="">_ACTIVATE2</strong>
+		<select name="active">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</select>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_VIEWPRIV</strong>
+		<select name="view">
+			<optgroup tal:repeat="groups php:\Dragonfly\Groups::getSystem(true)" tal:attributes="label groups/label">
+				<option tal:repeat="group groups/groups" tal:attributes="value group/id" tal:content="group/label"></option>
+			</optgroup>
+		</select>
+	</p>
+
+	<button i18n:translate="">_ADDMSG</button>
+
+</fieldset>
+</form>

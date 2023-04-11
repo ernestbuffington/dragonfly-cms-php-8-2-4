@@ -1,0 +1,50 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">Manage_extensions</h1>
+
+	<p i18n:translate="">Manage_extensions_explain</p>
+
+	<div tal:condition="ERROR_MESSAGE" class="error" tal:content="structure ERROR_MESSAGE">ERROR_MESSAGE</div>
+
+	<form method="post" action="">
+
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Extension</th>
+			<th i18n:translate="">Extension_group</th>
+			<th i18n:translate="">Explanation</th>
+			<th i18n:translate="">Delete</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td><input type="text" size="20" maxlength="100" name="add_extension"/></td>
+			<td><select name="add_extension_group">
+				<option tal:repeat="group add_ext_groups" tal:attributes="value group/id; selected group/current" tal:content="group/name"></option>
+			</select></td>
+			<td><input type="text" size="30" maxlength="100" name="add_extension_comment"/></td>
+			<td><button name="add_extension_check" i18n:translate="">Add_new</button></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="4" i18n:translate="">Manage_extensions</th>
+		</tr>
+		<tr tal:repeat="ext extensions">
+			<td><b tal:content="ext/extension">ext</b></td>
+			<td><select tal:attributes="name 'extensions[${ext/ext_id}][group_id]'">
+				<option tal:repeat="group ext/groups" tal:attributes="value group/id; selected group/current" tal:content="group/name"></option>
+			</select></td>
+			<td><input type="text" size="30" maxlength="100" tal:attributes="name 'extensions[${ext/ext_id}][comment]'; value ext/comment"/></td>
+			<td><input type="checkbox" name="delete_extensions[]" tal:attributes="value ext/ext_id"/></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="4">
+				<button type="reset" i18n:translate="">Reset</button>
+				<button i18n:translate="">Submit</button>
+			</td>
+		</tr>
+	</tfoot></table>
+
+	</form>
+</div>

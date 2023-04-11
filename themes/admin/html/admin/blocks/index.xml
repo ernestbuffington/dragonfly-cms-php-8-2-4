@@ -1,0 +1,212 @@
+<!-- Add New Block Start -->
+<fieldset>
+	<legend i18n:translate="">Add a New Block</legend>
+	<div id="new_block_types">
+		<button type="button" name="new_rss">RSS</button>
+		<button type="button" name="new_fromfile">From File</button>
+		<button type="button" name="new_custom" i18n:translate="">Custom</button>
+	</div>
+	<div id="add_new_block" class="hidden">
+	<hr/>
+	<form method="post" action="">
+		<table>
+			<tbody>
+				<tr>
+					<td style="width:200px" i18n:translate="">Title</td>
+					<td><input type="text" name="block[title]" size="30" maxlength="60" tal:attributes="value block/title"/></td>
+				</tr>
+			</tbody>
+
+			<tbody id="new_rss" class="hidden">
+				<tr>
+					<td i18n:translate="">RSS/RDF URL</td>
+					<td>
+						<input type="url" name="block[url]" size="30" maxlength="200" tal:attributes="value block/url"/>
+						<select name="headline">
+							<option value="0" i18n:translate="">Custom</option>
+							<option tal:repeat="item headlines" tal:attributes="value item/id" tal:content="item/label"></option>
+						</select>
+						[ <a href="?admin&amp;op=headlines">Setup</a> ]<br/>
+						<em i18n:translate="">Select 'Custom' and supply the URL to the RSS feed, or just select a site from the dropdown to fetch news headlines</em>
+					</td>
+				</tr>
+				<tr>
+					<td i18n:translate="">Refresh rate</td>
+					<td><select name="block[refresh]">
+						<option tal:repeat="option block/getRefreshOptions" tal:attributes="value option/value; selected option/selected" tal:content="option/label"></option>
+					</select></td>
+				</tr>
+			</tbody>
+
+			<tbody id="new_fromfile" class="hidden">
+				<tr>
+					<td i18n:translate="">Filename</td>
+					<td><select name="block[blockfile]">
+						<option></option>
+						<optgroup tal:repeat="group block/getFileOptions" tal:attributes="label group/label">
+							<option tal:repeat="file group/blocks" tal:attributes="value file/value" tal:content="file/label"></option>
+						</optgroup>
+					</select></td>
+				</tr>
+			</tbody>
+
+			<tbody id="new_custom" class="hidden">
+				<tr>
+					<td i18n:translate="">Content</td>
+					<td><textarea class="bbcode" name="block[content]" cols="63" rows="15"></textarea></td>
+				</tr>
+			</tbody>
+
+			<tbody>
+				<tr>
+					<td i18n:translate="">Position</td>
+					<td><select name="block[bposition]">
+						<option tal:repeat="option block/getPositionOptions" tal:attributes="value option/value; selected option/selected" tal:content="option/label"></option>
+					</select></td>
+				</tr>
+
+				<tr tal:condition="L10N/multilingual">
+					<td i18n:translate="">Language</td>
+					<td><select name="block[blanguage]">
+						<option value="" i18n:translate="">All</option>
+						<option tal:repeat="lng L10N/getActiveList" tal:attributes="value lng/value" tal:content="lng/label"></option>
+					</select></td>
+				</tr>
+				<input tal:condition="not:L10N/multilingual" type="hidden" name="block[blanguage]" value=""/>
+
+				<tr>
+					<td i18n:translate="">Active</td>
+					<td><select name="block[active]">
+						<option value="0" i18n:translate="">No</option>
+						<option value="1" tal:attributes="selected block/active" i18n:translate="">Yes</option>
+					</select></td>
+				</tr>
+
+				<tr>
+					<td i18n:translate="">Visible to</td>
+					<td><select name="block[view_to][]" multiple="multiple" size="9">
+						<optgroup tal:repeat="groups php:\Dragonfly\Groups::getSystem()" tal:attributes="label groups/label">
+							<option tal:repeat="group groups/groups" tal:attributes="value group/id; selected php:in_array(${group/id},${block/view_to})" tal:content="group/label"></option>
+						</optgroup>
+					</select></td>
+				</tr>
+
+				<tr>
+					<td i18n:translate="">Visible in modules</td>
+					<td><select name="in_module[]" multiple="multiple" size="9">
+						<optgroup label="Administrator Control" i18n:attributes="label">
+							<option value="-1" i18n:translate="">Administration</option>
+						</optgroup>
+						<optgroup label="Active" i18n:attributes="label" tal:condition="modules/active">
+							<option tal:repeat="mod modules/active" tal:attributes="value mod/id" selected="selected" tal:content="mod/label"></option>
+						</optgroup>
+						<optgroup label="Inactive" i18n:attributes="label" tal:condition="modules/inactive">
+							<option tal:repeat="mod modules/inactive" tal:attributes="value mod/id" selected="selected" tal:content="mod/label"></option>
+						</optgroup>
+					</select>
+					</td>
+				</tr>
+			</tbody><tfoot>
+				<tr><td></td><td><button name="add" i18n:translate="">Create Block</button></td></tr>
+			</tfoot>
+		</table>
+	</form>
+	</div>
+</fieldset>
+<!-- Add New Block End -->
+
+<!-- Blocks List Table Start -->
+<div id="blist" class="border">
+	<div id="tack_home"><span id="tack" class="grab"></span></div>
+	<table id="ciao"><thead>
+		<tr style="white-space:nowrap;">
+			<th i18n:translate="">Move</th>
+			<th colspan="2" i18n:translate="">Title</th>
+		</tr>
+	</thead><tbody>
+		<tr draggable="true" tal:repeat="block blocks" tal:attributes="data-block-id block/id; data-block-label block/label">
+			<td class="drag_img"></td>
+			<td><a title="Show" tal:attributes="href '?admin&amp;op=blocks&amp;show=${block/id}'" i18n:attributes="title" tal:content="block/label"></a></td>
+			<td><span class="infoarea"><img src="images/icons/16x16/info.png" alt="i"/>
+				<span>
+					<span tal:omit-tag="" i18n:translate="">Type</span>: <span tal:replace="block/type"></span><br/>
+					<span tal:omit-tag="" i18n:translate="">Active</span>:
+						<a tal:attributes="href '?admin&amp;op=blocks&amp;change=${block/id}'">
+							<img tal:condition="not:block/active" src="images/unchecked.gif" alt="Activate" title="Activate" i18n:attributes="alt;title"/>
+							<img tal:condition="block/active" src="images/checked.gif" alt="Deactivate" title="Deactivate" i18n:attributes="alt;title"/>
+						</a>
+					<br/>
+					<span tal:omit-tag="" i18n:translate="">Visible to</span>: <span tal:replace="block/view_group"></span><br/>
+					<div tal:condition="L10N/multilingual">
+						<span tal:omit-tag="" i18n:translate="">Language</span>: <span tal:replace="block/language"></span>
+					</div>
+					<span tal:omit-tag="" i18n:translate="">Functions</span>:
+						<a tal:attributes="href '?admin&amp;op=blocks&amp;edit=${block/id}'" i18n:translate="">edit</a>
+						<a tal:condiiton="block/allow_del" tal:attributes="href '?admin&amp;op=blocks&amp;del=${block/id}'" i18n:translate="">delete</a>
+				</span>
+			</span></td>
+		</tr>
+	</tbody></table>
+</div>
+<!-- Block List Table End -->
+
+<!-- Module List Table Start -->
+<div id="mlist">
+<form tal:repeat="module modules_blocks" action="" method="post">
+	<div class="bcode blockhead" tal:content="module/label"></div>
+	<div class="blockcontent hidden" tal:attributes="data-module-id module/id">
+		<input type="hidden" name="mid" tal:attributes="value module/id"/>
+		<table><tbody>
+		<tr tal:define="readonly php:-1==${module/id}">
+			<td>
+				<ul data-module-side="l">
+					<li class="parent"><label><input type="checkbox" name="module_blocks[]" value="1" tal:attributes="checked module/blocks_l; readonly readonly"/> <span i18n:translate="">Left</span></label></li>
+					<li draggable="true" tal:repeat="block module/blocks/l">
+						<span tal:replace="block/label"></span>
+						<input type="hidden" name="side[l][]" tal:attributes="value block/id"/>
+					</li>
+				</ul>
+			</td>
+			<td>
+				<ul data-module-side="c">
+					<li class="parent"><label><input type="checkbox" name="module_blocks[]" value="4" tal:attributes="checked module/blocks_c; readonly readonly"/> <span i18n:translate="">Center Up</span></label></li>
+					<li draggable="true" tal:repeat="block module/blocks/c">
+						<span tal:replace="block/label"></span>
+						<input type="hidden" name="side[c][]" tal:attributes="value block/id"/>
+					</li>
+				</ul>
+				<ul data-module-side="d">
+					<li class="parent"><label><input type="checkbox" name="module_blocks[]" value="8" tal:attributes="checked module/blocks_d; readonly readonly"/> <span i18n:translate="">Center Down</span></label></li>
+					<li draggable="true" tal:repeat="block module/blocks/d">
+						<span  tal:replace="block/label"></span>
+						<input type="hidden" name="side[d][]" tal:attributes="value block/id"/>
+					</li>
+				</ul>
+			</td>
+			<td>
+				<ul data-module-side="r">
+					<li class="parent"><label><input type="checkbox" name="module_blocks[]" value="2" tal:attributes="checked module/blocks_r; readonly readonly"/> <span i18n:translate="">Right</span></label></li>
+					<li draggable="true" tal:repeat="block module/blocks/r">
+						<span tal:replace="block/label"></span>
+						<input type="hidden" name="side[r][]" tal:attributes="value block/id"/>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		</tbody><tfoot>
+		<tr>
+			<td>
+				<span i18n:translate="">Active</span>: <span tal:replace="module/active"></span>
+			</td>
+			<td>
+				<ul class="rec_bin"></ul>
+			</td>
+			<td></td>
+		</tr>
+		</tfoot></table>
+	</div>
+</form>
+</div>
+<!-- Module List Table End -->
+
+<div id="mousepos"></div>

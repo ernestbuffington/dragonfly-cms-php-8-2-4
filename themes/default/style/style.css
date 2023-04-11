@@ -1,0 +1,882 @@
+/**
+* CPG Dragonfly CMS
+* Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+*/
+/* font presets that almost are the same size on any OS
+.f_arial { font-family: "Arial Unicode MS", Arial, Helvetica, "Nimbus Sans L", "Liberation sans", Garuda, Utkal, FreeSans, sans-serif; }
+.f_tahom { font-family: Tahoma, "Luxi Sans", Loma, Geneva, Meera, sans-serif; }
+.f_trebu { font-family: Trebuchet, "Trebuchet MS", "DejaVu Sans Condensed", sans-serif; }
+.f_luc_s { font-family: "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif; }
+.f_verda { font-family: Verdana, Geneva, "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif; }
+
+.f_c_new { font-family: "Nimbus Mono L", "Courier New", FreeMono, Courier, monospace; }
+.f_luc_c { font-family: "DejaVu Sans Mono", "DejaVu LGC Sans Mono", "Bitstream Vera Sans Mono", "Lucida Console", Monaco, monospace; }
+
+.f_times { font-family: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif; }
+.f_palat { font-family: "Bitstream Charter", "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Times, serif; }
+.f_georg { font-family: "URW Palladio L", Georgia, Times, serif; }
+*/
+
+* { resize:none; }
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+	display: block;
+}
+
+audio, canvas, video { display: inline-block; max-width: 100%; }
+
+audio:not([controls]) { display: none; height: 0; }
+
+[hidden], .hidden {
+	display:none !important;
+	visibility:hidden !important;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	image-rendering: optimizeQuality; /* all images, videos, background-images */
+	text-rendering: optimizeLegibility;
+}
+
+html,
+button,
+input,
+select,
+textarea,
+form .selectbox {
+	font-family: Verdana, Geneva, "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+	font-size: 14px;
+}
+
+body {
+	margin: 0;
+}
+
+
+/* =============================================================================
+   Links
+   ========================================================================== */
+
+a {
+	color: #00F;
+	text-decoration:none;
+}
+a:focus {
+	outline: thin dotted;
+}
+a:hover,
+a:active {
+	outline: 0;
+}
+
+/* =============================================================================
+   Typography
+   ========================================================================== */
+
+h1 { font-size: 1.5em;  margin: 0.67em 0; }
+h2 { font-size: 1.3em;  margin: 0.83em 0; }
+h3 { font-size: 1.15em; margin: 1em 0; }
+h4 { font-size: 1em;    margin: 1.33em 0; }
+h5 { font-size: 0.83em; margin: 1.67em 0; }
+h6 { font-size: 0.75em; margin: 2.33em 0; }
+
+abbr[title] {
+	border-bottom: 1px dotted;
+}
+
+b, strong {
+	font-weight: bold;
+}
+
+blockquote {
+	margin: 1em 40px;
+}
+
+dfn {
+	font-style: italic;
+}
+
+mark {
+	background: #ff0;
+	color: #000;
+}
+
+p, pre {
+	margin: 1em 0;
+}
+
+pre,
+code,
+kbd,
+samp {
+	font-family: "Nimbus Mono L", "Courier New", FreeMono, Courier, monospace;
+/*	font-family: "DejaVu Sans Mono", "DejaVu LGC Sans Mono", "Bitstream Vera Sans Mono", "Lucida Console", Monaco, monospace;*/
+	font-size: 1em;
+}
+
+pre {
+	white-space: pre;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+q {
+	quotes: none;
+}
+
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+small, sub, sup {
+	font-size: 75%;
+}
+
+sub, sup {
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sup {
+	top: -0.5em;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+dl, menu, ol, ul {
+	margin: 1em 0;
+}
+
+dd {
+	margin: 0 0 0 40px;
+}
+
+menu, ol, ul {
+	padding: 0 0 0 40px;
+}
+
+nav ul, nav ol {
+	list-style: none;
+	list-style-image: none;
+}
+
+
+img { border: 0; }
+
+svg:not(:root) { overflow: hidden; }
+
+figure { margin: 0; }
+
+/* =============================================================================
+   Forms
+   ========================================================================== */
+
+form { margin: 0; }
+
+button, fieldset, input, select, textarea, form .selectbox, .button
+{
+	border:1px solid #CCC;
+}
+
+fieldset, label {
+	margin: 0 0 1em 0;
+}
+
+fieldset {
+	padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+	border: 0;
+	padding: 0;
+	white-space: normal;
+}
+
+label {
+	display: inline-block;
+	width: 200px;
+}
+
+button, input, select, textarea, form .selectbox {
+	vertical-align: baseline;
+}
+select[multiple] {
+	vertical-align: top;
+}
+select {
+	background-color: #FFF;
+}
+
+button, input { line-height: normal; }
+
+input[type="checkbox"],
+input[type="radio"] {
+	box-sizing: border-box;
+	padding: 0;
+}
+
+body { line-height: 1.25; }
+
+input[type="search"] {
+	-webkit-appearance: textfield;
+	box-sizing: content-box;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+	-webkit-appearance: none;
+}
+
+input
+{
+	padding:3px;
+}
+input:focus,
+textarea:focus,
+form .selectbox.focus
+{
+	box-shadow: 0 0 1px 1px #47aee8;
+	outline:none;
+}
+
+button, .button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+	background-color:#EEE;
+	background-image: linear-gradient(#FFF, #DDD);
+	border-radius: 5px;
+	cursor: pointer;
+	-webkit-appearance: button;
+	overflow: visible;
+	padding: 3px;
+}
+
+button[type="submit"], input[type="submit"] { font-weight:bold; }
+
+button[disabled], input[disabled] { cursor: default; }
+
+textarea {
+	box-sizing: border-box;
+	overflow: auto;
+	vertical-align: top;
+}
+
+datalist select { display:none; }
+
+form .selectbox {
+	background-color: #fff;
+	display: inline-block;
+	overflow: hidden;
+	padding: 2px;
+	position: relative;
+	vertical-align: middle;
+}
+form .selectbox:after {
+	background-color: #EEE;
+	border: 1px solid #CCC;
+	border-right: 0;
+	box-shadow: inset 1px 1px 0 0 #fff;
+	content:'⌄'; /* ▼ ↕ */
+	color:#888;
+	font-size:120%;
+	line-height: 1;
+	position:absolute;
+	top:-1px;
+	bottom:-1px;
+	right:0;
+	text-align:center;
+	width:16px;
+}
+form .selectbox:hover:after {
+	color:#000;
+	text-shadow: 1px 1px 1px #FFF;
+}
+form .selectbox.focus {
+	border-color: #999;
+}
+form .selectbox select {
+	border:0;
+	margin:0;
+	opacity: 0;
+	padding-right:8px;
+	position: relative;
+	z-index: 2;
+}
+form .selectbox span {
+	cursor: default;
+	display: block;
+	left: 0;
+	overflow: hidden;
+	padding: 2px;
+	position: absolute;
+	text-indent: 3px;
+	text-overflow: ellipsis;
+	top: 0;
+	white-space:nowrap;
+	z-index: 1;
+}
+
+[class^="icon-"],
+.icondelete,.iconerror,.iconok
+{
+	background: transparent url(../images/button_icons.png) no-repeat;
+	border:0;
+	display: inline-block;
+	height: 16px;
+	overflow:hidden;
+	padding:0;
+	text-indent:16px;
+	vertical-align: middle;
+	width: 16px;
+}
+.icon-add       { background-position: 0 -16px; }
+.icon-edit      { background-position: 0 -48px; }
+.icon-cancel    { background-position: 0 -80px; }
+.icon-delete    { background-position: 0 -112px; }
+.icon-save      { background-position: 0 -144px; }
+.icon-folder    { background-position: 0 -176px; }
+.icon-forw      { background-position: 0 -208px; }
+.icon-back      { background-position: 0 -240px; }
+.icon-up        { background-position: 0 -272px; }
+.icon-down      { background-position: 0 -304px; }
+.icon-search    { background-position: 0 -336px; }
+.icon-top       { background-position: 0 -368px; }
+.icon-bottom    { background-position: 0 -400px; }
+.icon-sync      { background-position: 0 -432px; }
+.icon-thumbtack { background-position: 0 -464px; }
+.icon-home      { background-position: 0 -496px; }
+.icondelete     { background-image: url(/images/icons/16x16/delete.png); }
+.iconerror      { background-image: url(/images/icons/16x16/error.png); }
+.iconok         { background-image: url(/images/icons/16x16/ok.png); }
+
+/* =============================================================================
+   Tables
+   ========================================================================== */
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+th { text-align:left; }
+th.c, td.c { text-align:center; }
+th.r, td.r { text-align:right; }
+
+.main table { border-collapse: collapse; border-spacing: 0;/* table-layout: fixed;*/ width:100%; }
+.main thead th,
+.main thead td {
+	border-bottom:1px solid #ccc;
+	font-weight:bold;
+}
+.main tfoot tr:first-child th,
+.main tfoot tr:first-child td {
+	border-top:1px solid #ccc;
+}
+.main table th,
+.main table td {
+	padding:4px;
+}
+.main table:not(.flat) tbody tr:nth-child(even) { background-color:#F6F6F6; }
+.main table:not(.flat) tbody tr:hover td { background-color:#ddd; }
+/*.body tbody tr:hover { background-color:#ccc; color:#555 }*/
+
+.main tbody + tbody tr:first-child th,
+.main tbody + tbody tr:first-child td,
+.main tfoot tr:first-child th,
+.main tfoot tr:first-child td
+{
+	border-top:1px solid #ccc;
+}
+
+.main tbody tr.upgrade { background-color:#FEA; }
+.main tbody tr.install { background-color:#EFE; }
+
+/* =============================================================================
+   Global features
+   ========================================================================== */
+
+.visible { visibility:inherit !important; }
+
+.v-top { vertical-align:top; }
+
+.e-resize { cursor:e-resize; }
+.s-resize { cursor:s-resize; }
+.w-resize { cursor:w-resize; }
+.se-resize { cursor:se-resize; }
+.sw-resize { cursor:sw-resize; }
+
+/* indicate that an element can be grabbed to be moved */
+.grab, *[draggable="true"] {
+	user-select: none;
+	-khtml-user-drag: element;
+	-webkit-user-drag: element;
+	cursor:hand;
+	cursor:grab;
+	cursor:-moz-grab;
+	cursor:-webkit-grab;
+}
+/* indicate that an element is actually being grabbed,
+ * is actually being moved and repositioned in drag-and-drop DHTML snippet
+ */
+.grabbing,
+body.grabbing * {
+	cursor:grabbing !important;
+	cursor:-moz-grabbing !important;
+	cursor:-webkit-grabbing !important;
+}
+body.drag * { cursor:drag !important; }
+body.drop * { cursor:drop !important; }
+body.copy * { cursor:copy !important; }
+body.no-drop * { cursor:no-drop !important; }
+.dragging { opacity:0.3 }
+
+/*
+ * Hide chrome details summary marker
+ * Chrome 27 bug: http://code.google.com/p/chromium/issues/detail?id=218341
+ * Any other browser needs JavaScript to show/hide
+ */
+
+summary {
+	cursor: pointer;
+}
+summary::-webkit-details-marker {
+	display: none
+}
+summary:before {
+	content: "▼ ";
+	display: inline-block;
+	width: 1.2em;
+}
+details:not([open]) > summary:before {
+	content: "▶ ";
+}
+details:not([open]) > * {
+	display: none;
+}
+details:not([open]) summary {
+	display: block;
+}
+
+/* =============================================================================
+   Info box
+   ========================================================================== */
+
+.tooltip-box {
+	box-shadow:1px 1px 8px 0 #AAA;
+	border-radius: 5px;
+}
+.tooltip-box .helphead {
+	background: #DDD;
+	border: 1px solid #CCC;
+	border-radius: 5px 5px 0 0;
+	color: #888;
+	font-weight: bold;
+	padding: 3px;
+	text-shadow: 1px 1px 1px #FFF;
+}
+.tooltip-box .helpcontent {
+	border: 1px solid #CCC;
+	border-top: 0;
+	border-radius: 0 0 5px 5px;
+	padding: 4px;
+	background: #FFF;
+}
+
+/* =============================================================================
+   Main layout
+   ========================================================================== */
+
+.sitelogo img {
+	float:left;
+	margin:0 4px;
+	height:64px;
+	transition: all 1.5s ease-in-out;
+	transform-origin:32px 31px;
+}
+.sitelogo:hover img {
+	transform: rotate(360deg);
+}
+
+body[class*="loading"] .sitelogo img {
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-name: sitelogoRotate;
+}
+@keyframes sitelogoRotate {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.headtable {
+	width: 100%;
+	height:130px;
+	background-color: #333;
+}
+.maintable {
+	border-width: 0;
+	max-width: 1200px;
+	padding: 0;
+	width: 100%;
+}
+.mainside {
+	font-size: smaller;
+	padding-left: 5px;
+	padding-right: 5px;
+	vertical-align: top;
+	min-width: 164px;
+}
+.main {
+	vertical-align: top;
+	width: 100%;
+}
+.main h1,
+.main h2,
+.pagetitle /* div at the top of modules holding the page title if one... */
+{
+	background-image: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background-image: linear-gradient(#EEE, #CCC);
+	border: 1px solid #CCCCCC;
+	border-radius: 5px 5px 0 0;
+	color: #555;
+	margin-bottom: 0;
+	padding: 0.2em;
+	text-shadow: 1px 1px 1px #FFF;
+}
+.main *:first-child {
+	margin-top:0;
+}
+
+
+.pagetitle {
+	font-weight: bold;
+}
+
+/* table inside the the td that holds the block title */
+.block {
+	margin-bottom:1em;
+}
+tbody > tr > th,
+.block .head {
+	background: #DDD;
+	background-image: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background-image: linear-gradient(#EEE, #CCC);
+	border: 1px solid #CCC;
+	border-radius: 5px 5px 0 0;
+	color: #666;
+	font-weight: bold;
+	padding: 3px;
+	text-shadow:1px 1px 1px #FFF;
+}
+tbody > tr > th { border-radius: 0; }
+/* table that holds the content in blocks */
+.block .content {
+	border: 1px solid #CCC;
+	border-radius: 0 0 5px 5px;
+	border-top: 0;
+	padding: 4px;
+}
+.block ol, .block ul {
+	padding: 0 0 0 2em;
+}
+
+.border, .table1, .table2 {
+	border: 1px solid #CCC;
+	margin-bottom: 1em;
+	padding: 7px;
+}
+
+.shadow-border {
+	border-radius: 5px;
+	box-shadow: 1px 2px 3px #BBB;
+	margin-bottom: 1em;
+}
+
+article > header > div {
+	color: #999;
+	font-size:80%;
+	padding: 7px;
+}
+article > div {
+	padding: 7px;
+}
+article > footer {
+	font-size:80%;
+	padding: 7px;
+}
+#news-index article > footer {
+	clear: both;
+	text-align: right;
+}
+
+.core_footer {
+	text-align:center;
+}
+
+#poodle_notifications {
+	margin: 0 4px;
+}
+
+.error {
+	background: #FDD;
+	border: 1px solid #D00;
+	color: #D00;
+	padding: 6px;
+}
+.warning {
+	background: #FEB;
+	border: 1px solid #B60;
+	color: #B60;
+	padding: 6px;
+}
+.success {
+	background: #DFD;
+	border: 1px solid #080;
+	color: #080;
+	padding: 6px;
+}
+.info {
+	background: #CEF;
+	border: 1px solid #059;
+	color: #059;
+	padding: 6px;
+}
+
+/* =============================================================================
+   Menu
+   ========================================================================== */
+
+.menu ul {
+	background-color:#EEE;
+	border:1px solid #DDD;
+	list-style:none;
+	margin:0;
+	padding:0;
+	white-space:nowrap;
+}
+
+.menu a {
+	display:block;
+	padding:0.2em;
+}
+.menu a:hover,
+.menu li:hover {
+	background-color:#DDD;
+}
+
+.menu hr {
+	border:0;
+	border-top:1px solid #CCC;
+	border-bottom:1px solid #FFF;
+	margin:2px 0;
+}
+
+.menu > ul > li {
+	display: inline-block;
+	padding:0.2em;
+	position: relative;
+}
+
+.menu > ul > li ul {
+	border-top:0;
+	display: none;
+	left:0;
+	position: absolute;
+	z-index:2000;
+}
+.menu li:hover > ul {
+	display: block;
+}
+
+#BlockCPGMainMenu > nav > ul {
+	padding:0;
+}
+
+/* =============================================================================
+   Pagination
+   ========================================================================== */
+
+.pagination a {
+	margin: 0 0.2em;
+}
+.pagination a:after {
+	content: ',';
+}
+.pagination a:not([href]) {
+	color: inherit;
+}
+.pagination a.current {
+	font-weight: bold;
+}
+.pagination a.prev:after,
+.pagination a.next:after,
+.pagination a:last-of-type:after {
+	content: '';
+}
+
+/* =============================================================================
+   BBCode
+   ========================================================================== */
+
+.toggle{
+	vertical-align:top;
+	cursor:pointer
+}
+
+.bbquote {
+	margin-left: 5%;
+}
+.bbquote summary {
+	background: linear-gradient(#EEE, #CCC) repeat scroll 0 0 #DDD;
+	border: 1px solid #CCC;
+	border-radius: 5px 5px 0 0;
+	color: #666;
+	padding: 3px;
+}
+.bbquote blockquote {
+	border: 1px solid #CCC;
+	border-radius: 0 0 5px 5px;
+	margin: 0;
+}
+
+code.bbcode_code {
+	background-color:#EEE;
+	border:1px solid #000;
+	display:block;
+	margin: 0.5em;
+	overflow: auto;
+	padding: 0.5em;
+	white-space: pre;
+}
+
+/* =============================================================================
+   Info box
+   ========================================================================== */
+
+.infobox { display:inline-block; position: relative; height:16px; width:16px;}
+.infobox, .infobox span {
+	background-image: url(./images/icons/16x16/info.png);
+	background-position: 0 1px;
+	background-repeat: no-repeat;
+	cursor:help;
+	cursor:url(../images/cursors/info.cur), help;
+}
+.infobox span {
+	background-color: #fff;
+	background-position: 217px 1px;
+	border-radius: 0 9px 0 0;
+	display: none;
+	position: absolute;
+	top: -1px;
+	left: -218px;
+	border: 1px solid #000;
+	padding: 4px 20px 4px 4px;
+	width: 210px;
+	white-space:normal;
+	z-index: 1000;
+}
+.infobox:hover span { display: block; }
+
+/* =============================================================================
+   Overlay
+   ========================================================================== */
+
+body.wysiwyg-maximized .windowbg,
+.windowbg
+{
+	background-color:rgba(0,0,0,0.7);
+	bottom:0;
+	height: 100%;
+	left:0;
+	padding:4% 0;
+	position: fixed !important;
+	right:0;
+	text-align:center;
+	top:0;
+	visibility: visible;
+	z-index: 2147483640;
+}
+
+.windowbg .window
+{
+	background-color: #E8E8E8;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F0F0), to(#E8E8E8));
+	background-image: linear-gradient(#F0F0F0, #E8E8E8);
+	border:1px solid #D3D3D3;
+/*	border-radius: 4px;
+	box-shadow:0 0 2px 1px Highlight;*/
+	color:#000;
+	margin: 0 auto;
+	width: 688px;
+}
+
+.windowbg .header
+{
+	border-left:1px solid #fff;
+	border-top:1px solid #fff;
+	border-bottom:1px solid #d3d3d3;
+	min-height:28px;
+	line-height:27px;
+	padding: 2px 5px;
+	position: relative;
+	text-shadow:1px 1px 1px #FFF;
+}
+
+.windowbg .body
+{
+	border-top:1px outset ThreeDFace;
+	height: 80%;
+	margin:0;
+	padding: 4px;
+	text-align:left;
+}
+
+.windowbg .close
+{
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+    height: 14px;
+    line-height: 14px;
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    top: 6px;
+    width: 13px;
+}
+
+
+
+/* small mobile devices */
+@media only screen and (max-width: 800px)
+{
+	.windowbg .window
+	{
+		width:100%;
+	}
+	.main table { max-width: 97vw; }
+}
+
+@media print {
+	body > *, .mainside, .block,
+	.hidden-print { display:none; !important; }
+	body .maintable { display:block; }
+}

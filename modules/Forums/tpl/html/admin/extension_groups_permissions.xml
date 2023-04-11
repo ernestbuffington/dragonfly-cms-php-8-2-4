@@ -1,0 +1,51 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<div tal:condition="ERROR_MESSAGE" class="error" tal:content="structure ERROR_MESSAGE">ERROR_MESSAGE</div>
+
+	<h1 tal:content="GROUP_PERMISSIONS_TITLE">GROUP_PERMISSIONS_TITLE</h1>
+
+	<p i18n:translate="">Group_permissions_explain</p>
+
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Allowed_forums</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td><select style="width:560px" name="entries[]" multiple="multiple" size="5">
+				<option tal:repeat="option allow_option_values" tal:attributes="value option/value" tal:content="option/label">Forum name</option>
+			</select></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td>
+				<button type="reset" i18n:translate="">Reset</button>
+				<button name="del_forum" i18n:translate="">Remove_selected</button>
+			</td>
+		</tr>
+	</tfoot></table>
+	</form>
+
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Add_forums</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td><select style="width:560px" name="entries[]" multiple="multiple" size="5">
+				<option tal:repeat="option forum_option_values" tal:attributes="value option/value" tal:content="option/label">Forum name</option>
+			</select></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td>
+				<button type="reset" i18n:translate="">Reset</button>
+				<button name="add_forum" i18n:translate="">Add_selected</button>
+			</td>
+		</tr>
+	</tfoot></table>
+	</form>
+</div>

@@ -1,0 +1,55 @@
+
+<div class="border">
+	<h1 i18n:translate="_EDITADMINS">Admins</h1>
+	<table>
+		<thead>
+			<tr>
+				<th i18n:translate="_NAME">Name</th>
+				<th i18n:translate="_PERMISSIONS">Permissions</th>
+				<th i18n:translate="_FUNCTIONS">Functions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr tal:repeat="admin admins">
+				<td tal:content="admin/aid"></td>
+				<td tal:content="admin/permissions"></td>
+				<td>
+					<a class="icon-edit" tal:condition="admin/mod_uri" tal:attributes="href admin/mod_uri" i18n:translate="">Edit</a>
+					<a class="icon-delete" tal:condition="admin/del_uri" tal:attributes="href admin/del_uri" i18n:translate="">Delete</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="border" tal:condition="php:can_admin()">
+	<form method="post" action="" tal:attributes="data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()">
+	<fieldset>
+		<legend i18n:translate="_ADDAUTHOR">Add a new administrator</legend>
+
+		<label for="add_aid" i18n:translate="_NICKNAME">Nickname</label>
+		<input type="text" maxlength="40" id="add_aid" name="aid"/>
+		<br/>
+
+		<label for="add_email" i18n:translate="_EMAIL">Email</label>
+		<input type="email" id="add_email" name="email"/>
+		<br/>
+
+		<label for="radmin[]" i18n:translate="_PERMISSIONS">Permissions</label>
+		<select multiple="multiple" size="10" id="radmin[]" name="radmin[]">
+			<option tal:repeat="op admin_ops" tal:attributes="value op" tal:content="op">blocks</option>
+		</select>
+		<br/>
+
+		<label for="radminsuper" i18n:translate="_SUPERUSER">Super User</label>
+		<input type="checkbox" value="1" id="radminsuper" name="radminsuper" tal:attributes="title php:_SUPERWARNING"/>
+		<br/>
+
+		<label for="add_pwd" i18n:translate="_PASSWORD">Password</label>
+		<input type="password" id="add_pwd" name="pwd" tal:attributes="pattern admin_pass_pattern"/>
+		<span class="infobox"><span tal:content="admin_pass_info">admin_pass_info</span></span>
+		<br/><br/>
+
+		<button name="add_admin" i18n:translate="_ADDAUTHOR2">Add Administrator</button>
+	</fieldset></form>
+</div>

@@ -1,0 +1,20 @@
+
+		<div tal:condition="bottomblock" tal:repeat="block bottomblock" class="block">
+			<div class="head toggle" tal:attributes="id 'toggleBlock${block/toggleid}'" tal:content="block/S_TITLE">{bottomblock S_TITLE}</div>
+			<div class="content" tal:attributes="id 'Block${block/toggleid}'" tal:content="structure block/S_CONTENT">{bottomblock S_CONTENT}</div>
+			<br/>
+		</div>
+	</td>
+	<td tal:condition="rightblock" class="mainside" id="RightSide">
+		<div tal:repeat="block rightblock" class="block">
+			<div class="head toggle" tal:attributes="id 'toggleBlock${block/toggleid}'" tal:content="block/S_TITLE">{rightblock S_TITLE}</div>
+			<div class="content" tal:attributes="id 'Block${block/toggleid}'" tal:content="structure block/S_CONTENT"></div>
+		</div>
+	</td>
+</tr>
+</tbody></table>
+<div id="messagesbox"></div>
+<div tal:replace="structure S_FOOTER">{S_FOOTER}</div>
+<br/><br/>
+<script type="text/javascript" tal:content="'Poodle.onDOMReady(function(){Poodle.Debugger(${debug_json})});'"></script>
+</body></html>

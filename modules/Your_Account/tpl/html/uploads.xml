@@ -1,0 +1,30 @@
+
+<div class="border">
+
+	<meter low=".50" optimum=".2" high=".75" style="width:100%" tal:attributes="value UPLOAD_LIMIT_METER" tal:content="UPLOAD_LIMIT_PERCENT">0%</meter>
+	Limit: <strong tal:content="S_UPLOAD_LIMIT">0</strong>
+	, Usage: <strong tal:content="S_UPLOAD_SIZE">0</strong> (<var tal:replace="UPLOAD_LIMIT_PERCENT">0%</var>)
+	<br />
+
+	<table><thead>
+		<tr>
+			<th>Section</th>
+			<th>File</th>
+			<th>Date</th>
+			<th>Size</th>
+		</tr>
+	</thead><tbody>
+		<tr tal:repeat="upload my_uploads">
+			<td><a tal:attributes="href php:URL::index(${upload/module_title})" tal:content="upload/module_title">name</a></td>
+			<td><a tal:attributes="href upload/upload_file" tal:content="upload/upload_name">name</a></td>
+			<td tal:content="php:date('Y-m-d',${upload/upload_time})"></td>
+			<td tal:content="php:here.L10N.filesizeToHuman(${upload/upload_size})"></td>
+		</tr>
+	</tbody>
+	</table>
+
+	<hr/>
+	<a tal:condition="php:is_active('Forums')" tal:attributes="href php:URL::index('Forums&amp;file=uacp&amp;u=${IDENTITY/id}')">Manage Forums Attachments</a><br/>
+	<a tal:condition="php:is_active('coppermine')" tal:attributes="href php:URL::index('coppermine&amp;file=editpics')">Manage Coppermine pictures</a><br/>
+
+</div>

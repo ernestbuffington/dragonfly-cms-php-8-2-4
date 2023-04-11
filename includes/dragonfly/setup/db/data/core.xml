@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="blocks" datamode="ON-EMPTY">
+		<col name="bid"/>
+		<col name="bkey"/>
+		<col name="title"/>
+		<col name="content"/>
+		<col name="bposition"/>
+		<col name="weight"/>
+		<col name="active"/>
+		<col name="blockfile"/>
+		<col name="view_to"/>
+		<tr><td>1</td><td>file</td><td>_MENU</td><td></td><td>l</td><td>1</td><td>1</td><td>block-CPG_Main_Menu.php</td><td>0</td></tr>
+		<tr><td>2</td><td>file</td><td>_USER_INFO</td><td></td><td>l</td><td>2</td><td>1</td><td>block-User_Info.php</td><td>0</td></tr>
+		<tr><td>3</td><td>admin</td><td>_ADMIN</td><td><![CDATA[• <a href="index.php?admin">Administration</a><br />• <a href="index.php?admin&amp;op=blocks">Blocks Admin</a><br />• <a href="index.php?admin&amp;op=modules">Modules Admin</a><br />• <a href="index.php?admin&amp;op=Forums">Forum Admin</a><br />• <a href="index.php?admin&amp;op=Surveys&amp;add">New Survey</a><br />• <a href="index.php?admin&amp;op=News&amp;mode=add">New Story</a>]]></td><td>l</td><td>3</td><td>1</td><td></td><td>2</td></tr>
+		<tr><td>4</td><td>file</td><td>User's Custom Box</td><td></td><td>r</td><td>2</td><td>1</td><td>modules/Your_Account/blocks/userbox.php</td><td>1</td></tr>
+		<tr><td>5</td><td>custom</td><td>All About Blocks</td><td>[align=left]This is an example of a [b]block[/b]. Three different types of blocks exist in Dragonfly™: HTML, System, and File&lt;br/&gt;&lt;br/&gt;This block is an example of an [b]HTML[/b] block. These blocks can be edited through the administration menu, under the Blocks option&lt;br/&gt;&lt;br/&gt;Blocks that are called through the /blocks folder are known as [b]File[/b] blocks. These blocks must be placed within this folder under a filename similar to block-*.php&lt;br/&gt;&lt;br/&gt;Finally, blocks that cannot be edited through the administration menu or through a file are known as [b]System[/b] blocks. By default, only two System blocks exist: "Administration" and "User's Custom Box"[/align]</td><td>l</td><td>4</td><td>1</td><td></td><td>0</td></tr>
+		<tr><td>8</td><td>custom</td><td>Button Links</td><td>[align=center][url=http://dragonflycms.org][img]images/buttons/dragonfly_80x15.gif[/img][/url]&lt;br/&gt;&lt;br/&gt;[url=rss/news.php][img]images/buttons/xml_80x15.png[/img][/url]&lt;br/&gt;&lt;br/&gt;[url=http://jigsaw.w3.org/css-validator][img]images/buttons/valid_css.png[/img][/url]&lt;br/&gt;&lt;br/&gt;[url=http://validator.w3.org/check?uri=referer][img]images/buttons/love_validator.png[/img][/url][/align]</td><td>r</td><td>5</td><td>1</td><td></td><td>0</td></tr>
+		<tr><td>6</td><td>file</td><td>_SURVEY</td><td></td><td>r</td><td>3</td><td>0</td><td>block-Survey.php</td><td>0</td></tr>
+	</table>
+
+	<table name="blocks_custom" datamode="ON-EMPTY">
+		<col name="bid"/>
+		<col name="mid"/>
+		<col name="side"/>
+		<col name="weight"/>
+		<tr><td>1</td><td>-1</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>1</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>2</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>3</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>4</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>5</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>6</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>7</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>8</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>9</td><td>l</td><td>1</td></tr>
+		<tr><td>1</td><td>10</td><td>l</td><td>1</td></tr>
+		<tr><td>2</td><td>-1</td><td>l</td><td>1</td></tr>
+		<tr><td>2</td><td>1</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>2</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>3</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>4</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>5</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>6</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>7</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>8</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>9</td><td>l</td><td>2</td></tr>
+		<tr><td>2</td><td>10</td><td>l</td><td>2</td></tr>
+		<tr><td>3</td><td>-1</td><td>l</td><td>1</td></tr>
+		<tr><td>3</td><td>1</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>2</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>3</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>4</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>5</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>6</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>7</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>8</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>9</td><td>l</td><td>3</td></tr>
+		<tr><td>3</td><td>10</td><td>l</td><td>3</td></tr>
+		<tr><td>4</td><td>1</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>2</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>3</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>4</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>5</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>6</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>7</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>8</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>9</td><td>r</td><td>2</td></tr>
+		<tr><td>4</td><td>10</td><td>r</td><td>2</td></tr>
+		<tr><td>5</td><td>-1</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>1</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>2</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>3</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>4</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>5</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>6</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>7</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>8</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>9</td><td>r</td><td>3</td></tr>
+		<tr><td>5</td><td>10</td><td>r</td><td>3</td></tr>
+		<tr><td>6</td><td>1</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>2</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>3</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>4</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>5</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>6</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>7</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>8</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>9</td><td>r</td><td>4</td></tr>
+		<tr><td>6</td><td>10</td><td>r</td><td>4</td></tr>
+	</table>
+
+	<table name="bbranks" datamode="ON-EMPTY">
+		<col name="rank_title"/>
+		<col name="rank_min"/>
+		<col name="rank_max"/>
+		<col name="rank_special"/>
+		<col name="rank_image"/>
+		<tr><td>Site Admin</td><td>-1</td><td>-1</td><td>1</td><td>images/ranks/stars-6.png</td></tr>
+		<tr><td>Newbie</td><td>1</td><td>0</td><td>0</td><td>images/ranks/stars-1.png</td></tr>
+	</table>
+
+	<table name="bbsmilies" datamode="ON-EMPTY">
+		<col name="code"/>
+		<col name="smile_url"/>
+		<col name="emoticon"/>
+		<col name="pos"/>
+		<tr><td>:D</td><td>icon_biggrin.gif</td><td>Very Happy</td><td>1</td></tr>
+		<tr><td>:-D</td><td>icon_biggrin.gif</td><td>Very Happy</td><td>2</td></tr>
+		<tr><td>:grin:</td><td>icon_biggrin.gif</td><td>Very Happy</td><td>3</td></tr>
+		<tr><td>:)</td><td>icon_smile.gif</td><td>Smile</td><td>4</td></tr>
+		<tr><td>:-)</td><td>icon_smile.gif</td><td>Smile</td><td>5</td></tr>
+		<tr><td>:smile:</td><td>icon_smile.gif</td><td>Smile</td><td>6</td></tr>
+		<tr><td>:(</td><td>icon_sad.gif</td><td>Sad</td><td>7</td></tr>
+		<tr><td>:-(</td><td>icon_sad.gif</td><td>Sad</td><td>8</td></tr>
+		<tr><td>:sad:</td><td>icon_sad.gif</td><td>Sad</td><td>9</td></tr>
+		<tr><td>:o</td><td>icon_surprised.gif</td><td>Surprised</td><td>10</td></tr>
+		<tr><td>:-o</td><td>icon_surprised.gif</td><td>Surprised</td><td>11</td></tr>
+		<tr><td>:eek:</td><td>icon_surprised.gif</td><td>Surprised</td><td>12</td></tr>
+		<tr><td>8O</td><td>icon_eek.gif</td><td>Shocked</td><td>13</td></tr>
+		<tr><td>8-O</td><td>icon_eek.gif</td><td>Shocked</td><td>14</td></tr>
+		<tr><td>:shock:</td><td>icon_eek.gif</td><td>Shocked</td><td>15</td></tr>
+		<tr><td>:?</td><td>icon_confused.gif</td><td>Confused</td><td>16</td></tr>
+		<tr><td>:-?</td><td>icon_confused.gif</td><td>Confused</td><td>17</td></tr>
+		<tr><td>:???:</td><td>icon_confused.gif</td><td>Confused</td><td>18</td></tr>
+		<tr><td>8)</td><td>icon_cool.gif</td><td>Cool</td><td>19</td></tr>
+		<tr><td>8-)</td><td>icon_cool.gif</td><td>Cool</td><td>20</td></tr>
+		<tr><td>:cool:</td><td>icon_cool.gif</td><td>Cool</td><td>21</td></tr>
+		<tr><td>:lol:</td><td>icon_lol.gif</td><td>Laughing</td><td>22</td></tr>
+		<tr><td>:x</td><td>icon_mad.gif</td><td>Mad</td><td>23</td></tr>
+		<tr><td>:-x</td><td>icon_mad.gif</td><td>Mad</td><td>24</td></tr>
+		<tr><td>:mad:</td><td>icon_mad.gif</td><td>Mad</td><td>25</td></tr>
+		<tr><td>:P</td><td>icon_razz.gif</td><td>Razz</td><td>26</td></tr>
+		<tr><td>:-P</td><td>icon_razz.gif</td><td>Razz</td><td>27</td></tr>
+		<tr><td>:razz:</td><td>icon_razz.gif</td><td>Razz</td><td>28</td></tr>
+		<tr><td>:oops:</td><td>icon_redface.gif</td><td>Embarassed</td><td>29</td></tr>
+		<tr><td>:cry:</td><td>icon_cry.gif</td><td>Crying or Very sad</td><td>30</td></tr>
+		<tr><td>:evil:</td><td>icon_evil.gif</td><td>Evil or Very Mad</td><td>31</td></tr>
+		<tr><td>:twisted:</td><td>icon_twisted.gif</td><td>Twisted Evil</td><td>32</td></tr>
+		<tr><td>:roll:</td><td>icon_rolleyes.gif</td><td>Rolling Eyes</td><td>33</td></tr>
+		<tr><td>:wink:</td><td>icon_wink.gif</td><td>Wink</td><td>34</td></tr>
+		<tr><td>;)</td><td>icon_wink.gif</td><td>Wink</td><td>35</td></tr>
+		<tr><td>;-)</td><td>icon_wink.gif</td><td>Wink</td><td>36</td></tr>
+		<tr><td>:!:</td><td>icon_exclaim.gif</td><td>Exclamation</td><td>37</td></tr>
+		<tr><td>:?:</td><td>icon_question.gif</td><td>Question</td><td>38</td></tr>
+		<tr><td>:idea:</td><td>icon_idea.gif</td><td>Idea</td><td>39</td></tr>
+		<tr><td>:arrow:</td><td>icon_arrow.gif</td><td>Arrow</td><td>40</td></tr>
+		<tr><td>:|</td><td>icon_neutral.gif</td><td>Neutral</td><td>41</td></tr>
+		<tr><td>:-|</td><td>icon_neutral.gif</td><td>Neutral</td><td>42</td></tr>
+		<tr><td>:neutral:</td><td>icon_neutral.gif</td><td>Neutral</td><td>43</td></tr>
+		<tr><td>:mrgreen:</td><td>icon_mrgreen.gif</td><td>Mr. Green</td><td>44</td></tr>
+	</table>
+
+	<table name="config_custom" onduplicate="IGNORE">
+		<col name="cfg_name"/>
+		<col name="cfg_field"/>
+		<col name="cfg_value"/>
+		<tr><td>global</td><td>sitename</td><td>My Dragonfly™ Website</td></tr>
+		<tr><td>global</td><td>site_logo</td><td>logo.png</td></tr>
+		<tr><td>global</td><td>slogan</td><td>The speed and security that we need</td></tr>
+		<tr><td>global</td><td>startdate</td><td></td></tr>
+		<tr><td>global</td><td>adminmail</td><td>admin@mysite.tld</td></tr>
+		<tr><td>global</td><td>anonpost</td><td>0</td></tr>
+		<tr><td>global</td><td>Default_Theme</td><td>default</td></tr>
+		<tr><td>global</td><td>foot1</td><td></td></tr>
+		<tr><td>global</td><td>foot2</td><td>The logos and trademarks used on this site are the property of their respective owners&lt;br/&gt;We are not responsible for comments posted by our users, as they are the property of the poster</td></tr>
+		<tr><td>global</td><td>foot3</td><td></td></tr>
+		<tr><td>global</td><td>commentlimit</td><td>4096</td></tr>
+		<tr><td>global</td><td>pollcomm</td><td>1</td></tr>
+		<tr><td>global</td><td>articlecomm</td><td>1</td></tr>
+		<tr><td>global</td><td>top</td><td>10</td></tr>
+		<tr><td>global</td><td>storyhome</td><td>10</td></tr>
+		<tr><td>global</td><td>oldnum</td><td>10</td></tr>
+		<tr><td>global</td><td>banners</td><td>0</td></tr>
+		<tr><td>global</td><td>backend_title</td><td>My Dragonfly™ Website</td></tr>
+		<tr><td>global</td><td>backend_language</td><td>en-us</td></tr>
+		<tr><td>global</td><td>language</td><td>en</td></tr>
+		<tr><td>global</td><td>multilingual</td><td>0</td></tr>
+		<tr><td>global</td><td>useflags</td><td>0</td></tr>
+		<tr><td>global</td><td>notify</td><td>0</td></tr>
+		<tr><td>global</td><td>notify_email</td><td>admin@mysite.tld</td></tr>
+		<tr><td>global</td><td>notify_subject</td><td>Pending News Submission</td></tr>
+		<tr><td>global</td><td>notify_message</td><td>A user has submitted an article on your site that requires admin approval. When you get a chance, please look into it.</td></tr>
+		<tr><td>global</td><td>notify_from</td><td>noreply@mysite.tld</td></tr>
+		<tr><td>global</td><td>moderate</td><td>0</td></tr>
+		<tr><td>global</td><td>admingraphic</td><td>5</td></tr>
+		<tr><td>global</td><td>httpref</td><td>1</td></tr>
+		<tr><td>global</td><td>httprefmax</td><td>1000</td></tr>
+		<tr><td>global</td><td>CensorMode</td><td>3</td></tr>
+		<tr><td>global</td><td>CensorReplace</td><td>(edited)</td></tr>
+		<tr><td>global</td><td>sec_code</td><td>0</td></tr>
+		<tr><td>global</td><td>main_module</td><td>News</td></tr>
+		<tr><td>global</td><td>db_version</td><td>20171010</td></tr>
+		<tr><td>global</td><td>db_auto_upgrade</td><td>0</td></tr>
+		<tr><td>global</td><td>block_frames</td><td>1</td></tr>
+		<tr><td>global</td><td>maintenance</td><td>1</td></tr>
+		<tr><td>global</td><td>maintenance_text</td><td>We're doing a bit of work on our site, so we'll be down for a while.&lt;br/&gt;Check back later to see if we're up.</td></tr>
+		<tr><td>global</td><td>admin_help</td><td>1</td></tr>
+		<tr><td>global</td><td>crumb</td><td>›</td></tr>
+		<tr><td>global</td><td>update_monitor</td><td>1</td></tr>
+		<tr><td>global</td><td>timezone</td><td>UTC</td></tr>
+		<tr><td>global</td><td>CensorList</td><td>asshole|assramer|basz|bitch|c0ck|cara de cu|caralho|clits|cock|cona|cum|cunt|dago|daygo|degok|dildo|faen|fanculo|feces|fitte|foda-se|fuck|hoer|hufter|kike|kloot|klootzak|kuk|kut|lesbo|lul|masturbate|merda|motherfuckers|nazis|neuken|nigger|nutsack|pakkis|paneleiro|penis|phuck|picha|picsa|pijpen|piss|pisses|poop|pussy|puta|scrotum|segg|shit|slut|titties|titty|twaty|whore|wop|zak</td></tr>
+		<tr><td>global</td><td>phar_modules</td><td>0</td></tr>
+
+		<tr><td>seo</td><td>leo</td><td>0</td></tr>
+		<tr><td>seo</td><td>leoend</td><td>.html</td></tr>
+
+		<tr><td>sec_code</td><td>back_img</td><td>1</td></tr>
+		<tr><td>sec_code</td><td>font</td><td>bahamas.ttf</td></tr>
+		<tr><td>sec_code</td><td>font_size</td><td>12</td></tr>
+
+		<tr><td>server</td><td>path</td><td>/</td></tr>
+		<tr><td>server</td><td>domain</td><td></td></tr>
+		<tr><td>server</td><td>dns</td><td>127.0.0.1</td></tr>
+		<tr><td>server</td><td>timezone</td><td>UTC</td></tr>
+
+		<tr><td>session</td><td>handler</td><td>Dragonfly\Session\Handler\Database</td></tr>
+		<tr><td>session</td><td>timeout</td><td>180</td></tr>
+
+		<tr><td>admin_cookie</td><td>name</td><td>admin</td></tr>
+		<tr><td>admin</td><td>minpass</td><td>10</td></tr>
+
+		<tr><td>auth_cookie</td><td>name</td><td>my_login</td></tr>
+		<tr><td>cookie</td><td>path</td><td>/</td></tr>
+		<tr><td>cookie</td><td>domain</td><td></td></tr>
+		<tr><td>cookie</td><td>server</td><td>0</td></tr>
+
+		<tr><td>debug</td><td>error_level</td><td>514</td></tr>
+		<tr><td>debug</td><td>log_level</td><td>514</td></tr>
+		<tr><td>debug</td><td>database</td><td>0</td></tr>
+		<tr><td>debug</td><td>session</td><td>0</td></tr>
+
+		<tr><td>mail</td><td>return_path</td><td></td></tr>
+		<tr><td>mail</td><td>from</td><td></td></tr>
+		<tr><td>email</td><td>allow_html_email</td><td>1</td></tr>
+		<tr><td>email</td><td>backend</td><td>php</td></tr>
+		<tr><td>email</td><td>smtphost</td><td>127.0.0.1</td></tr>
+		<tr><td>email</td><td>smtp_port</td><td></td></tr>
+		<tr><td>email</td><td>smtp_protocol</td><td>tls</td></tr>
+		<tr><td>email</td><td>smtp_auth</td><td></td></tr>
+		<tr><td>email</td><td>smtp_uname</td><td></td></tr>
+		<tr><td>email</td><td>smtp_pass</td><td></td></tr>
+
+		<tr><td>avatar</td><td>allow_upload</td><td>0</td></tr>
+		<tr><td>avatar</td><td>allow_remote</td><td>1</td></tr>
+		<tr><td>avatar</td><td>allow_local</td><td>1</td></tr>
+		<tr><td>avatar</td><td>animated</td><td>1</td></tr>
+		<tr><td>avatar</td><td>path</td><td>uploads/avatars</td></tr>
+		<tr><td>avatar</td><td>gallery_path</td><td>images/avatars</td></tr>
+		<tr><td>avatar</td><td>default</td><td>gallery/blank.png</td></tr>
+		<tr><td>avatar</td><td>max_height</td><td>80</td></tr>
+		<tr><td>avatar</td><td>max_width</td><td>80</td></tr>
+		<tr><td>avatar</td><td>filesize</td><td>6144</td></tr>
+
+		<tr><td>member</td><td>minpass</td><td>8</td></tr>
+		<tr><td>member</td><td>user_news</td><td>1</td></tr>
+		<tr><td>member</td><td>allowuserreg</td><td>1</td></tr>
+		<tr><td>member</td><td>sendaddmail</td><td>0</td></tr>
+		<tr><td>member</td><td>allowuserdelete</td><td>0</td></tr>
+		<tr><td>member</td><td>senddeletemail</td><td>0</td></tr>
+		<tr><td>member</td><td>allowusertheme</td><td>1</td></tr>
+		<tr><td>member</td><td>allowmailchange</td><td>0</td></tr>
+		<tr><td>member</td><td>requireadmin</td><td>0</td></tr>
+		<tr><td>member</td><td>useactivate</td><td>1</td></tr>
+		<tr><td>member</td><td>show_registermsg</td><td>1</td></tr>
+		<tr><td>member</td><td>registermsg</td><td>While the administrators and moderators of this website will attempt to remove or edit any generally objectionable material as quickly as possible, it is impossible to review every message.
+Therefore you acknowledge that all posts made to this website express the views and opinions of the author and not the administrators, moderators or webmaster (except for messages by these people) and hence will not be held liable.
+&lt;br/&gt;&lt;br/&gt;
+You agree not to post any abusive, obscene, vulgar, slanderous, hateful, threatening, sexually-oriented or any other material that may violate any applicable laws.
+Doing so may lead to you being immediately and permanently banned (and your service provider being informed).
+The IP address of all posts is recorded to aid in enforcing these conditions.
+You agree that the webmaster, administrator and moderators of this website have the right to remove, edit, move or close any message at any time should they see fit.
+As a user you agree to any information you have entered above being stored in a database.
+While this information will not be disclosed to any third party without your consent, the webmaster, administrator and moderators cannot be held responsible for any hacking attempt that may lead to the safety of the data being compromised.
+&lt;br/&gt;&lt;br/&gt;
+This website uses cookies to store information on your local computer.
+These cookies do not contain any of the information you have entered above; they serve only to improve your viewing pleasure.
+The e-mail address is used only for confirming your registration details and password (and for sending new passwords should you forget your current one)</td></tr>
+		<tr><td>member</td><td>send_welcomepm</td><td>0</td></tr>
+		<tr><td>member</td><td>welcomepm_msg</td><td>Hi There! We'd like to thank you for registering on our site, and we wish you all the best!</td></tr>
+		<tr><td>member</td><td>DeniedUserNames</td><td>admin|anonymous|god|ieatbabies|nobody|operator|owner|root|webmaster</td></tr>
+		<tr><td>member</td><td>private_profile</td><td>0</td></tr>
+		<tr><td>member</td><td>upload_quota</td><td>10</td></tr>
+
+		<tr><td>identity</td><td>passwd_minlength</td><td>0</td></tr>
+		<tr><td>identity</td><td>nick_minlength</td><td>4</td></tr>
+		<tr><td>identity</td><td>nick_invalidchars</td><td>*#%"'`&amp;^ @&gt;&lt;\/=?:</td></tr>
+
+		<tr><td>notepad</td><td>lock</td><td>0</td></tr>
+		<tr><td>notepad</td><td>text</td><td>Swap messages with other administrators by using this handy notepad</td></tr>
+
+		<tr><td>_security</td><td>bots</td><td>1</td></tr>
+		<tr><td>_security</td><td>email</td><td>1</td></tr>
+		<tr><td>_security</td><td>ips</td><td>1</td></tr>
+		<tr><td>_security</td><td>referers</td><td>1</td></tr>
+		<tr><td>_security</td><td>uas</td><td>1</td></tr>
+		<tr><td>_security</td><td>flooding</td><td>1</td></tr>
+		<tr><td>_security</td><td>hostnames</td><td>0</td></tr>
+		<tr><td>_security</td><td>delay</td><td>4</td></tr>
+		<tr><td>_security</td><td>bantime</td><td>3600</td></tr>
+		<tr><td>_security</td><td>debug</td><td>0</td></tr>
+		<tr><td>_security</td><td>cachettl</td><td>86400</td></tr>
+		<tr><td>_security</td><td>deny_tor</td><td>0</td></tr>
+		<tr><td>_security</td><td>dns_bl_active</td><td>0</td></tr>
+		<tr><td>_security</td><td>dns_bl_srv_1</td><td>.sbl-xbl.spamhaus.org</td></tr>
+		<tr><td>_security</td><td>dns_bl_exc_1</td><td>127.0.0.4</td></tr>
+		<tr><td>_security</td><td>dns_bl_srv_2</td><td></td></tr>
+		<tr><td>_security</td><td>dns_bl_exc_2</td><td></td></tr>
+		<tr><td>_security</td><td>dns_bl_srv_3</td><td></td></tr>
+		<tr><td>_security</td><td>dns_bl_exc_3</td><td></td></tr>
+
+		<tr><td>image</td><td>handler</td><td></td></tr>
+	</table>
+
+	<table name="l10n" onduplicate="IGNORE">
+		<col name="l10n_id"/>
+		<col name="l10n_rfc1766"/>
+		<col name="l10n_active"/>
+		<col name="l10n_iso639_1"/>
+		<col name="l10n_iso639_2"/>
+		<!-- en.wikipedia.org/wiki/List_of_ISO_639-1_codes -->
+		<tr><td>1</td><td>en</td><td>1</td><td>en</td><td>eng</td></tr>
+	</table>
+
+	<table name="l10n_translate" onduplicate="IGNORE">
+		<col name="msg_id"/>
+		<col name="v_en"/>
+		<tr><td>en</td><td>English</td></tr>
+	</table>
+
+	<table name="modules" datamode="ON-EMPTY">
+		<col name="title"/>
+		<col name="version"/>
+		<col name="active"/>
+		<col name="view"/>
+		<col name="pos"/>
+		<col name="uninstall"/>
+		<col name="cat_id"/>
+		<tr><td>Contact</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+		<tr><td>Topics</td><td>1.0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+		<tr><td>Stories_Archive</td><td>1.0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>1</td></tr>
+		<tr><td>login</td><td></td><td>1</td><td>0</td><td>4</td><td>0</td><td>3</td></tr>
+		<tr><td>Your_Account</td><td>1.2</td><td>1</td><td>0</td><td>5</td><td>0</td><td>3</td></tr>
+		<tr><td>Search</td><td>1.0</td><td>1</td><td>0</td><td>7</td><td>0</td><td>5</td></tr>
+		<tr><td>Top</td><td>1.0</td><td>0</td><td>0</td><td>8</td><td>0</td><td>6</td></tr>
+	</table>
+
+	<table name="modules_cat" datamode="ON-EMPTY">
+		<col name="cid"/>
+		<col name="name"/>
+		<col name="image"/>
+		<col name="pos"/>
+		<col name="link_type"/>
+		<col name="link"/>
+		<tr><td>1</td><td>_HOME</td><td>icon_home.gif</td><td>0</td><td>1</td><td>/</td></tr>
+		<tr><td>2</td><td>_COMMUNITY</td><td>icon_community.gif</td><td>1</td><td>0</td><td></td></tr>
+		<tr><td>3</td><td>_MEMBERSOPTIONS</td><td>icon_members.gif</td><td>2</td><td>0</td><td></td></tr>
+		<tr><td>4</td><td>_BBFORUMS</td><td>icon_forums.gif</td><td>3</td><td>0</td><td></td></tr>
+		<tr><td>5</td><td>_SEARCH</td><td>icon_search.gif</td><td>4</td><td>0</td><td></td></tr>
+		<tr><td>6</td><td>Web</td><td>icon_web.gif</td><td>5</td><td>0</td><td></td></tr>
+	</table>
+
+	<table name="modules_links" datamode="ON-EMPTY">
+		<col name="title"/>
+		<col name="link"/>
+		<col name="active"/>
+		<col name="view"/>
+		<col name="pos"/>
+		<col name="cat_id"/>
+		<tr><td>_LOGOUT</td><td><![CDATA[Your_Account&op=logout]]></td><td>1</td><td>1</td><td>1</td><td>3</td></tr>
+	</table>
+
+	<table name="packagemanager_repos" onduplicate="UPDATE">
+		<col name="repo_id"/>
+		<col name="repo_name"/>
+		<col name="repo_enabled"/>
+		<col name="repo_location"/>
+		<col name="repo_public_key"/>
+		<tr><td>1</td><td>Dragonfly</td><td>1</td><td>https://dragonflycms.org/downloads/v10/</td><td>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAolZzeF60RhNbtQ9Yfh4K
+vlilywaKRdu4tid3U/0Ezp/RtNoMTayHSpRpweOGjbpxR7NBBKVDNhMK0CcgKvp+
+hqyIWq2GNRPhhcVnjwl+RF5v4kYAXAOAz/DBzPAfAIZnHv0gzylpbGW1dOsyQurG
+nh3ZcX4kLT4KGmH5S45u7y68lB1q9fNNNqlJPH85U2/x38+FG5cjusyKALQOLUQd
+5AYkP6aW6V0YvrjrJiSG+HOKp7DIG3Gf2SoPuCA/oPxYuSZjmb1wDMDt19mNjygM
+yaFeO0bX7JffXh9Z5wOkI5/FpcbpkpecfhSLPYXWJV9xw45ZTdZzygYyN6Rpff1W
+0wIDAQAB</td></tr>
+	</table>
+
+	<table name="security_domains" onduplicate="IGNORE">
+		<col name="ban_string"/>
+		<col name="ban_type"/>
+		<!-- email domains -->
+		<tr><td>mysite.</td><td>2</td></tr>
+		<tr><td>mail.ru</td><td>2</td></tr>
+		<tr><td>no-ip.com</td><td>2</td></tr>
+		<tr><td>mydomain.</td><td>2</td></tr>
+		<tr><td>customscoop.</td><td>2</td></tr>
+		<tr><td>adminshops.</td><td>2</td></tr>
+		<tr><td>artaisle.</td><td>2</td></tr>
+		<tr><td>ayayai.</td><td>2</td></tr>
+		<tr><td>spamgourmet.</td><td>2</td></tr>
+		<tr><td>abv.bg</td><td>2</td></tr>
+		<tr><td>gyuvetch.bg</td><td>2</td></tr>
+		<tr><td>gbg.bg</td><td>2</td></tr>
+		<tr><td>primposta.</td><td>2</td></tr>
+		<tr><td>ak47.hu</td><td>2</td></tr>
+		<tr><td>avh.hu</td><td>2</td></tr>
+		<tr><td>cia.hu</td><td>2</td></tr>
+		<tr><td>coder.hu</td><td>2</td></tr>
+		<tr><td>cracker.hu</td><td>2</td></tr>
+		<tr><td>csinibaba.hu</td><td>2</td></tr>
+		<tr><td>eposta.hu</td><td>2</td></tr>
+		<tr><td>fbi.hu</td><td>2</td></tr>
+		<tr><td>geek.hu</td><td>2</td></tr>
+		<tr><td>gyorsposta.</td><td>2</td></tr>
+		<tr><td>hello.hu</td><td>2</td></tr>
+		<tr><td>irj.hu</td><td>2</td></tr>
+		<tr><td>jakuza.hu</td><td>2</td></tr>
+		<tr><td>kgb.hu</td><td>2</td></tr>
+		<tr><td>lamer.hu</td><td>2</td></tr>
+		<tr><td>levele.</td><td>2</td></tr>
+		<tr><td>maffia.hu</td><td>2</td></tr>
+		<tr><td>me-mail.hu</td><td>2</td></tr>
+		<tr><td>message.hu</td><td>2</td></tr>
+		<tr><td>pobox.hu</td><td>2</td></tr>
+		<tr><td>pro.hu</td><td>2</td></tr>
+		<tr><td>programozo.hu</td><td>2</td></tr>
+		<tr><td>reply.hu</td><td>2</td></tr>
+		<tr><td>send.hu</td><td>2</td></tr>
+		<tr><td>shotgun.hu</td><td>2</td></tr>
+		<tr><td>skizo.hu</td><td>2</td></tr>
+		<tr><td>sniper.hu</td><td>2</td></tr>
+		<tr><td>soldier.hu</td><td>2</td></tr>
+		<tr><td>theend.hu</td><td>2</td></tr>
+		<tr><td>warrior.hu</td><td>2</td></tr>
+		<tr><td>webmail.hu</td><td>2</td></tr>
+		<tr><td>mailinater.</td><td>2</td></tr>
+		<tr><td>bsdmail.</td><td>2</td></tr>
+		<!-- referer spam domains -->
+		<tr><td>simple-share-buttons.com</td><td>3</td></tr>
+		<tr><td>buttons-for-website.com</td><td>3</td></tr>
+		<tr><td>semalt.com</td><td>3</td></tr>
+		<tr><td>hulfingtonpost.com</td><td>3</td></tr>
+		<tr><td>darodar.com</td><td>3</td></tr>
+		<tr><td>adminshops.</td><td>3</td></tr>
+		<tr><td>locators.com</td><td>3</td></tr>
+		<tr><td>southafrica2000.com</td><td>3</td></tr>
+		<tr><td>bobbemer.</td><td>3</td></tr>
+		<tr><td>cm3.</td><td>3</td></tr>
+		<tr><td>givemepink.</td><td>3</td></tr>
+		<tr><td>allinternal.</td><td>3</td></tr>
+		<tr><td>spermswap.</td><td>3</td></tr>
+		<tr><td>asstraffic.</td><td>3</td></tr>
+		<tr><td>perfectgonzo.</td><td>3</td></tr>
+		<tr><td>brutalblowjobs.</td><td>3</td></tr>
+		<tr><td>carpet2clean.</td><td>3</td></tr>
+		<tr><td>carpetcleaners2.</td><td>3</td></tr>
+		<tr><td>adspoll.</td><td>3</td></tr>
+		<tr><td>zhaomu.</td><td>3</td></tr>
+		<tr><td>.lele.com</td><td>3</td></tr>
+		<tr><td>bpchina.</td><td>3</td></tr>
+		<tr><td>played.by</td><td>3</td></tr>
+		<tr><td>playsite.de</td><td>3</td></tr>
+		<tr><td>quickly.to</td><td>3</td></tr>
+		<tr><td>www.sex</td><td>3</td></tr>
+		<tr><td>xxx</td><td>3</td></tr>
+		<tr><td>bookmark</td><td>3</td></tr>
+		<tr><td>unknown</td><td>3</td></tr>
+		<tr><td>95mb.</td><td>3</td></tr>
+		<tr><td>splinder.</td><td>3</td></tr>
+		<tr><td>blackfilmmakermag.</td><td>3</td></tr>
+		<tr><td>bac8.</td><td>3</td></tr>
+		<tr><td>pok2.</td><td>3</td></tr>
+		<tr><td>ablejobs.</td><td>3</td></tr>
+		<tr><td>profitinside.</td><td>3</td></tr>
+		<tr><td>china.com</td><td>3</td></tr>
+		<tr><td>caiku.com</td><td>3</td></tr>
+		<tr><td>.8169.com</td><td>3</td></tr>
+		<tr><td>.eu.tf</td><td>3</td></tr>
+		<tr><td>.int.tf</td><td>3</td></tr>
+		<tr><td>.us.tf</td><td>3</td></tr>
+		<tr><td>.de.tf</td><td>3</td></tr>
+		<tr><td>.at.nr</td><td>3</td></tr>
+		<tr><td>.ulv.com</td><td>3</td></tr>
+		<tr><td>seekemploymentnow.com</td><td>3</td></tr>
+		<tr><td>online-casino-reviews.ws</td><td>3</td></tr>
+		<tr><td>quillicreality.</td><td>3</td></tr>
+		<tr><td>mapdes.</td><td>3</td></tr>
+		<tr><td>.libero.it</td><td>3</td></tr>
+		<tr><td>.siol.net</td><td>3</td></tr>
+		<tr><td>.volny.cz</td><td>3</td></tr>
+		<tr><td>home.arcor.de</td><td>3</td></tr>
+		<tr><td>home.tiscali.de</td><td>3</td></tr>
+		<tr><td>.geocities.com</td><td>3</td></tr>
+		<tr><td>myweb.tiscali.co.uk</td><td>3</td></tr>
+		<tr><td>perso.gratisweb.com</td><td>3</td></tr>
+		<tr><td>pnarp.com</td><td>3</td></tr>
+	</table>
+
+	<table name="security_agents" onduplicate="UPDATE">
+		<col name="agent_name"/>
+		<col name="agent_fullname"/>
+		<col name="agent_hostname"/>
+		<col name="agent_url"/>
+		<col name="agent_ban"/>
+		<col name="agent_desc"/>
+		<tr><td>1Noon</td><td>1Noonbot</td><td></td><td>1nooncorp.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>1-More</td><td>1-More</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Accoona</td><td>Accoona-AI-Agent/</td><td></td><td>accoona.com</td><td>0</td><td></td></tr>
+		<tr><td>Accoon</td><td>Accoon v</td><td></td><td>acoon.de/robot.asp</td><td>0</td><td></td></tr>
+		<tr><td>AccoonBot</td><td>AccoonBot/</td><td></td><td>acoon.de/robot.asp</td><td>0</td><td></td></tr>
+		<tr><td>Ahrefs</td><td>AhrefsBot/</td><td></td><td>ahrefs.com</td><td>0</td><td>Site Explorer and Backlink Checker</td></tr>
+		<tr><td>aip</td><td>aipbot/</td><td></td><td>nameprotect.com</td><td>0</td><td>copyright search robot (24.177.134.x, NULL), s. also
+- np/0.1_(np;_http://www.nameprotect.com...
+- abot/0.1 (abot; http://www.abot.com...</td></tr>
+		<tr><td>Alexa</td><td>ia_archiver</td><td>.alexa.com</td><td>alexa.com</td><td>0</td><td>Alexa (209.237.238.1xx)</td></tr>
+		<tr><td>Archive</td><td>ia_archiver</td><td>.archive.org</td><td>archive.org</td><td>0</td><td>The Internet Archive (209.237.238.1xx)</td></tr>
+		<tr><td>AltaVista</td><td>Scooter</td><td></td><td>.altavista.com</td><td>0</td><td></td></tr>
+		<tr><td>Amfibi</td><td>Amfibibot</td><td></td><td>.amfibi.com</td><td>0</td><td></td></tr>
+		<tr><td>Ansearch</td><td>AnsearchBot/</td><td></td><td>ansearch.com.au</td><td>0</td><td></td></tr>
+		<tr><td>AnswerBus</td><td>AnswerBus</td><td></td><td>answerbus.com</td><td>0</td><td></td></tr>
+		<tr><td>Argus</td><td>Argus/</td><td></td><td>simpy.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>Arachmo</td><td>Arachmo</td><td></td><td></td><td>-1</td><td>Impolite bandwidth sucker. Netblock owned by SOFTBANK BB CORP, Japan. Doesn't follow robots.txt</td></tr>
+		<tr><td>Ask Jeeves</td><td>Ask Jeeves/Teoma</td><td>.ask.com</td><td>sp.ask.com/docs/about/tech_crawling.html</td><td>0</td><td></td></tr>
+		<tr><td>ASPseek</td><td>ASPseek/</td><td></td><td>aspseek.org</td><td>0</td><td>search engine software</td></tr>
+		<tr><td>AvantGo</td><td>AvantGo</td><td>.avantgo.com</td><td>avantgo.com</td><td>0</td><td></td></tr>
+		<tr><td>Axadine</td><td>Axadine Crawler</td><td></td><td>axada.de</td><td>0</td><td></td></tr>
+		<tr><td>Baidu</td><td>Baiduspider</td><td></td><td>baidu.com/search/spider.htm</td><td>0</td><td></td></tr>
+		<tr><td>Become</td><td>BecomeBot</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>BigClique</td><td>BigCliqueBOT</td><td></td><td>bigclique.com</td><td>0</td><td></td></tr>
+		<tr><td>BilderSauger</td><td>BilderSauger</td><td></td><td>google.com/search?q=BilderSauger+data+becker</td><td>-1</td><td></td></tr>
+		<tr><td>Bing</td><td>bing</td><td>.search.msn.com</td><td>search.msn.com/msnbot.htm</td><td>0</td><td></td></tr>
+		<tr><td>BitTorrent</td><td>btbot/</td><td></td><td>btbot.com/btbot.html</td><td>0</td><td></td></tr>
+		<tr><td>Blekkobot</td><td>Blekkobot</td><td></td><td>blekko.com/about/blekkobot</td><td>0</td><td></td></tr>
+		<tr><td>Blogpulse</td><td>Blogpulse</td><td></td><td>blogpulse.com</td><td>0</td><td>IntelliSeek service</td></tr>
+		<tr><td>blogsearchbot</td><td>blogsearchbot</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Bruin</td><td>BruinBot</td><td></td><td>webarchive.cs.ucla.edu/bruinbot.html</td><td>0</td><td></td></tr>
+		<tr><td>Cazoodle</td><td>CazoodleBot/</td><td></td><td>www.cazoodle.com/contact.php</td><td>0</td><td></td></tr>
+		<tr><td>CCBot</td><td>CCBot/</td><td></td><td>commoncrawl.org/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>cfetch</td><td>cfetch/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Cipinet</td><td>Cipinet</td><td></td><td>cipinet.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>Combine</td><td>Combine/</td><td></td><td>lub.lu.se/combine/</td><td>-1</td><td>harvesting robot</td></tr>
+		<tr><td>Convera</td><td>ConveraCrawler/</td><td></td><td>authoritativeweb.com/crawl</td><td>-1</td><td>Impolite robot. Netblock owned by Convera Corp, Vienna</td></tr>
+		<tr><td>Cydral</td><td>CydralSpider</td><td></td><td>cydral.com</td><td>0</td><td>Cydral Web Image Search</td></tr>
+		<tr><td>curl</td><td>curl/</td><td></td><td>curl.haxx.se</td><td>0</td><td>file transferring tool</td></tr>
+		<tr><td>Datapark</td><td>DataparkSearch/</td><td></td><td>dataparksearch.org</td><td>0</td><td></td></tr>
+		<tr><td>Delphi Indy Library</td><td>Indy Library</td><td></td><td></td><td>-1</td><td>http://www.flarp.net/misc/indylib.php</td></tr>
+		<tr><td>Demo</td><td>Demo Bot</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>DHCrawler</td><td>DHCrawler</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Diamond</td><td>DiamondBot</td><td></td><td>searchscout.com</td><td>-1</td><td>Claria (ex Gator) robot (64.152.73.xx, NULL), s. also Claria</td></tr>
+		<tr><td>DISCo</td><td>DISCo Pump</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Discobot</td><td>discobot/</td><td></td><td>discoveryengine.com/discobot.html</td><td>0</td><td>208.96.54.72</td></tr>
+		<tr><td>DotBot</td><td>DotBot/</td><td></td><td>www.dotnetdotcom.org</td><td>0</td><td></td></tr>
+		<tr><td>Dragonfly CMS</td><td>Dragonfly File Reader</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Drecom</td><td>Drecombot/</td><td></td><td>basisoft.com/robots/Drecom.html</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Dumbfind</td><td>Dumbot</td><td></td><td>dumbfind.com/dumbot.html</td><td>0</td><td></td></tr>
+		<tr><td>e-Society</td><td>e-SocietyRobot</td><td></td><td>yama.info.waseda.ac.jp/~yamana/es/</td><td>0</td><td></td></tr>
+		<tr><td>EmailSiphon</td><td>EmailSiphon</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>EmeraldShield</td><td>EmeraldShield.com WebBot</td><td></td><td>emeraldshield.com/webbot.aspx</td><td>0</td><td></td></tr>
+		<tr><td>Educate</td><td>Educate Search</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Envolk</td><td>envolk[ITS]spider/</td><td></td><td>envolk.com/envolkspider.html</td><td>0</td><td></td></tr>
+		<tr><td>Eruvo</td><td>EruvoBot</td><td></td><td>eruvo.com</td><td>0</td><td></td></tr>
+		<tr><td>Esperanza</td><td>EsperanzaBot</td><td></td><td>esperanza.to/bot/</td><td>0</td><td></td></tr>
+		<tr><td>eStyle</td><td>eStyleSearch</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Eurip</td><td>EuripBot</td><td></td><td>eurip.com</td><td>0</td><td></td></tr>
+		<tr><td>EventGuru</td><td>EventGuruBot</td><td></td><td>www.eventguru.com/spider.html</td><td>0</td><td></td></tr>
+		<tr><td>Ezooms</td><td>Ezooms</td><td></td><td>eurip.com</td><td>0</td><td></td></tr>
+		<tr><td>Exabot</td><td>Exabot/</td><td>.exabot.com</td><td>www.exabot.com/go/robot</td><td>0</td><td></td></tr>
+		<tr><td>Fast</td><td>FAST MetaWeb Crawler</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>FAST Enterprise</td><td>FAST Enterprise Crawler</td><td>.fastsearch.net</td><td></td><td>0</td><td></td></tr>
+		<tr><td>Feedster</td><td>Feedster Crawler</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>FetchAPI</td><td>Fetch API Request</td><td></td><td></td><td>-1</td><td>Some sort of application that tries to download and store your full website. Doesn't follow robots.txt</td></tr>
+		<tr><td>fg</td><td>fgcrawler</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Filangy</td><td>Filangy</td><td></td><td>filangy.com/filangyinfo.jsp?inc=robots.jsp</td><td>0</td><td></td></tr>
+		<tr><td>Findexa</td><td>Findexa Crawler</td><td></td><td>findexa.no/gulesider/article26548.ece</td><td>0</td><td></td></tr>
+		<tr><td>FindLinks</td><td>findlinks</td><td></td><td>wortschatz.uni-leipzig.de/findlinks/</td><td>0</td><td></td></tr>
+		<tr><td>Franklin</td><td>Franklin locator</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>FullWeb</td><td>Full Web Bot</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Fyber</td><td>FyberSpider</td><td></td><td>fybersearch.com/fyberspider.php</td><td>0</td><td></td></tr>
+		<tr><td>Gais</td><td>Gaisbot</td><td></td><td>gais.cs.ccu.edu.tw/robot.php</td><td>0</td><td></td></tr>
+		<tr><td>Genie</td><td>geniebot</td><td></td><td>genieknows.com</td><td>0</td><td></td></tr>
+		<tr><td>GetRight</td><td>GetRight/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Giga</td><td>Gigabot/</td><td></td><td>gigablast.com/spider.html</td><td>0</td><td></td></tr>
+		<tr><td>Girafa</td><td>Girafabot</td><td></td><td>girafa.com</td><td>0</td><td></td></tr>
+		<tr><td>GoForIt</td><td>GOFORITBOT</td><td></td><td>goforit.com/about/</td><td>0</td><td></td></tr>
+		<tr><td>Gonzo</td><td>gonzo1</td><td>.t-ipconnect.de</td><td>telekom.de</td><td>0</td><td></td></tr>
+		<tr><td>Google</td><td>Google</td><td>\.(googlebot|google)\.com</td><td>google.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>GPU</td><td>GPU p2p crawler</td><td></td><td>gpu.sourceforge.net/search_engine.php</td><td>0</td><td></td></tr>
+		<tr><td>Grub</td><td>grub-client</td><td></td><td>grub.org</td><td>0</td><td></td></tr>
+		<tr><td>GSA</td><td>gsa-crawler</td><td></td><td>arsenaldigital.com</td><td>0</td><td></td></tr>
+		<tr><td>HappyFun</td><td>HappyFunBot/</td><td></td><td>happyfunsearch.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>Harvest</td><td>Harvest/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>HeadScan</td><td>head-scan.pl/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Heritrix</td><td>heritrix/</td><td></td><td>crawler.xtramind.com</td><td>0</td><td></td></tr>
+		<tr><td>hl_ftien_spider</td><td>hl_ftien_spider</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>HMSE</td><td>HMSE_Robot</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>HooWWWer</td><td>HooWWWer</td><td></td><td>cosco.hiit.fi/search/hoowwwer/</td><td>0</td><td></td></tr>
+		<tr><td>Morfeo</td><td>holmes/</td><td></td><td>morfeo.centrum.cz</td><td>0</td><td></td></tr>
+		<tr><td>htdig</td><td>htdig/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>HTMLParser</td><td>HTMLParser/</td><td></td><td>htmlparser.sourceforge.net</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>HTTrack</td><td>HTTrack</td><td></td><td>httrack.com</td><td>-1</td><td>Website copier</td></tr>
+		<tr><td>Ichiro</td><td>ichiro/</td><td></td><td>nttr.co.jp</td><td>0</td><td></td></tr>
+		<tr><td>IconSurf</td><td>IconSurf/</td><td></td><td>iconsurf.com/robot.html</td><td>0</td><td></td></tr>
+		<tr><td>IlTrovatore</td><td>IlTrovatore-Setaccio/</td><td></td><td>iltrovatore.it/bot.html</td><td>-1</td><td></td></tr>
+		<tr><td>Industry</td><td>Industry Program</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Indy</td><td>Indy Library</td><td></td><td></td><td>-1</td><td>Originally, the Indy Library is a programming library which is available at http://www.nevrona.com/Indy or http://indy.torry.net under an Open Source license. This library is included with Borland Delphi 6, 7, C++Builder 6, plus all of the Kylix versions. Unfortunately, this library is hi-jacked and abused by some Chinese spam bots. All recent user-agents with the unmodified "Indy Library" string were of Chinese origin. Doesn't follow robots.txt</td></tr>
+		<tr><td>InetURL</td><td>InetURL/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Infocious</td><td>InfociousBot</td><td></td><td>corp.infocious.com/tech_crawler.php</td><td>0</td><td></td></tr>
+		<tr><td>Ingrid</td><td>INGRID</td><td></td><td>webmaster.ilse.nl/jsp/webmaster.jsp</td><td>0</td><td></td></tr>
+		<tr><td>Interseek</td><td>InterseekWeb/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Ipwalk</td><td>IpwalkBot/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>iSiloX</td><td>iSiloX/</td><td></td><td>isilox.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>IstellaBot</td><td>IstellaBot/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>IRL</td><td>IRLbot</td><td></td><td>irl.cs.tamu.edu/crawler</td><td>0</td><td></td></tr>
+		<tr><td>Java</td><td>Java/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Jyxo</td><td>Jyxobot/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>KnackAttack</td><td>KnackAttack</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>KnowItAll</td><td>KnowItAll(</td><td></td><td>cs.washington.edu</td><td>0</td><td></td></tr>
+		<tr><td>Kumm</td><td>KummHttp/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Lapozz</td><td>LapozzBot</td><td></td><td>robot.lapozz.hu/</td><td>0</td><td></td></tr>
+		<tr><td>Larbin</td><td>larbin</td><td></td><td>larbin.sourceforge.net/index-eng.html</td><td>0</td><td></td></tr>
+		<tr><td>LeechGet</td><td>LeechGet</td><td></td><td>leechget.net</td><td>0</td><td></td></tr>
+		<tr><td>libwww-perl</td><td>libwww-perl/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>lmspider</td><td>lmspider</td><td></td><td>scansoft.com</td><td>0</td><td></td></tr>
+		<tr><td>Local</td><td>LocalcomBot/</td><td></td><td>local.com/bot.htm</td><td>0</td><td></td></tr>
+		<tr><td>Looksmart</td><td>ZyBorg/</td><td>.looksmart.com</td><td>WISEnutbot.com</td><td>0</td><td></td></tr>
+		<tr><td>Lorkyll</td><td>Lorkyll</td><td></td><td>444.net</td><td>-1</td><td></td></tr>
+		<tr><td>LoveSMS</td><td>LoveSMS Search Engine</td><td></td><td>cauta.lovesms.ro</td><td>0</td><td></td></tr>
+		<tr><td>Lycos</td><td>Lycos_Spider</td><td>.lycos.com</td><td></td><td>0</td><td></td></tr>
+		<tr><td>Mac Finder</td><td>Mac Finder</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Magpie-Crawler</td><td>magpie-crawler/</td><td></td><td>http://www.brandwatch.com/magpie-crawler/</td><td>0</td><td></td></tr>
+		<tr><td>Mail.ru</td><td>Mail.Ru/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Majestic-12</td><td>MJ12bot</td><td></td><td>majestic12.co.uk/bot.php</td><td>0</td><td></td></tr>
+		<tr><td>MapoftheInternet</td><td>MapoftheInternet.com</td><td></td><td>mapoftheinternet.com</td><td>0</td><td></td></tr>
+		<tr><td>McBot</td><td>McBot/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Medusa</td><td>Medusa</td><td></td><td></td><td>-1</td><td>Medusa is a tool for finding images, movie-clips or other kinds of files on webpages and downloading them. You start by entering a starting URL and Medusa searches for the filetypes you are interested in on this page and all pages found up to a given depth. Doesn't follow robots.txt</td></tr>
+		<tr><td>Metaspinner</td><td>Metaspinner/</td><td></td><td>meta-spinner.de</td><td>0</td><td></td></tr>
+		<tr><td>MetaTag</td><td>MetaTagRobot</td><td></td><td>widexl.com/remote/search-engines/metatag-analyzer.html</td><td>0</td><td></td></tr>
+		<tr><td>Minuteman</td><td>Minuteman</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Miva</td><td>Miva</td><td></td><td>miva.com</td><td>0</td><td></td></tr>
+		<tr><td>Mirago</td><td>HenryTheMiragoRobot</td><td></td><td>miragorobot.com/scripts/mrinfo.asp</td><td>0</td><td></td></tr>
+		<tr><td>Missauga</td><td>Missauga Locate</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Missigua</td><td>Missigua Locator</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Mister PiX</td><td>Mister PiX</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Mizzu</td><td>Mizzu Labs</td><td></td><td></td><td>-1</td><td>Some spam bot from Jasmine Internet - Bangkok. Doesn't follow robots.txt</td></tr>
+		<tr><td>Mojeek</td><td>MojeekBot</td><td></td><td>mojeek.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>Mp3Bot</td><td>Mp3Bot/</td><td></td><td>mp3realm.org/mp3bot/</td><td>0</td><td></td></tr>
+		<tr><td>MSCCDS</td><td>Microsoft Scheduled Cache Cont</td><td></td><td>google.com/search?q=Scheduled+Cache+Content+Download+Service</td><td>-1</td><td></td></tr>
+		<tr><td>MDAIPP</td><td>Microsoft Data Access Internet</td><td></td><td>google.com/search?q=Microsoft+Data+Access+Internet+Publishin</td><td>-1</td><td>This agent is used to exploit your system regarding the following security issue in FrontPage2000: http://lists.grok.org.uk/pipermail/full-disclosure/2004-December/030467.html</td></tr>
+		<tr><td>MSN</td><td>msnbot</td><td>.search.msn.com</td><td>search.msn.com/msnbot.htm</td><td>0</td><td></td></tr>
+		<tr><td>MSIECrawler</td><td>MSIECrawler</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>MSR</td><td>MSRBOT/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>MUC</td><td>Microsoft URL Control</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Naver</td><td>NaverBot</td><td>.naver.jp</td><td></td><td>0</td><td></td></tr>
+		<tr><td>Naver Yeti</td><td>Yeti/</td><td>.naver.jp</td><td>help.naver.com/robots/</td><td>0</td><td></td></tr>
+		<tr><td>Netcraft Survey</td><td>Netcraft</td><td>.amazonaws.com</td><td>netcraft.com/survey/</td><td>0</td><td></td></tr>
+		<tr><td>NetMechanic</td><td>NetMechanic</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>NetSprint</td><td>NetSprint</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>NextGen</td><td>NextGenSearchBot</td><td></td><td>about.zoominfo.com/PublicSite/NextGenSearchBot.asp</td><td>0</td><td></td></tr>
+		<tr><td>nicebot</td><td>nicebot</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Nimble</td><td>NimbleCrawler</td><td></td><td>healthline.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Ninja</td><td>Download Ninja</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Norbert</td><td>Norbert the Spider</td><td></td><td>burf.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Noxtrum</td><td>noxtrumbot</td><td></td><td>noxtrum.com</td><td>0</td><td></td></tr>
+		<tr><td>NRS</td><td>NetResearchServer</td><td></td><td>loopimprovements.com/robot.html</td><td>0</td><td></td></tr>
+		<tr><td>Nutch</td><td>Nutch</td><td></td><td>nutch.org/docs/en/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>NutchCVS</td><td>NutchCVS/</td><td></td><td>lucene.apache.org/nutch/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>Nutscrape</td><td>Nutscrape/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>oegp</td><td>oegp</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Offline Explorer</td><td>Offline Explorer/</td><td></td><td>metaproducts.com</td><td>0</td><td>A Windows offline browser that allows you to download an unlimited number of your favorite Web and FTP sites for later offline viewing, editing or browsing.</td></tr>
+		<tr><td>OmniExplorer</td><td>OmniExplorer_Bot/</td><td></td><td>omni-explorer.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Onet</td><td>OnetSzukaj/</td><td></td><td>szukaj.onet.pl</td><td>0</td><td></td></tr>
+		<tr><td>OpenAccoon</td><td>OpenAccon/</td><td></td><td>acoon.de/robot.asp</td><td>0</td><td></td></tr>
+		<tr><td>Openfind</td><td>Openbot/</td><td></td><td>openfind.com.tw/robot.html</td><td>0</td><td></td></tr>
+		<tr><td>Orbit</td><td>Orbiter</td><td></td><td>dailyorbit.com/bot.htm</td><td>0</td><td></td></tr>
+		<tr><td>Panopta</td><td>panopta</td><td></td><td>panopta.com/checks/</td><td>0</td><td></td></tr>
+		<tr><td>P3P Validator</td><td>P3P Validator</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Patsearch</td><td>Patwebbot</td><td></td><td>herz-power.de/technik.html</td><td>0</td><td></td></tr>
+		<tr><td>PhpDig</td><td>PhpDig/</td><td></td><td>phpdig.net/robot.php</td><td>0</td><td></td></tr>
+		<tr><td>PicSearch</td><td>psbot/</td><td></td><td>picsearch.com/bot.html</td><td>0</td><td></td></tr>
+		<tr><td>PictureRipper</td><td>PictureRipper/</td><td></td><td>pictureripper.com</td><td>-1</td><td></td></tr>
+		<tr><td>Pipeline</td><td>pipeLiner</td><td></td><td>pipeline-search.com/webmaster.html</td><td>0</td><td></td></tr>
+		<tr><td>Pogodak</td><td>Pogodak</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>PoI</td><td>PictureOfInternet/</td><td></td><td>malfunction.org/poi</td><td>-1</td><td></td></tr>
+		<tr><td>Poirot</td><td>Poirot</td><td></td><td></td><td>-1</td><td>ThePlanet/jaja-jak-globusy.com Google Adsense refferer spam bot. Doesn't follow robots.txt</td></tr>
+		<tr><td>Poly</td><td>polybot</td><td></td><td>cis.poly.edu/polybot/</td><td>0</td><td></td></tr>
+		<tr><td>Pompos</td><td>Pompos/</td><td></td><td>dir.com/pompos.html</td><td>0</td><td></td></tr>
+		<tr><td>Poodle</td><td>Poodle predictor</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Powermarks</td><td>Powermarks/</td><td></td><td>kaylon.com/power.html</td><td>0</td><td></td></tr>
+		<tr><td>PrivacyFinder</td><td>PrivacyFinder Cache Bot</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Privatizer</td><td>privatizer.net</td><td></td><td>privatizer.net/whatis.php</td><td>0</td><td></td></tr>
+		<tr><td>Production</td><td>Production Bot</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>PS</td><td>Program Shareware</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>PuxaRapido</td><td>PuxaRapido v1.0</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Python-urllib</td><td>Python-urllib/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Qweery</td><td>qweery</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Rambler</td><td>StackRambler/</td><td></td><td>rambler.ru</td><td>0</td><td></td></tr>
+		<tr><td>Roffle</td><td>Roffle/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>RPT-HTTP</td><td>RPT-HTTPClient/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>rssImages</td><td>rssImagesBot</td><td></td><td>herbert.groot.jebbink.nl/?app=rssImages</td><td>0</td><td></td></tr>
+		<tr><td>RSSOwl</td><td>RSSOwl/</td><td></td><td>rssowl.org</td><td>0</td><td></td></tr>
+		<tr><td>Ryan</td><td>Ryanbot/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Rufus</td><td>RufusBot</td><td></td><td>64.124.122.252/feedback.html</td><td>-1</td><td></td></tr>
+		<tr><td>SemrushBot</td><td>SemrushBot/</td><td></td><td>semrush.com</td><td>0</td><td>http://www.semrush.com/bot.html</td></tr>
+		<tr><td>SBIder</td><td>SBIder/</td><td></td><td>sitesell.com/sbider.html</td><td>0</td><td></td></tr>
+		<tr><td>schibstedsok</td><td>schibstedsokbot</td><td></td><td>schibstedsok.no</td><td>0</td><td></td></tr>
+		<tr><td>Schmozilla</td><td>Schmozilla/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>ScoutJet</td><td>ScoutJet</td><td></td><td>scoutjet.com</td><td>0</td><td></td></tr>
+		<tr><td>Scrubby</td><td>Scrubby</td><td></td><td>scrubtheweb.com/abs/meta-check.html</td><td>0</td><td></td></tr>
+		<tr><td>ScSpider</td><td>ScSpider/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>SearchGuild</td><td>SearchGuild/</td><td></td><td></td><td>0</td><td>DMOZ Experiment</td></tr>
+		<tr><td>Seekbot</td><td>Seekbot</td><td></td><td>seekbot.net</td><td>0</td><td></td></tr>
+		<tr><td>Sensis</td><td>Sensis Web Crawler</td><td></td><td>sensis.com.au</td><td>0</td><td></td></tr>
+		<tr><td>Seznam</td><td>SeznamBot/</td><td>.seznam.cz</td><td>fulltext.seznam.cz</td><td>0</td><td></td></tr>
+		<tr><td>Siets</td><td>SietsCrawler/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>SitiDi</td><td>/SitiDiBot/</td><td></td><td>SitiDi.net</td><td>0</td><td></td></tr>
+		<tr><td>Snap</td><td>snap.com</td><td></td><td>snap.com</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Snoopy</td><td>Snoopy</td><td></td><td>sourceforge.net/projects/snoopy/</td><td>0</td><td>Snoopy is a PHP class that simulates a web browser. It automates the task of retrieving web page content and posting forms, for example.</td></tr>
+		<tr><td>Sohu</td><td>sohu-search</td><td></td><td>sogou.com</td><td>0</td><td>Searchbot of sohu.com</td></tr>
+		<tr><td>Sosospider</td><td>Sosospider</td><td></td><td>help.soso.com/webspider.htm</td><td>0</td><td></td></tr>
+		<tr><td>Space Bison</td><td>Space Bison/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Speedy Spider</td><td>Speedy Spider</td><td></td><td>www.entireweb.com/about/search_tech/speedy_spider/</td><td>0</td><td></td></tr>
+		<tr><td>Spider</td><td>SpiderKU/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>SpiderMan</td><td>SpiderMan</td><td></td><td></td><td>-1</td><td>Yahoo Search user agent or spider. Doesn't follow robots.txt</td></tr>
+		<tr><td>Spinn3r</td><td>aggregator:Spinn3r</td><td>.robot.spinn3r.com</td><td>spinn3r.com/robot</td><td>0</td><td></td></tr>
+		<tr><td>Spip</td><td>SPIP-</td><td></td><td>spip.net</td><td>0</td><td></td></tr>
+		<tr><td>Squider</td><td>Squider/</td><td></td><td></td><td>1</td><td></td></tr>
+		<tr><td>SurveyBot</td><td>SurveyBot/</td><td></td><td>whois.sc</td><td>0</td><td></td></tr>
+		<tr><td>Susie</td><td>!Susie</td><td></td><td>sync2it.com/susie</td><td>0</td><td></td></tr>
+		<tr><td>SVSpider</td><td>SVSpider/</td><td></td><td>bildkiste.de</td><td>-1</td><td></td></tr>
+		<tr><td>SVSearch</td><td>SVSearchRobot/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Syntryx</td><td>Syntryx</td><td></td><td>syntryx.com</td><td>-1</td><td>Syntryx Solution Suite - domain / keyword crawler. Doesn't follow robots.txt</td></tr>
+		<tr><td>T8Abot</td><td>T8Abot/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>Teleport</td><td>Teleport Pro/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Thumbshots</td><td>thumbshots-de-Bot</td><td></td><td>thumbshots.de</td><td>0</td><td></td></tr>
+		<tr><td>Turnitin</td><td>TurnitinBot</td><td></td><td>turnitin.com/robot/crawlerinfo.html</td><td>0</td><td></td></tr>
+		<tr><td>TutorGig</td><td>TutorGigBot</td><td></td><td>tutorgig.info</td><td>0</td><td></td></tr>
+		<tr><td>Twiceler</td><td>Twiceler</td><td></td><td>cuill.com/robots.html</td><td>0</td><td></td></tr>
+		<tr><td>Unknown Crawl</td><td>ozilla crawl/</td><td></td><td></td><td>-1</td><td></td></tr>
+		<tr><td>Updated</td><td>updated/</td><td></td><td>updated.com</td><td>0</td><td></td></tr>
+		<tr><td>Versus</td><td>versus crawler</td><td></td><td>eda.baykan@epfl.ch</td><td>0</td><td></td></tr>
+		<tr><td>Vagabondo</td><td>Vagabondo</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Virgo</td><td>Virgo/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Voila</td><td>VoilaBot</td><td>.voilabot.orange.fr</td><td>voila.com</td><td>0</td><td></td></tr>
+		<tr><td>VRLImage</td><td>Vision Research Lab</td><td></td><td>(beeld|vision).ece.ucsb.edu</td><td>-1</td><td>Image spider. Doesn't follow robots.txt</td></tr>
+		<tr><td>vspider</td><td>vspider</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>W3C Checklink</td><td>W3C-checklink</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>W3C Validator</td><td>W3C_Validator</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>W3C CSS Validator</td><td>W3C_CSS_Validator</td><td></td><td>jigsaw.w3.org/css-validator/</td><td>0</td><td></td></tr>
+		<tr><td>Walhello</td><td>appie</td><td></td><td>walhello.com</td><td>0</td><td></td></tr>
+		<tr><td>webbot</td><td>webbot(</td><td></td><td>webbot.com/bot.htm</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>WebIndexer</td><td>WebIndexer/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>WebMiner</td><td>WebMiner</td><td></td><td></td><td>-1</td><td>See RufusBot</td></tr>
+		<tr><td>WebReaper</td><td>WebReaper</td><td></td><td>webreaper.net</td><td>0</td><td></td></tr>
+		<tr><td>WebSauger</td><td>WebSauger</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>WebStripper</td><td>WebStripper/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Wget</td><td>Wget/</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Wire</td><td>WIRE</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>WWWeasel</td><td>WWWeasel</td><td></td><td>wwweasel.de</td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>wwwster</td><td>wwwster/</td><td></td><td></td><td>-1</td><td>Doesn't follow robots.txt</td></tr>
+		<tr><td>YaCy</td><td>yacy</td><td></td><td>yacy.net/yacy/</td><td>-1</td><td>p2p-based distributed Web Search Engine. Doesn't follow robots.txt</td></tr>
+		<tr><td>Yadows</td><td>YadowsCrawler</td><td></td><td>yadows.com</td><td>0</td><td></td></tr>
+		<tr><td>Yahoo</td><td>Yahoo</td><td>.yahoo.net</td><td>help.yahoo.com/help/us/ysearch/slurp</td><td>0</td><td></td></tr>
+		<tr><td>Yandex</td><td>YandexBot</td><td>\.yandex\.(com|net|ru)</td><td>yandex.com/bots</td><td>0</td><td></td></tr>
+		<tr><td>Yeti</td><td>Yeti</td><td></td><td></td><td>-1</td><td>1noon.com search Korea robot. Doesn't follow robots.txt</td></tr>
+		<tr><td>Xirq</td><td>xirq/</td><td></td><td>xirq.com/</td><td>0</td><td></td></tr>
+		<tr><td>Youdao</td><td>YoudaoBot/</td><td></td><td>www.youdao.com/help/webmaster/spider/</td><td>0</td><td></td></tr>
+		<tr><td>Zeus</td><td>Zeus</td><td></td><td></td><td>0</td><td></td></tr>
+		<tr><td>Zookabot</td><td>Zookabot/</td><td></td><td>zookabot.com</td><td>0</td><td></td></tr>
+	</table>
+
+	<table name="users" onduplicate="IGNORE">
+		<col name="user_id"/>
+		<col name="username"/>
+		<col name="user_regdate"/>
+		<col name="user_nickname_lc"/>
+		<col name="user_allowavatar"/>
+		<tr><td>1</td><td>Anonymous</td><td israw="true">UNIX_TIMESTAMP()</td><td>anonymous</td><td>0</td></tr>
+	</table>
+
+	<table name="users_fields" onduplicate="UPDATE">
+		<col name="fid"/>
+		<col name="field"/>
+		<col name="section"/>
+		<col name="type"/>
+		<col name="size"/>
+		<col name="langdef"/>
+		<tr><td>1</td><td>name</td><td>1</td><td>0</td><td>60</td><td>_MA_REALNAME</td></tr>
+		<tr><td>3</td><td>user_website</td><td>1</td><td>0</td><td>255</td><td>_MA_HOMEPAGE</td></tr>
+		<tr><td>4</td><td>user_icq</td><td>1</td><td>4</td><td>15</td><td>_MA_ICQ</td></tr>
+		<tr><td>5</td><td>user_aim</td><td>1</td><td>0</td><td>35</td><td>_MA_AIM</td></tr>
+		<tr><td>7</td><td>user_yim</td><td>1</td><td>0</td><td>40</td><td>_MA_YIM</td></tr>
+		<tr><td>8</td><td>user_skype</td><td>1</td><td>0</td><td>40</td><td>Skype</td></tr>
+		<tr><td>9</td><td>user_from</td><td>1</td><td>0</td><td>100</td><td>_MA_LOCATION</td></tr>
+		<tr><td>10</td><td>user_occ</td><td>1</td><td>0</td><td>100</td><td>_MA_OCCUPATION</td></tr>
+		<tr><td>11</td><td>user_interests</td><td>1</td><td>0</td><td>150</td><td>_MA_INTERESTS</td></tr>
+		<tr><td>12</td><td>user_sig</td><td>1</td><td>2</td><td>255</td><td>_MA_SIGNATURE</td></tr>
+		<tr><td>13</td><td>bio</td><td>1</td><td>2</td><td>255</td><td>_MA_EXTRAINFO</td></tr>
+		<tr><td>14</td><td>theme</td><td>5</td><td>7</td><td>25</td><td>_THEME</td></tr>
+		<tr><td>15</td><td>user_timezone</td><td>5</td><td>3</td><td>2</td><td>_MA_TIMEZONE</td></tr>
+		<tr><td>16</td><td>user_dateformat</td><td>5</td><td>0</td><td>14</td><td>_MA_DATEFORMAT</td></tr>
+		<tr><td>17</td><td>newsletter</td><td>5</td><td>1</td><td>1</td><td>_MA_RECEIVENEWSLETTER</td></tr>
+		<tr><td>18</td><td>user_viewemail</td><td>5</td><td>1</td><td>0</td><td>_MA_SHOWEMAIL</td></tr>
+		<tr><td>19</td><td>user_allow_viewonline</td><td>5</td><td>1</td><td>1</td><td>_MA_SHOWONLINE</td></tr>
+		<tr><td>20</td><td>user_attachsig</td><td>5</td><td>1</td><td>1</td><td>_MA_ATTACHSIG</td></tr>
+		<tr><td>21</td><td>user_allowhtml</td><td>5</td><td>1</td><td>0</td><td>_MA_ALLOWHTML</td></tr>
+		<tr><td>22</td><td>user_allowbbcode</td><td>5</td><td>1</td><td>1</td><td>_MA_ALLOWBBCODE</td></tr>
+		<tr><td>23</td><td>user_allowsmile</td><td>5</td><td>1</td><td>1</td><td>_MA_ALLOWSMILIES</td></tr>
+		<tr><td>24</td><td>user_notify</td><td>5</td><td>1</td><td>0</td><td>_MA_NOTIFYREPLY</td></tr>
+		<tr><td>25</td><td>user_notify_pm</td><td>5</td><td>1</td><td>0</td><td>_MA_NOTIFYPM</td></tr>
+		<tr><td>26</td><td>user_popup_pm</td><td>5</td><td>1</td><td>1</td><td>_MA_POPUPPM</td></tr>
+		<tr><td>27</td><td>user_lang</td><td>5</td><td>8</td><td>255</td><td>_SELECTLANGUAGE</td></tr>
+	</table>
+
+</database>

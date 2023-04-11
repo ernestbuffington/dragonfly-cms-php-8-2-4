@@ -1,0 +1,20 @@
+
+<h2 style="text-align:center;" tal:condition="comment_reply_to" tal:content="comment_reply_to/title">_COMMENTREPLY</h2>
+<div class="border" tal:condition="comment_reply_to">
+	<strong tal:content="comment_reply_to/nickname">nickname</strong>:
+	<p tal:content="structure php:\Dragonfly\BBCode::decodeAll(${comment_reply_to/body})">comment_reply_to/body</p>
+</div>
+
+<form action="" method="post">
+<fieldset class="border">
+	<legend i18n:translate="">Reply</legend>
+	<p tal:condition="not:IDENTITY/isMember">
+		<span i18n:translate="_ANONYMOUS">Anonymous</span>
+		( <a rel="nofollow" tal:attributes="href php:\Dragonfly\Identity::loginURL()" i18n:translate="">Login</a>
+		| <a tal:condition="CONFIG/member/allowuserreg" rel="nofollow" tal:attributes="href php:\Dragonfly\Identity::getRegisterURL()" i18n:translate="">Register</a> )
+	</p>
+	<textarea class="bbcode" wrap="virtual" style="width:100%;height:10em" name="comment" required="" tal:content="comment_reply/comment"></textarea><br />
+	<button name="preview" i18n:translate="_PREVIEW">Preview</button>
+	<button i18n:translate="_OK">OK</button>
+</fieldset>
+</form>

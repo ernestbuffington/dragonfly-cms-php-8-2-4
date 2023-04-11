@@ -1,0 +1,121 @@
+# CPG Dragonfly CMS
+# Copyright (c) 2004-2006 by CPG-Nuke Dev Team, dragonflycms.org
+# Released under the GNU GPL version 2 or any later version
+
+# flood protection
+
+# deny most common except .php
+<FilesMatch "\.(inc|tpl|h|ihtml|sql|ini|conf|bin|spd|theme|module|xml)$">
+  deny from all
+</FilesMatch>
+
+# disable access to config.php and .ht* from a browser
+<FilesMatch "^(config\.php|\.ht)">
+ Deny from all
+</FilesMatch>
+<FilesMatch "error\.(php|gif)">
+ allow from all
+</FilesMatch>
+
+<IfModule mod_setenvif.c>
+	# ban site rippers
+#	BrowserMatchNoCase "^Wget" banned
+#	BrowserMatchNoCase "; Win32\)" banned
+	# Block bad things
+#	BrowserMatchNoCase "Apache-HttpClient/" banned
+#	BrowserMatchNoCase "baidu" banned
+#	BrowserMatchNoCase "curl/" banned
+	BrowserMatchNoCase "Firefox/[0-9]\." banned
+#	BrowserMatchNoCase "HTTPClient/" banned
+#	BrowserMatchNoCase "Java/" banned
+#	BrowserMatchNoCase "libwww-perl/" banned
+	BrowserMatchNoCase "^Mozilla/[0-37-9a-z]" banned
+	BrowserMatchNoCase "MSIE ([02-7]|1[^0])" banned
+#	BrowserMatchNoCase "PEAR HTTP_Request" banned
+#	BrowserMatchNoCase "python-requests/" banned
+#	BrowserMatchNoCase "Python-urllib/" banned
+#	BrowserMatchNoCase "Synapse/" banned
+#	BrowserMatchNoCase "http.trovitutto.eu" banned
+#	BrowserMatchNoCase "user-agent" banned
+	BrowserMatchNoCase "webcollage" banned
+	BrowserMatchNoCase "WebWasher" banned
+	BrowserMatchNoCase "Win32" banned
+	BrowserMatchNoCase "Windows (2000|3|4|95|98|ce|me)" banned
+#	BrowserMatchNoCase "Zend_Http_Client" banned
+#	BrowserMatchNoCase "Zend\Http\Client" banned
+	BrowserMatchNoCase "ZmEu" banned
+
+	# deny security
+	deny from env=banned
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	<IfModule mod_headers.c>
+		Header set X-Content-Type-Options "nosniff"
+		Header set X-Frame-Options "SAMEORIGIN"
+		Header set X-XSS-Protection "1; mode=block"
+#		Header set Content-Security-Policy "default-src https: 'unsafe-inline'"
+		Header set imagetoolbar "no"
+		Header append X-UA-Compatible "IE=edge" env=gcf
+		<FilesMatch "\.ico$">
+			Header set Cache-Control "public"
+		</FilesMatch>
+	</IfModule>
+	ExpiresByType image/x-icon A1814400
+</IfModule>
+
+# if you use LEO, mod_rewrite is necessary
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# Old bots use HTTP/1.0, Current browsers and bots use HTTP/1.1
+	RewriteCond %{SERVER_PROTOCOL} ^HTTP/1\.0
+	RewriteCond %{REQUEST_METHOD} ^POST
+	RewriteRule .* - [L,R=406]
+
+	# Check for Santy Worms and redirect them to a fail page
+	RewriteCond %{HTTP_USER_AGENT} ^LWP    [NC,OR]
+	RewriteCond %{REQUEST_URI} ^visualcoders [NC,OR]
+	RewriteCond %{QUERY_STRING} rush=([^&]+) [NC,OR]
+	RewriteCond %{HTTP:x-moz} ^prefetch [NC,OR]
+	RewriteCond %{X-moz} ^prefetch [NC]
+	RewriteRule ^.*$ - [F]
+
+	RewriteRule .* - [E=SERVER_MOD_REWRITE:1]
+
+	RewriteCond %{REQUEST_FILENAME} -f [OR]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule .* - [L]
+
+	# Google trying mobile websites
+	RewriteRule ^m(obile)?(/.*)$  $2 [R=302,L]
+
+	RewriteRule .* - [E=no-gzip:1]
+
+	<IfModule !mod_php5.c>
+		RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
+		RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
+		RewriteRule .* - [E=HTTP_IF_UNMODIFIED_SINCE:%{HTTP:If-Unmodified-Since}]
+#		RewriteRule .* - [E=PHP_AUTHORIZATION:%{HTTP:Authorization}]
+	</IfModule>
+	RewriteRule ^(.+)$ index.php [L,QSA,E=PATH_INFO:/$1]
+</IfModule>
+
+# use custom error pages if you wish
+ErrorDocument 400 /error.php
+ErrorDocument 401 /error.php
+ErrorDocument 403 /error.php
+ErrorDocument 404 /error.php
+ErrorDocument 500 /error.php
+
+# disallow index viewing (like ftp) of directory
+# Remove # for production sites
+# Options -Indexes
+
+# for hosts that don't allow the above, we won't give people anything to look at
+<IfModule mod_autoindex.c>
+ IndexIgnore *
+</IfModule>
+
+AddDefaultCharset utf-8

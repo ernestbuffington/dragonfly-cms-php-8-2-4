@@ -1,0 +1,51 @@
+<div class="border">
+	<form method="get" action="">
+		<input type="hidden" name="admin" value=""/>
+		<input type="hidden" name="op" value="coppermine"/>
+		<input type="hidden" name="file" value="users"/>
+		<span i18n:translate="">Username</span>
+		<input type="search" name="q" tal:attributes="value user_search"/>
+		<button type="submit" i18n:translate="">Search</button>
+	</form>
+
+	<form method="get" action="">
+		<span i18n:translate="SORT_BY">Sort users by</span>
+		<select name="sort" onchange="if (this.options[this.selectedIndex].value) window.location.href += '&amp;sort='+this.options[this.selectedIndex].value;">
+			<option tal:repeat="option sort_options" tal:attributes="value option/value; selected option/selected" tal:content="option/label"></option>
+		</select>
+	</form>
+
+	<table>
+	<thead>
+		<tr>
+			<th i18n:translate="">Username</th>
+			<th i18n:translate="">Group</th>
+			<th class="r" i18n:translate="PICTURES">Pictures</th>
+			<th i18n:translate="DISK_QUOTA">Disk quota</th>
+			<th style="width:48px"></th>
+		</tr>
+	</thead><tbody>
+		<tr tal:repeat="user users">
+			<td><a tal:omit-tag="not:user/gallery_uri" tal:attributes="href user/gallery_uri" tal:content="user/username">username</a></td>
+			<td tal:content="user/group_name">group_name</td>
+			<td class="r" tal:content="user/pic_count">0</td>
+			<td><meter min="0" max="100" high="80" style="width:100%" tal:attributes="value user/disk_usage_perc; title '${user/disk_usage_txt} / ${user/group_quota_txt}'" tal:content="'${user/disk_usage_txt} / ${user/group_quota_txt}'">0 B / 1 KiB</meter></td>
+			<td>
+				<a class="icon-edit" title="edit" tal:attributes="href user/edit_uri">edit</a>
+				<a class="icon-delete" title="delete" tal:attributes="href user/delete_uri">delete</a>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td tal:content="user_on_page"></td>
+			<td colspan="3">
+				<a tal:repeat="item pagination/items" tal:attributes="href item/uri" tal:content="item/page"></a>
+			</td>
+			<td>
+				<a class="icon-add" tal:attributes="href uri_new_user" i18n:attributes="title 'CREATE_NEW_USER'" i18n:translate="CREATE_NEW_USER">Create new user</a>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+</div>

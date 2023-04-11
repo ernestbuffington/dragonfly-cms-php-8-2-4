@@ -1,0 +1,121 @@
+/*********************************************
+  CPG Dragonfly™ CMS
+  ********************************************
+  Copyright © 2004 - 2005 by CPG-Nuke Dev Team
+  http://dragonflycms.org
+
+  Dragonfly is released under the terms and conditions
+  of the GNU GPL version 2 or any later version
+**********************************************/
+
+* {
+	font-family: Verdana, Geneva, "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+}
+
+body {
+	background-color: Window;
+	font-size: 14px;
+}
+
+body > * {
+	margin: 0 auto;
+	padding: 5px;
+	width: 960px;
+}
+
+.helphead {
+	background-color: ActiveCaption;
+	color: CaptionText;
+	font-size: 110%;
+	width: 244px;
+	padding: 3px;
+	vertical-align: middle;
+}
+.helpcontent {
+	background-color: InfoBackground;
+	border: 1px solid #069;
+	color: InfoText;
+	padding: 4px;
+	width: 240px;
+}
+
+.head {
+	background-color: #666;
+	background-image: linear-gradient(#999, #333);
+	color: #FFF;
+	line-height: 1.5em;
+	text-indent: 0.5em;
+}
+.head img {
+	float: left;
+}
+
+.head {
+	border-radius: 10px 10px 0 0;
+}
+.head + div {
+	border-radius: 0 0 10px 10px;
+}
+
+.border {
+	background-color: #FFF;
+	border: 1px solid #CCC;
+	color: #000;
+	padding: 4px;
+}
+
+.formfield {
+	background-color: #fff;
+	border: 1px #CCC solid;
+	color: #000;
+}
+
+#license {
+	border: 1px solid #CCC;
+	max-height: 200px;
+	overflow: auto;
+	text-align: left;
+}
+
+.infobox { display:inline-block; position: relative; height:16px; width:16px;}
+.infobox, .infobox span {
+	background-image: url(../../images/icons/16x16/info.png);
+	background-position: 0 1px;
+	background-repeat: no-repeat;
+	cursor:help;
+}
+.infobox span {
+	background-color: InfoBackground;
+	background-position: 257px 1px;
+	border-radius: 0 9px 0 0;
+	color: InfoText;
+	display: none;
+	position: absolute;
+	top: -1px;
+	left: -258px;
+	border: 1px solid #000;
+	padding: 4px 20px 4px 4px;
+	width: 250px;
+	white-space:normal;
+	z-index: 1000;
+}
+.infobox:hover span { display: block; }
+
+.error {
+	background: #FDD;
+	border: 1px solid #D00;
+	color: #D00;
+	padding: 6px;
+}
+.warning {
+	background: #FEB;
+	border: 1px solid #B60;
+	color: #B60;
+	padding: 6px;
+}
+.success {
+	background: #DFD;
+	border: 1px solid #080;
+	color: #080;
+	padding: 6px;
+}

@@ -1,0 +1,49 @@
+
+<details tal:repeat="section sections" class="border" style="max-width:50em">
+	<summary>
+		<strong tal:content="section/title">Section Name</strong>
+		<span tal:condition="exists:section/active">
+			<span tal:condition="section/active" style="color:#090">Enabled</span>
+			<span tal:condition-else="" style="color:#900">Disabled</span>
+		</span>
+	</summary>
+	<form tal:condition="exists:section/active" method="post" action="">
+		<div class="admin-section-item admin-section-item-onoff">
+			<label>Enabled</label>
+			<span>
+				<input tal:attributes="value php:${section/active}?0:1; name section/id" type="hidden"/>
+				<button>
+					<img tal:condition="section/active" src="cdn://images/checked.gif" alt=""/>
+					<img tal:condition-else="" src="cdn://images/unchecked.gif" alt=""/>
+				</button>
+			</span>
+		</div>
+		<br/>
+	</form>
+	<form tal:attributes="action '?admin&amp;op=security&amp;${section/id}'" method="post">
+		<div tal:repeat="item section/items" tal:omit-tag="">
+			<p tal:condition="exists:item/html" tal:replace="structure item/html"/>
+			<div tal:condition-else="" class="admin-section-item">
+				<label tal:attributes="for item/id" tal:content="structure item/title">Item Title</label>
+				<span>
+					<input tal:condition="php:'text'==${item/type}"
+						tal:attributes="id item/id; maxlength item/maxlength; name item/id; type item/type; value item/value"/>
+					<input tal:condition="php:'checkbox'==${item/type}"
+						tal:attributes="id item/id; name item/id; type item/type; checked item/value"/>
+					<input tal:condition="php:'number'==${item/type}"
+						tal:attributes="id item/id; min item/min; max item/max; name item/id; type item/type; value item/value"/>
+					<select tal:condition="php:'select'==${item/type}" tal:attributes="id item/id; name item/id">
+						<option tal:repeat="option item/options" tal:content="option"
+							tal:attributes="value repeat/option/key; selected php:${item/value}==${repeat/option/key}">Options</option>
+					</select>
+					<textarea tal:condition="php:'textarea'==${item/type}"
+						tal:attributes="id item/id; name item/id; rows item/rows; cols item/cols"></textarea>
+				</span>
+				<em tal:condition="exists:item/help" tal:content="structure item/help">Help</em>
+			</div>
+			<br/>
+		</div>
+		<br/>
+		<button name="save">Save Changes</button>
+	</form>
+</details>

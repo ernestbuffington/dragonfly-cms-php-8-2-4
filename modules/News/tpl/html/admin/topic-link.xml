@@ -1,0 +1,18 @@
+
+<form action="" method="post">
+<fieldset>
+	<legend i18n:translate="_EDITRELATED">Edit Related Link</legend>
+
+	<label for="name" i18n:translate="_SITENAME">Site Name</label>
+	<input type="text" name="name" id="name" size="30" maxlength="30" tal:attributes="value topic_link/name"/>
+	<br />
+
+	<label for="url" i18n:translate="_URL">URL</label>
+	<input type="url" name="url" id="url" size="50" maxlength="200" tal:attributes="value topic_link/url"/>
+
+	<br />
+	<br />
+
+	<button name="saveRelated" i18n:Translate="_SAVECHANGES">Save Changes</button>
+</fieldset>
+</form>

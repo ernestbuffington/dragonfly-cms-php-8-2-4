@@ -1,0 +1,6 @@
+
+<div class="border" style="text-align:center">
+	<b i18n:translate="_ACCOUNTCREATED">New User Account Created!</b>
+	<p i18n:translate="_YOUAREREGISTERED">Welcome! You are now registered as a member</p>
+	<p i18n:translate="_FINISHUSERCONF">Your request for a new account has been processed. You will receive an email shortly with an activation link that should be visited within the next 24 hours to activate your account</p>
+</div>

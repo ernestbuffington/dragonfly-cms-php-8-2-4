@@ -1,0 +1,51 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="Auth_Control_Forum">Forum Permissions</h1>
+
+	<p i18n:translate="Forum_auth_explain">Here you can alter the authorisation levels of each forum. You will have both a simple and advanced method for doing this, where advanced offers greater control of each forum operation. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.</p>
+
+	<h2 tal:content="FORUM_NAME">FORUM_NAME</h2>
+
+	<form method="post" action="">
+	<table><thead>
+		<tr>
+			<th></th>
+			<th tal:repeat="title forum_auth_titles" tal:content="title">{forum_auth_titles}</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td i18n:translate="">Forum</td>
+			<td tal:repeat="select forum_auth_selects" tal:content="structure select">{forum_auth_selects}</td>
+		</tr>
+	</tbody>
+	<tbody tal:condition="forum_auth_groups">
+		<tr>
+			<th tal:attributes="colspan php:1+count(${forum_auth_titles})" i18n:translate="">Auth_Control_Group</th>
+		</tr>
+		<tr tal:repeat="group forum_auth_groups">
+			<td><a tal:attributes="href group/href" tal:content="group/name">group name</a></td>
+			<td tal:repeat="auth group/auth" tal:content="auth">✓</td>
+		</tr>
+	</tbody>
+	<tbody tal:condition="forum_auth_users">
+		<tr>
+			<th tal:attributes="colspan php:1+count(${forum_auth_titles})" i18n:translate="">Auth_Control_User</th>
+		</tr>
+		<tr tal:repeat="user forum_auth_users">
+			<td><a tal:attributes="href user/href" tal:content="user/name">user name</a></td>
+			<td tal:repeat="auth user/auth" tal:content="auth">✓</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td tal:attributes="colspan php:1+count(${forum_auth_titles})">
+				<a tal:attributes="href U_SWITCH_MODE" tal:content="S_SWITCH_MODE">S_SWITCH_MODE</a>
+				<button name="save" i18n:translate="">Submit</button>
+				<button type="reset" i18n:translate="">Reset</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>

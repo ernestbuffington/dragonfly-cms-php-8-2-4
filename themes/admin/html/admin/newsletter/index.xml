@@ -1,0 +1,45 @@
+<div class="border">
+
+<form name="newsletter" method="post" action="">
+<table>
+<thead>
+	<tr>
+		<th colspan="2" tal:content="newsletter/title">newsletter/title</th>
+	</tr>
+</thead><tbody>
+<tr tal:condition="newsletter/preview">
+	<td colspan="2">
+		<span style="float: left">This newsletter will be sent to <b tal:content="newsletter/group_name">newsletter/group_name</b></span>
+		<span style="float: right">
+			<b tal:content="newsletter/recipients_count">0</b> <span i18n:translate="">_NUSERWILLRECEIVE</span>
+		</span>
+		<br />
+		<hr />
+		<div tal:replace="structure newsletter/preview">newsletter/preview</div>
+		<hr />
+	</td>
+</tr><tr>
+	<td i18n:translate="">_SUBJECT</td>
+	<td><input type="text" name="subject" size="50" maxlength="255" tal:attributes="value newsletter/subject"/></td>
+</tr><tr>
+	<td i18n:translate="">_CONTENT</td>
+	<td><textarea name="content" class="wysiwyg" tal:content="newsletter/body">newsletter/body</textarea></td>
+</tr><tr>
+	<td i18n:translate="">_NL_RECIPS</td>
+	<td tal:content="structure newsletter/group_select">structure newsletter/group_select</td>
+</tr><tr tal:condition="newsletter/notes">
+	<td style="text-align:center" colspan="2" tal:content="structure newsletter/notes">structure newsletter/notes</td>
+</tr><tr>
+	<td colspan="2" style="text-align:center">
+	<button name="preview" i18n:translate="">_PREVIEW</button>
+	<span tal:condition="newsletter/preview">
+		<button name="send" i18n:translate="" tal:attributes="disabled newsletter/send_disabled">_SEND</button>
+		<button name="discard" i18n:translate="">_DISCARD</button>
+		<input type="hidden" name="n_group" tal:attributes="value newsletter/group_id"/>
+	</span>
+	</td>
+</tr>
+</tbody></table>
+</form>
+
+</div>

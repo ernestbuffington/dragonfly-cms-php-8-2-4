@@ -1,0 +1,104 @@
+
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<h1 tal:content="L_INDEX">{L_INDEX}</h1>
+
+<div>
+	<a tal:attributes="href php:URL::index('&amp;file=archives')" i18n:translate="">Archives</a>
+	<div tal:omit-tag="" tal:condition="IDENTITY/isMember">
+		| <a tal:attributes="href U_SEARCH_NEW" i18n:translate="Search_new">View posts since last visit</a>
+	</div>
+	| <a tal:attributes="href U_SEARCH_24" i18n:translate="Search_last_24">View posts last 24 hours</a>
+	| <a tal:attributes="href U_SEARCH_UNANSWERED" i18n:translate="Search_unanswered">View unanswered posts</a>
+</div>
+
+<table class="forum-forums">
+	<thead>
+	<tr>
+		<th colspan="2" i18n:translate="">Forum</th>
+		<th i18n:translate="">Topics</th>
+		<th i18n:translate="">Posts</th>
+		<th i18n:translate="Last_Post">Last Post</th>
+	</tr>
+	</thead>
+	<tbody tal:repeat="category categories">
+		<tr>
+			<th colspan="5" tal:content="category/title">category/title</th>
+<!--			<th colspan="5"><a tal:attributes="href category/u_view" tal:content="category/title">category/title</a></th> -->
+		</tr>
+		<tr tal:repeat="forum category/forums">
+			<td class="c" style="width:50px"><i tal:attributes="class forum/icon; title forum/folder_alt"/></td>
+			<td tal:condition="forum/IS_LINK" colspan="4">
+				<a tal:attributes="href forum/U_VIEWFORUM" tal:content="forum/forum_name">forum/forum_name</a><br/>
+				<small tal:content="structure forum/forum_desc">forum/forum_desc</small>
+			</td>
+			<td tal:condition-else="">
+				<a tal:attributes="href forum/U_VIEWFORUM" tal:content="forum/forum_name">forum/forum_name</a>
+				<div style="font-size:smaller">
+					<div tal:content="structure forum/forum_desc">forum/forum_desc</div>
+					<a tal:condition="forum/U_VIEWARCHIVE" tal:attributes="href forum/U_VIEWARCHIVE">(archives)</a>
+					<div tal:condition="forum/SUB_FORUMS"><b tal:content="forum/subforums_lang">forum/subforums_lang</b>: <span tal:replace="structure forum/subforums_list">forum/subforums_list</span></div>
+					<div tal:condition="forum/moderator_list"><b tal:content="forum/l_moderators">forum/l_moderators</b>: <span tal:replace="structure forum/moderator_list">forum/moderator_list</span></div>
+				</div>
+			</td>
+			<td tal:condition="not:forum/IS_LINK" class="c"><span tal:replace="forum/forum_topics">0</span>
+<!--				<div tal:condition="forum/archive_topics">(<i tal:replace="forum/archive_topics"></i>)</div> -->
+			</td>
+			<td tal:condition="not:forum/IS_LINK" class="c"><span tal:replace="forum/forum_posts">0</span>
+<!--				<div tal:condition="forum/archive_posts">(<i tal:replace="forum/archive_posts"></i>)</div>-->
+			</td>
+			<td tal:condition="not:forum/IS_LINK" class="c" style="white-space:nowrap">
+<!--
+				<div tal:condition="forum/LAST_POST_TIME" tal:replace="forum/LAST_POST_TIME"></div>
+-->
+				<time tal:condition="forum/post_time" tal:attributes="datetime forum/post_time" tal:content="php:here.L10N.timeReadable(time() - ${forum/post_time}, '%x ago')"></time>
+				<span tal:omit-tag="" tal:condition-else="" i18n:translate="No_Posts"></span>
+<!--
+				<a tal:condition="forum/U_LAST_POSTER" tal:attributes="href forum/U_LAST_POSTER" tal:content="forum/LAST_POSTER">forum/LAST_POSTER</a>
+				<span tal:condition="php:${forum/LAST_POSTER} and !${forum/U_LAST_POSTER}" tal:content="forum/LAST_POSTER">forum/LAST_POSTER</span>
+				<a tal:condition="forum/U_LAST_POST" tal:attributes="href forum/U_LAST_POST"><img tal:attributes="src board_images/icon_latest_reply" alt=""/></a>
+-->
+			</td>
+		</tr>
+	</tbody>
+	<tbody tal:condition="not:categories">
+		<tr>
+			<td colspan="5" class="c" i18n:translate="No_forums">This board has no forums</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="5"><a tal:attributes="href php:URL::index('&amp;mark=forums')" i18n:translate="Mark_all_forums">Mark all forums read</a></td>
+		</tr>
+	</tfoot>
+</table>
+
+<details class="border" tal:condition="S_ONLINE_INDEX | S_ONLINE_TODAY">
+	<summary i18n:translate="Who_is_Online">Who is Online</summary>
+	<div>
+		<p tal:condition="S_ONLINE_INDEX">
+			<b i18n:translate="Who_online_now">Online now</b>: <span tal:replace="structure S_ONLINE_INDEX">S_ONLINE_INDEX</span>
+		</p>
+		<p tal:condition="S_ONLINE_TODAY">
+			<b i18n:translate="Who_online_today">Online today</b>: <span tal:replace="structure S_ONLINE_TODAY">S_ONLINE_TODAY</span>
+		</p>
+		<b i18n:translate="">Legend</b>:
+		<span tal:attributes="style 'color:${board_config/admin_color}'" i18n:translate="Auth_Admin">Administrator</span>
+		• <span tal:attributes="style 'color:${board_config/moderator_color}'" i18n:translate="">Moderator</span>
+		• <span tal:attributes="style 'color:${board_config/member_color}'" i18n:translate="">Member</span>
+		<div tal:content="TOTAL_POSTS_TOPICS">TOTAL_POSTS_TOPICS</div>
+	</div>
+</details>
+
+<details class="border">
+	<summary i18n:translate="_TB_INFO">Information</summary>
+	<table><tbody><tr>
+		<td><i class="forum-icon-new"/> <span tal:omit-tag="" i18n:translate="New_posts">New posts</span></td>
+		<td><i class="forum-icon"/> <span tal:omit-tag="" i18n:translate="No_new_posts">No new posts</span></td>
+		<td><i class="forum-icon-locked"/> <span tal:omit-tag="" i18n:translate="Forum_is_locked">Forum is locked</span></td>
+	</tr><tr>
+		<td><i class="forum-icon-new-sub"/> <span tal:omit-tag="" i18n:translate="New_sub_posts">Subforum new posts</span></td>
+		<td><i class="forum-icon-sub"/> <span tal:omit-tag="" i18n:translate="No_new_sub_posts">Subforum no new posts</span></td>
+		<td><i class="forum-icon-locked-sub"/> <span tal:omit-tag="" i18n:translate="Subforum_is_locked">Subforum is locked</span></td>
+	</tr></tbody></table>
+</details>

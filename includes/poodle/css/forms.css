@@ -1,0 +1,681 @@
+/**
+	Dragonfly™ CMS, Copyright © since 2010 by CPG-Nuke Dev Team. All rights reserved.
+*/
+
+input.color,
+input[type="text"].color,
+.poodle-calendar-input a
+{
+	background-image: url(../images/forms/inputs.png);
+	background-repeat: no-repeat;
+	background-position: 0 center;
+	width:16px;
+}
+
+/* Remove box shadow that browsers put around required fields.
+ * http://www.w3.org/TR/css3-ui/#pseudo-validity
+ */
+input:invalid,
+textarea:invalid {
+	box-shadow:0 0 1px 1px #F00;
+}
+
+/* ie (faux placeholder) */
+input.placeholder,
+textarea.placeholder {
+	color:#999;
+	font-style:italic;
+}
+input::placeholder,
+textarea::placeholder {
+	color:#999;
+	font-style:italic;
+}
+textarea { resize:both; }
+/* Alternative for browsers that don't support <datalist> (Chrome, IE) */
+.combobox { position:relative; }
+.combobox .datalist {
+	background-color:#EEE;
+	border:1px solid #000;
+	font-size:75%;
+	height:auto;
+	left:0;
+	max-height:8em;
+	overflow:auto;
+	padding:0;
+	position:absolute;
+	right:0;
+	top:20px;
+	white-space:nowrap;
+}
+.combobox .datalist * {
+	display:block;
+}
+
+/******************************************************************************
+ *
+ * input type="date|datetime|datetime-local|month|week"
+ *
+ ******************************************************************************/
+
+.poodle-calendar-input
+{
+	position: relative;
+}
+
+.poodle-calendar-input input[type=text]
+{
+	box-sizing: border-box;
+	left: 0;
+	max-width: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: auto;
+}
+
+.poodle-calendar-input input.invisible
+{
+	position: static;
+	visibility: hidden;
+}
+
+.poodle-calendar-input a
+{
+	background-color: #EEE;
+	background-position:-158px center;
+	border-width: 1px;
+	border-radius: 1px;
+	bottom: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	vertical-align: top;
+	width: 16px;
+}
+.poodle-calendar-input a:focus
+{
+	border-color: #999;
+	outline: 0;
+}
+
+.poodle-calendar-input.datetime input.date
+{
+	width: 7em;
+}
+.poodle-calendar-input.datetime a
+{
+	left: 8em;
+}
+.poodle-calendar-input input.time
+{
+	left: auto;
+	width: 4.2em;
+}
+
+/* Calendar overlay */
+
+#poodle-calendar, #poodle-calendar td { font-size:11px; }
+
+#poodle-calendar,
+#poodle-colorpicker
+{
+	border:1px solid #CCC;
+	border-radius: 4px;
+	box-shadow:0 0 1px 1px #47aee8;
+	color:WindowText;
+	position:absolute;
+	visibility:visible;
+	z-index:2147483641;
+}
+
+#poodle-calendar {
+	background-color:#fff;
+	color:#000;
+}
+#poodle-calendar a { color:#000; }
+
+#poodle-calendar .select::after {
+	color:#888;
+	content: '▼';
+	position:absolute;
+	right:2px;
+}
+
+/* content */
+
+#poodle-calendar table { border-collapse:separate; clear:both; margin:0; width: 100%; }
+#poodle-calendar table.month { display:none; }
+#poodle-calendar td {
+	padding:3px;
+	text-align:center;
+}
+#poodle-calendar .weekend {
+	color:#888;
+}
+#poodle-calendar tbody td + td { background-color:#fff; border:1px solid transparent; color:#000; cursor:pointer; }
+#poodle-calendar tbody td + td.disabled { background-color:#f99; cursor: default; }
+#poodle-calendar tbody td + td:not(.disabled):hover,
+#poodle-calendar table.month tbody:hover td + td,
+#poodle-calendar table.week tbody tr:hover td { background-color:#888; color:HighlightText }
+#poodle-calendar #weekdays td,
+#poodle-calendar #weekdays td:hover {
+	border:0;
+	border-bottom:1px solid #CCC;
+}
+#poodle-calendar .weekno,
+#poodle-calendar .weekno:hover {
+	border:1px solid #CCC;
+	border-top:0;
+	border-left:0;
+}
+#poodle-calendar tbody tr:last-of-type .weekno {
+	border-bottom:0;
+}
+#poodle-calendar .activeDay {
+	border:1px solid #888;
+	color:#888;
+}
+
+/* dropdown */
+
+#poodle-calendar .cal-select {
+	background-color: #FFF;
+	border:1px solid #CCC;
+	position:absolute;
+	top:15px;
+	z-index:2147483647; /* is max value*/
+}
+#poodle-calendar .cal-select div {
+	cursor:pointer;
+	margin:1px;
+	padding:1px;
+}
+#poodle-calendar .cal-select div:hover {
+	background-color:Highlight;
+}
+#poodle-calendar .current {
+	background-color:Highlight;
+	color:HighlightText;
+}
+
+/* caption */
+
+#poodle-calendar .caption {
+	background-color:#EEE;
+	border-bottom:1px solid #CCC;
+	border-radius:2px 2px 0 0;
+	min-height:1.5em;
+	padding:0;
+	white-space:nowrap;
+}
+
+#poodle-calendar .todaysDateString,
+#poodle-calendar .save,
+#poodle-calendar .caption a
+{
+	border-left:1px solid #fff;
+	border-right:1px solid #DDD;
+	cursor:pointer;
+	display:inline-block;
+	margin:0;
+	text-decoration:none;
+}
+#poodle-calendar .todaysDateString:hover,
+#poodle-calendar .save:hover,
+#poodle-calendar .caption a:focus,
+#poodle-calendar .caption a:hover
+{
+	box-shadow:0 0 1px 1px #47aee8;
+}
+#poodle-calendar .todaysDateString:active,
+#poodle-calendar .save:active,
+#poodle-calendar .caption a:active
+{
+/*	border:1px solid ButtonHighlight;
+	border-top-color:ButtonShadow;
+	border-left-color:ButtonShadow;*/
+}
+
+#poodle-calendar .prevMonth,
+#poodle-calendar .nextMonth,
+#poodle-calendar .caption .close
+{
+	color:#888;
+	height:21px;
+	line-height:21px;
+	text-align:center;
+	width:22px;
+}
+#poodle-calendar .caption .prevMonth { border-left:0; }
+#poodle-calendar .prevMonth::after { content: '◀'; }
+#poodle-calendar .nextMonth::after { content: '▶'; }
+#poodle-calendar .caption .close { border-right:0; font-weight:bold; }
+
+#poodle-calendar .select
+{
+	line-height:21px;
+	padding:0 1px;
+	padding-left:2px;
+	position:relative;
+}
+#poodle-calendar .year { width:4em; }
+#poodle-calendar #yearDropDown { left: 12.2em; width:4em; }
+#poodle-calendar .month { width:7.5em; }
+#poodle-calendar #monthDropDown { left: 48px; width:7.5em; }
+
+#poodle-calendar .caption .close::after {content:'x'}
+#poodle-calendar .caption .close:active,
+#poodle-calendar .caption .close:hover {
+	color:#C00;
+	box-shadow:0 0 1px 1px #C66;
+}
+
+/* bottomBar */
+
+#poodle-calendar .todaysDate {
+	background-color:#EEE;
+	border-top: 1px solid #CCC;
+	line-height:21px;
+	position:relative;
+}
+#poodle-calendar .todaysDateString
+{
+	border-left:0;
+	padding:0 18px;
+}
+#poodle-calendar .save {
+	bottom:0;
+	display:none;
+	padding:0 18px;
+	top:0;
+	position:absolute;
+	right:0;
+}
+#poodle-calendar.month .save
+{
+	display:inline-block;
+}
+
+#poodle-calendar #hourDropDown { right: 3.5em; width:3em; }
+#poodle-calendar #minuteDropDown { right: 1px; width:3em; }
+
+/******************************************************************************
+ *
+ * input type="color"
+ *
+ ******************************************************************************/
+
+input.color,
+input[type="color"],
+form input.color {
+	background-color: transparent;
+	border:0;
+	border-radius:0;
+	cursor:pointer;
+	height:16px;
+	line-height:60px;
+	padding:0;
+	text-indent:-9000px;
+}
+input.color:focus { outline:1px dashed #CCC; }
+
+#poodle-colorpicker .big .colors {
+	background-image:
+		linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1)),
+		linear-gradient(to right, rgba(255,255,255,1),rgba(255,255,255,0));
+}
+#poodle-colorpicker .big .slider i {
+	background-image:
+		linear-gradient(to bottom, rgb(255,0,0) 0%, rgb(255,255,0) 17%, rgb(0,255,0) 33%, rgb(0,255,255) 50%, rgb(0,0,255) 67%, rgb(255,0,255) 83%, rgb(255,0,0) 100%);
+}
+#poodle-colorpicker .small .colors {
+	background-image:
+		linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0) 300px, rgb(255,255,255) 300px, rgb(0,0,0) 350px),
+		linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1)),
+		linear-gradient(to bottom, rgba(255,255,255,1),rgba(255,255,255,0) 50%),
+		linear-gradient(to right, rgb(255,0,0), rgb(255,255,0) 50px, rgb(0,255,0) 100px, rgb(0,255,255) 150px, rgb(0,0,255) 200px, rgb(255,0,255) 250px, rgb(255,0,0) 300px);
+}
+
+#poodle-colorpicker .big .slider,
+#poodle-colorpicker .big i.ws
+{
+	background-image:url(../images/forms/colorpicker.png);
+	background-repeat:no-repeat;
+}
+
+#poodle-colorpicker {
+	display:none;
+	font-family:tahoma,verdana,sans-serif;
+	font-size:10px;
+}
+#poodle-colorpicker,
+#poodle-colorpicker .small .resize {
+	background-color:ThreeDFace;
+}
+
+#poodle-colorpicker .small,
+#poodle-colorpicker .big .clrGroup {
+	background-image:url(../images/forms/cp-clr-bg.gif);
+}
+#poodle-colorpicker .small {
+	border-radius:3px;
+	display:none;
+	height:21px;
+	line-height:2px;
+}
+#poodle-colorpicker .small i {
+	float:left;
+	height:21px;
+}
+#poodle-colorpicker .small .color {
+	border-radius: 3px 0 0 3px;
+	width:26px;
+}
+#poodle-colorpicker .small .colors {
+	border-right:1px solid #FFF;
+	cursor:crosshair;
+	width:350px;
+}
+#poodle-colorpicker .resize {
+	border-radius: 0 3px 3px 0;
+	cursor:pointer;
+	float:right;
+	line-height:18px;
+	text-align:center;
+	font-size:11px;
+	font-style:normal;
+	width:21px;
+}
+
+#poodle-colorpicker .small .resize::after { content:'⧉'; }
+#poodle-colorpicker .big   .resize::after { content:'⧉'; }
+
+#poodle-colorpicker .big {
+	display:none;
+	height:274px;
+	position:relative;
+	width:398px;
+}
+#poodle-colorpicker .big .colors {
+	background-color:#f00;
+	border:2px inset #EEE;
+	cursor:crosshair;
+	height:256px;
+	left:6px;
+	position:absolute;
+	top:8px;
+	width:256px;
+}
+#poodle-colorpicker .big .slider {
+	background-position:0 0;
+	cursor:pointer;
+	left:271px;
+	padding:3px 10px;
+	position:absolute;
+	top:5px;
+	width:21px;
+}
+#poodle-colorpicker .big .slider i {
+	background-position:-264px 0;
+	border:1px solid ThreeDShadow;
+	border-right-color:ThreeDLightShadow;
+	border-bottom-color:ThreeDLightShadow;
+	cursor:pointer;
+	display:block;
+	height:256px;
+	width:19px;
+}
+#poodle-colorpicker .big label {
+	left:317px;
+	line-height:18px;
+	position:absolute;
+	top:103px;
+	width:60px;
+}
+#poodle-colorpicker .big label.H { top:84px; }
+#poodle-colorpicker .big label.S { top:104px; }
+#poodle-colorpicker .big label.L { top:124px; }
+#poodle-colorpicker .big label.R { top:144px; }
+#poodle-colorpicker .big label.G { top:164px; }
+#poodle-colorpicker .big label.B { top:184px; }
+#poodle-colorpicker .big label.A { top:204px; }
+#poodle-colorpicker .big label input { float:right; padding:0 2px; width:3em; }
+
+#poodle-colorpicker .big label::after { position:absolute; right:-14px; top:0; } /* top required for IE8 */
+#poodle-colorpicker .big label.H::after { content: "°"; }
+#poodle-colorpicker .big label.S::after,
+#poodle-colorpicker .big label.L::after,
+#poodle-colorpicker .big label.A::after { content: "%"; }
+
+#poodle-colorpicker .big button {
+	bottom:30px;
+	height:16px;
+	left:315px;
+	margin:0;
+	padding:0;
+	position:absolute;
+	width:74px;
+}
+#poodle-colorpicker .big button + button { bottom:8px; }
+#poodle-colorpicker .big .clrGroup {
+	border:2px inset #EEE;
+	left:317px;
+	position:absolute;
+	top:8px;
+	width:56px;
+}
+#poodle-colorpicker .big .clrGroup div {
+	display:block;
+	height:32px;
+}
+#poodle-colorpicker .big .clrGroup .orgClr { cursor:pointer; }
+
+#poodle-colorpicker .big i.ws {
+	background-position:-45px 0;
+	width:14px;
+	height:28px;
+	cursor:pointer;
+	position:absolute;
+	top:48px;
+	left:380px;
+}
+
+/******************************************************************************
+ *
+ * input type="checkbox" | type="radio"
+ *
+ ******************************************************************************/
+
+.input-checkbox,
+.input-radio {
+	background-color: #fff;
+	border:1px solid #CCC;
+	display:inline-block;
+	min-height:1em;
+	overflow:hidden;
+	position:relative;
+	text-decoration:none;
+	vertical-align: top;
+	width:1em;
+}
+.input-radio { border-radius:100%; }
+.input-checkbox input, .input-radio input {
+	bottom:0;
+	left: 0;
+	margin:0;
+	/*opacity:0;*/
+	position: absolute;
+	right:0;
+	top: 0;
+	visibility:hidden;
+}
+
+.input-checkbox:focus, .input-radio:focus {
+	box-shadow: 0 0 1px 1px #47aee8;
+	outline:none;
+}
+
+/*.input-checkbox.disabled::after,*/
+.disabled .input-checkbox, .disabled .input-radio,
+.input-checkbox.disabled, .input-radio.disabled { opacity:0.5; }
+
+.input-checkbox::after,
+.input-radio::after {
+	bottom:0;
+	font-size:125%;
+	left: 0;
+	line-height: 1;
+	position: absolute;
+	right:0;
+	text-align:center;
+	top: 0;
+}
+/*
+.input-checkbox::after {
+	color:#FAA;
+	content: '⨯';
+	text-shadow: 0 0 1px #FAA;
+}
+*/
+.input-checkbox.checked::after {
+	color:#090;
+	content: '✔';
+	text-shadow: 0 0 1px #AFA;
+}
+.input-radio.checked::after {
+	background-color: #0A0;
+	border-radius: 100%;
+	bottom: 2px;
+	box-shadow: 1px 1px 1px #0F0 inset, -1px -1px 1px #050 inset;
+	content: "";
+	left: 2px;
+	right: 2px;
+	top: 2px;
+}
+
+/******************************************************************************
+ *
+ * input type="number"
+ *
+ ******************************************************************************/
+
+.input-number {
+	display: inline-block !important;
+	position:relative;
+}
+.input-number input {
+	/* due to issue with text-align we need padding
+	padding-right: 21px;
+	text-align: right;*/
+	direction: rtl;
+	text-indent: 21px;
+}
+.input-number a {
+	border-radius:1px;
+	background-color: #EEE;
+	border:1px solid #CCC;
+	bottom:51%;
+	box-shadow: inset 1px 1px 0 0 #fff;
+	display:block;
+	color:#888;
+	font-size:8px;
+	line-height:7px;
+	padding:0 1px 1px 0;
+	position:absolute;
+	right:0;
+	text-align:center;
+	text-decoration:none;
+	top:0;
+	width:16px;
+}
+.input-number a + a {
+	bottom:0;
+	top:53%;
+}
+.input-number a:hover,
+.input-number a:active,
+.input-number a:focus {
+	color:#000;
+	background-color: #EEE;
+}
+.input-number a:active { border-style:inset; padding:1px 0 0 1px }
+.input-number a:focus { outline:1px dashed #CCC; }
+
+/******************************************************************************
+ *
+ * input type="range"
+ *
+ ******************************************************************************/
+
+input.vertical[type="range"] {
+	width:1em;
+	height:6em;
+}
+
+form .input-range { height:18px; }
+form .input-range-v { width:18px; }
+form .input-range,
+form .input-range-v {
+	border-radius:2px;
+	display:inline-block;
+	overflow:hidden;
+	position:relative;
+	text-decoration:none;
+}
+form .input-range:focus,
+form .input-range-v:focus { outline:1px dashed #CCC; }
+form .input-range-v input { -webkit-appearance:slider-vertical; }
+
+form .input-range i {
+	bottom:0;
+	top:0;
+	width:4px;
+}
+form .input-range-v i {
+	height:4px;
+	left:0;
+	right:0;
+}
+form .input-range i,
+form .input-range-v i {
+/*	background-color:ButtonFace;
+	border:1px solid ButtonShadow;
+	border-top-color:ButtonHighlight;
+	border-left-color:ButtonHighlight;*/
+	background-color:#EEE;
+	border:1px outset #CCC;
+	border-radius:1px;
+	display:block;
+	position:absolute;
+	z-index:10;
+}
+form .input-range:focus i, form .input-range-v:focus i { box-shadow:0 0 1px 1px #47aee8; }
+
+form .input-range input {
+	height:1px;
+	height:0;
+	margin:0 2px;
+	text-indent:-900em;
+	line-height: 0;
+	min-height: 0;
+	vertical-align:middle;
+}
+form .input-range-v input[type="range"],
+form .input-range-v input {
+	width:1px;
+	width:0;
+	margin:0 8px 4px;
+}
+form .input-range input[type="range"],
+form .input-range input,
+form .input-range-v input[type="range"],
+form .input-range-v input {
+	background-color:rgba(107,107,107,0.6);
+	border:1px inset ButtonFace;
+	cursor:pointer;
+	padding:0;
+/*	visibility:hidden; /* make it hidden to show custom background */
+}
+
+.selectbox span { display:none; }

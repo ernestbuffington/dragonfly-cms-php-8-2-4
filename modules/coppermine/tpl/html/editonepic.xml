@@ -1,0 +1,54 @@
+<form action="" method="post">
+<input type="hidden" name="id" tal:attributes="value CURRENT_PIC/pid"/>
+<table>
+<thead>
+	<tr>
+		<th colspan="3" tal:content="CURRENT_PIC/filename">CURRENT_PIC/filename</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td i18n:translate="">PIC_INFO</td>
+		<td tal:content="pic_info">pic_info</td>
+		<td rowspan="5"><a target="_blank" tal:attributes="href thumb_link"><img tal:attributes="src thumb_url" alt=""/></a></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">ALBUM</td>
+		<td><select name="aid">
+			<optgroup tal:repeat="group upload_albums" tal:attributes="label group/label">
+				<option tal:repeat="album group/albums" tal:attributes="value album/aid; selected php:${album/aid} == ${CURRENT_PIC/aid}" tal:content="album/title">album/title</option>
+			</optgroup>
+		</select></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">TITLE</td>
+		<td><input type="text" name="title" maxlength="255" tal:attributes="value CURRENT_PIC/title"/></td>
+	</tr>
+	<tr>
+		<td style="vertical-align:top">DESCRIPTION</td>
+		<td><textarea name="caption" rows="5" cols="40" wrap="virtual" tal:attributes="maxlength coppermine_cfg/max_img_desc_length" tal:content="CURRENT_PIC/caption"></textarea></td>
+	</tr>
+	<tr>
+		<td i18n:translate="">KEYWORDS</td>
+		<td><input type="text" name="keywords" maxlength="255" tal:attributes="value CURRENT_PIC/keywords"/></td>
+	</tr>
+	<tr tal:repeat="field user_fields">
+		<td style="white-space: nowrap;" tal:content="field/label">field/label</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name field/name; value field/value" maxlength="255"/></td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td></td>
+		<td colspan="2">
+			<input type="checkbox" name="reset_vcount" i18n:translate="RESET_VIEW_COUNT"/>
+			<input type="checkbox" name="reset_votes" i18n:translate="RESET_VOTES"/>
+			<input type="checkbox" name="del_comments" i18n:translate="DEL_COMM"/>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button type="submit" name="submitDescription" i18n:translate="">APPLY</button></td>
+	</tr>
+</tfoot>
+</table>

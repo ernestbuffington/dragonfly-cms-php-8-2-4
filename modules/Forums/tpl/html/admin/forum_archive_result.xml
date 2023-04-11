@@ -1,0 +1,23 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">Forum_Archive</h1>
+
+	<p i18n:translate="">Archive_success</p>
+
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Forum</th>
+			<th i18n:translate="">Topics_archived</th>
+			<th i18n:translate="">Posts_archived</th>
+			<th i18n:translate="">Words_Removed</th>
+		</tr>
+	</thead><tbody>
+		<tr tal:repeat="result archive_results">
+			<td tal:content="result/FORUM_NAME">{result/FORUM_NAME}</td>
+			<td tal:content="result/FORUM_TOPICS">{result/FORUM_TOPICS}</td>
+			<td tal:content="result/FORUM_POSTS">{result/FORUM_POSTS}</td>
+			<td tal:content="result/WORDS_REMOVED">{result/WORDS_REMOVED}</td>
+		</tr>
+	</tbody></table>
+</div>

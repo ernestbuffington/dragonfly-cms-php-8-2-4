@@ -1,0 +1,85 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 tal:condition="auth_user" i18n:translate="">Auth_Control_User</h1>
+	<h1 tal:condition="not:auth_user" i18n:translate="">Auth_Control_Group</h1>
+
+	<h2 tal:content="AUTH_NAME">{AUTH_NAME}</h2>
+
+	<form method="post" action="">
+
+	<p tal:condition="auth_user">
+		<span i18n:translate="">User_Level</span>:
+		<select name="userlevel">
+			<option value="user" i18n:translate="">Auth_User</option>
+			<option value="admin" tal:attributes="selected auth_user_is_admin" i18n:translate="">Auth_Admin</option>
+		</select>
+	</p>
+	<p tal:condition="auth_user" tal:content="structure USER_GROUPS">{USER_GROUPS}</p>
+	<p tal:condition="not:auth_user" tal:content="structure GROUP_MEMBERS">{GROUP_MEMBERS}</p>
+
+	<h2 i18n:translate="">Permissions</h2>
+
+	<p tal:condition="auth_user" i18n:translate="">User_auth_explain</p>
+	<p tal:condition="not:auth_user" i18n:translate="">Group_auth_explain</p>
+
+	<style type="text/css">
+	#forum-auth-ug * { white-space: nowrap; }
+	#forum-auth-ug td + td { text-align: center; }
+	#forum-auth-ug.col2  td:nth-child(2),
+	#forum-auth-ug.col3  td:nth-child(3),
+	#forum-auth-ug.col4  td:nth-child(4),
+	#forum-auth-ug.col5  td:nth-child(5),
+	#forum-auth-ug.col6  td:nth-child(6),
+	#forum-auth-ug.col7  td:nth-child(7),
+	#forum-auth-ug.col8  td:nth-child(8),
+	#forum-auth-ug.col9  td:nth-child(9),
+	#forum-auth-ug.col10 td:nth-child(10),
+	#forum-auth-ug.col11 td:nth-child(11),
+	#forum-auth-ug.col12 td:nth-child(12),
+	#forum-auth-ug.col13 td:nth-child(13),
+	#forum-auth-ug.col14 td:nth-child(14)
+	{
+		background-color: #E6E6E6;
+	}
+	</style>
+
+	<table id="forum-auth-ug"><tbody tal:repeat="group forums_grouped">
+		<tr><th tal:attributes="colspan php:2+count(${acl_types})" tal:content="group/label"></th></tr>
+		<tr tal:condition="not:group/forums"></tr>
+		<tr tal:condition="group/forums">
+			<th></th>
+			<th tal:repeat="type acl_types" tal:content="type">{acltype}</th>
+		</tr>
+		<tr tal:repeat="forum group/forums">
+			<td><a tal:attributes="href forum/href_auth" tal:content="forum/name">{forums.FORUM_NAME}</a></td>
+			<td tal:repeat="value forum/acl_options" tal:content="structure value">{forums.aclvalues.S_ACL_SELECT}</td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td tal:attributes="colspan php:2+count(${acl_types})">
+				<a tal:condition="not:S_ADV_MODE" tal:attributes="href U_SWITCH_MODE" i18n:translate="">Advanced_mode</a>
+				<a tal:condition="S_ADV_MODE" tal:attributes="href U_SWITCH_MODE" i18n:translate="">Simple_mode</a>
+				<input type="hidden" name="adv" tal:attributes="value S_ADV_MODE"/>
+				<button name="save" i18n:translate="">Submit</button>
+				<button type="reset" i18n:translate="">Reset</button>
+			</td>
+		</tr>
+	</tfoot></table>
+	</form>
+
+	<script type="text/javascript"><![CDATA[
+	Poodle.onDOMReady(function(){
+		var t = Poodle.$('forum-auth-ug'), cn = t.className;
+		t.bind('mousemove',function(e){
+			var n = e.target;
+			while (n && t != n && 'td' != n.lowerName()) { n = n.parent(); }
+			if ('td' == n.lowerName()) {
+				t.className = cn+' col'+(n.cellIndex+1);
+			} else {
+				t.className = cn;
+			}
+		}).bind('mouseout',function(e){t.className = cn;});
+	});
+	]]></script>
+</div>

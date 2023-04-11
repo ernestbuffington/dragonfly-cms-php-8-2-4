@@ -1,0 +1,19 @@
+
+<div class="border" tal:condition="not:query_result">Mode: <b tal:content="db_mode">db_mode</b> not available yet</div>
+
+<div tal:condition="query_result">
+
+	<p>Here are the results of your <span tal:replace="db_action">db_action</span></p>
+
+	<table>
+	<thead><tr>
+		<th tal:repeat="field query_result/fetch_fields" tal:content="field/name"></th>
+	</tr></thead>
+	<tbody>
+	<tr tal:repeat="row query_result">
+		<td tal:repeat="value row" tal:content="value"></td>
+	</tr>
+	</tbody>
+	</table>
+
+</div>

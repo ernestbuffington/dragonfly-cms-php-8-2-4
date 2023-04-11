@@ -1,0 +1,147 @@
+<nav class="main pm" style="z-index:1">
+<ul>
+	<li><a onclick="">Information</a>
+		<ul>
+			<li><a tal:attributes="href IDENTITY/profile_uri">My profile</a></li>
+			<li><a tal:attributes="href php:URL::index('coppermine&amp;file=users&amp;id=${IDENTITY/id}')">My gallery</a></li>
+		</ul>
+	</li><li><a onclick="">Configuration</a>
+		<ul>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=profile')">Profile</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=private')">Private</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=reg_details')">Registration</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=prefs')">Preferences</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=avatar')">Avatar</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=edithome')">Homepage</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=preferences')">News comments</a></li>
+		</ul>
+	</li><li><a onclick="">Private Messages</a>
+		<ul>
+			<li>
+				<a tal:attributes="href php:URL::index('&amp;file=compose')">
+					<img src="cdn://modules/Private_Messages/images/24x24/new.png" alt="New" title="New" i18n:attributes="alt;title"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=inbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/inbox.png" alt="Inbox" title="Inbox" i18n:attributes="alt;title"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=sentbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/sentbox.png" alt="Sentbox" title="Sentbox" i18n:attributes="alt;title"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=outbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/outbox.png" alt="Outbox" title="Outbox" i18n:attributes="alt;title"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=savebox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/savebox.png" alt="Savebox" title="Savebox" i18n:attributes="alt;title"/></a>
+			</li>
+		</ul>
+	</li><li><a tal:attributes="href php:Dragonfly\Identity::logoutURL()">Logout</a></li>
+</ul>
+</nav>
+
+<div class="table1">
+
+<div>
+<span class="pm_boxes">
+	<a tal:attributes="href php:URL::index('&amp;file=compose')">
+		<img src="cdn://modules/Private_Messages/images/48x48/new.png" alt="New" title="New"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='compose'" i18n:translate="">New</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=inbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/inbox.png" alt="Inbox" title="Inbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='inbox'" i18n:translate="">Inbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=sentbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/sentbox.png" alt="Sentbox" title="Sentbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='sentbox'" i18n:translate="">Sentbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=outbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/outbox.png" alt="Outbox" title="Outbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='outbox'" i18n:translate="">Outbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=savebox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/savebox.png" alt="Savebox" title="Savebox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='savebox'" i18n:translate="">Savebox</strong>
+		</a>
+</span>
+</div>
+
+<hr style="clear:both"/>
+
+<div class="block" tal:condition="PREVIEW_BOX">
+	<div class="head" i18n:translate="_PREVIEW"></div>
+	<table class="content"><tbody>
+	<!-- <tr>
+	<th colspan="2" i18n:translate="_PREVIEW"></th>
+	</tr> -->
+	<tr>
+		<td><strong i18n:translate="_FROM"></strong>: </td>
+		<td><span tal:replace="MESSAGE_FROM"></span></td>
+	</tr>
+	<tr>
+		<td><strong i18n:translate="_TO"></strong>: </td>
+		<td><span tal:replace="MESSAGE_TO"></span></td>
+	</tr>
+	<tr>
+		<td><strong i18n:translate="_DATE"></strong>: </td>
+		<td><span tal:replace="POST_DATE"></span></td>
+	</tr>
+	<tr>
+		<td><strong i18n:translate="_SUBJECT"></strong>: </td>
+		<td tal:content="private_message/subject"></td>
+	</tr>
+	<tr>
+		<td><strong i18n:translate="_MESSAGE"></strong>: </td>
+		<td tal:content="structure private_message/html"></td>
+	</tr>
+</tbody></table>
+</div>
+
+<form action="" method="post" name="compose">
+<div class="block">
+	<div class="head" i18n:translate="Send_a_new_message"></div>
+	<table class="content"><tbody>
+		<!-- <tr>
+			<th colspan="2" i18n:translate="Send_a_new_message"></th>
+		</tr> -->
+		<tr>
+			<td><strong i18n:translate="">Username</strong></td>
+			<td>
+				<input type="text" name="username" maxlength="25" size="25" tal:attributes="value USERNAME"/>
+				<button type="button" i18n:translate="Find_username" tal:attributes="onclick 'window.open(&quot;${U_SEARCH_USER}&quot;, &quot;_phpbbsearch&quot;, &quot;HEIGHT=250,resizable=yes,WIDTH=400&quot;);return false;'"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:22%"><strong i18n:translate="_SUBJECT">Subject</strong></td>
+			<td style="width:78%">
+				<input type="text" name="subject" maxlength="60" style="width:90%" tal:attributes="value private_message/subject"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top"><strong i18n:translate="_MESSAGE">Message</strong></td>
+			<td>
+				<textarea class="bbcode" name="message" style="width:90%; height:180px" wrap="virtual" tal:content="private_message/text"></textarea>
+			</td>
+		</tr>
+		<tr><td colspan="2"><strong i18n:translate="Options"></strong></td></tr>
+		<tr tal:condition="pm_options/allow_bbcode">
+			<td i18n:translate="Enable_BBCode_pm">Enable BBCode</td>
+			<td>
+				<input type="radio" name="enable_bbcode" value="1" tal:attributes="checked private_message/enable_bbcode"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="enable_bbcode" value="0" tal:attributes="checked not:private_message/enable_bbcode"/> <span i18n:translate="_NO">No</span>
+			</td>
+		</tr>
+		<tr tal:condition="pm_options/allow_smilies">
+			<td i18n:translate="Enable_Smilies_pm">Enable Smilies</td>
+			<td>
+				<input type="radio" name="enable_smilies" value="1" tal:attributes="checked private_message/enable_smilies"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="enable_smilies" value="0" tal:attributes="checked not:private_message/enable_smilies"/> <span i18n:translate="_NO">No</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="height:28px;text-align:center">
+				<input type="hidden" tal:repeat="field HIDDEN_FORM_FIELDS" tal:attributes="name field/name; value field/value"/>
+				<button name="preview" i18n:translate="_PREVIEW"/>
+				<button name="post" i18n:translate="_SUBMIT"/>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+</form>
+
+</div>

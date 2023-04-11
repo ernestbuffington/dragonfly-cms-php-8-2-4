@@ -1,0 +1,104 @@
+<form method="post" action="">
+<table>
+<thead>
+	<tr>
+		<th colspan="3">
+			<span tal:replace="cpg/title">title</span>
+			<div style="float:right">
+				<span tal:replace="cpg/pic_count">0 pictures</span> -
+				<a tal:condition="cpg/prev_link" tal:attributes="href cpg/prev_link" i18n:translate="">SEE_PREV</a>
+				<a tal:condition="cpg/next_link" tal:attributes="href cpg/next_link" i18n:translate="">SEE_NEXT</a>
+			</div>
+		</th>
+	</tr>
+</thead>
+<tbody tal:repeat="pic cpg/pictures">
+	<tr>
+		<th colspan="3" tal:content="pic/filename">pic/filename</th>
+	</tr>
+	<tr>
+		<td i18n:translate="PIC_INFO">Picture info</td>
+		<td>
+			<span tal:replace="pic/dimensions">0 views</span> -
+			<span tal:replace="php:here.L10N.filesizeToHuman(${pic/filesize})">0 b</span> -
+			<span tal:condition="pic/hits" tal:replace="pic/hits">0 views</span>
+			<span tal:condition="pic/votes" tal:replace="pic/votes">0 votes</span>
+		</td>
+		<td style="text-align:center" rowspan="5">
+			<a tal:attributes="href pic/large_url; target pic/pid"
+				onclick="open(this.href,this.target,'toolbar=yes,status=yes,resizable=yes,scrollbars=yes,width=800,height=600');return false"
+			><img tal:attributes="src pic/thumb_url" alt=""/></a>
+		</td>
+	</tr>
+	<tr tal:condition="pic/uploader">
+		<td i18n:translate="">Uploader</td>
+		<td>
+			<a title="View Profile" tal:attributes="href pic/uploader/profile_url" target="_blank" tal:content="pic/username">username</a>
+			<a title="Edit Profile" tal:attributes="href pic/uploader/edit_url" target="_blank">edit</a>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="ALBUM">Album</td>
+		<td>
+			<select tal:attributes="name 'pics[${pic/pid}][aid]'">
+			<optgroup tal:repeat="group pic/albumgroups" tal:attributes="label group/label">
+				<option tal:repeat="album group/albums" tal:attributes="value album/aid; selected php:${album/aid}==${pic/aid}" tal:content="album/title"></option>
+			</optgroup>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="EDIT_TITLE">Title</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][title]'; value pic/title" maxlength="255"/></td>
+	</tr>
+	<tr>
+		<td style="vertical-align:top" i18n:translate="DESC">Description</td>
+		<td>
+			<textarea rows="5" tal:attributes="name 'pics[${pic/pid}][caption]'; maxlength cpg/CONFIG/max_img_desc_length" wrap="virtual" style="width: 100%;" tal:content="pic/caption">pic/caption</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td i18n:translate="KEYWORDS">Keywords</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][keywords]'; value pic/keywords" maxlength="255"/></td>
+	</tr>
+
+	<tr tal:condition="cpg/CONFIG/user_field1_name">
+		<td tal:content="cpg/CONFIG/user_field1_name">cpg/CONFIG/user_field1_name</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][user1]'; value pic/user1" maxlength="255"/></td>
+	</tr>
+	<tr tal:condition="cpg/CONFIG/user_field2_name">
+		<td tal:content="cpg/CONFIG/user_field2_name">cpg/CONFIG/user_field2_name</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][user2]'; value pic/user2" maxlength="255"/></td>
+	</tr>
+	<tr tal:condition="cpg/CONFIG/user_field3_name">
+		<td tal:content="cpg/CONFIG/user_field3_name">cpg/CONFIG/user_field3_name</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][user3]'; value pic/user3" maxlength="255"/></td>
+	</tr>
+	<tr tal:condition="cpg/CONFIG/user_field4_name">
+		<td tal:content="cpg/CONFIG/user_field4_name">cpg/CONFIG/user_field4_name</td>
+		<td><input type="text" style="width: 100%" tal:attributes="name 'pics[${pic/pid}][user4]'; value pic/user4" maxlength="255"/></td>
+	</tr>
+
+	<tr tal:condition="php:UPLOAD_APPROVAL_MODE">
+		<td colspan="3" style="text-align:center">
+			<label><input type="radio" tal:attributes="name 'pics[${pic/pid}][approved]'" value="1"/> <b i18n:translate="APPROVE">APPROVE</b></label>
+			<label><input type="radio" tal:attributes="name 'pics[${pic/pid}][approved]'" value="0" checked="checked" /> <b i18n:translate="POSTPONE_APP">POSTPONE_APP</b></label>
+			<label><input type="radio" tal:attributes="name 'pics[${pic/pid}][approved]'" value="DELETE"/> <b i18n:translate="DEL_PIC">Delete picture</b></label>
+		</td>
+	</tr>
+	<tr tal:condition-else="">
+		<td colspan="0" style="text-align:center">
+			<label><input type="checkbox" name="delete[]"       tal:attributes="value pic/pid"/> <b i18n:translate="DEL_PIC">Delete picture</b></label>
+			<label><input type="checkbox" name="reset_vcount[]" tal:attributes="value pic/pid"/> <b i18n:translate="RESET_VIEW_COUNT">Reset view counter</b></label>
+			<label><input type="checkbox" name="reset_votes[]"  tal:attributes="value pic/pid"/> <b i18n:translate="RESET_VOTES">Reset votes</b></label>
+			<label><input type="checkbox" name="del_comments[]" tal:attributes="value pic/pid"/> <b i18n:translate="DEL_COMM">Delete comments</b></label>
+		</td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<td colspan="0"><button i18n:translate="">APPLY</button></td>
+	</tr>
+</tfoot>
+</table>
+</form>

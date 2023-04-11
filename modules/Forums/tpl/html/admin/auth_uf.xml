@@ -1,0 +1,49 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">User_Forum_Privileges</h1>
+	<h2 tal:content="USER_NAME">{USER_NAME}</h2>
+
+	<p>
+		<span i18n:translate="">Group_memberships</span>:
+		<a tal:repeat="group USER_GROUPS" tal:attributes="href group/href" tal:content="group/name">group/name</a>
+		<span tal:condition="not:USER_GROUPS" i18n:translate="">None</span>
+	</p>
+
+	<p>
+		<b i18n:translate="">Privileges</b><br/>
+		<div i18n:translate="">User_forum_explain</div>
+	</p>
+
+	<form method="post" id="priv_list" action="">
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Forum</th>
+			<th i18n:translate="">Privileges</th>
+		</tr>
+	</thead><tbody tal:repeat="group forums_grouped">
+		<tr>
+			<th colspan="2" tal:content="group/label">category name</th>
+		</tr>
+		<tr tal:repeat="forum group/forums">
+			<td tal:content="forum/name">forum name</td>
+			<td><input type="checkbox" name="forum_id_list[]" tal:attributes="value forum/id; checked forum/priv"/></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td></td>
+			<td><a href="javascript:Poodle.$('priv_list').checkAll('forum_id_list');" i18n:translate="">Mark_all</a>
+			 :: <a href="javascript:Poodle.$('priv_list').uncheckAll('forum_id_list');" i18n:translate="">Unmark_all</a></td>
+		</tr>
+		<tr>
+			<td><a tal:attributes="href SERVER/REQUEST_URI"><b i18n:translate="">Another_User</b>?</a></td>
+			<td>
+				<input type="hidden" name="user_id" tal:attributes="value USER_ID"/>
+				<button i18n:translate="">Submit</button>
+				<button type="reset" i18n:translate="">Reset</button>
+			</td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+</div>

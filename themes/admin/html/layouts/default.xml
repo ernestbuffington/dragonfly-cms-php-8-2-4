@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html
+	xmlns:tal="http://xml.zope.org/namespaces/tal"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+	tal:attributes="lang L10N/lng">
+<head>
+	<title tal:condition="B_PAGETITLE" tal:content="S_PAGETITLE">{S_PAGETITLE}</title>
+	<title tal:condition="not:B_PAGETITLE" tal:content="S_SITENAME">{S_SITENAME}</title>
+	<meta name="viewport" content="width=device-width"/>
+	<script tal:condition="S_BLOCK_FRAMES" type="text/javascript">if (self != top) top.location.replace(self.location)</script>
+	<link tal:replace="structure CSS_DATA" rel="stylesheet" type="text/css" href=""/>
+	<script tal:replace="structure JS_DATA" type="text/javascript"></script>
+	<meta tal:replace="structure S_HEADER_TAGS" name="robots" content="index, follow"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+
+<nav tal:condition="exists:S_MAIN_MENU" tal:replace="structure S_MAIN_MENU"></nav>
+
+<div tal:define="notifications php:\Poodle\Notify::getClear()" tal:condition="notifications" id="poodle_notifications">
+	<div tal:repeat="notification notifications" tal:attributes="class notification/type" tal:content="structure notification/msg">Success notification</div>
+</div>
+
+<table class="maintable"><tbody>
+<tr>
+	<td tal:condition="leftblock" id="LeftSide" class="mainside">
+		<div tal:repeat="block leftblock" class="block">
+			<div class="head toggle" tal:attributes="id 'toggleBlock${block/S_BID}'" tal:content="block/S_TITLE">{leftblock S_TITLE}</div>
+			<div class="content" tal:attributes="id 'Block${block/S_BID}'" tal:content="structure block/S_CONTENT"></div>
+		</div>
+	</td>
+
+	<td class="main">
+<!--
+		<div tal:define="notifications php:\Poodle\Notify::getClear()" tal:condition="notifications" id="poodle_notifications">
+			<div tal:repeat="notification notifications" tal:attributes="class notification/type" tal:content="structure notification/msg">Success notification</div>
+		</div>
+-->
+		<div tal:condition="PAGE_TITLE" class="pagetitle" tal:content="PAGE_TITLE">{PAGE_TITLE}</div>
+
+		<nav tal:condition="exists:S_ADMIN_GRAPHMENU"
+			tal:replace="structure php:\Dragonfly\Page\Menu::toString('adminmenugraph', 'menu/graph')"></nav>
+
+		<div tal:condition="centerblock" tal:repeat="block centerblock" class="block">
+			<div class="head toggle" tal:attributes="id 'toggleBlock${block/S_BID}'" tal:content="block/S_TITLE">{centerblock S_TITLE}</div>
+			<div class="content" tal:attributes="id 'Block${block/S_BID}'" tal:content="structure block/S_CONTENT">{centerblock S_CONTENT}</div>
+		</div>
+
+		<div tal:replace="structure body"><!-- BODY CONTENT WILL BE PLACED HERE --></div>
+
+		<div tal:condition="bottomblock" tal:repeat="block bottomblock">
+			<div class="blockhead toggle" tal:attributes="id 'toggleBlock${block/S_BID}'" tal:content="block/S_TITLE">{bottomblock S_TITLE}</div>
+			<div class="blockcontent" tal:attributes="id 'Block${block/S_BID}'" tal:content="structure block/S_CONTENT">{bottomblock S_CONTENT}</div>
+			<br/>
+		</div>
+	</td>
+	<td tal:condition="rightblock" class="mainside" id="RightSide">
+		<div tal:repeat="block rightblock">
+			<div class="blockhead toggle" tal:attributes="id 'toggleBlock${block/S_BID}'" tal:content="block/S_TITLE">{rightblock S_TITLE}</div>
+			<div class="blockcontent" tal:attributes="id 'Block${block/S_BID}'" tal:content="structure block/S_CONTENT"></div>
+		</div>
+	</td>
+</tr>
+</table>
+
+<div id="messagesbox"></div>
+<div style="text-align:center;" tal:content="structure S_FOOTER">{S_FOOTER}</div>
+<script type="text/javascript" tal:content="'Poodle.onDOMReady(function(){Poodle.Debugger(${debug_json})});'"></script>
+</body></html>

@@ -1,0 +1,61 @@
+
+<form name="message" action="" method="post">
+<fieldset>
+	<legend i18n:translate="">_EDITMSG</legend>
+
+	<p>
+		<strong i18n:translate="">_MESSAGETITLE</strong><br/>
+		<input type="text" name="title" value="" size="50" maxlength="100" tal:attributes="value msg/title"/>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_MESSAGECONTENT</strong><br/>
+		<textarea class="bbcode" name="content" rows="15" wrap="virtual" cols="63" tal:content="msg/content"></textarea>
+	</p>
+
+	<p tal:condition="L10N/multilingual">
+		<strong i18n:translate="">_LANGUAGE</strong>
+		<select name="language">
+			<option value="" i18n:translate="">All</option>
+			<option tal:repeat="lng L10N/getActiveList" tal:attributes="value lng/value; selected php:${lng/value}==${msg/mlanguage}" tal:content="lng/label"></option>
+		</select>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_EXPIRATION</strong>
+		<input name="expire_days" type="number" min="0" step="1" tal:attributes="value msg/expire"/> <span i18n:translate="">_DAYS</span>
+		(0 = <span i18n:translate="">_UNLIMITED</span>)
+	</p>
+
+	<p>
+		<strong i18n:translate="">_ACTIVATE2</strong>
+		<select name="active">
+			<option value="1">Yes</option>
+			<option value="0" tal:attributes="selected not:msg/active">No</option>
+		</select>
+	</p>
+	<p tal:condition="not:msg/active">
+		<div i18n:translate="">_IFYOUACTIVE</div>
+		<input type="hidden" name="chng_date" value="1"/>
+	</p>
+	<p tal:condition="msg/active">
+		<strong i18n:translate="">_CHANGEDATE</strong>
+		<select name="chng_date">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</select>
+	</p>
+
+	<p>
+		<strong i18n:translate="">_VIEWPRIV</strong>
+		<select name="view">
+			<optgroup tal:repeat="groups php:\Dragonfly\Groups::getSystem(true)" tal:attributes="label groups/label">
+				<option tal:repeat="group groups/groups" tal:attributes="value group/id; selected php:${group/id}==${msg/view}" tal:content="group/label"></option>
+			</optgroup>
+		</select>
+	</p>
+
+	<button i18n:translate="">_SAVECHANGES</button>
+
+</fieldset>
+</form>

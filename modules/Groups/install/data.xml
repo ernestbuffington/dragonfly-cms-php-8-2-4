@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database version="1.0" name="dragonfly">
+
+	<table name="bbgroups" datamode="ON-EMPTY">
+		<col name="group_id"/>
+		<col name="group_name"/>
+		<col name="group_description"/>
+		<col name="group_single_user"/>
+		<tr><td>1</td><td>Anonymous</td><td>Personal User</td><td>1</td></tr>
+	</table>
+
+	<table name="bbuser_group" onduplicate="IGNORE">
+		<col name="group_id"/>
+		<col name="user_id"/>
+		<col name="user_pending"/>
+		<tr><td>1</td><td>1</td><td>0</td></tr>
+	</table>
+
+</database>

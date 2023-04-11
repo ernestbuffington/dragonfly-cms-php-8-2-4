@@ -1,0 +1,46 @@
+<div class="border">
+	<a href="?admin&amp;op=News&amp;mode=add" i18n:translate="">_ADDSTORY</a> |
+	<a href="?admin&amp;op=News&amp;file=submissions" i18n:translate="">_SUBMISSIONS</a> |
+	<a href="?admin&amp;op=News&amp;file=categories" i18n:translate="">Categories</a> |
+	<strong i18n:translate="">Comments</strong> |
+	<a href="?admin&amp;op=News&amp;file=config" i18n:translate="">Configuration</a>
+</div>
+
+<div class="border">
+<table>
+<thead>
+	<tr>
+		<th>user</th>
+		<th>Comment</th>
+		<th>Date</th>
+		<th></th>
+	</tr>
+</thead>
+<tbody>
+	<tr tal:repeat="c news_comments">
+<!--
+		sid,
+		score
+-->
+		<td>
+			<a tal:condition="c/user_id" tal:attributes="href '?admin&amp;op=users&amp;id=${c/user_id}'" tal:content="c/username">c/username</a>
+			<span tal:condition-else="" tal:content="c/remote_ip">anonymous</span>
+		</td>
+		<td tal:content="c/comment">c/comment</td>
+		<td tal:content="php:context.L10N.date('DATE_T',${c/date})">time_stamp</td>
+		<td>
+			<a class="icon-delete" tal:attributes="href '?admin&amp;op=News&amp;del_comment=${c/id}'" i18n:translate="">delete</a>
+		</td>
+	</tr>
+</tbody>
+<tfoot tal:condition="news_comments_pagination/items">
+	<tr>
+		<td colspan="4" class="pagination">
+			<a class="prev" tal:attributes="href news_comments_pagination/prev" tal:condition="news_comments_pagination/prev">◀</a>
+			<a tal:repeat="item news_comments_pagination/items" tal:attributes="href item/uri" tal:content="item/page"></a>
+			<a class="next" tal:attributes="href news_comments_pagination/next" tal:condition="news_comments_pagination/next">▶</a>
+		</td>
+	</tr>
+</tfoot>
+</table>
+</div>

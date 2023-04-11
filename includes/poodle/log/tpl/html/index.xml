@@ -1,0 +1,26 @@
+
+<div id="main-content">
+	<div id="admin-log">
+		<table style="display:inline-block;margin-right:3em;width:auto">
+		<thead><tr>
+			<th i18n:translate="">Severity level</th>
+			<th i18n:translate="">Times</th>
+		</tr></thead><tbody>
+		<tr tal:repeat="loglevel loglevels">
+			<td><a tal:attributes="href loglevel/uri" tal:content="loglevel/level">loglevel/level</a></td>
+			<td style="text-align:right" tal:content="loglevel/count">loglevel/count</td>
+		</tr>
+		</tbody></table>
+
+		<table style="display:inline-block;margin-right:3em;width:auto">
+		<thead><tr>
+			<th i18n:translate="">Type</th>
+			<th i18n:translate="">Times</th>
+		</tr></thead><tbody>
+		<tr tal:repeat="logtype logtypes">
+			<td><a tal:attributes="href logtype/uri" tal:content="logtype/type">logtype/type</a></td>
+			<td style="text-align:right" tal:content="logtype/count">logtype/count</td>
+		</tr>
+		</tbody></table>
+	</div>
+</div>

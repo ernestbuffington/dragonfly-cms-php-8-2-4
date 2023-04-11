@@ -1,0 +1,7 @@
+<br />
+<div class="border">
+	<strong tal:content="NEWS_TITLE">NEWS_TITLE</strong>
+	<ul>
+		<li tal:repeat="article article"><a tal:attributes="href article/URL" tal:content="article/TITLE">article/TITLE</a></li>
+	</ul>
+</div>

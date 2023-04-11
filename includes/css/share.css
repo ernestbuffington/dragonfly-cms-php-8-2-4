@@ -1,0 +1,63 @@
+/* =============================================================================
+   Overlay - overwrites style.css
+   ========================================================================== */
+.windowbg
+{
+	background-color:transparent;
+	padding:15% 0;
+}
+
+.windowbg .window
+{
+	background-color: #FB7000;
+	background-image: none;
+	border-color: #FB7000;
+	border-radius: 4px;
+	box-shadow:0 0 20px 3px Highlight;
+	width: 550px;
+}
+
+.windowbg .header
+{
+	font-weight:bold;
+	text-shadow:2px 2px 7px #FB7000;
+}
+
+.windowbg .close
+{
+	background-image:url(images/update/red.png);
+	background-repeat:no-repeat;
+	width:16px;
+	height:16px;
+}
+
+/* =============================================================================
+   Social Sharing
+   ========================================================================== */
+.shareimage
+{
+	background-image:url(images/share.png);
+	background-repeat:no-repeat;
+	cursor:pointer;
+	display:inline-block;
+	width:50px;
+	height:20px;
+	margin:0;
+	padding:0;
+}
+
+.windowbg .body a
+{
+	cursor:pointer;
+	margin-right:15px;
+	display:inline-block;
+}
+
+.windowbg .inner
+{
+	background-color:#FFFFFF;
+	border-radius: 4px;
+	margin:5px;
+	padding:5px;
+}
+

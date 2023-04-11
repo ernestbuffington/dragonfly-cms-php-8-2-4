@@ -1,0 +1,19 @@
+<div tal:replace="structure php:here.toString('forums/overall_header')"></div>
+
+<form method="post" action="">
+<a tal:attributes="href U_INDEX" tal:content="L_INDEX">L_INDEX</a>
+<h1 i18n:translate="">Confirm</h1>
+<div class="border" style="text-align:center">
+	<span i18n:translate="">Move_to_forum</span>
+	<select tal:replace="structure S_FORUM_SELECT">
+		<option></option>
+	</select>
+	<br /><br />
+	<input type="checkbox" name="move_leave_shadow" checked="checked" />
+	<span i18n:translate="">Leave_shadow_topic</span>
+	<p i18n:translate="">Confirm_move_topic</p>
+	<input type="hidden" tal:repeat="field hidden_form_fields" tal:attributes="name field/name; value field/value"/>
+	<button name="confirm" i18n:translate="">Yes</button>
+	<button name="cancel" i18n:translate="">No</button>
+</div>
+</form>

@@ -1,0 +1,13 @@
+
+<table class="border flat" style="text-align:center"><tbody>
+<tr class="navmenu">
+	<td style="text-align:center">
+		<a href="javascript:CoppermineSlideshow.stop()" i18n:translate="STOP_SLIDESHOW">STOP SLIDESHOW</a>
+	</td>
+</tr>
+<tr>
+	<td tal:attributes="style 'height:${slideshow/height}px'">
+		<img tal:attributes="src slideshow/image" id="SlideShow" alt="" style="max-height:100%"/>
+	</td>
+</tr>
+</tbody></table>

@@ -1,0 +1,148 @@
+<nav class="main pm" style="z-index:1">
+<ul>
+	<li><a onclick="">Information</a>
+		<ul>
+			<li><a tal:attributes="href IDENTITY/profile_uri">My profile</a></li>
+			<li><a tal:attributes="href php:URL::index('coppermine&amp;file=users&amp;id=${IDENTITY/id}')">My gallery</a></li>
+		</ul>
+	</li><li><a onclick="">Configuration</a>
+		<ul>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=profile')">Profile</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=private')">Private</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=reg_details')">Registration</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=prefs')">Preferences</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;edit=avatar')">Avatar</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=edithome')">Homepage</a></li>
+			<li><a tal:attributes="href php:URL::index('Your_account&amp;op=preferences')">News comments</a></li>
+		</ul>
+	</li><li><a onclick="">Private Messages</a>
+		<ul>
+			<li>
+				<a tal:attributes="href php:URL::index('&amp;file=compose')">
+					<img src="cdn://modules/Private_Messages/images/24x24/new.png" alt="New" title="New"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=inbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/inbox.png" alt="Inbox" title="Inbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=sentbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/sentbox.png" alt="Sentbox" title="Sentbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=outbox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/outbox.png" alt="Outbox" title="Outbox"/></a>
+				<a tal:attributes="href php:URL::index('Private_Messages&amp;folder=savebox')">
+					<img src="cdn://modules/Private_Messages/images/24x24/savebox.png" alt="Savebox" title="Savebox"/></a>
+			</li>
+		</ul>
+	</li><li><a tal:attributes="href php:Dragonfly\Identity::logoutURL()">Logout</a></li>
+</ul>
+</nav>
+
+<div class="table1">
+
+<div>
+<span class="pm_boxes">
+	<a tal:attributes="href php:URL::index('&amp;file=compose')">
+		<img src="cdn://modules/Private_Messages/images/48x48/new.png" alt="New" title="New"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='compose'" i18n:translate="">New</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=inbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/inbox.png" alt="Inbox" title="Inbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='inbox'" i18n:translate="">Inbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=sentbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/sentbox.png" alt="Sentbox" title="Sentbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='sentbox'" i18n:translate="">Sentbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=outbox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/outbox.png" alt="Outbox" title="Outbox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='outbox'" i18n:translate="">Outbox</strong>
+		</a>
+	<a tal:attributes="href php:URL::index('&amp;folder=savebox')">
+		<img src="cdn://modules/Private_Messages/images/48x48/savebox.png" alt="Savebox" title="Savebox"/><br/>
+		<strong tal:omit-tag="php:${folder/name}!='savebox'" i18n:translate="">Savebox</strong>
+		</a>
+</span>
+</div>
+
+<div class="block">
+	<div class="head" i18n:translate="">_MESSAGE</div>
+	<form method="post" action="">
+	<table class="content"><tbody>
+		<!-- <tr>
+			<th colspan="2" i18n:translate="_PREVIEW"></th>
+		</tr> -->
+		<tr>
+			<td><strong i18n:translate="_FROM"></strong>:</td>
+			<td style="width:90%"><a tal:content="private_message/username" tal:attributes="href U_MESSAGE_FROM"></a></td>
+		</tr>
+		<tr>
+			<td><strong i18n:translate="_TO"></strong>:</td>
+			<td><a tal:content="private_message/recipients/0/username" tal:attributes="href U_MESSAGE_TO"></a></td>
+		</tr>
+		<tr>
+			<td><strong i18n:translate="_DATE"></strong>:</td>
+			<td><span tal:replace="POST_DATE"></span></td>
+		</tr>
+		<tr>
+			<td><strong i18n:translate="_SUBJECT"></strong>:</td>
+			<td><span tal:replace="private_message/subject"></span></td>
+		</tr>
+		<tr>
+			<td><strong i18n:translate="_MESSAGE">Message</strong>:</td>
+			<td>
+				<span tal:replace="structure private_message/html">Message structure</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align:right">
+				<button tal:condition="php:${folder/name}!='savebox'" name="save" i18n:translate="Save_message"/>
+				<button name="delete" i18n:translate="Delete_message"/>
+			</td>
+		</tr>
+	</tbody></table>
+	</form>
+	<span tal:condition="U_REPLY">/<a i18n:translate="" tal:attributes="href U_REPLY">Reply</a></span>
+	<span tal:condition="U_QUOTE">/<a i18n:translate="Post_quote_pm" tal:attributes="href U_QUOTE">Quote</a></span>
+	<span tal:condition="U_EDIT">/<a i18n:translate="" tal:attributes="href U_EDIT">Edit</a></span>
+</div>
+
+<form tal:condition="quickreply" tal:attributes="action php:URL::index('&amp;file=compose')" method="post" name="qreply">
+	<table><thead>
+		<tr>
+			<th colspan="2"><strong i18n:translate="">Quick Reply</strong></th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<td style="width:22%"><strong i18n:translate="_SUBJECT">Subject</strong></td>
+			<td style="width:78%">
+				<input type="text" name="subject" maxlength="60" style="width:90%" tal:attributes="value quickreply/SUBJECT"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top"><strong i18n:translate="_MESSAGE">Message</strong></td>
+			<td>
+				<textarea class="bbcode" name="message" style="width:90%; height:180px" wrap="virtual" tal:content="quickreply/QREPLY_MSG"></textarea>
+			</td>
+		</tr>
+		<tr><td colspan="2"><strong i18n:translate="Options"></strong></td></tr>
+		<tr tal:condition="pm_options/allow_bbcode">
+			<td i18n:translate="Enable_BBCode_pm">Enable BBCode</td>
+			<td>
+				<input type="radio" name="enable_bbcode" value="1" tal:attributes="checked IDENTITY/allowbbcode"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="enable_bbcode" value="0" tal:attributes="checked not:IDENTITY/allowbbcode"/> <span i18n:translate="_NO">No</span>
+			</td>
+		</tr>
+		<tr tal:condition="pm_options/allow_smilies">
+			<td i18n:translate="Enable_Smilies_pm">Enable Smilies</td>
+			<td>
+				<input type="radio" name="enable_smilies" value="1" tal:attributes="checked IDENTITY/allowsmile"/> <span i18n:translate="_YES">Yes</span>
+				<input type="radio" name="enable_smilies" value="0" tal:attributes="checked not:IDENTITY/allowsmile"/> <span i18n:translate="_NO">No</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<input type="hidden" tal:repeat="field quickreply/HIDDEN_FIELDS" tal:attributes="name field/name; value field/value"/>
+			<button name="preview" i18n:translate="_PREVIEW"/>
+			<button name="post" i18n:translate="_SUBMIT"/></td>
+		</tr>
+	</tbody></table>
+</form>
+
+</div>

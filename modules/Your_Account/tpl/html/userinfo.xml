@@ -1,0 +1,110 @@
+<table class="flat">
+<thead>
+	<tr>
+		<th colspan="2" tal:content="userinfo/nickname">userinfo/nickname</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td style="vertical-align:top;text-align:center">
+			<img tal:attributes="src userinfo/avatar_url" alt=""/>
+		</td>
+		<td rowspan="3" style="vertical-align:top">
+			<table>
+			<tbody>
+				<tr>
+					<td style="text-align:right;width:33%" i18n:translate="">_JOINED</td>
+					<td><b tal:content="php:here.L10N.date('Y-m-d',${userinfo/ctime})">2015-01-01</b></td>
+				</tr>
+				<tr tal:condition="USER_RANK">
+					<td style="text-align:right" i18n:translate="">_RANK</td>
+					<td>
+						<img tal:condition="USER_RANK/image" tal:attributes="src USER_RANK/image; alt USER_RANK/title; title USER_RANK/title"/>
+						<b tal:condition-else="" tal:content="USER_RANK/title"></b>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align:right" i18n:translate="">_LOCATION</td>
+					<td><b tal:content="bbcode userinfo/from">userinfo/from</b></td>
+				</tr>
+				<tr>
+					<td style="text-align:right" i18n:translate="">_WEBSITE</td>
+					<td><b tal:content="userinfo/website">userinfo/website</b></td>
+				</tr>
+				<tr tal:condition="userinfo/occ">
+					<td style="text-align:right" i18n:translate="">_MA_OCCUPATION</td>
+					<td><b tal:content="bbcode userinfo/occ">userinfo/occ</b></td>
+				</tr>
+				<tr tal:condition="userinfo/interests">
+					<td style="vertical-align:top;text-align:right;width:33%" i18n:translate="">_INTERESTS</td>
+					<td><b tal:content="bbcode userinfo/interests">userinfo/interests</b></td>
+				</tr>
+				<tr tal:repeat="field custom_field">
+					<td style="vertical-align:top;text-align:right" tal:content="field/NAME">field/NAME</td>
+					<td><b tal:content="field/VALUE">field/VALUE</b></td>
+				</tr>
+				<tr tal:condition="userinfo/sig">
+					<td style="text-align:right;vertical-align:top;white-space:nowrap;" i18n:translate="">_SIGNATURE</td>
+					<td tal:content="bbcode userinfo/sig">userinfo/sig</td>
+				</tr>
+				<tr tal:condition="userinfo/bio">
+					<td style="text-align:right;vertical-align:top;white-space:nowrap;" i18n:translate="">_MA_EXTRAINFO</td>
+					<td tal:content="bbcode userinfo/bio">userinfo/bio</td>
+				</tr>
+			</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align:center"><b i18n:translate="">_CONTACTINFO</b></td>
+	</tr>
+	<tr>
+		<td>
+			<table>
+			<tbody>
+				<tr tal:condition="U_PM">
+					<td style="white-space:nowrap;text-align:right" i18n:translate="">_PM</td>
+					<td><a tal:attributes="href U_PM"><img tal:attributes="src '${IMG_PATH}/icon_pm.gif'" alt=""/></a></td>
+				</tr>
+				<tr tal:condition="userinfo/yim">
+					<td style="white-space:nowrap;text-align:right" i18n:translate="">_MA_YIM</td>
+					<td><a tal:attributes="href 'http://edit.yahoo.com/config/send_webmesg?.target=${userinfo/yim}&amp;.src=pg'"><img tal:attributes="src '${IMG_PATH}/icon_yim.gif'" alt=""/></a></td>
+				</tr>
+				<tr tal:condition="userinfo/aim">
+					<td style="white-space:nowrap;text-align:right" i18n:translate="">_MA_AIM</td>
+					<td><a tal:attributes="href 'aim:goim?screenname=${userinfo/aim}&amp;message=Hey+are+you+there?'"><img tal:attributes="src '${IMG_PATH}/icon_aim.gif'" alt=""/></a></td>
+				</tr>
+				<tr tal:condition="userinfo/icq">
+					<td style="white-space:nowrap;text-align:right" i18n:translate="">_MA_ICQ</td>
+					<td><a tal:attributes="href 'http://www.icq.com/people/${userinfo/icq}'"><img tal:attributes="src '${IMG_PATH}/icon_icq_add.gif'" alt=""/></a></td>
+				</tr>
+				<tr tal:condition="userinfo/skype">
+					<td style="white-space:nowrap;text-align:right">Skype</td>
+					<td><a tal:attributes="href 'callto://${userinfo/skype}'"><img tal:attributes="src '${IMG_PATH}/icon_skype.gif'" alt=""/></a></td>
+				</tr>
+				<tr tal:condition="USER_GALLERY">
+					<td style="white-space:nowrap;text-align:right" i18n:translate="">_coppermineLANG</td>
+					<td><a tal:attributes="href USER_GALLERY"><img tal:attributes="src '${IMG_PATH}/icon_gallery.gif'" alt=""/></a></td>
+				</tr>
+			</tbody>
+			</table>
+		</td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr tal:condition="OWN_INFO">
+		<td colspan="2" style="text-align:center;">
+			<a tal:attributes="href php:URL::index('&amp;edit=prefs')">
+				<b tal:condition="userinfo/newsletter" i18n:translate="">_SUBSCRIBED</b>
+				<b tal:condition-else="" i18n:translate="">_NOTSUBSCRIBED</b>
+			</a>
+		</td>
+	</tr>
+	<tr tal:condition="php:can_admin('members')">
+		<td colspan="2" style="text-align:center;">
+			[ <a tal:attributes="href U_EDIT_USER" i18n:translate="">_EDITUSER</a>
+			| <a tal:attributes="href U_SUSPEND_USER" i18n:translate="">_SUSPENDUSER</a> ]
+		</td>
+	</tr>
+</tfoot>
+</table>

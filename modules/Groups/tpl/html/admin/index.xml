@@ -1,0 +1,30 @@
+
+<div class="border">
+
+	<p i18n:translate="Group_admin_explain">
+		From this panel you can administer all of your usergroups. You can delete, create and edit existing groups.
+		You may choose moderators, toggle open/closed group status and set the group name and description
+	</p>
+
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Group</th>
+			<th i18n:translate="_PERMISSIONS">Permissions</th>
+		</tr>
+	</thead><tbody tal:define="forums_admin php:can_admin('forums'); modules_admin php:can_admin('modules')">
+		<tr tal:repeat="group groups">
+			<td><a tal:attributes="href '?admin&amp;op=Groups&amp;id=${group/id}'" tal:content="group/name">group name</a></td>
+			<td>
+				<a tal:condition="forums_admin" tal:attributes="href '?admin&amp;op=Forums&amp;do=ug_auth&amp;mode=group&amp;g=${group/id}'" i18n:translate="_BBFORUMS">Forums</a>,
+				<a tal:condition="modules_admin" tal:attributes="href '?admin&amp;op=modules'" i18n:translate="_MODULES">Modules</a>
+			</td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="0">
+				<a href="?admin&amp;op=Groups&amp;id=0" i18n:translate="">Create new group</a>
+			</td>
+		</tr>
+	</tfoot></table>
+
+</div>

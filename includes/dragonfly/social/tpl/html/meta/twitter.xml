@@ -1,0 +1,9 @@
+<meta name="twitter:card" tal:condition="Social/twitter/card" tal:attributes="content Social/twitter_card" />
+<meta name="twitter:creator" tal:condition="Social/twitter/atCreator" tal:attributes="content Social/twitter_atCreator" />
+<meta name="twitter:creator" tal:condition="Social/twitter/creatorid" tal:attributes="content Social/twitter_creatorid" />
+<meta name="twitter:site" tal:condition="Social/twitter/atUsername" tal:attributes="content Social/twitter_atUsername" />
+<meta name="twitter:site:id" tal:condition="Social/twitter/userid" tal:attributes="content Social/twitter_userid" />
+<meta name="twitter:title" tal:attributes="content Social/og/title" />
+<meta name="twitter:url" tal:attributes="content Social/og/url" />
+<meta name="twitter:image" tal:attributes="content Social/og/image" />
+<meta name="twitter:description" tal:attributes="content Social/og/description" />

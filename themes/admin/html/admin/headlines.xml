@@ -1,0 +1,32 @@
+
+<div class="border">
+
+	<form action="" method="post">
+	<table>
+	<thead>
+		<tr>
+			<th i18n:translate="_SITENAME"></th>
+			<th i18n:translate="_RSSFILE"></th>
+			<th i18n:translate="_FUNCTIONS"></th>
+		</tr>
+	</thead><tbody tal:condition="headlines/num_rows">
+		<tr tal:repeat="item headlines">
+			<td><input type="text" maxlength="30" tal:attributes="value item/name; name 'headlines[${item/id}][name]'"/></td>
+			<td><input type="text" maxlength="200" tal:attributes="value item/url; name 'headlines[${item/id}][url]'"/></td>
+			<td>
+				<button tal:attributes="name 'save[${item/id}]'" i18n:translate="_SAVE">save</button>
+				<button tal:attributes="name 'delete[${item/id}]'" i18n:translate="_DELETE">delete</button>
+			</td>
+		 </tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td><input type="text" maxlength="30" name="headlines[0][name]"/></td>
+			<td><input type="url" maxlength="200" name="headlines[0][url]"/></td>
+			<td><button i18n:translate="_ADDHEADLINE" name="add">Add Headline</button></td>
+		</tr>
+	</tfoot>
+	</table>
+	</form>
+
+</div>

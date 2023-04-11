@@ -1,0 +1,11 @@
+<IfModule mod_expires.c>
+ <IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|gif)$">
+  Header set Cache-Control "public"
+  </FilesMatch>
+ </IfModule>
+ ExpiresByType image/jpg A31556926
+ ExpiresByType image/jpeg A31556926
+ ExpiresByType image/png A31556926
+ ExpiresByType image/gif A31556926
+</IfModule>

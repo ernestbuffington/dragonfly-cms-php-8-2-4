@@ -1,0 +1,7 @@
+<nav itemscope="" itemtype="http://schema.org/SiteNavigationElement">
+<span tal:repeat="cat adminmenugfx">
+	<a tal:repeat="item cat/items" tal:attributes="itemprop item/link/itemprop;rel item/link/rel;href item/link/url; target item/link/target">
+		<img tal:attributes="src item/image;alt item/title;title item/title" itemprop="thumbnailUrl"/>
+	</a>
+</span>
+</nav>

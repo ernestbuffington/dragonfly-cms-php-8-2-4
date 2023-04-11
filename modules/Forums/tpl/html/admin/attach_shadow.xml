@@ -1,0 +1,61 @@
+<div class="border">
+	<nav tal:replace="structure php:here.toString('Forums/admin/menu')"></nav>
+
+	<h1 i18n:translate="">Shadow_attachments</h1>
+
+	<p i18n:translate="">Shadow_attachments_explain</p>
+
+	<div tal:condition="ERROR_MESSAGE" class="error" tal:content="structure ERROR_MESSAGE">ERROR_MESSAGE</div>
+
+	<script type="text/javascript"><![CDATA[
+		function select_switch(status)
+		{
+			for (i = 0; i < document.shadow_list.length; ++i)
+			{
+				document.shadow_list.elements[i].checked = status;
+			}
+		}
+	]]></script>
+
+	<form method="post" name="shadow_list" action="">
+
+	<table><thead>
+		<tr>
+			<th i18n:translate="">Attachment</th>
+			<th i18n:translate="">Delete</th>
+		</tr>
+	</thead><tbody>
+		<tr>
+			<th colspan="2" i18n:translate="">Shadow_attachments</th>
+		</tr>
+		<tr>
+			<td colspan="2"><i i18n:translate="">Shadow_attachments_file_explain</i></td>
+		</tr>
+		<tr tal:repeat="item file_shadow_row">
+			<td><a tal:attributes="href item/U_ATTACHMENT" target="_blank" tal:content="item/ATTACH_FILENAME">ATTACH_FILENAME</a></td>
+			<td><input type="checkbox" name="attach_file_list[]" tal:attributes="value item/ATTACH_ID"/></td>
+		</tr>
+	</tbody><tbody>
+		<tr>
+			<th colspan="2" i18n:translate="">Shadow_attachments_row_explain</th>
+		</tr>
+		<tr tal:repeat="item table_shadow_row">
+			<td tal:content="item/ATTACH_FILENAME">ATTACH_FILENAME</td>
+			<td><input type="checkbox" name="attach_id_list[]" tal:attributes="value item/ATTACH_ID"/></td>
+		</tr>
+	</tbody><tfoot>
+		<tr>
+			<td colspan="2" style="text-align:right">
+				<a href="javascript:select_switch(true);" i18n:translate="">Mark_all</a> ::
+				<a href="javascript:select_switch(false);" i18n:translate="">Unmark_all</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button i18n:translate="">Delete_marked</button>
+			</td>
+		</tr>
+	</tfoot></table>
+
+	</form>
+</div>
