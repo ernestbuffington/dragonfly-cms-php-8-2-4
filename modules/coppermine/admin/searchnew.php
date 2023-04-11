@@ -11,6 +11,11 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
 ****************************************************************************/
+
+/* Applied rules:
+ * RandomFunctionRector
+ */
+ 
 if (!defined('ADMIN_PAGES') || !can_admin($op)) { exit; }
 
 if (isset($_GET['picfile'])) {
@@ -191,8 +196,8 @@ if (isset($_POST['insert'])) {
 	\Dragonfly\Page::title(PAGE_TITLE);
 	$OUT = \Dragonfly::getKernel()->OUT;
 	$OUT->cpg_insert_pics = array();
-	$r1 = uniqid(mt_rand(), true);
-	$r2 = uniqid(mt_rand(), true);
+	$r1 = uniqid(random_int(0, mt_getrandmax()), true);
+	$r2 = uniqid(random_int(0, mt_getrandmax()), true);
 	$album_array = array();
 	while ($row = $result->fetch_row()) {
 		$album_array[$row[0]] = $row[3] ? "({$row[3]}) {$row[2]}" : $row[2];
