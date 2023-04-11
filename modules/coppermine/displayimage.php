@@ -12,6 +12,13 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * RandomFunctionRector
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+
 require(__DIR__ . '/include/load.inc');
 
 if (isset($_GET['addfav'])) {
@@ -83,7 +90,7 @@ function html_picture($PIC_DATA)
 		if (isset($image_size['reduced'])) {
 			$winsizeX = $PIC_DATA['pwidth'] + 16;
 			$winsizeY = $PIC_DATA['pheight'] + 16;
-			$target = uniqid(mt_rand(), true);
+			$target = uniqid(random_int(0, mt_getrandmax()), true);
 			$url = URL::index("&file=displayimagepopup&pid={$pid}&fullsize=1",true,true);
 			$url = array(
 				'href' => $url,
@@ -145,7 +152,8 @@ function html_rating_box($PIC_DATA)
 // Display picture information
 function html_picinfo($PIC_DATA)
 {
-	global $module_name, $CONFIG, $album, $meta, $cat, $pos, $db;
+	$info = [];
+ global $module_name, $CONFIG, $album, $meta, $cat, $pos, $db;
 	$CPG = \Coppermine::getInstance();
 
 	if (!USER_ID && !$CONFIG['allow_anon_fullsize'] && !USER_IS_ADMIN) {
@@ -295,7 +303,7 @@ function html_comments($PIC_DATA)
 		if ($USER_DATA['can_post_comments'] && $GLOBALS['CURRENT_ALBUM_DATA']['comments']) {
 			$OUT = \Dragonfly::getKernel()->OUT;
 			$OUT->picture['comment'] = array(
-				'username' => isset($USER['name']) ? $USER['name'] : '',
+				'username' => $USER['name'] ?? '',
 				'max_length' => $CONFIG['max_com_size'],
 			);
 		}
@@ -417,7 +425,7 @@ if (isset($_GET['slideshow'])) {
 		$new_pos = max(0, $pos - $offset);
 		$pic_data = get_pic_data($meta, $album, $thumb_count, $album_name, $limit, $offset);
 		$pic_data = $pic_data ? $pic_data->fetch_all() : array();
-		$max_item = min($max_item, count($pic_data));
+		$max_item = min($max_item, is_countable($pic_data) ? count($pic_data) : 0);
 		$lower_limit = 3;
 		if (!isset($pic_data[$new_pos + 1])) {
 			$lower_limit = $new_pos - $max_item + 1;
