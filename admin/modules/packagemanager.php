@@ -8,6 +8,11 @@
 	A free program released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES') || !can_admin()) { exit; }
 \Dragonfly\Page::title('Package Manager');
 
@@ -76,7 +81,7 @@ class Dragonfly_Admin_PackageManager
 				$repo->public_key = $r[3];
 				foreach ($repo->packages as $package) {
 					$id = "{$package->type}-{$package->name}";
-					$version = isset($installed[$id]) ? $installed[$id] : false;
+					$version = $installed[$id] ?? false;
 					$package->version_installed = ('module' === $package->type
 						&& isset($modules[$package->name])
 						&& version_compare($modules[$package->name], $version, '>')
