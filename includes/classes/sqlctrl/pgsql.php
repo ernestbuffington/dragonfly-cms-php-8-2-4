@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!class_exists('DBCtrl')) { exit; }
 
 class SQLCtrl extends DBCtrl {
@@ -88,7 +93,7 @@ class SQLCtrl extends DBCtrl {
 		$db = \Dragonfly::getKernel()->SQL;
 		foreach ($tables as $table) {
 			$indexes = $db->list_indexes($table);
-			if (!count($indexes)) continue;
+			if (!(is_countable($indexes) ? count($indexes) : 0)) continue;
 			$list = $crlf.'--'.$crlf.'-- Index and Constraint for table '.$table.$crlf.'--'.$crlf;
 			foreach ($indexes as $relname => $data) {
 //				$row = $db->uFetchRow("SELECT pg_get_indexdef($data[oid])");
@@ -122,7 +127,7 @@ class SQLCtrl extends DBCtrl {
 		foreach ($tables as $table) {
 			$schema_create = $crlf.'--'.$crlf.'-- Table structure for table '.$table.$crlf.'--'.$crlf;
 			$indexes = $db->list_indexes($table);
-			if (0 < count($indexes)) {
+			if (0 < (is_countable($indexes) ? count($indexes) : 0)) {
 				if (isset($indexes['PRIMARY'])) {
 					$schema_create .='ALTER TABLE ONLY '.$schema.'.'.$table.' DROP CONSTRAINT '.$table."_pkey;$crlf";
 					unset($indexes['PRIMARY']);
