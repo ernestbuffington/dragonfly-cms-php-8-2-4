@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 
 if (isset($_POST['g'])) {
@@ -130,7 +135,7 @@ if ($group_id)
 		}
 
 		if (isset($_POST['add'])) {
-			$username = isset($_POST['username']) ? $_POST['username'] : '';
+			$username = $_POST['username'] ?? '';
 			$row = $db->uFetchAssoc("SELECT
 				u.user_id,
 				u.user_email,
