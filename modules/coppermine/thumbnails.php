@@ -12,6 +12,10 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+ 
 require(__DIR__ . '/include/load.inc');
 
 if (isset($_GET['uid']))  { $USER['uid'] = intval($_GET['uid']); }
@@ -31,7 +35,7 @@ if (isset($_POST['search'])) {
 $album = $_GET->uint('album');
 $cat   = $_POST->uint('cat')  ?: $_GET->uint('cat');
 $meta  = $_POST->text('meta') ?: $_GET->text('meta');
-$page  = $_POST->uint('page') ?: $_GET->uint('page') ?: 1;
+$page  = ($_POST->uint('page') ?: $_GET->uint('page')) ?: 1;
 if (!preg_match('#^[a-z]*$#D', $meta)) {
 	cpg_error(sprintf(_ERROR_BAD_CHAR, ''), _SEC_ERROR);
 }
