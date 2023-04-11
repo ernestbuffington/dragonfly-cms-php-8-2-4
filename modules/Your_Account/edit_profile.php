@@ -9,18 +9,26 @@
   of the GNU GPL version 2 or any later version
 **********************************************/
 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+
 function edituser(Dragonfly\Identity $userinfo)
 {
-	$K = Dragonfly::getKernel();
+	$section = null;
+ $K = Dragonfly::getKernel();
 	$db = $K->SQL;
 
-	$mode = isset($_GET['edit']) ? $_GET['edit'] : 'profile';
+	$mode = $_GET['edit'] ?? 'profile';
 
 	if (isset($_GET['auth']) && $userinfo->id == $K->IDENTITY->id) {
 		$provider_id = $_GET->int('auth');
 		$provider = \Poodle\Auth\Provider::getById($provider_id);
 		if ($provider instanceof \Poodle\Auth\Provider) {
-			$credentials = isset($_POST['auth'][$provider_id]) ? $_POST['auth'][$provider_id] : array();
+			$credentials = $_POST['auth'][$provider_id] ?? array();
 			$credentials['redirect_uri'] = \Poodle\URI::appendArgs($_SERVER['REQUEST_URI'], array('auth' => $provider_id));
 			$result = $provider->authenticate($credentials);
 			processAuthProviderResult($result, $provider);
@@ -159,11 +167,13 @@ function edituser(Dragonfly\Identity $userinfo)
 
 function saveuser(Dragonfly\Identity $userinfo)
 {
-	$K = Dragonfly::getKernel();
+	$mailer_message = null;
+ $section = null;
+ $K = Dragonfly::getKernel();
 	$db = $K->SQL;
 
-	$mode = isset($_GET['edit']) ? $_GET['edit'] : 'profile';
-	$mode = isset($_POST['save']) ? $_POST['save'] : $mode;
+	$mode = $_GET['edit'] ?? 'profile';
+	$mode = $_POST['save'] ?? $mode;
 	if ('admin' === $mode && !defined('ADMIN_PAGES')) { $mode = 'profile'; }
 	if ('profile' === $mode) {
 		$section = 'section=1 OR section=2';
@@ -174,11 +184,11 @@ function saveuser(Dragonfly\Identity $userinfo)
 	}
 
 	if ('reg_details' === $mode) {
-		if (isset($_POST['add_auth']) && 1 == count($_POST['add_auth']) && $userinfo->id == $K->IDENTITY->id) {
+		if (isset($_POST['add_auth']) && 1 == (is_countable($_POST['add_auth']) ? count($_POST['add_auth']) : 0) && $userinfo->id == $K->IDENTITY->id) {
 			$provider_id = array_keys($_POST['add_auth'])[0];
 			$provider = \Poodle\Auth\Provider::getById($provider_id);
 			if ($provider instanceof \Poodle\Auth\Provider) {
-				$credentials = isset($_POST['auth'][$provider_id]) ? $_POST['auth'][$provider_id] : array();
+				$credentials = $_POST['auth'][$provider_id] ?? array();
 				$credentials['redirect_uri'] = \Poodle\URI::appendArgs($_SERVER['REQUEST_URI'], array('auth' => $provider_id));
 				$result = $provider->authenticate($credentials);
 				processAuthProviderResult($result, $provider);
@@ -200,7 +210,7 @@ function saveuser(Dragonfly\Identity $userinfo)
 
 		if (!empty($_POST['new_password'])) {
 			$new_password = $_POST['new_password'];
-			$verify_password = isset($_POST['verify_password']) ? $_POST['verify_password'] : '';
+			$verify_password = $_POST['verify_password'] ?? '';
 			if ($new_password != $verify_password) {
 				cpg_error(_PASSDIFFERENT, 'ERROR: Password mismatch');
 			}
@@ -218,7 +228,7 @@ function saveuser(Dragonfly\Identity $userinfo)
 			$userinfo->updateAuth(1, $userinfo->nickname, $new_password);
 		}
 
-		$user_email = isset($_POST['user_email']) ? $_POST['user_email'] : $userinfo->email;
+		$user_email = $_POST['user_email'] ?? $userinfo->email;
 		if (($K->CFG->member->allowmailchange || defined('ADMIN_PAGES')) && $user_email != $userinfo->email) {
 /*
 			if (!defined('ADMIN_PAGES')) {
@@ -257,7 +267,7 @@ function saveuser(Dragonfly\Identity $userinfo)
 
 		require_once('modules/'.basename(__DIR__).'/avatars.php');
 		// Local avatar?
-		$avatar_local = isset($_POST['user_avatar']) ? $_POST['user_avatar'] : '';
+		$avatar_local = $_POST['user_avatar'] ?? '';
 		// Remote avatar?
 		$avatar_remoteurl = !empty($_POST['avatarremoteurl']) ? htmlprepare($_POST['avatarremoteurl']) : '';
 		// Upload avatar thru remote or upload?
@@ -323,7 +333,7 @@ function saveuser(Dragonfly\Identity $userinfo)
 		$userinfo->allowavatar = intval($_POST['user_allowavatar']);
 		$userinfo->rank        = intval($_POST['user_rank']);
 //		$deleteUserData        = isset($_POST['delete_user_data'] && $_POST['delete_user_data']) ? 1 : 0;
-		$suspendreason = isset($_POST['suspendreason']) ? $_POST['suspendreason'] : 'no reason';
+		$suspendreason = $_POST['suspendreason'] ?? 'no reason';
 		if ($_POST['suspendreason'] != $userinfo['susdel_reason']) {
 			$userinfo->susdel_reason = intval($suspendreason);
 		}
@@ -426,7 +436,7 @@ function processAuthProviderResult($result, \Poodle\Auth\Provider $provider)
 		echo json_encode(array(
 			'status' => '302',
 			'location' => $result->uri
-		));
+		), JSON_THROW_ON_ERROR);
 	}
 	else if ($result instanceof \Poodle\Auth\Result\Form) {
 		if (XMLHTTPRequest) {
@@ -439,7 +449,7 @@ function processAuthProviderResult($result, \Poodle\Auth\Provider $provider)
 					'fields' => $result->fields
 				),
 				'provider_id' => $provider->id
-			));
+			), JSON_THROW_ON_ERROR);
 		} else {
 			$OUT = \Dragonfly::getKernel()->OUT;
 			$OUT->auth_result = $result;
