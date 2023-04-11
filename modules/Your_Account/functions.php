@@ -7,6 +7,10 @@
 	of the GNU GPL version 2 or any later version
 */
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+
 function display_member_block()
 {
 	$K = \Dragonfly::getKernel();
@@ -14,8 +18,8 @@ function display_member_block()
 	$user_id = $K->IDENTITY->id;
 	$K->L10N->load('Your_Account');
 
-	$op = isset($_GET['op']) ? $_GET['op'] : '';
-	$mode = isset($_GET['edit']) ? $_GET['edit'] : (isset($_POST['save']) ? $_POST['save'] : '');
+	$op = $_GET['op'] ?? '';
+	$mode = $_GET['edit'] ?? $_POST['save'] ?? '';
 
 	$K->OUT->account_menu = array(
 		array(
