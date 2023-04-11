@@ -16,6 +16,11 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
 
 /**
  * User Attachment Control Panel
@@ -29,7 +34,7 @@ require_once(__DIR__ . '/common.php');
 //
 // Obtain initial var settings
 //
-$user_id = $_POST->int('u') ?: $_GET->int('u') ?: \Dragonfly::getKernel()->IDENTITY->id;
+$user_id = ($_POST->int('u') ?: $_GET->int('u')) ?: \Dragonfly::getKernel()->IDENTITY->id;
 if ($user_id <= \Dragonfly\Identity::ANONYMOUS_ID) {
 	$profiledata = array(
 		'user_id' => \Dragonfly\Identity::ANONYMOUS_ID,
@@ -85,7 +90,7 @@ switch ($mode)
 		break;
 }
 
-$delete_id_list = isset($_POST['delete_id_list']) ? $_POST['delete_id_list'] : array();
+$delete_id_list = $_POST['delete_id_list'] ?? array();
 if ($delete_id_list) {
 	if (isset($_POST['confirm'])) {
 		\Dragonfly\Forums\Attachments::delete($delete_id_list);
