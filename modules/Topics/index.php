@@ -6,6 +6,11 @@
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 \Dragonfly\Page::title(_TopicsLANG, false);
 
@@ -41,7 +46,7 @@ function news_topics()
 				'TITLE'       => $topic['title'],
 				'B_STORIES'   => $topic['stories'] > 0,
 				'TOTAL_NEWS'  => $topic['stories'],
-				'TOTAL_READS' => isset($topic['readcount']) ? $topic['readcount'] : 0,
+				'TOTAL_READS' => $topic['readcount'] ?? 0,
 				'B_MORE'      => $topic['stories'] > 10,
 			);
 		}
