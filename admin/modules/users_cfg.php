@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('settings')) { cpg_error('Access Denied'); }
 Dragonfly::getKernel()->L10N->load('Your_Account');
@@ -143,7 +148,7 @@ abstract class Dragonfly_Admin_Users_Config
 					'private_profile')
 			);
 			foreach ($checkboxes as $s => $keys) {
-				foreach ($keys as $k) { $CFG->set($s, $k, isset($_POST[$s][$k]) ? $_POST[$s][$k] : false); }
+				foreach ($keys as $k) { $CFG->set($s, $k, $_POST[$s][$k] ?? false); }
 			}
 
 			$CFG->set('member', 'minpass', max(5,$_POST->uint('member','minpass')));
