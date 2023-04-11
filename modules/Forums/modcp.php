@@ -25,6 +25,11 @@
  * provide an interface to do quick locking/unlocking/moving/deleting of
  * topics via the moderator operations buttons on all of the viewtopic pages.
  */
+ 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */ 
 
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
@@ -124,7 +129,7 @@ switch ($mode)
 		}
 		\Dragonfly\Page::title($lang['Mod_CP']);
 		if ($confirm) {
-			\Dragonfly\Forums\Archive::topics(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+			\Dragonfly\Forums\Archive::topics($_POST['topic_id_list'] ?? array($topic_id));
 			$forum->sync();
 			if (!empty($topic_id)) {
 				$redirect_page = "&file=viewforum&f={$forum_id}";
@@ -161,7 +166,7 @@ switch ($mode)
 		}
 		\Dragonfly\Page::title($lang['Mod_CP']);
 		if ($confirm) {
-			$topic_id_sql = getValidTopicIds(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+			$topic_id_sql = getValidTopicIds($_POST['topic_id_list'] ?? array($topic_id));
 
 			$result = $db->query("SELECT poster_id, COUNT(post_id) FROM ".POSTS_TABLE."
 			WHERE topic_id IN ({$topic_id_sql}) GROUP BY poster_id");
@@ -235,7 +240,7 @@ switch ($mode)
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
 			}
 			if ($board_config['topic_recycle_forum'] != $forum_id) {
-				$topic_id_sql = getValidTopicIds(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+				$topic_id_sql = getValidTopicIds($_POST['topic_id_list'] ?? array($topic_id));
 				$result = $db->query("SELECT topic_id FROM ".TOPICS_TABLE."
 				WHERE topic_id IN ({$topic_id_sql}) AND forum_id = {$forum_id} AND topic_status <> ".\Dragonfly\Forums\Topic::STATUS_MOVED);
 				while ($row = $result->fetch_row()) {
@@ -293,7 +298,7 @@ switch ($mode)
 			}
 			$new_forum_id = $_POST->uint('new_forum');
 			if ($new_forum_id && $new_forum_id != $forum_id) {
-				$topic_id_sql = getValidTopicIds(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+				$topic_id_sql = getValidTopicIds($_POST['topic_id_list'] ?? array($topic_id));
 				$result = $db->query("SELECT * FROM ".TOPICS_TABLE."
 				WHERE topic_id IN ({$topic_id_sql}) AND forum_id = {$forum_id} AND topic_status <> ".\Dragonfly\Forums\Topic::STATUS_MOVED);
 				while ($row = $result->fetch_assoc()) {
@@ -360,7 +365,7 @@ switch ($mode)
 		if ( empty($_POST['topic_id_list']) && empty($topic_id) ) {
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
-		$topic_id_sql = getValidTopicIds(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+		$topic_id_sql = getValidTopicIds($_POST['topic_id_list'] ?? array($topic_id));
 		$result = $db->query("UPDATE ".TOPICS_TABLE."
 		SET topic_status = ".\Dragonfly\Forums\Topic::STATUS_LOCKED."
 		WHERE topic_id IN ({$topic_id_sql})
@@ -378,7 +383,7 @@ switch ($mode)
 		if ( empty($_POST['topic_id_list']) && empty($topic_id) ) {
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
-		$topic_id_sql = getValidTopicIds(isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id));
+		$topic_id_sql = getValidTopicIds($_POST['topic_id_list'] ?? array($topic_id));
 		$result = $db->query("UPDATE ".TOPICS_TABLE."
 		SET topic_status = ".\Dragonfly\Forums\Topic::STATUS_UNLOCKED."
 		WHERE topic_id IN ({$topic_id_sql})
@@ -396,7 +401,7 @@ switch ($mode)
 		\Dragonfly\Page::title($lang['Mod_CP']);
 		$post_id_sql = array();
 		if (isset($_POST['split_type_all']) || isset($_POST['split_type_beyond'])) {
-			$i = count($_POST['post_id_list']);
+			$i = is_countable($_POST['post_id_list']) ? count($_POST['post_id_list']) : 0;
 			while ($i--) { $post_id_sql[] = (int)$_POST['post_id_list'][$i]; }
 		}
 		$post_id_sql = implode(',',$post_id_sql);
@@ -505,7 +510,7 @@ switch ($mode)
 		\Dragonfly\Page::title($lang['Mod_CP']);
 		$images = get_forums_images();
 
-		$rdns_ip_num = ( isset($_GET['rdns']) ) ? $_GET['rdns'] : '';
+		$rdns_ip_num = $_GET['rdns'] ?? '';
 
 		if (!$post_id) {
 			message_die(GENERAL_MESSAGE, $lang['No_such_post']);
