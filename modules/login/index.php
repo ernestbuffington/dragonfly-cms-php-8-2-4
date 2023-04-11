@@ -7,6 +7,13 @@
 	of the GNU GPL version 2 or any later version
 */
 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * TypedPropertyFromAssignsRector
+ */
+ 
 namespace Dragonfly\Modules;
 
 class Login
@@ -15,7 +22,7 @@ class Login
 		$allowed_methods = array('GET','HEAD','POST');
 
 	private static
-		$auth_providers = array();
+		array $auth_providers = array();
 
 	public static function getProviders()
 	{
@@ -152,7 +159,8 @@ class Login
 
 	protected function processForgotForm()
 	{
-		if (!\Dragonfly\Output\Captcha::validate($_POST)) {
+		$mailer_message = null;
+  if (!\Dragonfly\Output\Captcha::validate($_POST)) {
 			error_log('Login captcha failed for '.$_SERVER['REMOTE_ADDR']);
 			return $this->viewForgotForm('Form validation failed');
 		}
@@ -324,7 +332,7 @@ class Login
 		if ($provider_id) {
 			$provider = \Poodle\Auth\Provider::getById($provider_id);
 			if ($provider instanceof \Poodle\Auth\Provider) {
-				$credentials = isset($_POST['auth'][$provider_id]) ? $_POST['auth'][$provider_id] : array();
+				$credentials = $_POST['auth'][$provider_id] ?? array();
 				$credentials['redirect_uri'] = \URL::index("&auth={$provider_id}");
 				$result = \Dragonfly::getKernel()->IDENTITY->authenticate($credentials, $provider);
 				return $this->processAuthProviderResult($result, $provider);
@@ -355,7 +363,7 @@ class Login
 			\Poodle\LOG::info(\Poodle\LOG::LOGIN, get_class($provider));
 
 			if ($options['cookie']) {
-				$class = isset($K->CFG->auth_cookie->class) ? $K->CFG->auth_cookie->class : 'Poodle\\Auth\\Providers\\Cookie';
+				$class = $K->CFG->auth_cookie->class ?? 'Poodle\\Auth\\Providers\\Cookie';
 				$class::set();
 			}
 
@@ -380,7 +388,7 @@ class Login
 			echo json_encode(array(
 				'status' => '302',
 				'location' => $result->uri
-			));
+			), JSON_THROW_ON_ERROR);
 		}
 		else if ($result instanceof \Poodle\Auth\Result\Form) {
 			$_SESSION['DRAGONFLY_LOGIN'] = $options;
@@ -394,7 +402,7 @@ class Login
 						'fields' => $result->fields
 					),
 					'provider_id' => $provider->id
-				));
+				), JSON_THROW_ON_ERROR);
 			} else {
 //				$K->OUT->tpl_layout = 'login';
 //				$K->OUT->display(null, $this->result2html($result, $provider));
@@ -441,7 +449,7 @@ class Login
 
 	protected static function getRedirectURI()
 	{
-		$uri = isset($_POST['redirect_uri']) ? $_POST['redirect_uri'] : $_GET['redirect_uri'];
+		$uri = $_POST['redirect_uri'] ?? $_GET['redirect_uri'];
 		$uri = false === strpos($uri,'/') ? \Poodle\Base64::urlDecode($uri, true) : $uri;
 		if ($uri && '/' === $uri[0]) {
 			return $uri;
