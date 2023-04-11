@@ -168,8 +168,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
 		//////__DIR__ . '/admin/links/adlnk_main.php',
 		//////__DIR__ . '/admin/modules/admins.php',
-		__DIR__ . '/admin/modules/auth.php',
-		//__DIR__ . '/admin/modules/avatars.php',
+		//////__DIR__ . '/admin/modules/auth.php',
+		__DIR__ . '/admin/modules/avatars.php',
 		//__DIR__ . '/admin/modules/blocks.php',
 		//__DIR__ . '/admin/modules/cache.php',
 		//__DIR__ . '/admin/modules/cpgmm.php',
