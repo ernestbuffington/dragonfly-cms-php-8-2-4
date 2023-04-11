@@ -9,6 +9,11 @@
   of the GNU GPL version 2 or any later version
 Encoding test: n-array summation ∑ latin ae w/ acute ǽ
 ********************************************************/
+
+/* Applied rules:
+ * RandomFunctionRector
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 
 global $currentlang, $db;
@@ -25,7 +30,7 @@ if ($numrows > 1) {
 	$r_topic = explode('-', $topic_array);
 	mt_srand((double)microtime()*1000000);
 	$numrows = $numrows-1;
-	$topic = mt_rand(0, $numrows);
+	$topic = random_int(0, $numrows);
 	$topic = $r_topic[$topic];
 } else {
 	$topic = 1;
