@@ -16,6 +16,11 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
 
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
@@ -287,7 +292,7 @@ if ($submit || isset($_POST['confirm'])) {
 			if ($is_auth['auth_pollcreate']) {
 				$post->poll_title  = $_POST['poll_title'];
 				$post->poll_length = $_POST->uint('poll_length');
-				$poll_options = isset($_POST['poll_option_text']) ? $_POST['poll_option_text'] : null;
+				$poll_options = $_POST['poll_option_text'] ?? null;
 				if (is_array($poll_options)) {
 					foreach ($poll_options as $option_id => $option_text) {
 						$option_text = trim($option_text);
@@ -524,7 +529,7 @@ if ('reply' === $mode && $is_auth['auth_read']) {
 		$post->enable_smilies = $row['enable_smilies'];
 		$message = $post->message2html();
 
-		if (count($orig_word)) {
+		if (is_countable($orig_word) ? count($orig_word) : 0) {
 			$row['post_subject'] = preg_replace($orig_word, $replacement_word, $row['post_subject']);
 			$message = preg_replace($orig_word, $replacement_word, $message);
 		}
