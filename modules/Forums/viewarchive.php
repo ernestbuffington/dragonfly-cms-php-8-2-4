@@ -13,6 +13,10 @@
  *	 the Free Software Foundation; either version 2 of the License, or
  *	 (at your option) any later version.
  ***************************************************************************/
+ 
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
 
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
@@ -91,7 +95,7 @@ WHERE t.forum_id = {$forum_id}
 $topics = $db->uFetchAll($query . "
 	  AND t.topic_type = ".Topic::TYPE_ANNOUNCE."
 	ORDER BY t.topic_last_post_id DESC");
-$total_announcements = count($topics);
+$total_announcements = is_countable($topics) ? count($topics) : 0;
 
 // Grab all the basic data (all topics except announcements) for this forum
 $result = $db->query($query . "
@@ -153,7 +157,7 @@ $template->assign_vars(array(
 	'SF_PARENTS' => $parents,
 	'SUB_FORUMS' => (Forum::TYPE_PARENT == $forum['forum_type']),
 	'MODERATORS' => count($moderators) ? implode(', ', $moderators) : $lang['None'],
-	'L_MODERATOR' => (count($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'],
+	'L_MODERATOR' => ((is_countable($moderators) ? count($moderators) : 0) == 1) ? $lang['Moderator'] : $lang['Moderators'],
 	'U_ARCHIVES' => URL::index('&file=archives'),
 	'S_POST_DAYS_ACTION'=> URL::index("&file=viewarchive&f={$forum_id}&start={$start}"),
 ));
