@@ -12,6 +12,11 @@
   of the GNU GPL version 2 or any later version
 Encoding test: n-array summation ∑ latin ae w/ acute ǽ
 ********************************************************/
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 
 $K = \Dragonfly::getKernel();
@@ -35,7 +40,7 @@ if (is_user()) {
 	<hr/><form action="'.\URL::index('login&amp;auth=0').'" data-df-challenge="'.\Dragonfly\Output\Captcha::generateHidden().'"><div>';
 
 	$auth_providers = \Poodle\Auth\Provider::getPublicProviders();
-	$one_provider = (1 == count($auth_providers));
+	$one_provider = (1 == (is_countable($auth_providers) ? count($auth_providers) : 0));
 	if (!$one_provider) {
 		$content .= '<script>function switchLoginProvider(s){
 			var i=1, o;
