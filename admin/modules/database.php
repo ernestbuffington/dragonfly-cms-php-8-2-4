@@ -8,6 +8,12 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('database')) { die('Access Denied'); }
 
@@ -31,7 +37,7 @@ function show_db_result($mode, $tablelist, $query)
 	$OUT = \Dragonfly::getKernel()->OUT;
 	$OUT->db_mode = $mode;
 	$OUT->db_action = strtolower(substr($mode,0,-2));
-	if ($query && count($tablelist)) {
+	if ($query && (is_countable($tablelist) ? count($tablelist) : 0)) {
 		$OUT->query_result = $db->query($query);
 	}
 	$OUT->display('admin/database/result');
@@ -190,8 +196,8 @@ switch ($mode) {
 	case 'Installer':
 		SQLCtrl::installer($tablelist, false, isset($_POST['inst_structure']), isset($_POST['inst_data']), isset($_POST['gzip']),
 			array(
-				'onduplicate' => isset($_POST['inst_onduplicate']) ? $_POST['inst_onduplicate'] : null,
-				'datamode'    => isset($_POST['inst_datamode']) ? $_POST['inst_datamode'] : null
+				'onduplicate' => $_POST['inst_onduplicate'] ?? null,
+				'datamode'    => $_POST['inst_datamode'] ?? null
 			)
 		);
 		break;
