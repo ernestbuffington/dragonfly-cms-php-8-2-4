@@ -36,6 +36,10 @@
 		z The last 8 bytes (although it can be spoofed)
 */
 
+/* Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('security')) { die('Access Denied'); }
 
@@ -465,7 +469,7 @@ elseif (isset($_GET['logs']))
 			$log = false;
 			if (empty($row['log'])) {
 				$row['log'] = '';
-			} else if ($log = json_decode($row['log'], true)) {
+			} else if ($log = json_decode($row['log'], true, 512, JSON_THROW_ON_ERROR)) {
 				for ($i=0; $i<5; ++$i) {
 					$log[$i]['TIME'] = \Dragonfly::getKernel()->L10N->date('DATE_F', $log[$i]['TIME']);
 					$OUT->log[] = $log[$i];
