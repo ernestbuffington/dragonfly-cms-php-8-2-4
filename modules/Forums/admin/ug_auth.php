@@ -15,8 +15,13 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
-/* Modifications made by CPG Dev Team http://cpgnuke.com		*/
+/* Modifications made by CPG Dev Team http://cpgnuke.com		         */
 /************************************************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!($count = $db->sql_count(FORUMS_TABLE))) {
 	message_die(GENERAL_MESSAGE, 'You need to create a forum before you can set permissions.');
@@ -184,8 +189,8 @@ if (isset($_POST['save']) && (($user_mode && $user_id) || (!$user_mode && $group
 					}
 				}
 
-				$auth_group = isset($auth_access[$forum_id])      ? $auth_access[$forum_id]      : array_fill_keys($fields, 0);
-				$auth_post  = isset($_POST['private'][$forum_id]) ? $_POST['private'][$forum_id] : array_fill_keys($fields, 0);
+				$auth_group = $auth_access[$forum_id] ?? array_fill_keys($fields, 0);
+				$auth_post  = $_POST['private'][$forum_id] ?? array_fill_keys($fields, 0);
 				if (!is_array($auth_post)) {
 					// Simple mode is used
 					$auth_post = array_fill_keys($fields, $auth_post);
@@ -313,8 +318,8 @@ else if (($user_mode && $user_id) || (!$user_mode && $group_id)) {
 
 	foreach ($forum_access as $forum) {
 		$forum_id = $forum['forum_id'];
-		$auth_ug = isset($auth_access[$forum_id]) ? $auth_access[$forum_id] : array();
-		$auth_gr = isset($auth_groups_access[$forum_id]) ? $auth_groups_access[$forum_id] : array();
+		$auth_ug = $auth_access[$forum_id] ?? array();
+		$auth_gr = $auth_groups_access[$forum_id] ?? array();
 		foreach ($forum_auth_fields as $key) {
 			switch ($forum[$key])
 			{
