@@ -12,6 +12,11 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+
 require(__DIR__ . '/include/load.inc');
 
 $pid   = $_GET->uint('pid');
@@ -31,7 +36,7 @@ if (!$row) {
 global $CONFIG;
 
 if (isset($_GET['data'])) {
-	$data = json_decode(\Poodle\Base64::urlDecode($_GET['data']), true);
+	$data = json_decode(\Poodle\Base64::urlDecode($_GET['data']), true, 512, JSON_THROW_ON_ERROR);
 	if (!$data || !is_array($data)) {
 		cpg_error('ECARD_LINK_CORRUPT');
 	}
@@ -66,8 +71,8 @@ if ($IDENTITY->isMember()) {
 	$sender_name = $IDENTITY->nickname;
 	$sender_email = $IDENTITY->email;
 } else {
-	$sender_name = (isset($USER['name']) ? $USER['name'] : '');
-	$sender_email = (isset($USER['email']) ? $USER['email'] : '');
+	$sender_name = ($USER['name'] ?? '');
+	$sender_email = ($USER['email'] ?? '');
 }
 
 $recipient_name = $recipient_email = $greetings = $message = $sender_email_warning = $recipient_email_warning = '';
