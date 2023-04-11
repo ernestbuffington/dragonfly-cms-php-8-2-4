@@ -1,4 +1,9 @@
 <?php
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 
 // check for confirmed remove
@@ -92,7 +97,7 @@ while ($category = $q_categories->fetch_assoc()) {
 	WHERE cat_id = {$category['id']}
 	ORDER BY forum_order");
 	while ($forum = $q_forums->fetch_assoc()) {
-		$forum['icons'] = isset($forum_icons[$forum['id']]) ? $forum_icons[$forum['id']] : false;
+		$forum['icons'] = $forum_icons[$forum['id']] ?? false;
 		$category['forums'][] = $forum;
 	}
 
