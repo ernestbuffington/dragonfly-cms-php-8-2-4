@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('newsletter')) { die('Access Denied'); }
 \Dragonfly\Page::title(_NEWSLETTER);
@@ -26,7 +31,7 @@ function newsletter_selection($fieldname, $current) {
 	return \Dragonfly\Output\HTML::select_box($fieldname, $current, $tmpgroups);
 }
 
-$subject = isset($_POST['subject']) ? $_POST['subject'] : '';
+$subject = $_POST['subject'] ?? '';
 $content = isset($_POST['content']) ? $_POST->html('content') : '';
 $group = isset($_POST['group']) ? intval($_POST['group']) : 1;
 
