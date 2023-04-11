@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * RandomFunctionRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin()) { cpg_error('Access Denied'); }
 //Dragonfly::getKernel()->L10N->load('Your_Account');
@@ -50,7 +55,7 @@ class Dragonfly_Admin_Auth extends \Poodle\Auth\Admin
 		$CFG->set('admin_cookie', 'name',        $_POST->text('admin_cookie','name'));
 		$CFG->set('admin_cookie', 'timeout',     $_POST->uint('admin_cookie','timeout'));
 		$CFG->set('admin_cookie', 'cipher',      $_POST->text('admin_cookie','cipher'));
-		$CFG->set('admin_cookie', 'cryptkey',    $_POST->text('admin_cookie','cryptkey') ?: sha1(mt_rand().microtime()));
+		$CFG->set('admin_cookie', 'cryptkey',    $_POST->text('admin_cookie','cryptkey') ?: sha1(random_int(0, mt_getrandmax()).microtime()));
 		$CFG->set('admin_cookie', 'compression', $_POST->text('admin_cookie','compression'));
 
 		if (extension_loaded('gd')) {
