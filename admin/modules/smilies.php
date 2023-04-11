@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('smilies')) { die('Access Denied'); }
 \Dragonfly\Page::title('Smiles Utility');
@@ -135,7 +140,7 @@ else {
 	\Dragonfly\Output\Js::add('themes/admin/javascript/admin_smilies.js');
 	$smilies = $db->uFetchAll("SELECT smilies_id, code, smile_url, emoticon, pos FROM {$db->TBL->bbsmilies} ORDER BY pos");
 	// Replace htmlentites for < and > with actual character.
-	for ($i = 0; $i < count($smilies); $i++) { $smilies[$i]['code'] = htmlspecialchars_decode($smilies[$i]['code']); }
+	for ($i = 0; $i < (is_countable($smilies) ? count($smilies) : 0); $i++) { $smilies[$i]['code'] = htmlspecialchars_decode($smilies[$i]['code']); }
 	$TPL = Dragonfly::getKernel()->OUT;
 	$TPL->smilies = $smilies;
 	$TPL->smilies_path = $smilies_path;
