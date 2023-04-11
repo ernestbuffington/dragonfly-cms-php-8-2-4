@@ -17,6 +17,10 @@
 	Modifications made by CPG Dragonfly CMS https://dragonfly.coders.exchange
 **********************************************************************/
 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 namespace Dragonfly\Module\Forums\Admin;
 
 if (!defined('ADMIN_PAGES')) { exit; }
@@ -24,7 +28,8 @@ if (!defined('ADMIN_PAGES')) { exit; }
 # Begin function block
 function renumber_order($mode, $cat = 0)
 {
-	global $db;
+	$catfield = null;
+ global $db;
 	switch ($mode)
 	{
 		case 'category':
