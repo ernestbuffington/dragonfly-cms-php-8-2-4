@@ -8,6 +8,12 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * RandomFunctionRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 \Dragonfly\Page::title(_AVATAR_GALLERY, false);
 
@@ -53,7 +59,7 @@ function avatar_upload(\Dragonfly\Identity $userinfo, $avatar)
 			cpg_error('Animated avatar not allowed');
 		}
 		$avatar_filetype = $avatar->type;
-		$basename = $userinfo['user_id'].'_'.uniqid(mt_rand(), true).check_image_type($avatar_filetype);
+		$basename = $userinfo['user_id'].'_'.uniqid(random_int(0, mt_getrandmax()), true).check_image_type($avatar_filetype);
 		$avatar_filename = "{$CFG->path}/{$basename}";
 		if ($avatar->size > 0 && \Poodle\File::putContents($avatar_filename, $avatar->data) != $avatar->size) {
 			trigger_error('Could not write avatar to local storage', E_USER_ERROR);
@@ -62,7 +68,7 @@ function avatar_upload(\Dragonfly\Identity $userinfo, $avatar)
 		$avatar_filetype = $avatar->type;
 //		$avatar->validateType(array('png','jpeg','gif'))
 		check_image_type($avatar_filetype);
-		if (!$avatar->moveTo($CFG->path."/{$userinfo['user_id']}_".uniqid(mt_rand(), true))) {
+		if (!$avatar->moveTo($CFG->path."/{$userinfo['user_id']}_".uniqid(random_int(0, mt_getrandmax()), true))) {
 			trigger_error("Could not copy avatar to local storage: {$CFG->path}", E_USER_ERROR);
 		}
 		$basename = $avatar->basename;
@@ -71,7 +77,7 @@ function avatar_upload(\Dragonfly\Identity $userinfo, $avatar)
 			$data = fread($fp, min($CFG->filesize, filesize($avatar_filename)));
 			fclose($fp);
 			$data = preg_split('/\x00[\x00-\xFF]\x00\x2C/', $data); // split GIF frames
-			if (count($data) > 2) {
+			if ((is_countable($data) ? count($data) : 0) > 2) {
 				unlink($avatar_filename);
 				cpg_error('Animated avatar not allowed');
 			}
