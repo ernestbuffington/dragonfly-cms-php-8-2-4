@@ -6,6 +6,11 @@
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('members')) { exit('Access Denied'); }
 Dragonfly::getKernel()->L10N->load('Your_Account');
@@ -33,7 +38,7 @@ function main()
 			break;
 		}
 		header('Content-Type: application/json');
-		echo json_encode($result);
+		echo json_encode($result, JSON_THROW_ON_ERROR);
 		return;
 	}
 
