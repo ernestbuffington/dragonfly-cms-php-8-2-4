@@ -16,6 +16,12 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ * WrapVariableVariableNameInCurlyBracesRector (https://www.php.net/manual/en/language.variables.variable.php)
+ */
 
 if (!defined('ADMIN_PAGES')) { exit; }
 
@@ -24,7 +30,15 @@ if (!defined('ADMIN_PAGES')) { exit; }
 //
 function get_search_attachments_filter($order_by, &$total_rows)
 {
-	$db = \Dragonfly::getKernel()->SQL;
+	$search_author = null;
+ $search_keyword_fname = null;
+ $search_keyword_comment = null;
+ $search_count_smaller = null;
+ $search_count_greater = null;
+ $search_size_smaller = null;
+ $search_size_greater = null;
+ $search_days_greater = null;
+ $db = \Dragonfly::getKernel()->SQL;
 
 	$where_sql = array();
 
@@ -33,7 +47,7 @@ function get_search_attachments_filter($order_by, &$total_rows)
 	//
 	$search_vars = array('search_keyword_fname', 'search_keyword_comment', 'search_author', 'search_size_smaller', 'search_size_greater', 'search_count_smaller', 'search_count_greater', 'search_days_greater', 'search_forum', 'search_cat');
 	foreach ($search_vars as $k) {
-		$$k = trim($_POST->raw($k) ?: $_GET->raw($k));
+		${$k} = trim($_POST->raw($k) ?: $_GET->raw($k));
 	}
 
 	//
@@ -237,7 +251,7 @@ if ($mode_types)
 	}
 }
 
-$delete_id_list = isset($_POST['delete_id_list']) ? $_POST['delete_id_list'] : array();
+$delete_id_list = $_POST['delete_id_list'] ?? array();
 
 $confirm = isset($_POST['confirm']);
 
