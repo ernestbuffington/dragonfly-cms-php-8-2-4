@@ -9,10 +9,15 @@
   of the GNU GPL version 2 or any later version
 Encoding test: n-array summation ∑ latin ae w/ acute ǽ
 ********************************************************/
+
+/* Applied rules:
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 global $module_name, $db;
 
-$cat = $_POST->uint('cat') ?: $_GET->uint('cat') ?: 0;
+$cat = ($_POST->uint('cat') ?: $_GET->uint('cat')) ?: 0;
 
 $content = '';
 
