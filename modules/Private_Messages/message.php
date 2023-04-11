@@ -7,11 +7,15 @@
 	of the GNU GPL version 2 or any later version
 */
 
+/* Applied rules:
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ */
+
 namespace Dragonfly\Modules\Private_Messages;
 
 class Message
 {
-	const
+	public const
 		STATUS_NEW       = 0,
 		STATUS_SENT      = 1,
 		STATUS_UNREAD    = 1,
