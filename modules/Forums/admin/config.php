@@ -9,6 +9,11 @@
  * Last modification made by CPG Dev Team http://cpgnuke.com:
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+  
 if (!defined('ADMIN_PAGES')) { exit; }
 
 if ('POST' === $_SERVER['REQUEST_METHOD']) {
@@ -43,7 +48,7 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
 		'user_reg_date_age',
 	);
 	foreach ($options as $config_name) {
-		$value = isset($_POST[$config_name]) ? $_POST[$config_name] : '';
+		$value = $_POST[$config_name] ?? '';
 		$db->exec("UPDATE {$db->TBL->bbconfig} SET
 		config_value = " . $db->quote($value) . "
 		WHERE config_name = " . $db->quote($config_name));
