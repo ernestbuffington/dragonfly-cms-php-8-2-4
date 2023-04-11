@@ -9,6 +9,10 @@
   of the GNU GPL version 2 or any later version
 **********************************************/
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+
 //namespace Dragonfly\Modules\Forums;
 
 class BoardCache
@@ -40,7 +44,7 @@ class BoardCache
 				}
 			}
 		}
-		if ($key) { return (isset($board_config[$key]) ? $board_config[$key] : false); }
+		if ($key) { return ($board_config[$key] ?? false); }
 		return $board_config;
 	}
 
@@ -141,7 +145,7 @@ class BoardCache
 			}
 		}
 		if ($forum_id) {
-			return (isset($moderators[$forum_id]) ? $moderators[$forum_id] : array());
+			return ($moderators[$forum_id] ?? array());
 		}
 		return $moderators;
 	}
