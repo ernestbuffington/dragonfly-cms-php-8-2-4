@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 \Dragonfly\Page::title(_Your_AccountLANG, false);
 
@@ -197,7 +202,8 @@ function register_check()
 
 function register_finish()
 {
-	$K = \Dragonfly::getKernel();
+	$mailer_message = null;
+ $K = \Dragonfly::getKernel();
 	$SQL = $K->SQL;
 	$CFG = $K->CFG;
 
@@ -281,7 +287,8 @@ function register_finish()
 
 function activate($activation_key)
 {
-	$K = \Dragonfly::getKernel();
+	$tpl = null;
+ $K = \Dragonfly::getKernel();
 	$CFG = $K->CFG;
 	if (!$CFG->member->requireadmin) {
 		\Poodle\Identity\Request::cleanup(0);
