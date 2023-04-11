@@ -8,6 +8,12 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 define('THEME_VERSION', '10');
 
@@ -99,10 +105,11 @@ function theme_yesno_option($name, $value=0)
  */
 function theme_select_option($name, $value, array $array)
 {
-	$sel[$value] = ' selected="selected"';
+	$sel = [];
+ $sel[$value] = ' selected="selected"';
 	$select = "<select name=\"{$name}\" id=\"{$name}\">\n";
 	foreach ($array as $var) {
-		$select .= '<option'.(isset($sel[$var])?$sel[$var]:'').">{$var}</option>\n";
+		$select .= '<option'.($sel[$var] ?? '').">{$var}</option>\n";
 	}
 	return $select.'</select>';
 }
