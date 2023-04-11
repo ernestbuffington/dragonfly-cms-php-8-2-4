@@ -11,6 +11,11 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
 ****************************************************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin($op)) { exit; }
 require("modules/{$op}/include/load.inc");
@@ -161,7 +166,7 @@ if (isset($_GET['edit']))
 	if (USER_ID == $user_id && !can_admin()) { cpg_error(ERR_EDIT_SELF, 403); }
 	if ('POST' === $_SERVER['REQUEST_METHOD']) {
 		$user_group_cp = $_POST->uint('user_group_cp');
-		$group_list = isset($_POST['group_list']) ? $_POST['group_list'] : '';
+		$group_list = $_POST['group_list'] ?? '';
 		$user_group_list = array();
 		if (is_array($group_list)) {
 			foreach ($group_list as $group) {
