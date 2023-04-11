@@ -9,6 +9,11 @@
   of the GNU GPL version 2 or any later version
 Encoding test: n-array summation ∑ latin ae w/ acute ǽ
 ********************************************************/
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 
 global $db, $userinfo;
@@ -16,7 +21,7 @@ global $db, $userinfo;
 $view = ' AND f.auth_view=0';
 if (can_admin('forums')) {
 	$view = '';
-} else if (is_user() && count($userinfo['_mem_of_groups'])) {
+} else if (is_user() && (is_countable($userinfo['_mem_of_groups']) ? count($userinfo['_mem_of_groups']) : 0)) {
 	$result = $db->query("SELECT forum_id FROM {$db->TBL->bbauth_access}
 		WHERE group_id IN (".implode(',', array_keys($userinfo['_mem_of_groups'])).")
 		  AND (auth_mod = 1 OR auth_view = 1)
