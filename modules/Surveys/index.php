@@ -6,6 +6,11 @@
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 \Dragonfly\Page::title(_Surveys, false);
 
@@ -44,7 +49,7 @@ if ($poll->ptime > time()) {
 
 if (isset($_POST['vote_id'])) {
 	$poll->voteForOption($_POST->uint('vote_id'));
-	$forwarder = isset($_POST['forwarder']) ? $_POST['forwarder'] : 0;
+	$forwarder = $_POST['forwarder'] ?? 0;
 	if (strlen($forwarder)<5) $forwarder = URL::index("&pollid={$poll->id}&op=results");
 	URL::redirect($forwarder);
 }
