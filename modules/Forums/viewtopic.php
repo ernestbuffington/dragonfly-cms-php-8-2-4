@@ -15,6 +15,11 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ */
 
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
@@ -246,7 +251,7 @@ if (!$postrows) {
 	\Poodle\HTTP\Status::set(404);
 	message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
 }
-$total_posts = count($postrows);
+$total_posts = is_countable($postrows) ? count($postrows) : 0;
 
 $resync = false;
 if ($topic->replies + 1 < $start + $total_posts) {
@@ -414,9 +419,7 @@ foreach ($postrows as $i => $post) {
 				if ($orig_word) {
 					$user_sig = str_replace('\\"', '"', substr(preg_replace_callback(
 						'#(\>(((?>([^><]+|(?R)))*)\<))#s',
-						function($m) use ($orig_word, $replacement_word) {
-							return preg_replace($orig_word, $replacement_word, $m[0]);
-						},
+						fn($m) => preg_replace($orig_word, $replacement_word, $m[0]),
 						'>'.$user_sig.'<'), 1, -1));
 				}
 			}
@@ -578,9 +581,7 @@ foreach ($postrows as $i => $post) {
 		$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 		$message = str_replace('\\"', '"', substr(preg_replace_callback(
 			'#(\>(((?>([^><]+|(?R)))*)\<))#s',
-			function($m) use ($orig_word, $replacement_word) {
-				return preg_replace($orig_word, $replacement_word, $m[0]);
-			},
+			fn($m) => preg_replace($orig_word, $replacement_word, $m[0]),
 			'>'.$message.'<'), 1, -1));
 	}
 
