@@ -6,13 +6,20 @@
 	Dragonfly CMS is released under the terms and conditions
 	of the GNU GPL version 2 or any later version
 */
+
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ */
+ 
 if (class_exists('Dragonfly', false)) {
 	news_article();
 }
 
 function news_article()
 {
-	$sid = $_GET->uint('sid');
+	$story = null;
+ $sid = $_GET->uint('sid');
 	try {
 		$story = new \Dragonfly\Modules\News\Story($sid);
 	} catch (\Exception $e) {
@@ -63,7 +70,7 @@ function news_article()
 				$rcookie[] = $story->id;
 				$K->SQL->query("UPDATE {$K->SQL->TBL->stories} SET score=score+{$score}, ratings=ratings+1 WHERE sid={$story->id}");
 				$info = base64_encode(implode(':', $rcookie));
-				setcookie('ratecookie',$info,time()+3600, $K->CFG->cookie->path);
+				setcookie('ratecookie',$info, ['expires' => time()+3600, 'path' => $K->CFG->cookie->path]);
 			}
 			cpg_error($rated, $OUT->L10N['_ARTICLERATING'], URL::index('&file=article&sid='.$story->id));
 		} else {
