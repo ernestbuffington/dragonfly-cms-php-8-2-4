@@ -8,6 +8,12 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('DB_TYPE')) { exit; }
 
 abstract class DBCtrl {
@@ -45,7 +51,9 @@ abstract class DBCtrl {
 
 	public static function query_file($file, &$error, $replace_prefix=false)
 	{
-		$error = false;
+		$tmp = [];
+  $filedata = null;
+  $error = false;
 		if (!is_array($file)) {
 			$tmp['name'] = $tmp['tmp_name'] = $file;
 			$tmp['type'] = preg_match("/\.gz$/is", $file) ? 'application/x-gzip' : 'text/plain';
@@ -82,7 +90,7 @@ abstract class DBCtrl {
 		if ($error) { return false; }
 		$filedata = DBCtrl::remove_remarks($filedata);
 		$queries = DBCtrl::split_sql_file($filedata, ";\n");
-		if (count($queries) < 1) {
+		if ((is_countable($queries) ? count($queries) : 0) < 1) {
 			$error = 'There are no queries in '.$file['name'];
 			return false;
 		}
