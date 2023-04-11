@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 
 \Dragonfly\Page::title(_SEARCH, false);
@@ -50,7 +55,7 @@ if (!isset($_POST['search']) && !isset($_GET['search'])) {
 } else {
 	$page  = isset($_GET['page']) ? intval($_GET['page']) : 0;
 	$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
-	$query = isset($_POST['search']) ? $_POST['search'] : $_GET['search'];
+	$query = $_POST['search'] ?? $_GET['search'];
 
 	$modules = array();
 	if (isset($_POST['modules'])) {
