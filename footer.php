@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ */
+ 
 if (!class_exists('Dragonfly', false)) { exit; }
 global $cpgtpl;
 
@@ -30,8 +35,8 @@ function footmsg()
 		$S_DEBUG_PHP = CPG_DEBUG || defined('INSTALL') || $CFG->debug->error_level ? \Dragonfly\Output\HTML::minify($DEBUGGER->get_report('php')) : false;
 	}
 	if ($GLOBALS['cpgtpl']) {
-		$GLOBALS['cpgtpl']->S_DEBUG_SQL = isset($S_DEBUG_SQL) ? $S_DEBUG_SQL : false;
-		$GLOBALS['cpgtpl']->S_DEBUG_PHP = isset($S_DEBUG_PHP) ? $S_DEBUG_PHP : false;
+		$GLOBALS['cpgtpl']->S_DEBUG_SQL = $S_DEBUG_SQL ?? false;
+		$GLOBALS['cpgtpl']->S_DEBUG_PHP = $S_DEBUG_PHP ?? false;
 	}
 	return \Dragonfly\Output\HTML::minify('<div class="core_footer">'.implode("<br />\n", $foot).'
 	<div>Interactive software released under <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,
