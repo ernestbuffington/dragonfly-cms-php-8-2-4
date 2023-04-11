@@ -17,6 +17,12 @@
  *
  ***************************************************************************/
 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+ 
 if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
 require_once(__DIR__ . '/common.php');
 
@@ -28,7 +34,7 @@ $mode = $_POST['mode'] ?: $_GET['mode'];
 
 # removing topics from the watchlist
 if ('stopwatch' == $mode && is_user()) {
-	$topics = isset($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array($topic_id);
+	$topics = $_POST['topic_id_list'] ?? array($topic_id);
 	$topics = implode(',', array_map('intval', $topics));
 	$db->query("DELETE FROM ".TOPICS_WATCH_TABLE."
 	WHERE topic_id IN ({$topics})
@@ -38,7 +44,7 @@ if ('stopwatch' == $mode && is_user()) {
 
 # removing forums from the watchlist
 if ('stopwatchf' == $mode && is_user() && $board_config['allow_forum_watch']) {
-	$forums = isset($_POST['forum_id_list']) ? $_POST['forum_id_list'] : array($forum_id);
+	$forums = $_POST['forum_id_list'] ?? array($forum_id);
 	$forums = implode(',', array_map('intval', $forums));
 	$db->query("DELETE FROM ".FORUMS_WATCH_TABLE."
 	WHERE forum_id IN ({$forums})
@@ -61,10 +67,10 @@ if ($search_keywords || $search_author || $search_id) {
 	$search->id       = $search_id;
 	$search->keywords = $search_keywords;
 	$search->author   = $search_author;
-	$search->show     = $_POST['show_results'] ?: $_GET['show_results'] ?: 'topics';
+	$search->show     = ($_POST['show_results'] ?: $_GET['show_results']) ?: 'topics';
 	$search->terms    = ($_POST['search_terms']  == 'all');
 	$search->fields   = ($_POST['search_fields'] == 'all');
-	$search->chars    = (null===$_POST->int('return_chars')) ? 200 : $_POST->int('return_chars');
+	$search->chars    = $_POST->int('return_chars') ?? 200;
 	$search->cat      = $_POST->uint('search_cat');
 	$search->forum    = $_POST->uint('search_forum');
 	$search->sort_by  = (int)$_POST->uint('sort_by');
@@ -144,7 +150,7 @@ if ($search_keywords || $search_author || $search_id) {
 
 	$highlight_match = array();
 	$synonym_array = file("includes/l10n/{$lang->lng}/Forums/search_synonyms.txt");
-	$ck = count($synonym_array);
+	$ck = is_countable($synonym_array) ? count($synonym_array) : 0;
 	foreach ($search->keywords_split as $split_word) {
 		if ($split_word != 'and' && $split_word != 'or' && $split_word != 'not') {
 			$highlight_match[] = $split_word;
@@ -173,7 +179,7 @@ if ($search_keywords || $search_author || $search_id) {
 		}
 		$post_date = $lang->date($board_config['default_dateformat'], $searchrow['post_time']);
 
-		$message = isset($searchrow['post_text']) ? $searchrow['post_text'] : '';
+		$message = $searchrow['post_text'] ?? '';
 		$topic_title = $searchrow['topic_title'];
 
 		$forum_id = $searchrow['forum_id'];
