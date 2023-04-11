@@ -12,6 +12,10 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+
 require(__DIR__ . '/include/load.inc');
 
 $title = \Dragonfly::getKernel()->L10N['Information'];
@@ -20,7 +24,7 @@ $location = $_POST['currentpage'];
 
 $pic = $_POST->uint('pic') ?: cpg_error(PARAM_MISSING, 404);
 
-if (!isset($_POST['rate']) && 1 != count($_POST['rate'])) {
+if (!isset($_POST['rate']) && 1 != (is_countable($_POST['rate']) ? count($_POST['rate']) : 0)) {
 	cpg_error(PARAM_MISSING, 404);
 }
 $rate = array_keys($_POST['rate']);
