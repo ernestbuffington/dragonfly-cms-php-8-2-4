@@ -12,9 +12,14 @@
    (at your option) any later version.
 ****************************************************************************/
 
+/* Applied rules:
+ * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
+ * TypedPropertyFromAssignsRector
+ */
+
 class Coppermine
 {
-	const
+	public const
 		USER_GAL_CAT = 1,
 		FIRST_USER_CAT = 10000,
 		RANDPOS_MAX_PIC = 200,
@@ -25,7 +30,7 @@ class Coppermine
 		$MAIN_DIR = '';
 
 	private static
-		$instances = null;
+		?array $instances = null;
 
 	protected
 		$dir,
@@ -133,7 +138,7 @@ class Coppermine
 		return DOMAIN_PATH . str_replace('%2F', '/', rawurlencode($pic_row['filepath'] . $filename));
 	}
 
-	private $USER_ALBUMS = array(0 => array());
+	private array $USER_ALBUMS = array(0 => array());
 	public function getUserAlbums($user_id)
 	{
 		$user_id = (int)$user_id;
