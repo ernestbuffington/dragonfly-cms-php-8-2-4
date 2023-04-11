@@ -1,12 +1,17 @@
 <?php
 
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ */
+
 if (!defined('CPG_NUKE') || !defined('IN_PHPBB')) { exit; }
 
 $template->S_HAS_POLL = !empty($template->topic_poll);
 if ($template->S_HAS_POLL) {
 	if ($template->S_POLL_RESULTS) {
 		$vote_graphic = 0;
-		$vote_graphic_max = count($images['voting_graphic']);
+		$vote_graphic_max = is_countable($images['voting_graphic']) ? count($images['voting_graphic']) : 0;
 		$vote_graphic_length = empty($board_config['vote_graphic_length']) ? 1 : $board_config['vote_graphic_length'];
 		$votes_max = $template->topic_poll->votes_max;
 		foreach ($template->topic_poll->options as $option) {
