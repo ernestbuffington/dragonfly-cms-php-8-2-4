@@ -9,6 +9,11 @@
   of the GNU GPL version 2 or any later version
 Encoding test: n-array summation ∑ latin ae w/ acute ǽ
 ********************************************************/
+
+/* Applied rules:
+ * RandomFunctionRector
+ */
+ 
 if (!defined('CPG_NUKE')) { exit; }
 global $db;
 
@@ -30,7 +35,7 @@ if ($pic_count > 1000) {
 	$cor_gran = ceil($total_count / $pic_count);
 	$random_num_set = array();
 	for ($i = 0; $i < $cor_gran; ++$i) {
-		$random_num_set[] = mt_rand(0, $granularity);
+		$random_num_set[] = random_int(0, $granularity);
 	}
 	$random_num_set = implode(',', $random_num_set);
 	$randpos = " AND randpos IN ({$random_num_set})";
