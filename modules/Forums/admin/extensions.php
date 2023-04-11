@@ -16,6 +16,11 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+ 
+/* Applied rules:
+ * TernaryToNullCoalescingRector
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
 
 if (!defined('ADMIN_PAGES')) { exit; }
 
@@ -279,10 +284,10 @@ $group = $_POST->uint('group') ?: $_GET->uint('group');
 if ('groupperm' == $mode && $group) {
 	// Add Forums
 	if (isset($_POST['add_forum'])) {
-		$add_forums_list = ( isset($_POST['entries']) ) ? $_POST['entries'] : array();
+		$add_forums_list = $_POST['entries'] ?? array();
 		$add_all_forums = FALSE;
 
-		for ($i = 0; $i < count($add_forums_list); $i++) {
+		for ($i = 0; $i < (is_countable($add_forums_list) ? count($add_forums_list) : 0); $i++) {
 			if ($add_forums_list[$i] == 0) {
 				$add_all_forums = TRUE;
 			}
@@ -304,7 +309,7 @@ if ('groupperm' == $mode && $group) {
 
 	// Delete Forums
 	if (isset($_POST['del_forum'])) {
-		$delete_forums_list = ( isset($_POST['entries']) ) ? $_POST['entries'] : array();
+		$delete_forums_list = $_POST['entries'] ?? array();
 		// Get the current Forums
 		$row = $db->uFetchRow("SELECT forum_permissions FROM {$db->TBL->bbextension_groups} WHERE group_id = {$group}");
 		$auth_p = auth_pack(array_diff(auth_unpack($row[0]), $delete_forums_list));
