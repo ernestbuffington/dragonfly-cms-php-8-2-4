@@ -7,6 +7,10 @@
 	of the GNU GPL version 2 or any later version
 */
 
+/* Applied rules:
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ */
+
 abstract class URL
 {
 	public static function load($url='', $full=false)
@@ -159,11 +163,11 @@ abstract class URL
 	{
 		$text = preg_replace_callback(
 			'#(^|[\n ])([\w]+?://[\w]+[^ "\n\r\t<]*)#is',
-			function($m){return "{$m[1]}<a href=\"{$m[2]}\" rel=\"nofollow\" title=\"{$m[2]}\" target=\"_blank\">".\URL::shrink($m[2]).'</a>';},
+			fn($m) => "{$m[1]}<a href=\"{$m[2]}\" rel=\"nofollow\" title=\"{$m[2]}\" target=\"_blank\">".\URL::shrink($m[2]).'</a>',
 			$text);
 		$text = preg_replace_callback(
 			'#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is',
-			function($m){return "{$m[1]}<a href=\"http://{$m[2]}\" rel=\"nofollow\" title=\"{$m[2]}\" target=\"_blank\">".\URL::shrink($m[2]).'</a>';},
+			fn($m) => "{$m[1]}<a href=\"http://{$m[2]}\" rel=\"nofollow\" title=\"{$m[2]}\" target=\"_blank\">".\URL::shrink($m[2]).'</a>',
 			$text);
 		return preg_replace("#(^|[\n ])([a-z0-9&\-_\.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1 \\2 &#64; \\3", $text);
 	}
