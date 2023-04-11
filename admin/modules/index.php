@@ -8,6 +8,11 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 **********************************************/
+
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+ 
 if (!defined('ADMIN_PAGES')) { exit; }
 
 if (isset($_POST['np_save'])) {
@@ -32,7 +37,7 @@ if (can_admin() && \Dragonfly::getKernel()->CFG->global->update_monitor) {
 			$curvers = preg_replace('#^(.*)<version>(.*)</version>(.*)#s','\\2',$items[0], 1);
 			$upgurl  = preg_replace('#^(.*)<url>(.*)</url>(.*)#s','\\2',$items[0], 1);
 			unset($items[0]);
-			$update_monitor = array('current'=>$curvers, 'url'=>$upgurl, 'num'=>count($items), 'msg'=>array());
+			$update_monitor = array('current'=>$curvers, 'url'=>$upgurl, 'num'=>is_countable($items) ? count($items) : 0, 'msg'=>array());
 			foreach ($items as $item) {
 				if (!empty($item)) {
 					$alrt_vers  = preg_replace('#(.*)<version>(.*)</version>(.*)#s','\\2',$item);
@@ -46,7 +51,7 @@ if (can_admin() && \Dragonfly::getKernel()->CFG->global->update_monitor) {
 			$update_monitor['using_scm']    = version_compare(\Dragonfly::VERSION, $update_monitor['current'], '>');
 		}
 
-		$update_monitor['packages'] = count(\Dragonfly\PackageManager\Repositories::checkForUpdates());
+		$update_monitor['packages'] = is_countable(\Dragonfly\PackageManager\Repositories::checkForUpdates()) ? count(\Dragonfly\PackageManager\Repositories::checkForUpdates()) : 0;
 		// Cache for 24 hours
 		Dragonfly::getKernel()->CACHE->set('Dragonfly/update_monitor', $update_monitor, 86400);
 	}
