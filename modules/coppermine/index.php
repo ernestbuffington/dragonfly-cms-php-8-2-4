@@ -11,6 +11,11 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
   ****************************************************************************/
+  
+/* Applied rules:
+ * CountOnNullRector (https://3v4l.org/Bndc9)
+ */
+   
 if (isset($_GET['mode']) && $_GET['mode'] == 'smilies') {
 	exit;
 }
@@ -98,7 +103,7 @@ function list_cat_albums($cat = 0, $buffer = true)
 		return '';
 	}
 	$albums = $data[$cat]['albums'];
-	$nbAlb = count($albums);
+	$nbAlb = is_countable($albums) ? count($albums) : 0;
 
 	$totalPages = ceil($nbAlb / $CONFIG['albums_per_page']);
 	$PAGE = $_GET->uint('page') ?: 1;
@@ -233,7 +238,7 @@ function init_cpg_count()
 		GROUP by a.category, a.aid, c.parent
 		ORDER BY a.pos");
 		$data = array();
-		if (count($result)) {
+		if (is_countable($result) ? count($result) : 0) {
 			foreach ($result as $row) {
 				$cat = (int)$row['category'];
 				if (!isset($data[$cat])) {
