@@ -166,7 +166,7 @@ return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->rule(MysqlQueryMysqlErrorWithLinkRector::class);
 		
     $rectorConfig->paths([
-		  __DIR__ . '/includes/dragonfly/*/*/*',
+		  __DIR__ . '/admin/*/*/*',
 		//__DIR__ . '/includes/poodle/sql/xml/*',
     ]);
 
