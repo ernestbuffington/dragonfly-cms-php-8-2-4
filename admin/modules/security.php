@@ -96,7 +96,7 @@ foreach ($ids as $id) {
 if (isset($_GET['bots'])) {
 	if (Security::check_post()) {
 		# Delete from tables
-		if (isset($_POST['mark']) && (0 < count($_POST['mark']))) {
+		if (isset($_POST['mark']) && (0 < (is_countable($_POST['mark']) ? count($_POST['mark']) : 0))) {
 			foreach ($_POST['mark'] as $mark) {
 				$marked = $db->sql_escape_string($mark);
 				$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_string='$mark' AND ban_type=1");
@@ -118,7 +118,7 @@ if (isset($_GET['bots'])) {
 				$ua_url = substr($ua_url, 7);
 			if (empty($ua_url))
 				$ua_url = NULL;
-			else if (strpos('.', $ua_url) !==  false)
+			else if (strpos('.', (string) $ua_url) !==  false)
 				cpg_error(_BAD_FORMAT, _URL);
 
 			$ua_ban_type = intval($_POST['ua_ban_type']);
@@ -235,7 +235,7 @@ else if (isset($_GET['bot'])) {
 #
 else if (isset($_GET['mails'])) {
 	if (Security::check_post()) {
-		if (isset($_POST['mark']) && (0 < count($_POST['mark']))) {
+		if (isset($_POST['mark']) && (0 < (is_countable($_POST['mark']) ? count($_POST['mark']) : 0))) {
 			foreach (($_POST['mark']) as $mark) {
 				$marked = $db->sql_escape_string($mark);
 				$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_string='$mark' AND ban_type=2");
@@ -292,7 +292,7 @@ else if (isset($_GET['mail'])) {
 #
 else if (isset($_GET['floods'])) {
 	if (Security::check_post()) {
-		if (isset($_POST['mark']) && (0 < count($_POST['mark']))) {
+		if (isset($_POST['mark']) && (0 < (is_countable($_POST['mark']) ? count($_POST['mark']) : 0))) {
 			foreach (($_POST['mark']) as $ip) {
 				$ipn = $db->binary_safe(inet_pton($ip));
 				$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_ipn=$ipn AND ban_type=7");
@@ -600,7 +600,7 @@ else if (isset($_GET['shield'])) {
 #
 else if (isset($_GET['referers'])) {
 	if (Security::check_post()) {
-		if (isset($_POST['mark']) && (0 < count($_POST['mark']))) {
+		if (isset($_POST['mark']) && (0 < (is_countable($_POST['mark']) ? count($_POST['mark']) : 0))) {
 			foreach (($_POST['mark']) as $mark) {
 				$marked = $db->sql_escape_string($mark);
 				$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_string='$mark' AND ban_type=3");
@@ -657,7 +657,7 @@ else if (isset($_GET['referer'])) {
 }
 else if (isset($_GET['uas'])) {
 	if (Security::check_post()) {
-		if (isset($_POST['mark']) && (0 < count($_POST['mark']))) {
+		if (isset($_POST['mark']) && (0 < (is_countable($_POST['mark']) ? count($_POST['mark']) : 0))) {
 			foreach (($_POST['mark']) as $mark) {
 				$marked = $db->sql_escape_string($mark);
 				$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_string='$mark' AND ban_type=3");

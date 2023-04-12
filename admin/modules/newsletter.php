@@ -31,8 +31,8 @@ function newsletter_selection($fieldname, $current) {
 	return select_box($fieldname, $current, $tmpgroups);
 }
 
-$subject = isset($_POST['subject']) ? $_POST['subject'] : '';
-$content = isset($_POST['content']) ? $_POST['content'] : '';
+$subject = $_POST['subject'] ?? '';
+$content = $_POST['content'] ?? '';
 $group = isset($_POST['group']) ? intval($_POST['group']) : 1;
 
 if (isset($_POST['discard'])) {
@@ -114,7 +114,7 @@ if (isset($_POST['preview'])) {
 	} elseif ($num_users < 1) {
 		$notes = '<tr><td align="center" class="row1" colspan="2">'._NL_NOUSERS.'</td></tr>';
 	}
-	if (!eregi('<br',$content)) $content = nl2br($content);
+	if (!preg_match('#<br#mi',$content)) $content = nl2br($content);
 	$preview = '<tr>
 	<td class="row1" colspan="2">
 	<span style="float: left">This newsletter will be sent to <b>'.$group_name.'</b></span>

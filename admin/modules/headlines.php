@@ -18,12 +18,12 @@ if (!can_admin()) { die('Access Denied'); }
 $pagetitle .= ' '._BC_DELIM.' '._HEADLINESADMIN;
 
 if (isset($_POST['save'])) {
-	$xsitename = ereg_replace(' ', '', Fix_Quotes($_POST['xsitename']));
+	$xsitename = preg_replace('# #m', '', Fix_Quotes($_POST['xsitename']));
 	$headlinesurl = Fix_Quotes($_POST['headlinesurl']);
 	$db->sql_query('UPDATE '.$prefix."_headlines SET sitename='$xsitename', headlinesurl='$headlinesurl' where hid=".intval($_POST['save']));
 	url_redirect(adminlink());
 } else if (isset($_POST['addHeadline'])) {
-	$xsitename = ereg_replace(' ', '', Fix_Quotes($_POST['xsitename']));
+	$xsitename = preg_replace('# #m', '', Fix_Quotes($_POST['xsitename']));
 	$headlinesurl = Fix_Quotes($_POST['headlinesurl']);
 	$db->sql_query('INSERT INTO '.$prefix."_headlines (hid, sitename, headlinesurl) VALUES (DEFAULT, '$xsitename', '$headlinesurl')");
 	url_redirect(adminlink());

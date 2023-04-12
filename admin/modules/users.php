@@ -182,12 +182,12 @@ if (isset($_POST['wait'])) {
   <tr>
 	<th class="thHead" colspan="2" height="25" valign="middle">'._ADDUSER.'</th>
   </tr>';
-	while (list($field, $info) = each($registerinfo)) {
-		echo '<tr>
-	<td class="row1" width="38%"><span class="gen">'.$info['text'].':</span>'.(isset($info['msg']) ? $info['msg'] : '').'</td>
+	foreach ($registerinfo as $field => $info) {
+     echo '<tr>
+	<td class="row1" width="38%"><span class="gen">'.$info['text'].':</span>'.($info['msg'] ?? '').'</td>
 	<td class="row2"><input type="'.$info['type'].'" class="post" style="width:200px" name="'.$field.'" size="25" maxlength="'.$info['length'].'" /></td>
   </tr>';
-	}
+ }
 	// Add the additional fields to form if activated
 	$result = $db->sql_query("SELECT * FROM ".$user_prefix."_users_fields WHERE visible > 0 ORDER BY section");
 	if ($db->sql_numrows($result) > 0) {
@@ -223,7 +223,7 @@ if (isset($_POST['wait'])) {
 				for ($i=-12; $i<13; $i++) {
 					if ($i == 0) { $dummy = "GMT"; }
 					else {
-						if (!ereg("-", $i)) { $i = "+$i"; }
+						if (!preg_match('#\-#m', $i)) { $i = "+$i"; }
 						$dummy = "GMT $i "._HOURS;
 					}
 					$sel = ($userinfo['user_timezone'] == $i) ? 'selected="selected"' : '';
@@ -241,7 +241,7 @@ if (isset($_POST['wait'])) {
 				$handle=opendir('themes');
 				$themelist = array();
 				while ($file = readdir($handle)) {
-					if ( (!ereg('[.]',$file) && file_exists("themes/$file/theme.php")) ) {
+					if ( (!preg_match('#[\.]#m',$file) && file_exists("themes/$file/theme.php")) ) {
 						$themelist[] = "$file";
 					}
 				}
@@ -292,7 +292,7 @@ if (isset($_POST['wait'])) {
 	<tr><td>'._EMAIL.':</td><td><input type="text" name="email" size="30" maxlength="60" value="'.$email.'" /></td></tr>
 	<tr><td>'._PERMISSIONS.':</td><td><select name="radmin[]" size="10" multiple="multiple">';
 	foreach ($CLASS['member']->admin AS $field => $val) {
-		if ($field != 'radminsuper' && ereg('radmin', $field)) {
+		if ($field != 'radminsuper' && preg_match('#radmin#m', $field)) {
 			echo "<option value=\"$field\">".substr($field,6).'</option>';
 		}
 	}
@@ -350,7 +350,7 @@ if (isset($_POST['wait'])) {
 			$fields = 'aid, email, pwd';
 			$values = "'$_POST[aid]', '$_POST[email]', '$_POST[password]'";
 			foreach ($CLASS['member']->admin AS $field => $val) {
-				if (ereg('radmin', $field)) {
+				if (preg_match('#radmin#m', $field)) {
 					$rafields[$field] = 0;
 				}
 			}

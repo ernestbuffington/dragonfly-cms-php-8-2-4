@@ -34,7 +34,7 @@ function del_folder($folder) {
 }
 function get_lang_title($lang) {
 	$title = ucfirst($lang);
-	if (ereg('_', $lang)) {
+	if (preg_match('#_#m', $lang)) {
 		$l_array = explode('_', $lang);
 		$title = '';
 		for ($i=0; $i<count($l_array); $i++) {
@@ -46,18 +46,18 @@ function get_lang_title($lang) {
 }
 
 if (isset($_GET['def'])) {
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $_GET['def'])) { cpg_error('Invalid language'); }
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_GET['def'])) { cpg_error('Invalid language'); }
 	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".Fix_Quotes($_GET['def'])."' WHERE cfg_field='language' AND cfg_name='global'");
 	Cache::array_delete('MAIN_CFG');
 	url_redirect(adminlink());
 } elseif (isset($_GET['upd'])) {
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $_GET['upd'])) { cpg_error('Invalid title'); }
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_GET['upd'])) { cpg_error('Invalid title'); }
 	require_once(CORE_PATH.'classes/cvs.php');
 	if ($_GET['upd'] == 'all') {
 		$langs = array();
 		$dir = dir('language');
 		while ($file = $dir->read()) {
-			if (!ereg('[.]',$file) && $file != 'CVS') {
+			if (!preg_match('#[\.]#m',$file) && $file != 'CVS') {
 				$langs[$file][] = $file;
 			}
 		}
@@ -67,18 +67,18 @@ if (isset($_GET['def'])) {
 		header('Content-Encoding: none');
 		header('Content-Type: text/plain');
 		echo "Update is running. Please be patient ... it will take around ".count($langs)*$delay." seconds\n";
-		while (list($lang_title) = each($langs)) {
-			echo "\n\n### Currently updating $lang_title ###\n";
-			ob_flush();
-			flush();
-			sleep(intval($delay));
-			$log = CVS::update('language/'.$lang_title);
-			if (!isset($log['error'])) {
-				echo CVS::formatlog($log);
-			} else {
-				cpg_error($log['error']);
-			}
-		}
+		foreach (array_keys($langs) as $lang_title) {
+      echo "\n\n### Currently updating $lang_title ###\n";
+      ob_flush();
+      flush();
+      sleep(intval($delay));
+      $log = CVS::update('language/'.$lang_title);
+      if (!isset($log['error'])) {
+   				echo CVS::formatlog($log);
+   			} else {
+   				cpg_error($log['error']);
+   			}
+  }
 		echo "\n\nLanguages pack updated to latest CVS files";
 		exit;
 	} else {
@@ -95,7 +95,7 @@ if (isset($_GET['def'])) {
 		}
 	}
 } elseif (isset($_GET['del'])) {
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $_GET['del'])) { cpg_error('Invalid title'); }
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_GET['del'])) { cpg_error('Invalid title'); }
 	if (!is_dir('language/'.$_GET['del'])) { cpg_error('Language does not exist'); }
 	if (isset($_POST['cancel'])) { url_redirect(adminlink()); }
 	if (isset($_POST['confirm'])) {
@@ -105,7 +105,7 @@ if (isset($_GET['def'])) {
 	cpg_delete_msg(adminlink('&amp;del='.$_GET['del']), 'Are you sure that you want to delete the '.get_lang_title($_GET['del']).' language pack?');
 } elseif (isset($_POST['cvs_lang'])) {
 	require_once(CORE_PATH.'classes/cvs.php');
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $_POST['cvs_lang'])) { cpg_error('Invalid title'); }
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['cvs_lang'])) { cpg_error('Invalid title'); }
 	$path = 'language/'.$_POST['cvs_lang'];
 	if (!CVS::create($path, 'dragonflycms.org', '/cvs', 'l10n/'.$_POST['cvs_lang'], $_POST['cvs_uname'], $_POST['cvs_pass'])) {
 		cpg_error('Error creating important CVS files and folders');
@@ -155,7 +155,7 @@ if (isset($_GET['def'])) {
 		$langs = array();
 		$dir = dir('language');
 		while ($file = $dir->read()) {
-			if (!ereg('[.]',$file) && $file != 'CVS') {
+			if (!preg_match('#[\.]#m',$file) && $file != 'CVS') {
 				$langs[$file][] = $file;
 			}
 		}
@@ -170,17 +170,17 @@ if (isset($_GET['def'])) {
 		   <td width="20%"><strong>'._FUNCTIONS.'</strong></td>
 		 </tr>';
 		$bgcolor = $bgcolor3;
-		while (list($lang_title) = each($langs)) {
-			$bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
-			$def_img = ($MAIN_CFG['global']['language'] == $lang_title) ? 'checked.gif' : 'unchecked.gif';
-			$def_alt = ($MAIN_CFG['global']['language'] == $lang_title) ? _YES : _NO;
-			echo '
+		foreach (array_keys($langs) as $lang_title) {
+      $bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
+      $def_img = ($MAIN_CFG['global']['language'] == $lang_title) ? 'checked.gif' : 'unchecked.gif';
+      $def_alt = ($MAIN_CFG['global']['language'] == $lang_title) ? _YES : _NO;
+      echo '
 		 <tr'.$bgcolor.'>
 		   <td>'.(file_exists('images/language/flag-'.$lang_title.'.png') ? '<img src="images/language/flag-'.$lang_title.'.png" alt="'.get_lang_title($lang_title).'" title="'.get_lang_title($lang_title).'" />' : '').' '.(($lang_title == $currentlang) ? '<strong>'.get_lang_title($lang_title).'</strong>' : '<a href="'.adminlink('&amp;newlang='.$lang_title).'">'.get_lang_title($lang_title).'</a>').'</td>
 		   <td align="center">'.(($MAIN_CFG['global']['language'] != $lang_title) ? '<a href="'.adminlink('&amp;def='.$lang_title).'"><img src="images/'.$def_img.'" border="0" alt="'.$def_alt.'" title="'.$def_alt.'" /></a>' : '<img src="images/'.$def_img.'" border="0" alt="'.$def_alt.'" title="'.$def_alt.'" />').'</td>
 		   <td>'.(is_writable('language/'.$lang_title) ? '<a href="'.adminlink('&amp;upd='.$lang_title).'">Update</a>'.((count($langs) > 1) ? ' / <a href="'.adminlink('&amp;del='.$lang_title).'">'._DELETE.'</a>' : '') : '&mdash;').'</td>
 		 </tr>';
-		}
+  }
 		echo '</table><br /><a href="'.getlink('CPGlang').'">You can help translate!</a><br /><br />';
 		if (is_writable('language')) {
 			echo open_form(adminlink(), false, 'Install a new language pack from our CVS').'

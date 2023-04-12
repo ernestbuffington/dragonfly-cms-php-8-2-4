@@ -27,7 +27,7 @@ if (isset($_POST['gid']) || isset($_GET['gid'])) {
 else { $group_id = 0; }
 
 if (isset($_POST['mode']) || isset($_GET['mode'])) {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 	$mode = htmlprepare($mode);
 } else {
 	$mode = '';
@@ -118,7 +118,7 @@ else if (isset($_POST['update'])) {
 		if (intval($row['auth_mod']) == 1) {
 			// Yes, get the assigned users and update their Permission if they are no longer moderator of one of the forums
 			$rows = $db->sql_ufetchrowset("SELECT user_id FROM ".$prefix.'_bbuser_group WHERE group_id='.$group_id);
-			for ($i = 0; $i < count($rows); $i++) {
+			for ($i = 0; $i < (is_countable($rows) ? count($rows) : 0); $i++) {
 				$result = $db->sql_query("SELECT g.group_id FROM (" . AUTH_ACCESS_TABLE . " a, ".$prefix.'_bbgroups g, '.$prefix.'_bbuser_group ug)
 						WHERE (a.auth_mod = 1) AND (g.group_id = a.group_id) AND (a.group_id = ug.group_id) AND (g.group_id = ug.group_id)
 						AND (ug.user_id = '.intval($rows[$i]['user_id']).') AND (ug.group_id <> '.$group_id.')');

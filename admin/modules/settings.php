@@ -145,16 +145,16 @@ else {
 	}
 
 	foreach ($MAIN_CFG['global'] as $var => $value) {
-		$$var = $value;
+		${$var} = $value;
 	}
 	if ($section == 0) {
 		$handle=opendir('themes');
 		while ($file = readdir($handle)) {
-			if (!ereg('[.]',$file) && $file != 'CVS') { $themelist[] = $file; }
+			if (!preg_match('#[\.]#m',$file) && $file != 'CVS') { $themelist[] = $file; }
 		}
 		closedir($handle);
 		natcasesort($themelist);
-		$LEO = !ereg('IIS', $_SERVER['SERVER_SOFTWARE']);
+		$LEO = !preg_match('#IIS#m', $_SERVER['SERVER_SOFTWARE']);
 		$avail_settings = array(
 			array(
 				'L_TITLE' => _SITENAME,
@@ -288,7 +288,7 @@ else {
 				'L_TITLE' => 'SERVER_NAME as Cookie Domain',
 				'L_TOOLTIP' => '',
 				'B_INPUT' => false,
-				'S_TYPE' => yesno_option('cookie[server]', intval($MAIN_CFG['cookie']['server'])).' current: '.ereg_replace('www.', '', $_SERVER['SERVER_NAME'])
+				'S_TYPE' => yesno_option('cookie[server]', intval($MAIN_CFG['cookie']['server'])).' current: '.preg_replace('#www.#m', '', $_SERVER['SERVER_NAME'])
 			),
 			array(
 				'L_TITLE' => 'else Cookie domain',
@@ -569,7 +569,7 @@ else {
 			$fontlist = array();
 			$handle=opendir(CORE_PATH.'fonts');
 			while ($file = readdir($handle)) {
-				if (ereg('\.ttf$',$file)) { $fontlist[$file] = substr($file,0 , -4); }
+				if (preg_match('#\.ttf$#m',$file)) { $fontlist[$file] = substr($file,0 , -4); }
 			}
 			closedir($handle);
 			natcasesort($fontlist);
@@ -597,7 +597,7 @@ else {
 		$filesa = $filesi = array();
 		$dir = dir(BASEDIR);
 		while ($file = $dir->read()) {
-			if (is_file(BASEDIR.$file) && ereg('\.php$', $file) &&!in_array($file, $ignore)) {
+			if (is_file(BASEDIR.$file) && preg_match('#\.php$#m', $file) &&!in_array($file, $ignore)) {
 				if ($file != 'index.php') { $filesa[] = $file; }
 				$filesi[] = $file;
 			}
@@ -656,7 +656,7 @@ else {
 					$options[$policy.'o'] = $policy.'o';
 				}
 				if (0 == $p3p_sect || 6 == $p3p_sect) {
-					$checked =  (false !== strpos($p3p_header,$policy)) ? ' checked="checked"' : '';  
+					$checked =  (false !== strpos($p3p_header,(string) $policy)) ? ' checked="checked"' : '';  
 					$avail_settings[] = array(
 						'L_TITLE' => '
 							<dl><dt><p'.$bg.'><b><input type="radio" name="P3P['.$p3p_sect.']" value="'.$policy.'"'.$checked.' /></b>

@@ -18,7 +18,7 @@ if (!can_admin()) { cpg_error('Access Denied'); }
 get_lang('Your_Account', __FILE__, __LINE__);
 require_once(CORE_PATH.'nbbcode.php');
 
-$mode = isset($_GET['mode']) ? $_GET['mode'] : '';
+$mode = $_GET['mode'] ?? '';
 if (isset($_POST['addfield'])) $mode = 'addfield';
 $save = (isset($_POST['save']) && $mode != 'addfield') ? $_POST['save'] : '';
 
@@ -40,8 +40,8 @@ else if ($save == 'avatar') {
 	url_redirect(adminlink('users_cfg&mode=avatar'));
 }
 else if ($save == 'add_field') {
-	$fieldname = Fix_Quotes(ereg_replace(' ','_', $_POST['fieldname']), 1);
-	if (!ereg("^[_0-9a-z-]+$",$fieldname)) {
+	$fieldname = Fix_Quotes(preg_replace('# #m','_', $_POST['fieldname']), 1);
+	if (!preg_match('#^[_0-9a-z\-]+$#m',$fieldname)) {
 		cpg_error("Fieldname '$fieldname' not allowed");
 	}
 	$sql = '';

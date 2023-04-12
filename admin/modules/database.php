@@ -53,7 +53,7 @@ function show($mode, $database, $tablelist, $query) {
 			echo 'Mode: <b>'.$mode.'</b> not available yet';
 			return;
 		} 
-		if (count($tablelist)) {
+		if (is_countable($tablelist) ? count($tablelist) : 0) {
 			$result = $db->sql_query($query);
 			$numfields = $db->sql_numfields($result);
 			echo '<span class="genmed"><strong>'._DATABASE.':</strong> '.$database.'</span><br /><br />Here are the results of your '.strtolower($type).'<br /><br />

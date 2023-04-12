@@ -51,7 +51,7 @@ if (isset($_GET['change'])) {
 	}
 	if (Security::check_post() && isset($_POST['updateblocks'])) {
 		$sides = array('l','c','r','d','n');
-		$count = count($_POST['id']);
+		$count = is_countable($_POST['id']) ? count($_POST['id']) : 0;
 		$blocks = blocks_list();
 		for ($i=0; $i<$count; ++$i) {
 			if (!intval($_POST['id'][$i])) continue;
@@ -80,7 +80,12 @@ if (isset($_GET['change'])) {
 
 function BlocksAdmin()
 {
-	global $bgcolor2, $bgcolor3, $prefix, $db, $currentlang, $multilingual, $cpgtpl, $modheader, $ThemeSel;
+	$all = [];
+ $headlines = [];
+ $matches = null;
+ $blockslist = [];
+ $selblocks = [];
+ global $bgcolor2, $bgcolor3, $prefix, $db, $currentlang, $multilingual, $cpgtpl, $modheader, $ThemeSel;
 	$blocks_theme = 'default';
 	# will be removed the next release
 	if ($ThemeSel != ' default'
@@ -249,7 +254,7 @@ function BlocksAdmin()
 	}
 	$blocksdir = dir('blocks');
 	while($func=$blocksdir->read()) {
-	   if(ereg('block-(.*).php$', $func, $matches)) {
+	   if(preg_match('#block\-(.*).php$#m', $func, $matches)) {
 			$blockslist[] = $func;
 		}
 	}
@@ -257,7 +262,7 @@ function BlocksAdmin()
 	sort($blockslist);
 	for ($i=0; $i < sizeof($blockslist); $i++) {
 		if (!empty($blockslist["$i"]) && !isset($visblocks[$blockslist["$i"]])) {
-			$bl = ereg_replace('_',' ',(ereg_replace('(block-)|(.php)','',$blockslist["$i"])));
+			$bl = preg_replace('#_#m',' ',(preg_replace('#(block\-)|(.php)#m','',$blockslist["$i"])));
 			$selblocks[$blockslist["$i"]]=$bl;
 		}
 	}
@@ -293,7 +298,8 @@ function block_show($bid)
 
 function rssfail()
 {
-	require('header.php');
+	$cpgtpl = null;
+ require('header.php');
 	GraphicAdmin('_AMENU1');
 	$cpgtpl->assign_vars(array(
 		'S_RSSFAIL' => _RSSFAIL,
@@ -305,7 +311,8 @@ function rssfail()
 }
 
 function BlocksEdit($bid) {
-	global $prefix, $db, $multilingual, $pagetitle, $cpgtpl;
+	$blockslist = [];
+ global $prefix, $db, $multilingual, $pagetitle, $cpgtpl;
 	$pagetitle .= ' '._BC_DELIM.' '._EDITBLOCK;
 	require('header.php');
 	GraphicAdmin('_AMENU1');
@@ -321,7 +328,7 @@ function BlocksEdit($bid) {
 		'S_TITLE' => _TITLE,
 		'S_SAVECHANGES' => _SAVECHANGES,
 		'S_WEIGHT' => $weight,
-		'S_NAME_DEF' => (defined($title) ? constant($title):ereg_replace('_', ' ',$title)).":",
+		'S_NAME_DEF' => (defined($title) ? constant($title):preg_replace('#_#m', ' ',$title)).":",
 		'U_BLOCKS' => adminlink('blocks'),
 		'MULTILANG' => $multilingual,
 		'BPOSITION' => $bposition,
@@ -346,8 +353,8 @@ function BlocksEdit($bid) {
 			$typefile = true;
 			$blocksdir = dir('blocks');
 			while($func=$blocksdir->read()) {
-				if(substr($func, 0, 6) == 'block-') {
-					$bl = ereg_replace('_',' ',substr($func,6,-4));
+				if(str_starts_with($func, 'block-')) {
+					$bl = preg_replace('#_#m',' ',substr($func,6,-4));
 					$blockslist[$func] = $bl;
 				}
 			}
@@ -403,7 +410,9 @@ function BlocksEdit($bid) {
 }
 
 function BlocksAdd() {
-	global $prefix, $db;
+	$insert = [];
+ $in_modules = [];
+ global $prefix, $db;
 	if (!Security::check_post()) cpg_error(_SEC_ERROR);
 
 	$insert['bkey'] = '';
@@ -431,13 +440,13 @@ function BlocksAdd() {
 	if ($insert['blockfile'] != '') {
 		$insert['bkey'] = 'file';
 		if ($insert['title'] == '') {
-			$insert['title'] = ereg_replace('(block-)|(.php)','',$insert['blockfile']);
-			$insert['title'] = ereg_replace('_',' ',$insert['title']);
+			$insert['title'] = preg_replace('#(block\-)|(.php)#m','',$insert['blockfile']);
+			$insert['title'] = preg_replace('#_#m',' ',$insert['title']);
 		}
 	} else if ($insert['url'] != '') {
 		$insert['bkey'] = 'rss';
 		$insert['time'] = gmtime();
-		if (!ereg('://',$insert['url'])) { $insert['url'] = 'http://'.$insert['url']; }
+		if (!preg_match('#:\/\/#m',$insert['url'])) { $insert['url'] = 'http://'.$insert['url']; }
 		require_once(CORE_PATH.'classes/rss.php');
 		if (!($insert['content'] = CPG_RSS::format(CPG_RSS::read($insert['url'])))) { return false; }
 	} else {
@@ -446,7 +455,7 @@ function BlocksAdd() {
 	if ($insert['content'] == '' && $insert['blockfile'] == '') { return false;	}
 	$db->sql_insert($prefix.'_blocks', $insert);
 	$bid = $db->sql_nextid('bid');
-	$count = count($_POST['in_module']);
+	$count = is_countable($_POST['in_module']) ? count($_POST['in_module']) : 0;
 	for ($i=0;$i<$count;$i++) {
 		if (!intval($_POST['in_module'][$i])) {
 			continue;
@@ -468,7 +477,9 @@ function BlocksAdd() {
 	return true;
 }
 function BlocksEditSave($bid) {
-	global $prefix, $db;
+	$update = [];
+ $new_in_modules = [];
+ global $prefix, $db;
 	if (!Security::check_post()) cpg_error(_SEC_ERROR);
 
 	$update['title'] = $_POST['title'];
@@ -486,7 +497,7 @@ function BlocksEditSave($bid) {
 
 	if ($update['url'] != '') {
 		$update['time'] = gmtime();
-		if (!ereg('http://',$update['url'])) { $update['url'] = 'http://'.$update['url']; }
+		if (!preg_match('#http:\/\/#m',$update['url'])) { $update['url'] = 'http://'.$update['url']; }
 		require_once(CORE_PATH.'classes/rss.php');
 		if (!($update['content'] = CPG_RSS::format(CPG_RSS::read($update['url'])))) {
 			rssfail();

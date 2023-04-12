@@ -21,7 +21,7 @@ if ((isset($_GET['cid']) && (intval($_GET['cid']) > 0) || isset($_GET['id']) && 
 get_lang('cpgmm');
 
 global $db, $prefix, $cpgtpl;
-$mode = isset($_GET['mode']) ? $_GET['mode'] : '';
+$mode = $_GET['mode'] ?? '';
 
 function cpg_mm_admin_header($title, $content='') {
 	global $pagetitle, $cpgtpl, $ThemeSel, $modheader;
@@ -236,7 +236,7 @@ elseif (isset($_GET['editcat'])) {
 *******************/
 else {
 	if (Security::check_post() && isset($_POST['updatecpgmm']) && intval($_POST['id']) && intval($_POST['parent']) && intval($_POST['pos'])) {
-		for ($i=0;$i<count($_POST['id']);$i++) {
+		for ($i=0;$i<(is_countable($_POST['id']) ? count($_POST['id']) : 0);$i++) {
 			if ($_POST['parent'][$i] == 0 ) {
 				if ($_POST['id'][$i] > 0 && $_POST['pos'][$i] != $i) {
 					$db->sql_update($prefix.'_modules_cat', array('pos'=>$i), 'cid='.$_POST['id'][$i]);

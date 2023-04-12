@@ -19,7 +19,7 @@ $pagetitle .= ' '._BC_DELIM.' Smiles Utility';
 
 $smilies_path = 'images/smiles/';
 $delimeter = '=+:';
-$mode = (isset($_GET['mode']) ? $_GET['mode'] : (isset($_POST['mode']) ? $_POST['mode'] : ''));
+$mode = ($_GET['mode'] ?? $_POST['mode'] ?? '');
 
 define('SMILIES_TABLE', $prefix.'_bbsmilies');
 
@@ -49,7 +49,7 @@ while ($file = readdir($dir)) {
 		$img_size = getimagesize($smilies_path . $file);
 		if ( $img_size[0] && $img_size[1] ) {
 			$smiley_images[] = $file;
-		} else if( eregi('.pak$', $file) ) {
+		} else if( preg_match('#.pak$#mi', $file) ) {
 			$smiley_paks[] = $file;
 		}
 	}
@@ -73,7 +73,7 @@ function update_smiley(newimage)
 	</tr>
 	<tr>
 		<td class="row2">Smiley Code</td>
-		<td class="row2"><input type="text" name="smile_code" value="'.(isset($smile_data['code']) ? $smile_data['code'] : '').'" /></td>
+		<td class="row2"><input type="text" name="smile_code" value="'.($smile_data['code'] ?? '').'" /></td>
 	</tr>
 	<tr>
 		<td class="row1">Smiley Image File</td>
@@ -81,7 +81,7 @@ function update_smiley(newimage)
 	</tr>
 	<tr>
 		<td class="row2">Smiley Emotion</td>
-		<td class="row2"><input type="text" name="smile_emotion" value="'.(isset($smile_data['emoticon']) ? $smile_data['emoticon'] : '').'" /></td>
+		<td class="row2"><input type="text" name="smile_emotion" value="'.($smile_data['emoticon'] ?? '').'" /></td>
 	</tr>
 	<tr>
 		<td class="catBottom" colspan="2" align="center">'.$s_hidden_fields.'<input class="mainoption" type="submit" value="'._SAVECHANGES.'" /></td>
@@ -100,7 +100,7 @@ if (isset($_POST['import_pack'])) {
 		}
 		else {
 			$cur_smilies = $db->sql_ufetchrowset("SELECT code FROM ". SMILIES_TABLE);
-			for ($i = 0; $i < count($cur_smilies); $i++) {
+			for ($i = 0; $i < (is_countable($cur_smilies) ? count($cur_smilies) : 0); $i++) {
 				$smiles[$cur_smilies[$i]['code']] = 1;
 			}
 		}
@@ -111,7 +111,7 @@ if (isset($_POST['import_pack'])) {
 			cpg_error('The smiley pak file could not be read');
 		}
 
-		for ($i = 0; $i < count($fcontents); $i++) {
+		for ($i = 0; $i < (is_countable($fcontents) ? count($fcontents) : 0); $i++) {
 			$smile_data = explode($delimeter, trim(Fix_Quotes($fcontents[$i])));
 			for ( $j = 2; $j < count($smile_data); $j++) {
 				// Replace > and < with the proper html_entities for matching.
@@ -144,11 +144,11 @@ if (isset($_POST['import_pack'])) {
 		// Display the script to get the smile_pak cfg file...
 		showheader();
 		$smile_paks_select = "<select name='smile_pak'><option value=''>Select Pack (.pak) File</option>";
-		while (list($key, $value) = each($smiley_paks)) {
-			if (!empty($value)) {
-				$smile_paks_select .= "<option>" . $value . "</option>";
-			}
-		}
+		foreach ($smiley_paks as $key => $value) {
+      if (!empty($value)) {
+   				$smile_paks_select .= "<option>" . $value . "</option>";
+   			}
+  }
 		$smile_paks_select .= "</select>";
 		echo '<p>You should unzip the smiley package and upload all files to the appropriate Smiley directory for your installation.<br />
 Then select the correct information in this form to import the smiley pack.</p>
@@ -185,7 +185,7 @@ else if (isset($_GET['export_pack'])) {
 		cpg_error('The smiley list could not be obtained');
 	}
 	$smile_pak = '';
-	for ($i = 0; $i < count($resultset); $i++ ) {
+	for ($i = 0; $i < (is_countable($resultset) ? count($resultset) : 0); $i++ ) {
 		$smile_pak .= $resultset[$i]['smile_url'] . $delimeter;
 		$smile_pak .= $resultset[$i]['emoticon'] . $delimeter;
 		$smile_pak .= $resultset[$i]['code'] . "\n";
@@ -204,7 +204,7 @@ else if (isset($_POST['add'])) {
 	if (!Security::check_post()) { cpg_error(_SEC_ERROR); }
 	// Admin has selected to add a smiley.
 	$filename_list = "";
-	for( $i = 0; $i < count($smiley_images); $i++ ) {
+	for( $i = 0; $i < (is_countable($smiley_images) ? count($smiley_images) : 0); $i++ ) {
 		$filename_list .= '<option value="' . $smiley_images[$i] . '">' . $smiley_images[$i] . '</option>';
 	}
 	$s_hidden_fields = '<input type="hidden" name="mode" value="savenew" />';
@@ -212,7 +212,7 @@ else if (isset($_POST['add'])) {
 }
 else if (isset($_POST['updatesmiles'])) {
 	if (Security::check_post() && intval($_POST['id'])) {
-		for ($i = 0; $i < count($_POST['id']); $i++) {
+		for ($i = 0; $i < (is_countable($_POST['id']) ? count($_POST['id']) : 0); $i++) {
 			if ($_POST['pos'][$i] != $i) {
 				$db->sql_update($prefix.'_bbsmilies', array('pos'=>$i), 'smilies_id='.$_POST['id'][$i]);
 			}
@@ -249,7 +249,7 @@ else if ($mode != '') {
 				cpg_error('The information for the requested smiley could not be obtained');
 			}
 			$filename_list = '';
-			for ( $i = 0; $i < count($smiley_images); $i++ ) {
+			for ( $i = 0; $i < (is_countable($smiley_images) ? count($smiley_images) : 0); $i++ ) {
 				if ( $smiley_images[$i] == $smile_data['smile_url'] ) {
 					$smiley_selected = 'selected="selected"';
 					$smiley_edit_img = $smiley_images[$i];
@@ -338,7 +338,7 @@ Smilies are stored in the "'.$smilies_path.'" directory<br /><br />
 	</tr><tbody>
 ';
 	// Loop throuh the rows of smilies setting block vars for the template.
-	for ($i = 0; $i < count($smilies); $i++) {
+	for ($i = 0; $i < (is_countable($smilies) ? count($smilies) : 0); $i++) {
 		// Replace htmlentites for < and > with actual character.
 		$smilies[$i]['code'] = str_replace('&lt;', '<', $smilies[$i]['code']);
 		$smilies[$i]['code'] = str_replace('&gt;', '>', $smilies[$i]['code']);

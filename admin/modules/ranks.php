@@ -30,7 +30,7 @@ $userdata = session_pagestart($user_ip, PAGE_INDEX);
 init_userprefs($userdata);
 
 if( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = htmlprepare(isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
+	$mode = htmlprepare($_GET['mode'] ?? $_POST['mode']);
 } else {
 	if( isset($_POST['add']) ) {
 		$mode = 'add';
@@ -70,7 +70,7 @@ if( $mode != '' ) {
 		$template->set_filenames(array('body' => 'forums/admin/ranks_edit_body.html'));
 
 		$template->assign_vars(array(
-			"RANK" => isset($rank_info['rank_title']) ? $rank_info['rank_title'] : '',
+			"RANK" => $rank_info['rank_title'] ?? '',
 			"SPECIAL_RANK" => $rank_is_special,
 			"NOT_SPECIAL_RANK" => $rank_is_not_special,
 			"MINIMUM" => ( $rank_is_special ) ? "" : isset($rank_info['rank_min']) ? $rank_info['rank_min'] :'',
@@ -171,7 +171,7 @@ if( $mode != '' ) {
 
 		$result = $db->sql_query("SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_min, rank_title");
 		$rank_rows = $db->sql_fetchrowset($result);
-		$rank_count = count($rank_rows);
+		$rank_count = is_countable($rank_rows) ? count($rank_rows) : 0;
 
 		$template->assign_vars(array(
 			"L_RANKS_TITLE" => $lang['Ranks_title'],

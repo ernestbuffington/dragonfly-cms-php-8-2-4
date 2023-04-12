@@ -93,9 +93,9 @@ if (isset($_POST['createEntry'])) {
 	open_form(adminlink(), false, _ADDEPHEM);
 	$nmonth = array(1 => _JANUARY, _FEBRUARY, _MARCH, _APRIL, _MAY, _JUNE, _JULY, _AUGUST, _SEPTEMBER, _OCTOBER, _NOVEMBER, _DECEMBER);
 	echo _UMONTH.': <select name="month">';
-	while (list($nmonth_key, $nmonth_name) = each($nmonth)) {
-		echo '<option value="'.$nmonth_key.'">'.$nmonth_name.'</option>';
-	}
+	foreach ($nmonth as $nmonth_key => $nmonth_name) {
+     echo '<option value="'.$nmonth_key.'">'.$nmonth_name.'</option>';
+ }
 	echo '</select> &nbsp;';
 	$nday = 1;
 	echo _DAY.': <select name="day">';
@@ -116,9 +116,9 @@ if (isset($_POST['createEntry'])) {
 	open_form(adminlink(), false, _EPHEMMAINT);
 	$nmonth = array(1 => _JANUARY, _FEBRUARY, _MARCH, _APRIL, _MAY, _JUNE, _JULY, _AUGUST, _SEPTEMBER, _OCTOBER, _NOVEMBER, _DECEMBER);
 	echo _UMONTH.': <select name="month">';
-	while (list($nmonth_key, $nmonth_name) = each($nmonth)) {
-		echo '<option value="'.$nmonth_key.'">'.$nmonth_name.'</option>';
-	}
+	foreach ($nmonth as $nmonth_key => $nmonth_name) {
+     echo '<option value="'.$nmonth_key.'">'.$nmonth_name.'</option>';
+ }
 	echo '</select> &nbsp;';
 	$nday = 1;
 	echo _DAY.': <select name="day">';

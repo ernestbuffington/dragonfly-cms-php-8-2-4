@@ -33,8 +33,8 @@ function get_phpinfo($mode) {
 			return $cache[3];
 		}
 	}
-	$cache = ereg_replace('(<th>)', '<td class="infohead">', $cache[1]);
-	$cache = ereg_replace('(</th>)', '</td>', $cache);
+	$cache = preg_replace('#(<th>)#m', '<td class="infohead">', $cache[1]);
+	$cache = preg_replace('#(<\/th>)#m', '</td>', $cache);
 	return $cache;
 }
 
@@ -81,14 +81,14 @@ echo '<div class="genmed"><strong>'.$info.'</strong></div><br />';
 
 if (isset($_GET['mods'])) {
 	$cache = get_phpinfo(INFO_MODULES);
-	$cache = ereg_replace('(<th colspan="2">)', '<td class="infohead" colspan="2">', $cache);
-	$cache = ereg_replace('(<div class="center">|<\/div>)', '', $cache);
-	$cache = ereg_replace('(<h2>)', '<div class="genmed"><strong>', $cache);
-	$cache = ereg_replace('(<\/h2>)', '</strong></div>', $cache);
+	$cache = preg_replace('#(<th colspan="2">)#m', '<td class="infohead" colspan="2">', $cache);
+	$cache = preg_replace('#(<div class="center">|<\/div>)#m', '', $cache);
+	$cache = preg_replace('#(<h2>)#m', '<div class="genmed"><strong>', $cache);
+	$cache = preg_replace('#(<\/h2>)#m', '</strong></div>', $cache);
 	$cache = preg_split('/(<table border="0" cellpadding="3" width="600">|<\/table><br>|<\/table><br \/>)/', $cache, -1, PREG_SPLIT_NO_EMPTY);
-	for ($i=0; $i<count($cache); $i++) {
+	for ($i=0; $i<(is_countable($cache) ? count($cache) : 0); $i++) {
 		if ($cache[$i] != '') {
-			if (ereg('<div', $cache[$i])) {
+			if (preg_match('#<div#m', $cache[$i])) {
 				echo '<hr/>'.$cache[$i];
 			} else {
 				echo '<table width="500">'.$cache[$i].'</table>';
@@ -115,7 +115,7 @@ else if (isset($_GET['database'])) {
 	case 'mysqli':
 	$details = $db->get_details();
 	if (DB_TYPE == 'mysql') {
-		$stat = mysql_stat($db->connect_id);
+		$stat = mysql_stat();
 	} else {
 		$stat = mysqli_stat($db->connect_id);
 	}

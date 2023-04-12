@@ -20,7 +20,7 @@ $showblocks = 0;
 $pagetitle .= ' '._BC_DELIM.' Caching';
 
 if (isset($_POST['mode']) || isset($_GET['mode'])) {
-	$mode = isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 } else {
 	$mode = '';
 }

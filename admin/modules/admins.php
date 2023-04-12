@@ -17,7 +17,7 @@ if (!defined('ADMIN_PAGES')) { exit; }
 if (!is_admin()) { die('Access Denied'); }
 $pagetitle .= ' '._BC_DELIM.' '._AUTHORSADMIN;
 
-$mode = isset($_POST['mode']) ? $_POST['mode'] : '';
+$mode = $_POST['mode'] ?? '';
 if ($CLASS['member']->demo) {
 	$op = 'admins';
 	$mode = '';
@@ -25,7 +25,7 @@ if ($CLASS['member']->demo) {
 
 $adminops = array();
 foreach ($CLASS['member']->admin AS $field => $val) {
-	if ($field != 'radminsuper' && ereg('radmin', $field)) {
+	if ($field != 'radminsuper' && preg_match('#radmin#m', $field)) {
 		$adminops[] = substr($field,6);
 	}
 }
@@ -35,7 +35,7 @@ sort($adminops);
 if (isset($_GET['mode']) && $_GET['mode'] == 'add') {
 	if (!can_admin() || $CPG_SESS['admin']['page'] != 'admins') { cpg_error(_ERROR_BAD_LINK, _SEC_ERROR); }
 	if (strlen($_POST['add_aid']) < 3 || strlen($_POST['add_pwd']) < 3 || is_email($_POST['add_email']) < 1) { cpg_error(_COMPLETEFIELDS, _CREATIONERROR); }
-	if (!ereg('[0-9]', $_POST['add_pwd']) && !ereg('[a-z]', $_POST['add_pwd']) && !ereg('[A-Z]', $_POST['add_pwd'])) { cpg_error(_PASSWORD_MALFORMED, _CREATIONERROR); }
+	if (!preg_match('#[0-9]#m', $_POST['add_pwd']) && !preg_match('#[a-z]#m', $_POST['add_pwd']) && !preg_match('#[A-Z]#m', $_POST['add_pwd'])) { cpg_error(_PASSWORD_MALFORMED, _CREATIONERROR); }
 	$add_pwd = md5($_POST['add_pwd']);
 	$fields = 'aid, email, pwd';
 	$values = "'$_POST[add_aid]', '$_POST[add_email]', '$add_pwd'";
@@ -79,11 +79,11 @@ else if (isset($_GET['update'])) {
 		cpg_error(_ERROR_BAD_LINK, _SEC_ERROR);
 	}
 	$chng_email = trim($_POST['chng_email']);
-	$chng_pwd  = isset($_POST['chng_pwd']) ? $_POST['chng_pwd'] : '';
-	$chng_pwd2 = isset($_POST['chng_pwd2']) ? $_POST['chng_pwd2'] : '';
+	$chng_pwd  = $_POST['chng_pwd'] ?? '';
+	$chng_pwd2 = $_POST['chng_pwd2'] ?? '';
 	$fields = "email='$chng_email'";
 	if ($chng_pwd2 != '') {
-		if (!ereg("[0-9]", $chng_pwd) && !ereg("[a-z]", $chng_pwd) && !ereg("[A-Z]", $chng_pwd)) { cpg_error(_PASSWORD_MALFORMED); }
+		if (!preg_match('#[0-9]#m', $chng_pwd) && !preg_match('#[a-z]#m', $chng_pwd) && !preg_match('#[A-Z]#m', $chng_pwd)) { cpg_error(_PASSWORD_MALFORMED); }
 		if ($chng_pwd != $chng_pwd2) { cpg_error(_PASSWDNOMATCH); }
 		$fields .= ", pwd='".md5($chng_pwd)."'";
 	}
@@ -127,7 +127,7 @@ else if (isset($_GET['modify'])) {
 		echo '<label class="ulog" for="radmin[]">'._PERMISSIONS.'</label>
 		<select name="radmin[]" id="radmin[]" size="10" multiple="multiple">';
 		foreach ($row AS $field => $val) {
-			if ($field != 'radminsuper' && ereg('radmin', $field)) {
+			if ($field != 'radminsuper' && preg_match('#radmin#m', $field)) {
 				$sel = ($val) ? ' selected="selected"' : '';
 				$field = substr($field,6);
 				echo '<option value="'.$field.'"'.$sel.'>'.$field.'</option>';

@@ -53,7 +53,7 @@ if (can_admin() && $MAIN_CFG['global']['update_monitor']) {
 			$curvers = preg_replace('#^(.*)<version>(.*)</version>(.*)#s','\\2',$items[0], 1);
 			$upgurl = preg_replace('#^(.*)<url>(.*)</url>(.*)#s','\\2',$items[0], 1);
 			unset($items[0]);
-			$data = array('current'=>$curvers, 'url'=>$upgurl, 'num'=>count($items), 'msg'=>array());
+			$data = array('current'=>$curvers, 'url'=>$upgurl, 'num'=>is_countable($items) ? count($items) : 0, 'msg'=>array());
 			foreach ($items as $item) {
 				if (!empty($item)) {
 					$alrt_vers = preg_replace('#(.*)<version>(.*)</version>(.*)#s','\\2',$item);
@@ -74,7 +74,7 @@ if (can_admin() && $MAIN_CFG['global']['update_monitor']) {
 	} else {
 		echo (version_compare(CPG_NUKE, $data['current'], '>=') ? '<img src="images/update/green.png" alt="" /><br /><br /><span style="color: #009933;"><strong>'._UM_G.' ('.CPG_NUKE.(version_compare(CPG_NUKE, $data['current'], '>') ? ' CVS' : '').')</strong></span>' : '<img src="images/update/red.png" alt="" /><br /><br /><span style="color: #ae0000;"><strong>'.sprintf(_UM_R, $data['current'], $data['url']).'</strong></span>');
 		echo '</center>';
-		if (count($data['msg'])) { echo '<br />'; }
+		if (is_countable($data['msg']) ? count($data['msg']) : 0) { echo '<br />'; }
 		foreach ($data['msg'] as $item) {
 			echo '<fieldset><legend>'.$item['title'].'</legend>'.decode_bbcode($item['desc']).'<br /><br />'._POSTEDON.' '.formatDateTime($item['date'], '%B %d, %Y').'</fieldset>';
 		}
@@ -106,7 +106,7 @@ CloseTable();
 echo '<br />';
 
 OpenTable();
-echo '<div align="center"><span class="genmed"><strong>'._DEFHOMEMODULE.'</strong></span><br /><br /><img src="images/home.gif" alt="" /><br /><br />[ <strong>'.ereg_replace('_', ' ', $MAIN_CFG['global']['main_module']).'</strong> ]';
+echo '<div align="center"><span class="genmed"><strong>'._DEFHOMEMODULE.'</strong></span><br /><br /><img src="images/home.gif" alt="" /><br /><br />[ <strong>'.preg_replace('#_#m', ' ', $MAIN_CFG['global']['main_module']).'</strong> ]';
 if (can_admin()) { echo '&nbsp;&nbsp;[ <a href="'.adminlink('modules').'">'._CHANGE.'</a> ]'; }
 echo '</div>';
 CloseTable();
