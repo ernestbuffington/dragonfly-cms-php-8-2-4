@@ -26,7 +26,7 @@ define('GZIPSUPPORT', extension_loaded('zlib'));
 define('WINDOWS', (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'));
 # Are we allowed to modify php.ini on the fly ?
 define('CAN_MOD_INI', !preg_match('#ini_set#m', ini_get('disable_functions')));
-define('MAGICQUOTES', get_magic_quotes_gpc()||ini_get('magic_quotes_sybase'));
+//define('MAGICQUOTES', get_magic_quotes_gpc() || ini_get('magic_quotes_sybase'));
 # http://bugs.php.net/bug.php?id=31849
 if (WINDOWS || !function_exists('posix_getpwuid')) {
 	define('_DRAGONLY_OWNER', 'N/A');
@@ -65,7 +65,7 @@ header('X-Powered-By: Dragonfly CMS using PHP engine');
 # http://bugs.php.net/bug.php?id=15693
 if ($_SERVER['REQUEST_METHOD'] == 'HEAD') { exit; }
 
-set_magic_quotes_runtime(0); # Disable magic_quotes_runtime
+//set_magic_quotes_runtime(0); # Disable magic_quotes_runtime
 umask(0);
 
 if (CAN_MOD_INI) {
@@ -499,7 +499,10 @@ function blocks_list($module=null) {
 function Prepare_INPUT(&$value, $key, $set=true) {
 	if (is_array($value)) { array_walk($value, 'Prepare_INPUT', false); }
 	else {
-		if (MAGICQUOTES) { $value = stripslashes($value); }
+		if(function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())
+		{ 
+		  $value = stripslashes($value); 
+		}
 		# replace NO-BREAK and other types of utf8 spacings
 		$value = preg_replace(array(
 			// UTF8                         UNICODE
