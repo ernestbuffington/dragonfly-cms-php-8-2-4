@@ -189,7 +189,11 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/modules/*/*',
 		  //////__DIR__ . '/modules/*',
 		  
-		  __DIR__ . '/rss/*',
+		  //////__DIR__ . '/rss/*',
+
+		  //////__DIR__ . '/themes/*/*/*',
+		  //////__DIR__ . '/themes/*/*',
+		  //////__DIR__ . '/themes/*',
 
 		
     ]);
