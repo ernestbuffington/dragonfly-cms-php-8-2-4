@@ -69,7 +69,7 @@ class sql_mngr
 	function get_versions()
 	{
 		$version = [];
-  $version['engine'] = 'MySQL';
+        $version['engine'] = 'MySQL';
 		$version['client'] = mysql_get_client_info();
 		$version['server'] = mysql_get_server_info();
 		return $version;
@@ -78,7 +78,7 @@ class sql_mngr
 	function get_details()
 	{
 		$details = [];
-  $result = $this->_owner->query('SHOW VARIABLES', false, true);
+        $result = $this->_owner->query('SHOW VARIABLES', false, true);
 		while ($row = mysql_fetch_row($result)) { $details[$row[0]] = $row[1]; }
 		mysql_free_result($result);
 		$details['engine']  = 'MySQL';
@@ -93,8 +93,8 @@ class sql_mngr
 	{
 		$this->_create_patterns();
 		$query = preg_replace($this->query_pattern, $this->query_replace, $query);
-		return $this->_owner->query('CREATE TABLE '.$query.' TYPE=MyISAM'.(DB_CHARSET ? ' DEFAULT CHARSET='.DB_CHARSET : ''));
-		//return $this->_owner->query('CREATE TABLE IF NOT EXISTS '.$query.' TYPE=MyISAM');
+		return $this->_owner->query('CREATE TABLE '.$query.' ENGINE=MyISAM'.(DB_CHARSET ? ' DEFAULT CHARSET='.DB_CHARSET : ''));
+		//return $this->_owner->query('CREATE TABLE IF NOT EXISTS '.$query.' ENGINE=MyISAM');
 	}
 
 	function alter_table($query)

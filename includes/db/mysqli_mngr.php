@@ -35,11 +35,13 @@ class sql_mngr
 		$this->_owner = $owner;
 		$this->fields = array(
 		'SERIAL4' => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+		#####'SERIAL4' => 'INT NOT NULL AUTO_INCREMENT',
 		'SERIAL8' => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+		######'SERIAL8' => 'BIGINT NOT NULL AUTO_INCREMENT',
 		'TEXT' => 'TEXT',
 		'BLOB' => 'BLOB',
-		'BOOL' => 'BOOL',       # synonyms for TINYINT(1)
-//		'BOOL' => 'TINYINT(1)', # MySQL >= 5.0.3 -> BIT
+//		'BOOL' => 'BOOL',       # synonyms for TINYINT(1)
+		'BOOL' => 'TINYINT(1)', # MySQL >= 5.0.3 -> BIT
 //		'BIT' => 'BIT',         # MySQL < 5.0.3 -> BIT == TINYINT(1); # MySQL >= 5.0.3 -> BIT(N) == bits per value
 		'INT1' => 'TINYINT',
 		'INT2' => 'SMALLINT',
@@ -93,7 +95,7 @@ class sql_mngr
 	{
 		$this->_create_patterns();
 		$query = preg_replace($this->query_pattern, $this->query_replace, $query);
-		return $this->_owner->query('CREATE TABLE '.$query.' TYPE=MyISAM'.(DB_CHARSET ? ' DEFAULT CHARSET='.DB_CHARSET : ''));
+		return $this->_owner->query('CREATE TABLE '.$query.' ENGINE=MyISAM'.(DB_CHARSET ? ' DEFAULT CHARSET='.DB_CHARSET : ''));
 	}
 
 	function alter_table($query)

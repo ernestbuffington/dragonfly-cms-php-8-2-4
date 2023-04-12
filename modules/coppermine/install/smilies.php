@@ -26,7 +26,7 @@ $sql[] = "CREATE TABLE ".$prefix."_bbsmilies (
   smile_url varchar(100) default NULL,
   emoticon varchar(75) default NULL,
   PRIMARY KEY  (smilies_id)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = 'INSERT INTO '.$prefix.'_bbsmilies VALUES("1", ":D", "icon_biggrin.gif", "Very Happy")';
 $sql[] = 'INSERT INTO '.$prefix.'_bbsmilies VALUES("2", ":-D", "icon_biggrin.gif", "Very Happy")';

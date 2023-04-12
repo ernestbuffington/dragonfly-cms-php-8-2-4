@@ -35,7 +35,7 @@ $sql[] = "CREATE TABLE ".$table_prefix."albums (
   stat_uptodate tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (aid),
   KEY alb_category (category)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "CREATE TABLE ".$table_prefix."categories (
   cid int(11) NOT NULL auto_increment,
@@ -52,7 +52,7 @@ $sql[] = "CREATE TABLE ".$table_prefix."categories (
   KEY cat_parent (parent),
   KEY cat_pos (pos),
   KEY cat_owner_id (owner_id)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "INSERT INTO ".$table_prefix."categories VALUES (1, 0, 'User galleries', 'This category contains albums that belong to Coppermine users.', 0, 0, 0, 0, 0, 'NO')";
 
@@ -68,13 +68,13 @@ $sql[] = "CREATE TABLE ".$table_prefix."comments (
   msg_hdr_ip tinytext,
   PRIMARY KEY  (msg_id),
   KEY com_pic_id (pid)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "CREATE TABLE ".$table_prefix."config (
   name varchar(40) NOT NULL default '',
   value varchar(255) NOT NULL default '',
   PRIMARY KEY  (name)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "INSERT INTO ".$table_prefix."config VALUES ('albums_per_page', '12')";
 $sql[] = "INSERT INTO ".$table_prefix."config VALUES ('album_list_cols', '2')";
@@ -159,7 +159,7 @@ $sql[] = "CREATE TABLE ".$table_prefix."exif (
   filename varchar(255) NOT NULL default '',
   exif_data text NOT NULL,
   UNIQUE KEY filename (filename)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "CREATE TABLE ".$table_prefix."pictures (
   pid int(11) NOT NULL auto_increment,
@@ -196,7 +196,7 @@ $sql[] = "CREATE TABLE ".$table_prefix."pictures (
   KEY randpos (randpos),
   KEY pic_aid (aid),
   FULLTEXT KEY search (title,caption,keywords,filename,user1,user2,user3,user4)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "CREATE TABLE ".$table_prefix."usergroups (
   group_id int(11) NOT NULL auto_increment,
@@ -211,7 +211,7 @@ $sql[] = "CREATE TABLE ".$table_prefix."usergroups (
   pub_upl_need_approval tinyint(4) NOT NULL default '1',
   priv_upl_need_approval tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (group_id)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 
 $sql[] = "INSERT INTO ".$table_prefix."usergroups VALUES (1, 'Administrators', 0, 1, 1, 1, 1, 1, 1, 0, 0)";
 $sql[] = "INSERT INTO ".$table_prefix."usergroups VALUES (2, 'Registered', 1024, 0, 1, 1, 1, 1, 1, 1, 0)";
@@ -223,4 +223,4 @@ $sql[] = "CREATE TABLE ".$table_prefix."votes (
   user_md5_id varchar(32) NOT NULL default '',
   vote_time int(11) NOT NULL default '0',
   PRIMARY KEY  (pic_id,user_md5_id)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
