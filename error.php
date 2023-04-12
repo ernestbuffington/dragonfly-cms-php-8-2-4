@@ -14,7 +14,7 @@
   $Date: 2007/04/23 10:43:34 $
 **********************************************/
 error_reporting(0);
-$server_name = ereg_replace('www.', '', $_SERVER['SERVER_NAME']);
+$server_name = preg_replace('#www.#m', '', $_SERVER['SERVER_NAME']);
 $notify = 'webmaster@'.$server_name;
 $notifyfrom = 'noreply@'.$server_name;
 $returnsite = $_SERVER['HTTP_HOST'];
@@ -110,9 +110,9 @@ function print_page()
 	$error_notes = ucfirst(preg_replace('/:.*/', '', $_SERVER['REDIRECT_ERROR_NOTES']));
 	$errorCode = $_SERVER['REDIRECT_STATUS'];// $_SERVER['QUERY_STRING'];
 	$webMsg = $webMsg[$errorCode];
-	if (eregi('My_eGallery', $client['request'])) {
+	if (preg_match('#My_eGallery#mi', $client['request'])) {
 		$webMsg = 'Do you think we are really that stupid to run My eGallery so that you can hack it?<br />Think again. Coppermine rules!';
-	} else if (eregi('modules/coppermine', $client['request'])) {
+	} else if (preg_match('#modules\/coppermine#mi', $client['request'])) {
 		$webMsg = 'Your hack attempt has been recorded.<br />The IP Address that you used for this attempt, '.$_SERVER['REMOTE_ADDR'].', will be sent to your ISP.';
 		header('HTTP/1.0 404 Not Found');
 	}
