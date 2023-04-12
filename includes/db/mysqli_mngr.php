@@ -69,7 +69,7 @@ class sql_mngr
 	function get_versions()
 	{
 		$version = [];
-  $version['engine'] = 'MySQLi';
+        $version['engine'] = 'MySQLi';
 		$version['client'] = mysqli_get_client_info();
 		$version['server'] = $this->_owner->connect_id->server_info;
 		return $version;
@@ -78,7 +78,7 @@ class sql_mngr
 	function get_details()
 	{
 		$details = [];
-  $result = $this->_owner->query('SHOW VARIABLES', false, true);
+        $result = $this->_owner->query('SHOW VARIABLES', false, true);
 		while ($row = $result->fetch_row()) { $details[$row[0]] = $row[1]; }
 		$result->free();
 		$details['engine']  = 'MySQLi';
@@ -111,7 +111,7 @@ class sql_mngr
 	function list_databases()
 	{
 		$result = null;
-  $databases = array();
+        $databases = array();
 		//hopefully mysqli and mysql exts are both loaded
 		if (function_exists('mysql_list_dbs') && strpos(ini_get('disable_functions'), 'mysql_list_dbs') === false) {
 			$result = mysqli_query('SHOW DATABASES');
