@@ -199,8 +199,12 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',
 		  //////__DIR__ . '/admin/*',
+		  
+		  __DIR__ . '/admin/modules/ranks.php',
+		  //__DIR__ . '/admin/modules/forums/*',
+		  //__DIR__ . '/admin/modules/cache/*',
 
-		  __DIR__ . '/includes/coppermine/init.inc',
+		  //////__DIR__ . '/includes/coppermine/init.inc',
 		  //////__DIR__ . '/includes/coppermine/*/*',
 		  //////__DIR__ . '/includes/coppermine/*',
 		  
