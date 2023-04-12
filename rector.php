@@ -181,6 +181,10 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/install/*/*',
 		  //////__DIR__ . '/install/*',
 
+		  //////__DIR__ . '/language/*/*/*',
+		  //////__DIR__ . '/language/*/*',
+		  //////__DIR__ . '/language/*',
+
 		
     ]);
 
