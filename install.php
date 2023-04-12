@@ -14,16 +14,22 @@
   $Date: 2007/04/23 10:43:34 $
 **********************************************/
 error_reporting(E_ALL);
+
 define('INSTALL', 1);
+
 require('includes/cmsinit.inc');
+
 require_once(CORE_PATH.'cpg_page.php');
 
 $go = 0;
+
 if (isset($_POST['step'])) {
 	if (!preg_match('#^[0-9]$#m', $_POST['step'])) exit;
 	$go = intval($_POST['step']);
 }
+
 $images = array();
+
 for ($i=0; $i<6; ++$i) {
 	$images[$i] = (($go == $i) ? 'box_current' : (($go > $i) ? 'checked' : 'unchecked'));
 }
@@ -31,6 +37,7 @@ for ($i=0; $i<6; ++$i) {
 if ($go < 4 && isset($_COOKIE['installtest'])) { setcookie('installtest','',['expires' => -1]); }
 
 $config_file = CORE_PATH.'config.php';
+
 if (file_exists($config_file)) {
 	$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname);
 } else {
@@ -46,12 +53,16 @@ if (isset($_GET['newlang'])) {
 } elseif (isset($_COOKIE['installlang'])) {
 	$currentlang = $_COOKIE['installlang'];
 }
+
 $instlang = array();
+
 if (empty($currentlang) || !preg_match('#^[a-z_]+$#', $currentlang) || ($currentlang != 'english' && !file_exists(BASEDIR."install/language/$currentlang.php"))) {
 	$currentlang = 'english';
 }
 $MAIN_CFG['global'] = array('language' => $currentlang, 'multilingual' => '0', 'GoogleTap' => '0', 'top' => '', 'adminmail' => '');
+
 require_once(CORE_PATH.'functions/language.php');
+
 require(BASEDIR."install/language/$currentlang.php");
 
 if (file_exists($config_file)) {
@@ -100,9 +111,12 @@ function get_db_vars($db) {
 }
 
 function inst_header() {
+	
 	$matches = [];
- $languageslist = [];
- global $images, $instlang, $go, $currentlang;
+    $languageslist = [];
+    
+	global $images, $instlang, $go, $currentlang;
+	
 	echo cpg_header($instlang['installer']).'
 <script language="JavaScript" type="text/javascript" src="includes/javascript/infobox.js"></script>
 <div id="infodiv" style="position:absolute; visibility:hidden; z-index:20; top:0px; left:0px;"></div><br />
@@ -116,18 +130,22 @@ function inst_header() {
   <img src="images/'.$images[3].'.gif" alt="" />'.$instlang['s_builddb'].'<br />
   <img src="images/'.$images[4].'.gif" alt="" />'.$instlang['s_gather'].'<br />
   <img src="images/'.$images[5].'.gif" alt="" />'.$instlang['s_create'].'<br />';
+	
 	if (!$go) {
 		echo '<br />'._SELECTLANGUAGE.'<br />
 <select name="newlanguage" onchange="top.location.href=\''.basename(__FILE__).'?newlang=\'+this.options[this.selectedIndex].value" class="formfield">';
 		$content = '';
 		$handle = opendir(BASEDIR.'install/language');
+		
 		while ($file = readdir($handle)) {
 			if (preg_match('#(.*).php#m', $file, $matches)) {
 				$languageslist[] = $matches[1];
 			}
 		}
 		closedir($handle);
+		
 		sort($languageslist);
+		
 		for ($i=0; $i < sizeof($languageslist); $i++) {
 			if ($languageslist[$i]!='') {
 				$content .= '<option value="'.$languageslist[$i].'"';
@@ -141,6 +159,7 @@ function inst_header() {
 </td><td valign="top" align="center">';
 	flush();
 }
+
 function footer() {
 	echo '</td></tr></table></form>
   </td></tr></table>
@@ -153,10 +172,13 @@ function inst_help($item) {
 }
 
 if (!$go) {
+
 	inst_header();
+
 	echo '<h2>'.$instlang['welcome'].'</h2>
 <p style="font-size:12px">'.$instlang['info'].'</p><p style="font-size:12px">'.$instlang['click'].'</p>';
 	echo '<p>';
+
 	if (function_exists('readgzfile')) {
 		echo '<textarea name="textfield" rows="15" cols="80">';
 		readgzfile('install/GPL.gz');
@@ -164,6 +186,7 @@ if (!$go) {
 	} else {
 		echo '<h2 align="center">'.$instlang['no_zlib'].'</h2>';
 	}
+
 	echo '<br clear="all" /><br />
 <input type="hidden" name="step" value="'.(!empty($current_version) ? '3' : '1').'" />
 <input type="submit" value="'.$instlang['agree'].'" class="formfield" /></p>';
