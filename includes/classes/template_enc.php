@@ -33,9 +33,10 @@
 
 class tpl_encode
 {
+
 	// The all seeing all doing compile method. Parts are inspired by or directly
 	// from Smarty
-	public static function compile($code, $no_echo = false, $echo_var = '')
+	function compile($code, $no_echo = false, $echo_var = '')
 	{
 		// Remove any "loose" php ... we want to give admins the ability
 		// to switch on/off PHP for a given template. Allowing unchecked
@@ -117,7 +118,7 @@ class tpl_encode
 				case 'INCLUDE':
 					$temp = array_shift($include_blocks);
 					$compile_blocks[] = '<?php $this->_tpl_include(\''.$temp."'); ?>";
-					$this->_tpl_include($temp, false);
+					(new cpg_template)->_tpl_include($temp, false);
 					break;
 
 				case 'INCLUDEPHP':
@@ -148,7 +149,7 @@ class tpl_encode
 		return  (!$no_echo) ? $template_php : "\$$echo_var .= '" . $template_php . "'";
 	}
 
-	public static function compile_var_tags(&$text_blocks)
+	function compile_var_tags(&$text_blocks)
 	{
 		// change template varrefs into PHP varrefs
 		$varrefs = array();
@@ -169,7 +170,7 @@ class tpl_encode
 		return;
 	}
 
-	public static function compile_tag_block($tag_args)
+	function compile_tag_block($tag_args)
 	{
 		// Allow for control of looping (indexes start from zero):
 		// foo(2)	: Will start the loop on the 3rd entry
@@ -208,7 +209,7 @@ class tpl_encode
 	// Compile IF tags - much of this is from Smarty with
 	// some adaptions for our block level methods
 	//
-	public static function compile_tag_if($tag_args, $elseif)
+	function compile_tag_if($tag_args, $elseif)
 	{
 		/* Tokenize args for 'if' tag. */
 		preg_match_all('/(?:
@@ -314,7 +315,7 @@ class tpl_encode
 		return (($elseif) ? '} elseif (' : 'if (') . (implode(' ', $tokens) . ') { ');
 	}
 
-	public static function compile_tag_define($tag_args, $option)
+	function compile_tag_define($tag_args, $option)
 	{
 		preg_match('#^(([a-z0-9\-_]+?\.)+?)?\$([A-Z][A-Z0-9_\-]*?) = (\'?)(.*?)(\'?)$#', $tag_args, $match);
 		if (empty($match[3]) || empty($match[5])) {
@@ -351,9 +352,9 @@ class tpl_encode
 	}
 
 	// This is from Smarty
-	public static function _parse_is_expr($is_arg, $tokens) {
+	function _parse_is_expr($is_arg, $tokens) {
 		$expr = null;
-        $expr_end =	0;
+  $expr_end =	0;
 		$negate_expr = false;
 		if (($first_token = array_shift($tokens)) == 'not') {
 			$negate_expr = true;
@@ -406,7 +407,7 @@ class tpl_encode
 	 * It's ready to be inserted into an "echo" line in one of the templates.
 	 * NOTE: expects a trailing "." on the namespace.
 	 */
-	public static function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
+	function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
 	{
 		# Strip the trailing period.
 		$namespace = substr($namespace, 0, strlen($namespace) - 1);
@@ -425,7 +426,7 @@ class tpl_encode
 	 * If $include_last_iterator is true, then [$_childN_i] will be appended to the form shown above.
 	 * NOTE: does not expect a trailing "." on the blockname.
 	 */
-	public static function generate_block_data_ref($blockname, $include_last_iterator, $defop)
+	function generate_block_data_ref($blockname, $include_last_iterator, $defop)
 	{
 		# Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
@@ -442,7 +443,7 @@ class tpl_encode
 		return $varref;
 	}
 
-	public static function compile_write(&$handle, &$data)
+	function compile_write(&$handle, &$data)
 	{
 		$filename = preg_replace('#\/#m', '#', $this->filename[$handle]);
 		$filename = $this->cachepath.$filename.'.inc';
