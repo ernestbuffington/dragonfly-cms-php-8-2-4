@@ -71,7 +71,7 @@ function inet_ntop($ip)
 		$ip = explode(':',$ip);
 		$res='';
 		foreach ($ip as $seg) {
-			while ($seg{0} == '0') $seg = substr($seg,1);
+			while ($seg[0] == '0') $seg = substr($seg,1);
 			if ($seg != '') {
 				$res .= ($res==''?'':':').$seg;
 			} else {

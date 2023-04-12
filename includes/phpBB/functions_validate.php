@@ -33,7 +33,8 @@ if (!defined('IN_PHPBB')) {
 //
 function validate_username($username)
 {
-	global $db, $lang, $userdata;
+	$row = [];
+ global $db, $lang, $userdata;
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', $username);
 	// Limit username length

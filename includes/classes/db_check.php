@@ -54,22 +54,22 @@ class db_check
 				if (isset($columns[$field])) {
 					# Default must be checked on NULL
 					$col =& $columns[$field];
-					if (SQL_LAYER == 'postgresql' && eregi('VARBINARY', $col['Type'])) $col['Type'] = 'VARBINARY';
+					if (SQL_LAYER == 'postgresql' && preg_match('#VARBINARY#mi', $col['Type'])) $col['Type'] = 'VARBINARY';
 					if ($row['Type'] != $col['Type'] ||
 						$row['Null'] != $col['Null'] ||
 						(isset($row['Default']) != isset($col['Default']) || $row['Default'] != $col['Default']))
 					{
 						# not the same so modify
-						if (eregi('VARBINARY', $col['Type']) && version_compare($version, '9.2', '<')) {
+						if (preg_match('#VARBINARY#mi', $col['Type']) && version_compare($version, '9.2', '<')) {
 							# from any field type to binary including varbinary fields locked to 9.2
 							db_check::iptobin($querytable, $table, $table_ids[$table], $field, $col, $row['Type']);
-						}	else if (eregi('(DATETIME|TIMESTAMP)', $row['Type'])) {
+						}	else if (preg_match('#(DATETIME|TIMESTAMP)#mi', $row['Type'])) {
 							db_check::dttotime($querytable, $table, $table_ids[$table], $field, array($field, $col['Type'], $col['Null'], $col['Default']));
-						} else if (!eregi('int', $row['Type'])) {
+						} else if (!preg_match('#int#mi', $row['Type'])) {
 							if (($table == 'users' || $table == 'users_temp') && $field == 'user_regdate') {
 								db_check::rdtotime($querytable, $table, 'user_id', $field);
 								$installer->add_query('CHANGE', $table, array($field, $col['Type'], $col['Null'], $col['Default']));
-						} else if (eregi('ENUM',$row['Type']) && eregi('INT', $col['Type'])) {
+						} else if (preg_match('#ENUM#mi',$row['Type']) && preg_match('#INT#mi', $col['Type'])) {
 								$installer->add_query('CHANGE', $table, array($field, $col['Type'], $col['Null'], $col['Default']));
 								db_check::enumtoint($querytable, $table, $table_ids[$table], $field);
 							} else {
@@ -220,7 +220,7 @@ class db_check
 		} else if ($table == 'bbprivmsgs') {
 			$installer->add_query('UPDATE', $table, "$field=''");
 		}
-		if (!eregi('VARBINARY', $type) && !eregi('BYTEA', $type)) {
+		if (!preg_match('#VARBINARY#mi', $type) && !preg_match('#BYTEA#mi', $type)) {
 			if (!isset($col['Default'])) {
 				$installer->add_query('CHANGE', $table, array($field, $col['Type'], $col['Null']));
 				return;
@@ -251,7 +251,7 @@ class db_check
 			# strtotime on failure returns: php<5.1.0  -1, php>5.1.0 false 
 			$time = strtotime($row[0]);
 			# isset($failover)?: protects from 1st user_id regdate screwed
-			$time = ($time>0) ? $time : (isset($failover) ? $failover : 0);
+			$time = ($time>0) ? $time : ($failover ?? 0);
 			$installer->add_query('UPDATE', $table, "$field='$time' WHERE $field='$row[0]'");
 			$failover = $time;
 		}
@@ -316,7 +316,8 @@ class db_check
 
 	function insert_data(&$table, &$content)
 	{
-		global $installer;
+		$increment = [];
+  global $installer;
 		$multiple = array();
 		foreach ($content['content'] as $main => $data) {
 			switch ($content['compare']) {
@@ -365,7 +366,7 @@ class db_check
 		}
 		if (isset($content['serial'])) {
 			$increment['field'] = $content['serial'];
-			$increment['value'] = count($content['content']);
+			$increment['value'] = is_countable($content['content']) ? count($content['content']) : 0;
 			$installer->add_query('INC_SERIAL', $table, $increment);
 		}
 	}

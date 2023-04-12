@@ -26,7 +26,7 @@ class sql_db extends sql_parent
 	//
 	// Constructor
 	//
-	function sql_db($server, $user, $password, $database, $persistent=false)
+	function __construct($server, $user, $password, $database, $persistent=false)
 	{
 		if (!function_exists('pg_connect')) {
 			cpg_error('PostgreSQL extension not loaded in PHP.<br />Recompile PHP, edit php.ini or choose a different SQL layer.');

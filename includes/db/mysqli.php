@@ -22,7 +22,7 @@ class sql_db extends sql_parent
 	//
 	// Constructor
 	//
-	function sql_db($server, $user, $password, $database)
+	function __construct($server, $user, $password, $database)
 	{
 		$stime = get_microtime();
 		if (strpos($server, ':')) $server = explode(':', $server, 2);

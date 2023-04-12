@@ -25,7 +25,7 @@ class cpg_installer
 	var $queries = array();
 
 	# Constructor
-	function cpg_installer($tblexists=false, $duplicate=false)
+	function __construct($tblexists=false, $duplicate=false)
 	{
 		global $db;
 		if (!$db) { return null; }
@@ -36,7 +36,7 @@ class cpg_installer
 	function add_query($type, $table, $values='', $rollback='')
 	{
 		global $prefix, $user_prefix;
-		if (ereg('^(users|users_temp|users_fields)$', $table)) $table = $user_prefix.'_'.$table;
+		if (preg_match('#^(users|users_temp|users_fields)$#m', $table)) $table = $user_prefix.'_'.$table;
 		else $table = $prefix.'_'.$table;
 		$this->queries[] = array(
 			$type,
@@ -49,7 +49,8 @@ class cpg_installer
 	# module installer
 	function install($test=false, $echo=false)
 	{
-		global $db, $prefix;
+		$sql = null;
+  global $db, $prefix;
 		/**************************************
 		   Execute each query
 		**************************************/
@@ -91,8 +92,8 @@ class cpg_installer
 						$query[2] = array(
 							$match[1],
 							$match[2],
-							!eregi('NOT NULL', $query[2]),
-							!empty($match[3]) ? (isset($match[5]) ? $match[5] : $match[4]) : false
+							!preg_match('#NOT NULL#mi', $query[2]),
+							!empty($match[3]) ? ($match[5] ?? $match[4]) : false
 						);
 					}
 					$sql = $db->alter_field('add', $query[1], $query[2][0], $query[2][1], $query[2][2], $query[2][3]) ? true : false;
@@ -108,8 +109,8 @@ class cpg_installer
 						$query[2] = array(
 							array($match[1], $match[2]),
 							$match[3],
-							!eregi('NOT NULL', $query[2]),
-							!empty($match[4]) ? (ereg('[\'"]', $match[5][0]) ? substr($match[5],1, -1) : $match[5]) : false
+							!preg_match('#NOT NULL#mi', $query[2]),
+							!empty($match[4]) ? (preg_match('#[\'"]#m', $match[5][0]) ? substr($match[5],1, -1) : $match[5]) : false
 						);
 					}
 					$sql = $db->alter_field('change', $query[1], $query[2][0], $query[2][1], $query[2][2], $query[2][3]) ? true : false;
@@ -142,8 +143,8 @@ class cpg_installer
 			} elseif ($sql === false || ($sql !== true && !$db->sql_query($sql, true))) {
 				$this->error = $db->sql_error();
 				$this->error = $sql.'<br />'.$this->error['message'];
-				if (($this->duplicate && (eregi('duplicate', $this->error) || eregi('key defined', $this->error))) ||
-				    ($this->tblexists && (eregi('already exists', $this->error) || eregi('check that column/key exists', $this->error)))
+				if (($this->duplicate && (preg_match('#duplicate#mi', $this->error) || preg_match('#key defined#mi', $this->error))) ||
+				    ($this->tblexists && (preg_match('#already exists#mi', $this->error) || preg_match('#check that column\/key exists#mi', $this->error)))
 				) {
 					$this->error = null;
 				} else {

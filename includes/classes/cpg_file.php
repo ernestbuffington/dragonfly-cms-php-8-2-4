@@ -91,7 +91,8 @@ class CPG_File {
 	}
 
 	function copy_special($oldfile, $newfile) {
-		if (!CPG_File::analyze_path(dirname($newfile))) { return false; }
+		$fp = null;
+  if (!CPG_File::analyze_path(dirname($newfile))) { return false; }
 		if (!($of = fopen($oldfile, 'rb'))) {
 			return false;
 		}
@@ -132,7 +133,7 @@ class CPG_File {
 			fputs($fp, 'Referer: ' . get_uri() ."\r\n");
 			fputs($fp, 'HOST: ' . $rdf['host'] . "\r\n\r\n");
 			$data = rtrim(fgets($fp, 512));
-			if (!ereg(' 200 OK', $data)) {
+			if (!preg_match('# 200 OK#m', $data)) {
 				$error = $data;
 				trigger_error($data, E_USER_WARNING);
 				return false;
@@ -141,12 +142,12 @@ class CPG_File {
 			// Read all headers
 			while (!empty($data)) {
 				$data = rtrim(fgets($fp, 300)); // read lines
-				if (eregi('(Content-Length|Content-Type|Last-Modified|Content-Length): ', $data)) {
+				if (preg_match('#(Content\-Length|Content\-Type|Last\-Modified|Content\-Length): #mi', $data)) {
 					header($data);
 				}
 			}
 		} else {
-			if (ereg('\.(\.|php$)', $filename)) {
+			if (preg_match('#\.(\.|php$)#m', $filename)) {
 				$error = "$filename isn't allowed to be downloaded";
 				trigger_error($error, E_USER_WARNING);
 				return false;
@@ -169,7 +170,7 @@ class CPG_File {
 				elseif ($ext == 'zip') { $mimetype = 'application/zip'; }
 				elseif ($ext == 'wma') { $mimetype = 'audio/x-ms-wma'; }
 				elseif ($ext == 'wmv') { $mimetype = 'video/x-ms-wmv'; }
-				else { $mimetype = 'application/octet'.(ereg('(Opera|compatible; MSIE)', $_SERVER['HTTP_USER_AGENT']) ? 'stream' : '-stream'); }
+				else { $mimetype = 'application/octet'.(preg_match('#(Opera|compatible; MSIE)#m', $_SERVER['HTTP_USER_AGENT']) ? 'stream' : '-stream'); }
 			}
 //			header('Content-Type: "'.mime_content_type(basename($realname)).'"'); // PHP >= 4.3.0
 			header('Content-Type: '.$mimetype.'; name="'.basename($realname).'"');
@@ -188,7 +189,7 @@ class CPG_File {
 		if ($path[0] == '.') { $path = substr($path, 1); }
 		if ($path[0] == '.') { $path = substr($path, 1); }
 		if ($path[0] == '/') { $path = substr($path, 1); }
-		$parts = (ereg('/', $path) ? explode('/', $path) : array($path));
+		$parts = (preg_match('#\/#m', $path) ? explode('/', $path) : array($path));
 		$npath = '';
 		while ($dir = array_shift($parts)) {
 			$npath .= "$dir/";
@@ -203,10 +204,11 @@ class CPG_File {
 	}
 
 	function analyze_system() {
-		$disabled = ini_get('disable_functions'); // string
-		$analized['set_time_limit'] = !eregi('set_time_limit', $disabled);
-		$analized['fsockopen']      = !eregi('fsockopen', $disabled);
-		$analized['fopen']          = !eregi('fopen', $disabled);
+		$analized = [];
+  $disabled = ini_get('disable_functions'); // string
+		$analized['set_time_limit'] = !preg_match('#set_time_limit#mi', $disabled);
+		$analized['fsockopen']      = !preg_match('#fsockopen#mi', $disabled);
+		$analized['fopen']          = !preg_match('#fopen#mi', $disabled);
 		$analized['url_fopen']      = ini_get('allow_url_fopen'); // 0 or 1
 
 		$analized['upload']['active']  = ini_get('file_uploads');   // 0 or 1

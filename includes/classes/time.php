@@ -222,11 +222,12 @@ class L10NTime {
 	}
 
 	function strftime($format, $time, $region=0, $gmt=0) {
-		global $LNG;
+		$datetime = [];
+  global $LNG;
 		# check if we already have a unix timestamp else convert 
 		if (!is_numeric($time)) {
 			# 'YEAR-MONTH-DAY HOUR:MIN:SEC' aka MySQL DATETIME
-			if (ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})', $time, $datetime)) {
+			if (preg_match('#([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#m', $time, $datetime)) {
 				# gmmktime() adds server GMT & DST
 				$time = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
 			}
@@ -244,15 +245,16 @@ class L10NTime {
 			array('_D%w', '_l%w', '_M%m', '_F%m'),
 			$format);
 		$time = strftime($format, $time);
-		return preg_replace('#_([DlFM])([0-9]{1,2})#e', '$LNG[\'_time\'][\'\\1\'][intval(\'\\2\')]', $time);
+		return preg_replace_callback('#_([DlFM])([0-9]{1,2})#', fn($matches) => $LNG['_time'][$matches[1]][intval($matches[2])], $time);
 	}
 
 	function date($format, $time, $region=0, $gmt=0) {
-		global $LNG;
+		$datetime = [];
+  global $LNG;
 		# check if we already have a unix timestamp else convert 
 		if (!is_numeric($time)) {
 			# 'YEAR-MONTH-DAY HOUR:MIN:SEC' aka MySQL DATETIME
-			if (ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})', $time, $datetime)) {
+			if (preg_match('#([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#m', $time, $datetime)) {
 				$time = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
 			}
 		}
@@ -264,7 +266,7 @@ class L10NTime {
 		$format = preg_replace('#([Dl])#', '_\\\\\\1w', $format);
 		$format = preg_replace('#([FM])#', '_\\\\\\1n', $format);
 		$time = date($format, $time);
-		return preg_replace('#_([DlFM])([0-9]{1,2})#e', '$LNG[\'_time\'][\'\\1\'][intval(\\2)]', $time);
+		return preg_replace_callback('#_([DlFM])([0-9]{1,2})#', fn($matches) => $LNG['_time'][$matches[1]][intval($matches[2])], $time);
 	}
 
 	function strtotime($time, $now=0) {
@@ -302,7 +304,8 @@ class L10NTime {
 */
 	function get_dst_switch($localtime, $data)
 	{
-		$this_year = L10NTime::date('Y', $localtime);
+		$gdata = [];
+  $this_year = L10NTime::date('Y', $localtime);
 		if (isset($data[3]) && $data[3] == -1) {
 			# DST switch is on a jalali calendar day so convert
 			$jdate = L10NTime::gregorian_to_jalali($this_year, L10NTime::date('n', $localtime), L10NTime::date('j', $localtime));

@@ -21,7 +21,7 @@ class archive_zip
 	var $filename;
 	var $type = 'zip';
 
-	function archive_zip($filename)
+	function __construct($filename)
 	{
 		$this->filename = $filename;
 		$this->load_toc();

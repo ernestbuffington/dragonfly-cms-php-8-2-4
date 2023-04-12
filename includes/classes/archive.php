@@ -79,15 +79,15 @@ class archive
 			$id = fread($fp, 265);
 			fclose($fp);
 			# Compressed Archives
-			if (substr($id,0,2) == "\x37\x7a") { #7z
+			if (str_starts_with($id, "\x37\x7a")) { #7z
 				return '7z'; # application/x-7z-compressed
-			} else if (substr($id,0,3) == "\x42\x5a\x68") { # BZh
+			} else if (str_starts_with($id, "\x42\x5a\x68")) { # BZh
 				return 'bzip2'; # application/x-bzip2
-			} else if (substr($id,0,2) == "\x1f\x8b") {
+			} else if (str_starts_with($id, "\x1f\x8b")) {
 				return 'gzip'; # application/x-gzip
-			} else if (substr($id,0,4) == "\x52\x61\x72\x21") { # Rar!
+			} else if (str_starts_with($id, "\x52\x61\x72\x21")) { # Rar!
 				return 'rar'; # application/x-rar
-			} else if (substr($id,0,4) == "\x50\x4b\x03\x04") { # PKxx
+			} else if (str_starts_with($id, "\x50\x4b\x03\x04")) { # PKxx
 				return 'zip'; # application/zip
 			}
 			# Archives
@@ -97,11 +97,11 @@ class archive
 				return 'tar'; # application/x-tar
 			}
 			# images
-			else if (substr($id,0,4) == "\x89PNG") {
+			else if (str_starts_with($id, "\x89PNG")) {
 				return 'png'; # image/x-png
-			} else if (substr($id,0,4) == "GIF8") {
+			} else if (str_starts_with($id, "GIF8")) {
 				return 'gif'; # image/gif
-			} else if (substr($id,0,2) == "\xff\xd8") {
+			} else if (str_starts_with($id, "\xff\xd8")) {
 				return 'jpg'; # image/jpeg
 			}
 		}

@@ -66,7 +66,11 @@ function read_byte($fp)
 //
 function image_getdimension($file)
 {
-	$size = getimagesize($file);
+	$xmax = null;
+ $xmin = null;
+ $ymax = null;
+ $ymin = null;
+ $size = getimagesize($file);
 	if ( ($size[0] != 0) || ($size[1] != 0) ) { return $size; }
 
 	// Try to get the Dimension manually, depending on the mimetype

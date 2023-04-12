@@ -613,7 +613,7 @@ class PHPMailer
 	 */
 	function AddrAppend($type, $addr) {
 		$addr_str = array();
-		for ($i = 0; $i < count($addr); $i++) {
+		for ($i = 0; $i < (is_countable($addr) ? count($addr) : 0); $i++) {
 			if (empty($addr[$i][1])) {
 				$addr_str[] = $addr[$i][0];
 			} else {
@@ -1002,7 +1002,9 @@ class PHPMailer
 	 * @return string
 	 */
 	function AttachAll() {
-		// Return text of body
+		$string = null;
+  $path = null;
+  // Return text of body
 		$mime = array();
 
 		// Add all attachments
@@ -1166,11 +1168,11 @@ class PHPMailer
 			$encoded .= $this->LE;
 
 		// Replace every high ascii, control and = characters
-		$encoded = preg_replace('/([\000-\010\013\014\016-\037\075\177-\377])/e',
-				  "'='.sprintf('%02X', ord('\\1'))", $encoded);
+		$encoded = preg_replace_callback('/([\000-\010\013\014\016-\037\075\177-\377])/',
+				  fn($matches) => '=' . sprintf('%02X', ord($matches[1])), $encoded);
 		// Replace every spaces and tabs when it's the last character on a line
-		$encoded = preg_replace("/([\011\040])".$this->LE."/e",
-				  "'='.sprintf('%02X', ord('\\1')).'".$this->LE."'", $encoded);
+		$encoded = preg_replace_callback("/([\011\040])".$this->LE."/",
+				  fn($matches) => '=' . sprintf('%02X', ord($matches[1])) . $this->LE, $encoded);
 
 		// Maximum line length of 76 characters before CRLF (74 + space + '=')
 		$encoded = $this->WrapText($encoded, 74, true);
@@ -1189,15 +1191,15 @@ class PHPMailer
 
 		switch (strtolower($position)) {
 		  case 'phrase':
-			$encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+			$encoded = preg_replace_callback('/([^A-Za-z0-9!*+\/ -])/', fn($matches) => '=' . sprintf('%02X', ord($matches[1])), $encoded);
 			break;
 		  case 'comment':
-			$encoded = preg_replace("/([\(\)\"])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+			$encoded = preg_replace_callback('/([\(\)"])/', fn($matches) => '=' . sprintf('%02X', ord($matches[1])), $encoded);
 		  case 'text':
 		  default:
 			// Replace every high ascii, control =, ? and _ characters
-			$encoded = preg_replace('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/e',
-				  "'='.sprintf('%02X', ord('\\1'))", $encoded);
+			$encoded = preg_replace_callback('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/',
+				  fn($matches) => '=' . sprintf('%02X', ord($matches[1])), $encoded);
 			break;
 		}
 		

@@ -30,7 +30,7 @@ class sql_mngr
 	//
 	// Constructor
 	//
-	function sql_mngr(&$owner)
+	function __construct(&$owner)
 	{
 		$this->_owner =& $owner;
 		$this->fields = array(
@@ -67,7 +67,8 @@ class sql_mngr
 
 	function get_versions()
 	{
-		$version['engine'] = 'PostgreSQL';
+		$version = [];
+  $version['engine'] = 'PostgreSQL';
 		$version['client'] = 'N/A';
 		$version['server'] = 'N/A';
 		if (function_exists('pg_version')) {//php5+
@@ -147,7 +148,8 @@ class sql_mngr
 	}
 
 	function list_schemas() {
-		$result = $this->_owner->query('
+		$schemas = [];
+  $result = $this->_owner->query('
 			SELECT
 				nspname
 			FROM
@@ -333,7 +335,7 @@ class sql_mngr
 					$query = preg_replace($this->query_pattern, $this->query_replace, $query);
 					$ret = $this->_owner->query($query);
 				}
-				if (eregi('BYTEA', $type)) {
+				if (preg_match('#BYTEA#mi', $type)) {
 					$ret = $result = $this->_owner->query("SELECT $field[1] FROM $table GROUP BY $field[1]");
 					if ($ret && $this->_owner->num_rows($result) > 0) {
 						$ret = $this->_owner->query("ALTER TABLE $table ADD COLUMN df_varbin_tmp BYTEA NULL DEFAULT NULL");
@@ -373,7 +375,8 @@ class sql_mngr
 
 	function alter_index($mode, $table, $name, $columns='')
 	{
-		$this->_create_patterns();
+		$schema = null;
+  $this->_create_patterns();
 		switch ($mode)
 		{
 			case 'index':
@@ -397,7 +400,9 @@ class sql_mngr
 
 	function get_sequence($table, $schema='')
 	{
-		if ($schema == '') {
+		$sequence = [];
+  $data = null;
+  if ($schema == '') {
 			$schema = $this->get_current_schema();
 		}
 		if (!$result = $this->_owner->query("
@@ -429,7 +434,8 @@ class sql_mngr
 
 	function list_sequences($schema='')
 	{
-		if ($schema == '') {
+		$sequence = [];
+  if ($schema == '') {
 			$schema = $this->get_current_schema();
 		}
 		$result = $this->_owner->query("

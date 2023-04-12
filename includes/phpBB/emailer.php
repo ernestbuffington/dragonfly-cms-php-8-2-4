@@ -38,7 +38,7 @@ class emailer
 
 	var $tpl_msg = array();
 
-	function emailer()
+	function __construct()
 	{
 		global $MAIN_CFG;
 		$this->reset();
@@ -147,10 +147,10 @@ class emailer
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "'.$\\1.'", $this->msg);
 		// Set vars
-		foreach ($this->vars AS $key => $val) { $$key = $val; }
+		foreach ($this->vars AS $key => $val) { ${$key} = $val; }
 		eval("\$this->msg = '$this->msg';");
 		// Clear vars
-		foreach ($this->vars AS $key => $val) { unset($$key); }
+		foreach ($this->vars AS $key => $val) { unset(${$key}); }
 
 		// We now try and pull a subject from the email body ... if it exists,
 		// do this here because the subject may contain a variable
@@ -175,14 +175,14 @@ class emailer
 		}
 
 		// use Dragonfly mailer
-        if ((isset($this->addresses['cc']) && count($this->addresses['cc'])) ||
-		    (isset($this->addresses['bcc']) && count($this->addresses['bcc']))) {
+        if ((isset($this->addresses['cc']) && (is_countable($this->addresses['cc']) ? count($this->addresses['cc']) : 0)) ||
+		    (isset($this->addresses['bcc']) && (is_countable($this->addresses['bcc']) ? count($this->addresses['bcc']) : 0))) {
 			$to = array(); // bcc array($to_email => $to_name);
 			if ($this->addresses['to']) $to[$this->addresses['to']] = '';
-			if (isset($this->addresses['cc']) && count($this->addresses['cc'])) {
+			if (isset($this->addresses['cc']) && (is_countable($this->addresses['cc']) ? count($this->addresses['cc']) : 0)) {
 				foreach($this->addresses['cc'] as $cc) { $to[$cc] = '';	}
 			}
-			if (isset($this->addresses['bcc']) && count($this->addresses['bcc'])) {
+			if (isset($this->addresses['bcc']) && (is_countable($this->addresses['bcc']) ? count($this->addresses['bcc']) : 0)) {
 				foreach($this->addresses['bcc'] as $cc) { $to[$cc] = '';	}
 			}
 		} else {

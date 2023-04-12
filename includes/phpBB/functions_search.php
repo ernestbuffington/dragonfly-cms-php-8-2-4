@@ -69,7 +69,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
 	if (!empty($stopword_list))
 	{
-		for ($j = 0; $j < count($stopword_list); $j++)
+		for ($j = 0; $j < (is_countable($stopword_list) ? count($stopword_list) : 0); $j++)
 		{
 			$stopword = trim($stopword_list[$j]);
 			if ($mode == 'post' || ($stopword != 'not' && $stopword != 'and' && $stopword != 'or'))
@@ -81,7 +81,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
 	if (!empty($synonym_list))
 	{
-		for ($j = 0; $j < count($synonym_list); $j++)
+		for ($j = 0; $j < (is_countable($synonym_list) ? count($synonym_list) : 0); $j++)
 		{
 			list($replace_synonym, $match_synonym) = explode(' ', trim(strtolower($synonym_list[$j])));
 			if ( $mode == 'post' || ( $match_synonym != 'not' && $match_synonym != 'and' && $match_synonym != 'or' ) )
@@ -102,7 +102,8 @@ function split_words($entry)
 
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
-	global $db, $phpbb_root_path, $board_config, $lang;
+	$sql = null;
+ global $db, $phpbb_root_path, $board_config, $lang;
 
 	$stopword_array = file('language/' . $board_config['default_lang'] . "/Forums/search_stopwords.txt");
 	$synonym_array = file('language/' . $board_config['default_lang'] . "/Forums/search_synonyms.txt");
@@ -113,26 +114,25 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 	set_time_limit(0);
 	$word = array();
 	$word_insert_sql = array();
-	while (list($word_in, $search_matches) = each($search_raw_words))
-	{
-		$word_insert_sql[$word_in] = '';
-		if (!empty($search_matches))
-		{
-			for ($i = 0; $i < count($search_matches); $i++)
-			{
-				$search_matches[$i] = trim($search_matches[$i]);
-
-				if( $search_matches[$i] != '' )
-				{
-					$word[] = $search_matches[$i];
-					if ( !strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'") )
-					{
-						$word_insert_sql[$word_in] .= ( $word_insert_sql[$word_in] != "" ) ? ", '" . $search_matches[$i] . "'" : "'" . $search_matches[$i] . "'";
-					}
-				}
-			}
-		}
-	}
+	foreach ($search_raw_words as $word_in => $search_matches) {
+     $word_insert_sql[$word_in] = '';
+     if (!empty($search_matches))
+   		{
+   			for ($i = 0; $i < (is_countable($search_matches) ? count($search_matches) : 0); $i++)
+   			{
+   				$search_matches[$i] = trim($search_matches[$i]);
+   
+   				if( $search_matches[$i] != '' )
+   				{
+   					$word[] = $search_matches[$i];
+   					if ( !strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'") )
+   					{
+   						$word_insert_sql[$word_in] .= ( $word_insert_sql[$word_in] != "" ) ? ", '" . $search_matches[$i] . "'" : "'" . $search_matches[$i] . "'";
+   					}
+   				}
+   			}
+   		}
+ }
 
 	if (count($word))
 	{
@@ -217,18 +217,17 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 		}
 	}
 
-	while( list($word_in, $match_sql) = each($word_insert_sql) )
-	{
-		$title_match = ( $word_in == 'title' ) ? 1 : 0;
-		if ($match_sql != '')
-		{
-			$sql = "INSERT IGNORE INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match)
+	foreach ($word_insert_sql as $word_in => $match_sql) {
+     $title_match = ( $word_in == 'title' ) ? 1 : 0;
+     if ($match_sql != '')
+   		{
+   			$sql = "INSERT IGNORE INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match)
 				SELECT $post_id, word_id, $title_match
 					FROM " . SEARCH_WORD_TABLE . "
 					WHERE word_text IN ($match_sql)";
-			$db->sql_query($sql);
-		}
-	}
+   			$db->sql_query($sql);
+   		}
+ }
 
 	if ($mode == 'single') {
 		remove_common('single', 4/10, $word);
@@ -247,10 +246,10 @@ function remove_common($mode, $fraction, $word_id_list = array())
 	if ($row['total_posts'] >= 100)
 	{
 		$common_threshold = floor($row['total_posts'] * $fraction);
-		if ($mode == 'single' && count($word_id_list))
+		if ($mode == 'single' && (is_countable($word_id_list) ? count($word_id_list) : 0))
 		{
 			$word_id_sql = '';
-			for($i = 0; $i < count($word_id_list); $i++)
+			for($i = 0; $i < (is_countable($word_id_list) ? count($word_id_list) : 0); $i++)
 			{
 				$word_id_sql .= ( ( $word_id_sql != '' ) ? ', ' : '' ) . "'" . $word_id_list[$i] . "'";
 			}

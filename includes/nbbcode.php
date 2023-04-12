@@ -72,7 +72,7 @@ if (file_exists('themes/'.$CPG_SESS['theme'].'/bbcode.inc')) {
 }
 
 function get_code_lang($var, $array) {
-	return (isset($array[$var])) ? $array[$var] : $var;
+	return $array[$var] ?? $var;
 }
 
 function smilies_table($mode, $field='message', $form='post')
@@ -118,32 +118,31 @@ function smilies_table($mode, $field='message', $form='post')
 
 			$s_colspan = $row = $col = 0;
 
-			while (list($smile_url, $data) = each($rowset)) {
-				if (!$col) {
-					$content .= '<tr align="center" valign="middle">';
-				}
-				$content .= "<td><a href=\"javascript:emoticon('".$form."', '".$field."', '".$data['code']."')\"><img src=\"" . $smilies_path . $smile_url . "\" style=\"border:0;\" alt=\"".$data['emoticon']."\" title=\"".$data['emoticon']."\" /></a></td>";
-				$s_colspan = max($s_colspan, $col + 1);
-
-				if ($mode == 'onerow') {
-					if ($col >= 15) {
-						if ($num_smilies > 15) {
-							$content .= "<td colspan=\"$s_colspan\" class=\"nav\"><a href=\"$url\" onclick=\"window.open('$url', '_smilies', 'height=200,resizable=yes,scrollbars=yes,width=230');return false;\" target=\"_smilies\" class=\"nav\">$smilies_more</a></td>";
-						}
-						break;
-					}
-					$col++;
-				}
-				else if ($col == $smilies_split_row) {
-					$content .= '</tr>';
-					$col = 0;
-					if ($mode == 'inline' && $row == $inline_rows - 1) {
-						break;
-					}
-					$row++;
-				}
-				else { $col++; }
-			}
+			foreach ($rowset as $smile_url => $data) {
+       if (!$col) {
+   					$content .= '<tr align="center" valign="middle">';
+   				}
+       $content .= "<td><a href=\"javascript:emoticon('".$form."', '".$field."', '".$data['code']."')\"><img src=\"" . $smilies_path . $smile_url . "\" style=\"border:0;\" alt=\"".$data['emoticon']."\" title=\"".$data['emoticon']."\" /></a></td>";
+       $s_colspan = max($s_colspan, $col + 1);
+       if ($mode == 'onerow') {
+   					if ($col >= 15) {
+   						if ($num_smilies > 15) {
+   							$content .= "<td colspan=\"$s_colspan\" class=\"nav\"><a href=\"$url\" onclick=\"window.open('$url', '_smilies', 'height=200,resizable=yes,scrollbars=yes,width=230');return false;\" target=\"_smilies\" class=\"nav\">$smilies_more</a></td>";
+   						}
+   						break;
+   					}
+   					$col++;
+   				}
+   				else if ($col == $smilies_split_row) {
+   					$content .= '</tr>';
+   					$col = 0;
+   					if ($mode == 'inline' && $row == $inline_rows - 1) {
+   						break;
+   					}
+   					$row++;
+   				}
+   				else { $col++; }
+   }
 			if ($col > 0) { $content .= '</tr>'; }
 
 			if ($mode == 'inline' && $num_smilies > $inline_rows * $inline_cols) {
@@ -276,7 +275,7 @@ function get_smilies() {
 	$smilies = Cache::array_load('smilies','bb', false);
 	if (!$smilies) {
 		$smilies = $db->sql_ufetchrowset('SELECT * FROM '.$prefix.'_bbsmilies', SQL_ASSOC);
-		if (count($smilies)) {
+		if (is_countable($smilies) ? count($smilies) : 0) {
 			usort($smilies, 'sort_smiley');
 			Cache::array_save('smilies','bb', $smilies);
 		}
@@ -291,7 +290,7 @@ function set_smilies($message, $url='') {
 		$orig = $repl = array();
 		$smilies = get_smilies();
 		if ($url != '' && substr($url, -1) != '/') { $url .= '/'; }
-		for ($i = 0; $i < count($smilies); $i++) {
+		for ($i = 0; $i < (is_countable($smilies) ? count($smilies) : 0); $i++) {
 			$smilies[$i]['code'] = str_replace('#', '\#', preg_quote($smilies[$i]['code']));
 			$orig[] = "#([\s])".$smilies[$i]['code']."([\s<])#si";
 			$repl[] = '\\1<img src="' . $url . $smilies_path . $smilies[$i]['smile_url'] . '" alt="'.get_code_lang($smilies[$i]['emoticon'],$smilies_desc).'" title="'.get_code_lang($smilies[$i]['emoticon'],$smilies_desc).'" />\\2';
@@ -333,8 +332,12 @@ function shrink_url($url) {
 function make_clickable($text)
 {
 	$ret = ' ' . $text;
-	$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#ise", "'\\1<a href=\"\\2\" rel=\"nofollow\" title=\"\\2\" target=\"_blank\">'.shrink_url('\\2').'</a>'", $ret);
-	$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#ise", "'\\1<a href=\"http://\\2\" rel=\"nofollow\" target=\"_blank\" title=\"\\2\">'.shrink_url('\\2').'</a>'", $ret);
+	$ret = preg_replace_callback('#(^|[
+ ])([\w]+?://[\w]+[^ "
+	<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
+	$ret = preg_replace_callback('#(^|[
+ ])((www|ftp)\.[^ "	
+<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
 	$ret = preg_replace("#(^|[\n ])([a-z0-9&\-_\.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1 \\2 &#64; \\3", $ret);
 	$ret = substr($ret, 1);
 	return($ret);
@@ -349,7 +352,7 @@ function message_prepare($message, $html_on, $bbcode_on)
 	#
 	$message = trim($message);
 	if ($html_on) {
-		$allowed_html_tags = split(',', $board_config['allow_html_tags']);
+		$allowed_html_tags = preg_split('#,#m', $board_config['allow_html_tags']);
 		$end_html = 0;
 		$start_html = 1;
 		$tmp_message = '';
@@ -394,7 +397,7 @@ function message_prepare($message, $html_on, $bbcode_on)
 class BBCode {
 
 	function encode_html($text) {
-		return (ereg('<', $text)) ? htmlprepare($text, false, ENT_NOQUOTES) : $text;
+		return (preg_match('#<#m', $text)) ? htmlprepare($text, false, ENT_NOQUOTES) : $text;
 	}
 
 	function encode($text)
@@ -423,7 +426,7 @@ class BBCode {
 		global $bb_codes;
 		# First: If there isn't a "[" and a "]" in the message, don't bother.
 		if (!(strpos($text, '[') !== false && strpos($text, ']'))) {
-			return ($allow_html ? (ereg('<', $text) ? $text : nl2br($text)) : nl2br(strip_tags($text)));
+			return ($allow_html ? (preg_match('#<#m', $text) ? $text : nl2br($text)) : nl2br(strip_tags($text)));
 		}
 
 		// strip the obsolete bbcode_uid
@@ -605,7 +608,7 @@ class BBCode {
 				$text .= ($allowed) ? BBCode::decode_php($part['text']) : nl2br(htmlspecialchars($part['text']));
 			} elseif ($part['code'] == 'code') {
 				# [CODE]
-				if (!$allowed && ereg('<', $part['text'])) {
+				if (!$allowed && preg_match('#<#m', $part['text'])) {
 					$part['text'] = nl2br(htmlspecialchars($part['text']));
 				}
 				$text .= $allowed ? BBCode::decode_code($part['text']) : $part['text'];
@@ -623,7 +626,7 @@ class BBCode {
 				unset($tmptext);
 			} else {
 				if ($allow_html) {
-					$tmptext = (!ereg('<', $part['text']) ? nl2br($part['text']) : $part['text']);
+					$tmptext = (!preg_match('#<#m', $part['text']) ? nl2br($part['text']) : $part['text']);
 				} else {
 					$tmptext = nl2br(BBCode::encode_html($part['text']));
 				}

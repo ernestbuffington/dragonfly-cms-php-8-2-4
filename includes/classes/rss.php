@@ -17,7 +17,8 @@
 class CPG_RSS {
 
 	function read($url, $items_limit=10) {
-/*
+$rss = [];
+  /*
 <language>en-us</language>
 <pubDate>Sun, 23 Jan 2005 23:03:36 GMT</pubDate>
 <docs>http://backend.userland.com/rss</docs>
@@ -74,7 +75,7 @@ class CPG_RSS {
 		$items =& $rss['items'];
 		$site_link =& $rss['link'];
 		$data = '';
-		for ($i=0;$i<count($items);$i++) {
+		for ($i=0;$i<(is_countable($items) ? count($items) : 0);$i++) {
 			$link = $items[$i]['link'];
 			$title2 = $items[$i]['title'];
 			$data .= '<strong><big>&middot;</big></strong> <a href="'.$link.'" target="new">'.$title2.'</a><br/>'."\n";
@@ -98,7 +99,7 @@ class CPG_RSS {
 		$tag = strtr($tag[1], array('<![CDATA['=>'', ']]>'=>''));
 		if ($encoding != 'UTF-8') {
 			// http://www.php.net/iconv
-			$tag = function_exists('iconv') ? iconv($encoding, 'UTF-8', $tag) : utf8_encode($tag);
+			$tag = function_exists('iconv') ? iconv($encoding, 'UTF-8', $tag) : mb_convert_encoding($tag, 'UTF-8', 'ISO-8859-1');
 		}
 		return trim($tag);
 	}

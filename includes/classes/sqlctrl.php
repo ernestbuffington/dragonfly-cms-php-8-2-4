@@ -34,7 +34,9 @@ class DBCtrl {
 
 	function query_file($file, &$error, $replace_prefix=false)
 	{
-		$error = false;
+		$tmp = [];
+  $filedata = null;
+  $error = false;
 		if (!is_array($file)) {
 			$tmp['name'] = $tmp['tmp_name'] = $file;
 			$tmp['type'] = preg_match("/\.gz$/is", $file) ? 'application/x-gzip' : 'text/plain';
@@ -71,7 +73,7 @@ class DBCtrl {
 		if ($error) { return false; }
 		$filedata = DBCtrl::remove_remarks($filedata);
 		$queries = DBCtrl::split_sql_file($filedata, ";\n");
-		if (count($queries) < 1) {
+		if ((is_countable($queries) ? count($queries) : 0) < 1) {
 			$error = 'There are no queries in '.$file['name'];
 			return false;
 		}
@@ -87,7 +89,7 @@ class DBCtrl {
 					}
 				}
 			}
-			if (SQL_LAYER == 'mysql' && ereg('^CREATE TABLE ', $query) && !eregi('ENGINE=MyISAM', $query)) {
+			if (SQL_LAYER == 'mysql' && preg_match('#^CREATE TABLE #m', $query) && !preg_match('#ENGINE=MyISAM#mi', $query)) {
 				$query .= ' ENGINE=MyISAM';
 			}
 			$db->sql_query($query);

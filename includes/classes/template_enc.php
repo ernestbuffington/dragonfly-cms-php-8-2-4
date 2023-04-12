@@ -61,17 +61,17 @@ class tpl_encode
 
 		preg_match_all('#<!-- (.*?) (.*?)?[ ]?-->#s', $code, $blocks);
 		$text_blocks = preg_split('#<!-- (.*?) (.*?)?[ ]?-->#s', $code);
-		if ($text_blocks[count($text_blocks)-1] == '') {
-			unset($text_blocks[count($text_blocks)-1]);
+		if ($text_blocks[(is_countable($text_blocks) ? count($text_blocks) : 0)-1] == '') {
+			unset($text_blocks[(is_countable($text_blocks) ? count($text_blocks) : 0)-1]);
 		}
-		for($i = 0; $i < count($text_blocks); $i++) {
+		for($i = 0; $i < (is_countable($text_blocks) ? count($text_blocks) : 0); $i++) {
 			tpl_encode::compile_var_tags($text_blocks[$i]);
 		}
 
 		$compile_blocks = array();
 		$block_else_level = array();
 		$this->block_names = array();
-		for ($curr_tb = 0; $curr_tb < count($text_blocks); $curr_tb++)
+		for ($curr_tb = 0; $curr_tb < (is_countable($text_blocks) ? count($text_blocks) : 0); $curr_tb++)
 		{
 			if (isset($blocks[1][$curr_tb]))
 			switch ($blocks[1][$curr_tb])
@@ -137,7 +137,7 @@ class tpl_encode
 			}
 		}
 		$template_php = '';
-		for ($i = 0; $i < count($text_blocks); $i++) {
+		for ($i = 0; $i < (is_countable($text_blocks) ? count($text_blocks) : 0); $i++) {
 			$trim_check_text = trim($text_blocks[$i]);
 			$trim_check_block = isset($compile_blocks[$i]) ? trim($compile_blocks[$i]) : '';
 			$template_php .= (!$no_echo) ? ((!empty($trim_check_text)) ? $text_blocks[$i] : '') . ((!empty($compile_blocks[$i])) ? $compile_blocks[$i] : '') : ((!empty($trim_check_text)) ? $text_blocks[$i] : '') . ((!empty($compile_blocks[$i])) ? $compile_blocks[$i] : '');
@@ -155,7 +155,7 @@ class tpl_encode
 		$varrefs = array();
 		// This one will handle varrefs WITH namespaces
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)(\$)?([A-Z0-9\-_]+?)\}#', $text_blocks, $varrefs);
-		for ($j = 0; $j < count($varrefs[1]); $j++) {
+		for ($j = 0; $j < (is_countable($varrefs[1]) ? count($varrefs[1]) : 0); $j++) {
 			$namespace = $varrefs[1][$j];
 			$varname = $varrefs[4][$j];
 			$new = tpl_encode::generate_block_varref($namespace, $varname, true, $varrefs[3][$j]);
@@ -187,7 +187,7 @@ class tpl_encode
 		}
 		$tag_template_php = '';
 		array_push($this->block_names, $tag_args);
-		if (count($this->block_names) < 2) {
+		if ((is_countable($this->block_names) ? count($this->block_names) : 0) < 2) {
 			// Block is not nested.
 			$tag_template_php = '$_' . $tag_args . "_count = (isset(\$this->_tpldata['$tag_args'])) ?  count(\$this->_tpldata['$tag_args']) : 0;";
 		} else {
@@ -219,7 +219,7 @@ class tpl_encode
 						 [^\s(),]+)/x', $tag_args, $match);
 		$tokens = $match[0];
 		$is_arg_stack = array();
-		for ($i = 0; $i < count($tokens); $i++) {
+		for ($i = 0; $i < (is_countable($tokens) ? count($tokens) : 0); $i++) {
 			$token = &$tokens[$i];
 			switch ($token)
 			{
@@ -302,7 +302,7 @@ class tpl_encode
 					$is_arg_start = ($tokens[$i-1] == ')') ? array_pop($is_arg_stack) : $i-1;
 					$is_arg	   = implode('	', array_slice($tokens, $is_arg_start, $i - $is_arg_start));
 					$new_tokens   = tpl_encode::_parse_is_expr($is_arg, array_slice($tokens, $i+1));
-					array_splice($tokens, $is_arg_start, count($tokens), $new_tokens);
+					array_splice($tokens, $is_arg_start, is_countable($tokens) ? count($tokens) : 0, $new_tokens);
 					$i = $is_arg_start;
 
 				default:
@@ -353,7 +353,8 @@ class tpl_encode
 
 	// This is from Smarty
 	function _parse_is_expr($is_arg, $tokens) {
-		$expr_end =	0;
+		$expr = null;
+  $expr_end =	0;
 		$negate_expr = false;
 		if (($first_token = array_shift($tokens)) == 'not') {
 			$negate_expr = true;
@@ -444,7 +445,7 @@ class tpl_encode
 
 	function compile_write(&$handle, &$data)
 	{
-		$filename = ereg_replace('/', '#', $this->filename[$handle]);
+		$filename = preg_replace('#\/#m', '#', $this->filename[$handle]);
 		$filename = $this->cachepath.$filename.'.inc';
 		file_write($filename, $data);
 		return;

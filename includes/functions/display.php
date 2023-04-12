@@ -20,7 +20,7 @@ function get_theme() {
 	if (isset($theme)) return $theme;
 	if (isset($_GET['prevtheme'])) {
 		$prevtheme = $_GET['prevtheme'];
-		if (!ereg('^([a-zA-Z0-9_\-]+)$', $prevtheme)) { cpg_error(sprintf(_ERROR_BAD_CHAR,'theme'), _SEC_ERROR); }
+		if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $prevtheme)) { cpg_error(sprintf(_ERROR_BAD_CHAR,'theme'), _SEC_ERROR); }
 	}
 	global $userinfo, $MAIN_CFG, $CPG_SESS;
 	if (!is_admin() && !$MAIN_CFG['member']['allowusertheme']) {
@@ -66,7 +66,7 @@ function adminblock($bid, $title, &$data) {
 			$waitdir = dir('modules');
 			while($module = $waitdir->read()) {
 				if (!is_active($module)) continue;
-				if (!ereg('[.]',$module) && $module != 'CVS' && file_exists("modules/$module/admin/adwait.inc")) {
+				if (!preg_match('#[\.]#m',$module) && $module != 'CVS' && file_exists("modules/$module/admin/adwait.inc")) {
 					$waitlist[$module] = "modules/$module/admin/adwait.inc";
 				}
 			}
@@ -123,15 +123,28 @@ function select_box($name, $default, $options) {
 	}
 }
 function viewbanner() {
-	//if (is_admin()) { return ''; }
+	$impmade = null;
+ $bid = null;
+ $imptotal = null;
+ $cid = null;
+ $clicks = null;
+ $imageurl = null;
+ $clickurl = null;
+ $alttext = null;
+ $text_title = null;
+ $mailer_message = null;
+ $textban = null;
+ $text_width = null;
+ $text_height = null;
+ //if (is_admin()) { return ''; }
 	global $prefix, $db;
 	$result = $db->sql_query("SELECT * FROM ".$prefix."_banner WHERE type='0' AND active='1' ORDER BY RAND() LIMIT 0,1");
 	if ($db->sql_numrows($result) < 1) return;
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 	foreach($row as $var => $value) {
-		if (isset($$var)) unset($$var);
-		$$var = $value;
+		if (isset(${$var})) unset(${$var});
+		${$var} = $value;
 	}
 	if (!is_admin()) {
 		$db->sql_query('UPDATE '.$prefix.'_banner SET impmade=' . $impmade . "+1 WHERE bid='$bid'");
@@ -190,7 +203,7 @@ function close_form() {
 function generate_secimg($chars=6) {
 	global $CPG_SESS;
 	mt_srand((double)microtime()*1000000);
-	$id = mt_rand(0, 1000000);
+	$id = random_int(0, 1000000);
 	$time = explode(' ', microtime());
 	$CPG_SESS['gfx'][$id] = substr(dechex($time[0]*3581692740), 0, $chars);
 	return '<img src="'.getlink("gfx&amp;id=$id").'" alt="'._SECURITYCODE.'" title="'._SECURITYCODE.'" />

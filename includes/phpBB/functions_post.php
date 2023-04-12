@@ -75,12 +75,12 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$error_msg, 
 
 		if(!empty($poll_options)) {
 			$temp_option_text = array();
-			while(list($option_id, $option_text) = each($poll_options)) {
-				$option_text = trim($option_text);
-				if (!empty($option_text)) {
-					$temp_option_text[$option_id] = htmlprepare($option_text, false, ENT_QUOTES, true);
-				}
-			}
+			foreach ($poll_options as $option_id => $option_text) {
+       $option_text = trim($option_text);
+       if (!empty($option_text)) {
+   					$temp_option_text[$option_id] = htmlprepare($option_text, false, ENT_QUOTES, true);
+   				}
+   }
 			$poll_options = $temp_option_text;
 
 			if (count($poll_options) < 2) {
@@ -129,7 +129,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 
 	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) {
-		$topic_vote = (!empty($poll_title) && count($poll_options) >= 2) ? 1 : 0;
+		$topic_vote = (!empty($poll_title) && (is_countable($poll_options) ? count($poll_options) : 0) >= 2) ? 1 : 0;
 
 		if ($mode != "editpost") {
 			$sql = "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type, topic_vote, icon_id) VALUES ('$post_subject', " . $userdata['user_id'] . ", $current_time, $forum_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_vote, $topic_icon)";
@@ -160,7 +160,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	//
 	// Add poll
 	//
-	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2) {
+	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && (is_countable($poll_options) ? count($poll_options) : 0) >= 2) {
 		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '$poll_title', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '$poll_title', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
 		$db->sql_query($sql);
 
@@ -279,7 +279,8 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 //
 function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
 {
-	global $board_config, $lang, $db, $phpbb_root_path;
+	$forum_update_sql = null;
+ global $board_config, $lang, $db, $phpbb_root_path;
 	global $userdata;
 
 	if ($mode != 'poll_delete') {
@@ -372,31 +373,30 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, htmlunprepare($topic_title)) : htmlunprepare($topic_title);
 
 					reset($bcc_list_ary);
-					while (list($user_lang, $bcc_list) = each($bcc_list_ary))
-					{
-						$emailer->use_template('topic_notify', $user_lang);
-						for ($i = 0; $i < count($bcc_list); $i++) {
-							$emailer->bcc($bcc_list[$i]);
-						}
-						// The Topic_reply_notification lang string below will be used
-						// if for some reason the mail template subject cannot be read
-						// ... note it will not necessarily be in the posters own language!
-						$emailer->set_subject($lang['Topic_reply_notification']);
-						// This is a nasty kludge to remove the username var ... till (if?)
-						// translators update their templates
-						$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
-						$emailer->assign_vars(array(
-							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-							'SITENAME' => $board_config['sitename'],
-							'TOPIC_TITLE' => $topic_title,
+					foreach ($bcc_list_ary as $user_lang => $bcc_list) {
+         $emailer->use_template('topic_notify', $user_lang);
+         for ($i = 0; $i < (is_countable($bcc_list) ? count($bcc_list) : 0); $i++) {
+   							$emailer->bcc($bcc_list[$i]);
+   						}
+         // The Topic_reply_notification lang string below will be used
+         // if for some reason the mail template subject cannot be read
+         // ... note it will not necessarily be in the posters own language!
+         $emailer->set_subject($lang['Topic_reply_notification']);
+         // This is a nasty kludge to remove the username var ... till (if?)
+         // translators update their templates
+         $emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
+         $emailer->assign_vars(array(
+   							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+   							'SITENAME' => $board_config['sitename'],
+   							'TOPIC_TITLE' => $topic_title,
 
-							'U_TOPIC' => getlink('&file=viewtopic&' . POST_POST_URL . "=$post_id", true, true)."#$post_id",
-							'U_STOP_WATCHING_TOPIC' => getlink('&file=viewtopic&' . POST_TOPIC_URL . "=$topic_id&unwatch=topic", true, true))
-						);
-						$emailer->send();
-						$emailer->reset();
-//send_mail($error, $message, false, $lang['Topic_reply_notification'], $to='', $to_name='')
-					}
+   							'U_TOPIC' => getlink('&file=viewtopic&' . POST_POST_URL . "=$post_id", true, true)."#$post_id",
+   							'U_STOP_WATCHING_TOPIC' => getlink('&file=viewtopic&' . POST_TOPIC_URL . "=$topic_id&unwatch=topic", true, true))
+   						);
+         $emailer->send();
+         $emailer->reset();
+         //send_mail($error, $message, false, $lang['Topic_reply_notification'], $to='', $to_name='')
+     }
 				}
 			}
 			$db->sql_freeresult($result);
@@ -460,27 +460,24 @@ function generate_smilies($mode, $page_id)
 			$row = 0;
 			$col = 0;
 
-			while (list($smile_url, $data) = each($rowset)) {
-				if (!$col) {
-					$template->assign_block_vars('smilies_row', array());
-				}
-
-				$template->assign_block_vars('smilies_row.smilies_col', array(
-					'SMILEY_CODE' => $data['code'],
-					'SMILEY_IMG' => $board_config['smilies_path'] . '/' . $smile_url,
-					'SMILEY_DESC' => $data['emoticon'])
-				);
-
-				$s_colspan = max($s_colspan, $col + 1);
-
-				if ($col == $smilies_split_row) {
-					if ($row == $inline_rows - 1) { break; }
-					$col = 0;
-					$row++;
-				} else {
-					$col++;
-				}
-			}
+			foreach ($rowset as $smile_url => $data) {
+       if (!$col) {
+   					$template->assign_block_vars('smilies_row', array());
+   				}
+       $template->assign_block_vars('smilies_row.smilies_col', array(
+   					'SMILEY_CODE' => $data['code'],
+   					'SMILEY_IMG' => $board_config['smilies_path'] . '/' . $smile_url,
+   					'SMILEY_DESC' => $data['emoticon'])
+   				);
+       $s_colspan = max($s_colspan, $col + 1);
+       if ($col == $smilies_split_row) {
+   					if ($row == $inline_rows - 1) { break; }
+   					$col = 0;
+   					$row++;
+   				} else {
+   					$col++;
+   				}
+   }
 
 			if ($num_smilies > $inline_rows * $inline_columns) {
 				$template->assign_block_vars('switch_smilies_extra', array());

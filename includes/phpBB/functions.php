@@ -32,7 +32,7 @@ function make_jumpbox($action, $match_forum_id = 0) {
 	}*/
 
 	$boxstring = '<select name="'.POST_FORUM_URL.'" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }">';
-	if ($total_categories = count($category_rows)) {
+	if ($total_categories = is_countable($category_rows) ? count($category_rows) : 0) {
 		$boxstring .= '<option value="-1">'.$lang['Select_forum'].'</option>';
 		$result = $db->sql_query("SELECT * FROM ".FORUMS_TABLE." ORDER BY cat_id, forum_order");
 		$forum_rows = array();
@@ -158,9 +158,9 @@ function setup_style($style)
 		message_die(BB_CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
 	}
 	$img_lang = ( file_exists(realpath($current_template_path.'/lang_'.$board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
-	while (list($key, $value) = each($images)) {
-		if (!is_array($value)) { $images[$key] = str_replace('{LANG}', 'lang_'.$img_lang, $value); }
-	}
+	foreach ($images as $key => $value) {
+     if (!is_array($value)) { $images[$key] = str_replace('{LANG}', 'lang_'.$img_lang, $value); }
+ }
 	return $row;
 }
 
@@ -308,7 +308,8 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $template, $cpgtpl, $board_config, $theme, $lang, $phpbb_root_path, $gen_simple_header, $images;
+	$debug_text = null;
+ global $db, $template, $cpgtpl, $board_config, $theme, $lang, $phpbb_root_path, $gen_simple_header, $images;
 	global $userdata, $user_ip;
 
 	if(defined('HAS_DIED')) {
@@ -363,7 +364,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		//
 		// Load the Page Header
 		if ( !defined('IN_ADMIN') ) {
-			$temp = ereg('<br />', $msg_text) ? explode('<br />', $msg_text) : explode('.', $msg_text);
+			$temp = preg_match('#<br \/>#m', $msg_text) ? explode('<br />', $msg_text) : explode('.', $msg_text);
 			$paget_text = $temp[0];
 			///$page_title = ' '._BC_DELIM.' ';
 			$page_title = !empty($msg_title) ? strip_tags($msg_title) : strip_tags($paget_text);

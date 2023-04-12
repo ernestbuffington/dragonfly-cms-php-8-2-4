@@ -137,9 +137,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 	obtain_word_list($orig_word, $replacement_word);
 
 	// read the user cookie
-	$tracking_topics = isset($CPG_SESS[$module_name]['track_topics']) ? $CPG_SESS[$module_name]['track_topics'] : array();
-	$tracking_forums = isset($CPG_SESS[$module_name]['track_forums']) ? $CPG_SESS[$module_name]['track_forums'] : array();
-	$tracking_all	 = isset($CPG_SESS[$module_name]['track_all'])	  ? $CPG_SESS[$module_name]['track_all']	: NULL;
+	$tracking_topics = $CPG_SESS[$module_name]['track_topics'] ?? array();
+	$tracking_forums = $CPG_SESS[$module_name]['track_forums'] ?? array();
+	$tracking_all	 = $CPG_SESS[$module_name]['track_all'] ?? NULL;
 
 	// categories hierarchy v 2 compliancy
 	$cat_hierarchy = function_exists(get_auth_keys);
@@ -165,7 +165,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 	if ($userdata['user_id'] != ANONYMOUS) {
 		// get all the topic ids to display
 		$topic_ids = array();
-		for ($i = 0; $i < count($topic_rowset); $i++) {
+		for ($i = 0; $i < (is_countable($topic_rowset) ? count($topic_rowset) : 0); $i++) {
 			$topic_item_type	= substr($topic_rowset[$i]['topic_id'], 0, 1);
 			$topic_id			 = intval(substr($topic_rowset[$i]['topic_id'], 1));
 			if ( $topic_item_type == POST_TOPIC_URL ) {
@@ -195,7 +195,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 
 	// spanning of the first column (list name)
 	$span_left = 1;
-	if ( count($topic_rowset) > 0 ) {
+	if ( (is_countable($topic_rowset) ? count($topic_rowset) : 0) > 0 ) {
 		// add folder image
 		$span_left++;
 	}
@@ -209,7 +209,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 	}
 	// spanning of the whole line (bottom row and/or empty list)
 	$span_all = $span_left + 4;
-	if ( $select_multi && (count($topic_rowset) >0) ) {
+	if ( $select_multi && ((is_countable($topic_rowset) ? count($topic_rowset) : 0) >0) ) {
 		$span_all++;
 	}
 
@@ -218,7 +218,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 	$prec_topic_type = '';
 	$header_sent = false;
 	if (!isset($box_id)) $box_id = -1;
-	for ($i=0; $i < count($topic_rowset); $i++)
+	for ($i=0; $i < (is_countable($topic_rowset) ? count($topic_rowset) : 0); $i++)
 	{
 		$topic_item_type	= substr($topic_rowset[$i]['topic_id'], 0, 1);
 		$topic_id			 = intval(substr($topic_rowset[$i]['topic_id'], 1));
@@ -649,7 +649,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 	}
 
 	// no data
-	if (count($topic_rowset) == 0) {
+	if ((is_countable($topic_rowset) ? count($topic_rowset) : 0) == 0) {
 		// send no topics notice
 		$template->assign_block_vars( $tpl . '.row', array(
 			'L_NO_TOPICS'	 => $lang['No_search_match'],

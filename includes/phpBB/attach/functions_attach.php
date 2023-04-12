@@ -69,7 +69,7 @@ function auth_pack($auth_array)
 	$one_char = FALSE;
 	$two_char = FALSE;
 	$auth_cache = '';
-	for ($i = 0; $i < count($auth_array); $i++) {
+	for ($i = 0; $i < (is_countable($auth_array) ? count($auth_array) : 0); $i++) {
 		$val = base64_pack(intval($auth_array[$i]));
 		if ((strlen($val) == 1) && ($one_char == FALSE)) {
 			$auth_cache .= $one_char_encoding;
@@ -139,7 +139,8 @@ function is_forum_authed($auth_cache, $check_forum_id)
 // Delete an Attachment
 function unlink_attach($filename, $mode = FALSE)
 {
-	global $upload_dir, $attach_config, $lang;
+	$filesys = null;
+ global $upload_dir, $attach_config, $lang;
 	if (!intval($attach_config['allow_ftp_upload'])) {
 		if ($mode == MODE_THUMBNAIL) {
 			$filename = $upload_dir.'/'.THUMB_DIR.'/t_'.$filename;

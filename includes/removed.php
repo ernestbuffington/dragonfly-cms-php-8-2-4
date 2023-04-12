@@ -45,7 +45,8 @@ function blocks_visible($side, $special=false) {
 }
 
 function hideblock($id) {
-	global $Blocks;
+	$hideblock = null;
+ global $Blocks;
 	depricated_warning('hideblock', (PHPVERS >= 43) ? debug_backtrace() : false);
 	if (is_object('Blocks')) {
 		return $Blocks->$hideblock($id);
@@ -74,8 +75,8 @@ function getusrinfo() {
 }
 function FixQuotes($what) {
 	depricated_warning('FixQuotes', (PHPVERS >= 43) ? debug_backtrace() : false);
-	$what = ereg_replace("'","''",$what);
-	while (eregi("\\\\'", $what)) { $what = ereg_replace("\\\\'","'",$what); }
+	$what = preg_replace('#\'#m',"''",$what);
+	while (preg_match('#\\\\\'#mi', $what)) { $what = preg_replace('#\\\\\'#m',"'",$what); }
 	return $what;
 }
 function formatTimestamp($time) {

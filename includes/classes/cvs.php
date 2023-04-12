@@ -38,7 +38,9 @@ class CVS {
 	}
 
 	function update($path, $recursive=true) {
-		if (is_dir($path.'/CVS')) {
+		$MAIN_CFG = [];
+  $log = [];
+  if (is_dir($path.'/CVS')) {
 			$MAIN_CFG['cvs']['cmd'] = 'cvs.exe';
 			$MAIN_CFG['cvs']['cmd'] = 'C:\\Progra~1\\tortoisecvs\\cvs.exe';
 			$cvs = WINDOWS ? $MAIN_CFG['cvs']['cmd'] : 'cvs';
@@ -58,11 +60,12 @@ class CVS {
 				return $log;
 			}
 			set_time_limit(0);
-			$tmplog = split("\n", shell_exec($log['cvs'].' 2>&1'));
+			$tmplog = preg_split('#
+#m', shell_exec($log['cvs'].' 2>&1'));
 			natcasesort($tmplog);
 			foreach ($tmplog as $entry) {
 			  if (!empty($entry)) {
-				if (ereg('[CMPU]', substr($entry, 0, 1))) {
+				if (preg_match('#[CMPU]#m', substr($entry, 0, 1))) {
 					$log['actions'][$entry[0]][] = substr($entry, 2);
 				} elseif ($entry[0] == '?') {
 					$log['unknown'][] = $entry;

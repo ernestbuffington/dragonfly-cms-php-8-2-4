@@ -27,7 +27,7 @@ class cpg_member {
 	  Decodes and checks the member cookie from the *_users table.
 	  NOTE: The global $userinfo contains all of this user's information
 	************************************************************************************/
-	function cpg_member() {
+	function __construct() {
 		global $db, $user_prefix, $prefix, $MAIN_CFG, $SESS;
 		if ($this->user_id) return false;
 		$cookiename = $MAIN_CFG['cookie']['member'];
@@ -36,7 +36,7 @@ class cpg_member {
 		# Due to that we must pad our string with another character.
 		$visitor_ip = $db->binary_safe(Security::get_ip());
 		# Load Member cookie
-		$m_cookie   = isset($_COOKIE[$cookiename]) ? $_COOKIE[$cookiename] : false;
+		$m_cookie   = $_COOKIE[$cookiename] ?? false;
 		# Member Logout
 		if ($m_cookie && !defined('ADMIN_PAGES') && isset($_GET['op']) && $_GET['op'] == 'logout') {
 			global $CPG_SESS;
@@ -113,9 +113,9 @@ class cpg_member {
 			$pass = md5($_POST['user_password']);
 			if ($setinfo['user_password'] != $pass) { url_redirect(getlink('Your_Account&error=2'), true); }
 			if ($sec_code & 2) {
-				$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+				$gfxid = $_POST['gfxid'] ?? 0;
 				$code = $CPG_SESS['gfx'][$gfxid];
-				$gfx_check  = isset($_POST['gfx_check']) ? $_POST['gfx_check'] : '';
+				$gfx_check  = $_POST['gfx_check'] ?? '';
 				if (strlen($gfx_check) < 2 || $code != $gfx_check) { url_redirect(getlink('Your_Account&error=2'), true); }
 			}
 			$db->sql_query('DELETE FROM '.$prefix."_session WHERE host_addr=$visitor_ip AND guest=1");
@@ -175,13 +175,13 @@ class cpg_member {
 		if (!$setuid) {
 			if (isset($_COOKIE[($MAIN_CFG['cookie']['member'])])) {
 //				if ($this->local) setcookie($MAIN_CFG['cookie']['member'],'',-1, $MAIN_CFG['cookie']['path']);
-				setcookie($MAIN_CFG['cookie']['member'],'',-1, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
+				setcookie($MAIN_CFG['cookie']['member'],'', ['expires' => -1, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]); //, int secure
 			}
 			return false;
 		} else {
 			$data = base64_encode("$setuid:$secure:$setpass");
 //			if ($this->local) setcookie($MAIN_CFG['cookie']['member'],$data,(gmtime()+15552000), $MAIN_CFG['cookie']['path']);
-			setcookie($MAIN_CFG['cookie']['member'],$data,(gmtime()+15552000), $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
+			setcookie($MAIN_CFG['cookie']['member'],$data, ['expires' => gmtime()+15552000, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]); //, int secure
 			return $data;
 		}
 	}
@@ -194,7 +194,7 @@ class cpg_member {
 		if ($this->admin_id) return $this->admin_id;
 		global $MAIN_CFG, $SESS;
 		$cookiename = $MAIN_CFG['cookie']['admin'];
-		$admin = isset($_COOKIE[$cookiename]) ? $_COOKIE[$cookiename] : false;
+		$admin = $_COOKIE[$cookiename] ?? false;
 		if (!$admin) {
 			if (defined('ADMIN_PAGES') && isset($_POST['alogin'])) {
 				$result = $this->_loginadmin();
@@ -234,7 +234,7 @@ class cpg_member {
 			unset($row['pwd']);
 			$this->admin = $row;
 			$this->admin_id = $row['aid'];
-			$this->demo = (CPGN_DEMO && eregi($this->admin_id, 'demo'));
+			$this->demo = (CPGN_DEMO && preg_match($this->admin_id, 'demo'));
 		}
 		return $this->admin_id;
 	}
@@ -243,13 +243,13 @@ class cpg_member {
 	# or 'protected' so that a subclass can still use it
 	function _loginadmin() {
 		$aid = isset($_POST['alogin']) ? Fix_Quotes($_POST['alogin']) : NULL;
-		$pwd = isset($_POST['pwd']) ? $_POST['pwd'] : NULL;
+		$pwd = $_POST['pwd'] ?? NULL;
 		if ($aid && $pwd) {
 			global $sec_code, $CPG_SESS;
 			if ($sec_code & 1) {
-				$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+				$gfxid = $_POST['gfxid'] ?? 0;
 				$code = $CPG_SESS['gfx'][$gfxid];
-				$gfx_check  = isset($_POST['gfx_check']) ? $_POST['gfx_check'] : '';
+				$gfx_check  = $_POST['gfx_check'] ?? '';
 				if (strlen($gfx_check) < 2 || $code != $gfx_check) { return false; }
 			}
 			global $db, $prefix;
@@ -269,7 +269,7 @@ class cpg_member {
 					unset($row['pwd']);
 					$this->admin = $row;
 					$this->admin_id = $row['aid'];
-					$this->demo = (CPGN_DEMO && eregi($this->admin_id, 'demo'));
+					$this->demo = (CPGN_DEMO && preg_match($this->admin_id, 'demo'));
 					unset($CPG_SESS['admin']);
 					$login[$row['admin_id']] = 1;
 				}
@@ -290,7 +290,7 @@ class cpg_member {
 			$time = ($persistent ? (gmtime()+(86400*30)) : 0);
 		}
 //		if ($this->local) setcookie($MAIN_CFG['cookie']['admin'], $data, $time, $MAIN_CFG['cookie']['path']);
-		setcookie($MAIN_CFG['cookie']['admin'], $data, $time, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
+		setcookie($MAIN_CFG['cookie']['admin'], $data, ['expires' => $time, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]); //, int secure
 	}
 
 }

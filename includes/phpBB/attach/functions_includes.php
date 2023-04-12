@@ -83,7 +83,8 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 //
 function attachment_quota_settings($admin_mode, $submit = FALSE, $mode)
 {
-	global $template, $db, $_POST, $_GET, $lang, $group_id, $lang, $phpbb_root_path, $attach_config;
+	$this_userdata = [];
+ global $template, $db, $_POST, $_GET, $lang, $group_id, $lang, $phpbb_root_path, $attach_config;
 
 	if (!intval($attach_config['allow_ftp_upload'])) {
 		if ( ($attach_config['upload_dir'][0] == '/') || ( ($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':') ) ) {

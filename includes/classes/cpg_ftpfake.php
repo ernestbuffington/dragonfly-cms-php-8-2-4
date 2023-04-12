@@ -19,7 +19,7 @@ class cpg_ftpfake {
 	var $path;
 
 	// Constructor
-	function cpg_ftpfake($server, $user, $pass, $path, $passive=false) {
+	function __construct($server, $user, $pass, $path, $passive=false) {
 		$path = $this->_construct_path(BASEDIR, $path);
 		if (is_dir($path)) {
 			$this->path = $path;
@@ -99,11 +99,12 @@ class cpg_ftpfake {
 	}
 
 	function filelist($path='.', $fileinfo=true) {
-		if (!$this->path) return false;
+		$list = [];
+  if (!$this->path) return false;
 		$path = $this->path.(($path[0] == '.') ? '' : "/$path");
 		$handle = opendir($path);
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && (!ereg("thumb_",$file)) && (!ereg("normal_",$file))) {
+			if ($file != "." && $file != ".." && (!preg_match('#thumb_#m',$file)) && (!preg_match('#normal_#m',$file))) {
 				if ($fileinfo) {
 					// Directory, Size, Date, Time, Filename
 					$list[] = array(
@@ -122,14 +123,15 @@ class cpg_ftpfake {
 		return $list;
 	}
 	function dirlist($path='.', $fileinfo=true) {
-		if (!$this->path) return false;
+		$list = [];
+  if (!$this->path) return false;
 		$path = $this->path.(($path[0] == '.') ? '' : "/$path");
 		$handle = opendir($path);
 		//http://us3.php.net/manual/en/function.readdir.php
 		// Note that !== did not exist until 4.0.0-RC2
 		// while ($file = readdir($handle)) {
 		while (false !== ($file = readdir($handle))) {
-			if (!ereg("[.]",$file)) {
+			if (!preg_match('#[\.]#m',$file)) {
 				if ($fileinfo) {
 					// Directory, Size, Date, Time, Filename
 					$list[] = array(

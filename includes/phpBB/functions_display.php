@@ -18,10 +18,11 @@ if (!defined('IN_PHPBB')) {
 }
 
 function display_forums($parent=0, $display_moderators = TRUE) {
-	global $db, $board_config, $lang, $images, $userdata, $CPG_SESS, $module_name;
+	$new_topic_data = [];
+ global $db, $board_config, $lang, $images, $userdata, $CPG_SESS, $module_name;
 
-	$tracking_topics = isset($CPG_SESS[$module_name]['track_topics']) ? $CPG_SESS[$module_name]['track_topics'] : array();
-	$tracking_forums = isset($CPG_SESS[$module_name]['track_forums']) ? $CPG_SESS[$module_name]['track_forums'] : array();
+	$tracking_topics = $CPG_SESS[$module_name]['track_topics'] ?? array();
+	$tracking_forums = $CPG_SESS[$module_name]['track_forums'] ?? array();
 
 	//
 	// Define appropriate SQL

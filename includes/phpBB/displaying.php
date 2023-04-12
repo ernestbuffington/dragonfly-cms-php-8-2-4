@@ -31,7 +31,7 @@ function display_compile_cache_clear($filename, $template_var)
 	global $template;
 	if (isset($template->cachedir)) {
 		$filename = str_replace($template->root, '', $filename);
-		if (substr($filename, 0, 1) == '/') {
+		if (str_starts_with($filename, '/')) {
 			$filename = substr($filename, 1, strlen($filename));
 		}
 		if (file_exists(amod_realpath($template->cachedir . $filename . '.php'))) {
@@ -51,7 +51,7 @@ function init_complete_extensions_data()
 	$extension_informations = get_extension_informations();
 	$allowed_extensions = array();
 
-	for ($i = 0; $i < count($extension_informations); $i++)
+	for ($i = 0; $i < (is_countable($extension_informations) ? count($extension_informations) : 0); $i++)
 	{
 		$extension = strtolower(trim($extension_informations[$i]['extension']));
 		$allowed_extensions[] = $extension;
@@ -85,7 +85,7 @@ function init_display_template($template_var, $replacement, $filename = 'forums/
 	}
 
 	$complete_filename = $filename;
-	if (substr($complete_filename, 0, 1) != '/') {
+	if (!str_starts_with($complete_filename, '/')) {
 		$complete_filename = $template->root . '/' . $complete_filename;
 	}
 
@@ -146,7 +146,7 @@ function display_review_attachments($post_id, $switch_attachment, $is_auth)
 	}
 	reset($attachments);
 	$attachments['_' . $post_id] = get_attachments_from_post($post_id);
-	if (count($attachments['_' . $post_id]) == 0) { return; }
+	if ((is_countable($attachments['_' . $post_id]) ? count($attachments['_' . $post_id]) : 0) == 0) { return; }
 	display_attachments($post_id);
 }
 
@@ -180,7 +180,7 @@ function display_attachments_preview($attachment_list)
 	return;
 	
 	global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme, $bgcolor2, $textcolor2;
-	if (count($attachment_list) < 1) { return; }
+	if ((is_countable($attachment_list) ? count($attachment_list) : 0) < 1) { return; }
 
 	init_display_template('preview', '{ATTACHMENTS}');
 	init_complete_extensions_data();
@@ -202,7 +202,7 @@ function display_attachments_preview($attachment_list)
 		'L_FILESIZE' => $lang['Filesize'])
 	);
 
-	for ($i=0, $attach_count = count($attachment_list) ; $i < $attach_count; ++$i)
+	for ($i=0, $attach_count = is_countable($attachment_list) ? count($attachment_list) : 0 ; $i < $attach_count; ++$i)
 	{
 		$extension = strtolower(trim($attachment_list[$i]['extension']));
 		//
@@ -281,8 +281,8 @@ function display_attachments_preview($attachment_list)
 				'U_DOWNLOAD_LINK' => $filename,
 
 				//flash
-				'WIDTH' => isset($width) ? $width : '',
-				'HEIGHT' => isset($height) ? $height : '',
+				'WIDTH' => $width ?? '',
+				'HEIGHT' => $height ?? '',
 
 				//default
 				'TARGET_BLANK' => (intval($display_categories[$attachment_list[$i]['extension']]) == IMAGE_CAT || $display == 'DEF_CAT') ? 'target="_blank"' : '',
@@ -310,7 +310,7 @@ function display_attachments($post_id)
 		return;
 	}
 
-	$num_attachments = count($attachments['_' . $post_id]);
+	$num_attachments = is_countable($attachments['_' . $post_id]) ? count($attachments['_' . $post_id]) : 0;
 	$blockvar = 'postrow.attachment';
 	//
 	// Some basic Template Vars

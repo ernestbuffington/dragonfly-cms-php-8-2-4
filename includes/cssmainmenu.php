@@ -45,7 +45,7 @@ $result = $db->sql_query($sql);
 while ($row = $db->sql_fetchrow($result))
 {
     if ($row['title'] == '') {
-        $row['title'] = (defined("_$row[link]LANG")) ? constant("_$row[link]LANG") : ereg_replace('_', ' ', $row['link']);
+        $row['title'] = (defined("_$row[link]LANG")) ? constant("_$row[link]LANG") : preg_replace('#_#m', ' ', $row['link']);
     }
     $row['link_type'] = -1;
     if (!isset($row['catpos'])) {
@@ -63,15 +63,15 @@ while ($row = $db->sql_fetchrow($result))
     if (defined($row['title'])) {
 		$row['title'] = constant($row['title']);
 	}
-    $link = eregi_replace('&amp;', '&', $row['link']);
+    $link = preg_replace('#&amp;#mi', '&', $row['link']);
     if (get_uri() != '') {
-        if (ereg($link, get_uri())) {
+        if (preg_match('#' . preg_quote($link, '#') . '#m', get_uri())) {
 			$row['status'] = '<span class="sgreen">&#8226;</span>';
 			$setstatus = 0;
 		}
     }
-    $row['link'] = eregi_replace('&', '&amp;', $link);
-    $row['catlnk'] = eregi_replace('&', '&amp;', $row['catlnk']);
+    $row['link'] = preg_replace('#&#mi', '&amp;', $link);
+    $row['catlnk'] = preg_replace('#&#mi', '&amp;', $row['catlnk']);
     $row['inmenu'] = 1;
     if (!isset($row['catpos'])) {
 		$row['catpos'] = -1;
@@ -96,12 +96,10 @@ elseif (!defined('ADMIN_PAGES') && is_admin())
 }
 
 ksort($menucats);
-while (list($ccat, $items) = each($menucats))
-{
+foreach ($menucats as $ccat => $items) {
     ksort($items);
     $catcontent = $offcontent = $hidcontent = '';
-    while (list($dummy, $item) = each($items))
-	{
+    foreach ($items as $dummy => $item) {
         $status = '<span class="sblack">&#8226;</span>';
         if ($setstatus && $item['link'] == $module_name) {
 			$status = '<span class="sgreen">&#8226;</span>';
@@ -112,7 +110,7 @@ while (list($ccat, $items) = each($menucats))
 		} elseif ($item['active'] && !$item['inmenu']) {
 			$status = '<span class="sgray">&#8226;</span>';
 		}
-        $status = isset($item['status']) ? $item['status'] : $status;
+        $status = $item['status'] ?? $status;
         if ($item['link_type'] <= 0) {
             $item['link'] = getlink($item['link']);
         } elseif ($item['link_type'] == 2) {

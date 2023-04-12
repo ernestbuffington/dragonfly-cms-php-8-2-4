@@ -19,14 +19,14 @@ function getlink($url='', $UseLEO=true, $full=false)
 	global $module_name, $mainindex, $MAIN_CFG, $BASEHREF;
 	if (empty($url) || $url[0] == '&') $url = $module_name.$url;
 	if ($MAIN_CFG['global']['GoogleTap'] && $UseLEO) {
-		$url = ereg_replace('&amp;', '/', $url);
-		$url = ereg_replace('&', '/', $url);
+		$url = preg_replace('#&amp;#m', '/', $url);
+		$url = preg_replace('#&#m', '/', $url);
 		$url = str_replace('?', '/', $url);
-		if (ereg('/file=', $url)) {
-			$url = ereg_replace('/file=', '/', $url);
+		if (preg_match('#\/file=#m', $url)) {
+			$url = preg_replace('#\/file=#m', '/', $url);
 		}
-		if (ereg('#', $url)) {
-			$url = ereg_replace('#', '.html#', $url);
+		if (preg_match('###m', $url)) {
+			$url = preg_replace('###m', '.html#', $url);
 		} else $url .= '.html';
 	} else {
 		$url = "$mainindex?name=".$url;
@@ -56,8 +56,8 @@ function encode_url($url)
 function url_refresh($url='', $time=3)
 {
 	global $MAIN_CFG;
-	$url = ereg_replace('&amp;', '&', $url);
-	if (!ereg('://', $url) && $MAIN_CFG['server']['path'] != substr($url, 0, strlen($MAIN_CFG['server']['path']))) {
+	$url = preg_replace('#&amp;#m', '&', $url);
+	if (!preg_match('#:\/\/#m', $url) && !str_starts_with($url, $MAIN_CFG['server']['path'])) {
 		$url = $MAIN_CFG['server']['path'].$url;
 	}
 	header('Refresh: '.intval($time).'; url='.$url);
@@ -67,12 +67,12 @@ function url_redirect($url='', $redirect=false)
 {
 	global $mainindex, $SESS, $CPG_SESS, $MAIN_CFG;
 	if ($url == '') $url = $mainindex;
-	$url = ereg_replace('&amp;', '&', $url);
+	$url = preg_replace('#&amp;#m', '&', $url);
 	$type = preg_match('/IIS|Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ? 'Refresh: 0; URL=' : 'Location: ';
 	if ($redirect) $CPG_SESS['user']['redirect'] = get_uri();
 	if (is_object($SESS)) $SESS->write_close();
 	//header("HTTP/1.1 303 REDIRECT");
-	if (!ereg('://', $url) && $MAIN_CFG['server']['path'] != substr($url, 0, strlen($MAIN_CFG['server']['path']))) {
+	if (!preg_match('#:\/\/#m', $url) && !str_starts_with($url, $MAIN_CFG['server']['path'])) {
 		$url = $MAIN_CFG['server']['path'].$url;
 	}
 	header($type . $url);
@@ -84,7 +84,7 @@ function url_redirect($url='', $redirect=false)
 # Stupid function to create an REQUEST_URI for IIS 5 servers
 function get_uri()
 {
-	if (ereg('IIS', $_SERVER['SERVER_SOFTWARE']) && isset($_SERVER['SCRIPT_NAME'])) {
+	if (preg_match('#IIS#m', $_SERVER['SERVER_SOFTWARE']) && isset($_SERVER['SCRIPT_NAME'])) {
 		$REQUEST_URI = $_SERVER['SCRIPT_NAME'];
 		if (isset($_SERVER['QUERY_STRING'])) {
 			$REQUEST_URI .= '?'.$_SERVER['QUERY_STRING'];
@@ -96,14 +96,15 @@ function get_uri()
 	$REQUEST_URI = urldecode($REQUEST_URI);
 	# encode the url " %22 and <> %3C%3E
 	$REQUEST_URI = str_replace('"', '%22', $REQUEST_URI); 
-	$REQUEST_URI = preg_replace('#([\x3C\x3E])#e', '"%".bin2hex(\'\\1\')', $REQUEST_URI);
+	$REQUEST_URI = preg_replace_callback('#([\x3C\x3E])#', fn($matches) => "%" . bin2hex($matches[1]), $REQUEST_URI);
 	$REQUEST_URI = substr($REQUEST_URI, 0, strlen($REQUEST_URI)-strlen(stristr($REQUEST_URI, '&CMSSESSID')));
 	return $REQUEST_URI;
 }
 
 function get_fileinfo($url, $detectAnim=false, $getdata=false, $lastmodified=0)
 {
-	$rdf = parse_url($url);
+	$new_location = null;
+ $rdf = parse_url($url);
 	if (!isset($rdf['host'])) return false;
 	if (!isset($rdf['path'])) $rdf['path'] = '/';
 	if (!isset($rdf['port'])) $rdf['port'] = 80;
@@ -122,8 +123,8 @@ function get_fileinfo($url, $detectAnim=false, $getdata=false, $lastmodified=0)
 		if (($head[1] >= 301 && $head[1] <= 303) || $head[1] == 307) {
 			while (!empty($data)) {
 				$data = rtrim(fgets($fp, 300)); // read lines
-				if (ereg('Location: ', $data)) {
-					$new_location = trim(eregi_replace('Location: ', '', $data));
+				if (preg_match('#Location: #m', $data)) {
+					$new_location = trim(preg_replace('#Location: #mi', '', $data));
 					break;
 				}
 			}
@@ -145,21 +146,21 @@ function get_fileinfo($url, $detectAnim=false, $getdata=false, $lastmodified=0)
 		// Read all headers
 		while (!empty($data)) {
 			$data = rtrim(fgets($fp, 300)); // read lines
-			if (ereg('Content-Length: ', $data)) {
-				$file['size'] = trim(eregi_replace('Content-Length: ', '', $data));
+			if (preg_match('#Content\-Length: #m', $data)) {
+				$file['size'] = trim(preg_replace('#Content\-Length: #mi', '', $data));
 			}
-			elseif (ereg('Content-Type: ', $data)) {
-				$file['type'] = trim(eregi_replace('Content-Type: ', '', $data));
+			elseif (preg_match('#Content\-Type: #m', $data)) {
+				$file['type'] = trim(preg_replace('#Content\-Type: #mi', '', $data));
 			}
-			elseif (ereg('Last-Modified: ', $data)) {
-				$file['date'] = trim(eregi_replace('Last-Modified: ', '', $data));
+			elseif (preg_match('#Last\-Modified: #m', $data)) {
+				$file['date'] = trim(preg_replace('#Last\-Modified: #mi', '', $data));
 			}
-			if (eregi('Content-Encoding: gzip', $data) || eregi('Content-Encoding: x-gzip', $data)) { $GZIP = true; }
-			if (eregi('charset=utf-8', $data)) { $file['utf8'] = true; }
+			if (preg_match('#Content\-Encoding: gzip#mi', $data) || preg_match('#Content\-Encoding: x\-gzip#mi', $data)) { $GZIP = true; }
+			if (preg_match('#charset=utf\-8#mi', $data)) { $file['utf8'] = true; }
 		}
 
 		$data = '';
-		if ($getdata || ($detectAnim && ereg('image/', $file['type']))) {
+		if ($getdata || ($detectAnim && preg_match('#image\/#m', $file['type']))) {
 			while(!feof($fp)) {
 				$data .= fread($fp, 1024); // read binary
 			}
@@ -167,10 +168,10 @@ function get_fileinfo($url, $detectAnim=false, $getdata=false, $lastmodified=0)
 			if ($getdata) $file['data'] = $data;
 		}
 		// Animation detection thanks to PerM
-		if ($detectAnim && ereg('image/', $file['type'])) {
+		if ($detectAnim && preg_match('#image\/#m', $file['type'])) {
 //			if (preg_match('/NETSCAPE2.0/', $data))
 			$data = preg_split('/\x00[\x00-\xFF]\x00\x2C/', $data); // split GIF frames
-			$file['animation'] = (count($data) > 2); // 1 = header, 2 = first/main frame
+			$file['animation'] = ((is_countable($data) ? count($data) : 0) > 2); // 1 = header, 2 = first/main frame
 		}
 		fputs($fp,"Connection: close\r\n\r\n");
 		fclose($fp);

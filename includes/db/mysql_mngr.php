@@ -30,7 +30,7 @@ class sql_mngr
 	//
 	// Constructor
 	//
-	function sql_mngr(&$owner)
+	function __construct(&$owner)
 	{
 		$this->_owner =& $owner;
 		$this->fields = array(
@@ -68,22 +68,24 @@ class sql_mngr
 
 	function get_versions()
 	{
-		$version['engine'] = 'MySQL';
+		$version = [];
+  $version['engine'] = 'MySQL';
 		$version['client'] = mysql_get_client_info();
-		$version['server'] = mysql_get_server_info($this->_owner->connect_id);
+		$version['server'] = mysql_get_server_info();
 		return $version;
 	}
 
 	function get_details()
 	{
-		$result = $this->_owner->query('SHOW VARIABLES', false, true);
+		$details = [];
+  $result = $this->_owner->query('SHOW VARIABLES', false, true);
 		while ($row = mysql_fetch_row($result)) { $details[$row[0]] = $row[1]; }
 		mysql_free_result($result);
 		$details['engine']  = 'MySQL';
 		$details['client']  = mysql_get_client_info();
-		$details['server']  = mysql_get_server_info($this->_owner->connect_id);
+		$details['server']  = mysql_get_server_info();
 		$details['unicode'] = (version_compare($details['server'], '4.1') >= 0);
-		$details['host'] = mysql_get_host_info($this->_owner->connect_id);
+		$details['host'] = mysql_get_host_info();
 		return $details;
 	}
 
@@ -112,7 +114,7 @@ class sql_mngr
 	{
 		$databases = array();
 		if (strpos(ini_get('disable_functions'), 'mysql_list_dbs') === false) {
-			$result = mysql_list_dbs($this->_owner->connect_id);
+			$result = mysqli_query('SHOW DATABASES');
 			if (!$result) $result = $this->_owner->query('SHOW DATABASES', true);
 			if ($result) {
 				while (list($name) = mysql_fetch_row($result)) { $databases[$name] = $name; }
@@ -224,7 +226,7 @@ class sql_mngr
 				if ($type == 'TEXT' || $type == 'BLOB') {
 					return $this->alter_table("$table CHANGE $field[0] $field[1] $type".($null?'':' NOT').' NULL');
 				}
-				if (eregi('VARBINARY', $type)) {
+				if (preg_match('#VARBINARY#mi', $type)) {
 					$ret = $result = $this->_owner->query("SELECT $field[1] FROM $table GROUP BY $field[1]");
 					if ($ret && $this->_owner->num_rows($result) > 0) {
 						$ret = $this->_owner->query("ALTER TABLE $table ADD df_varbin_tmp $type NULL DEFAULT NULL");

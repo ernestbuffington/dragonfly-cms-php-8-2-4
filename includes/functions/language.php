@@ -151,9 +151,9 @@ $browserlang = array(
 
 $currentlang = $MAIN_CFG['global']['language'];
 if ($MAIN_CFG['global']['multilingual']) {
-	if (isset($_GET['newlang']) && ereg("^([a-zA-Z0-9_\-]+)$", $_GET['newlang'])) {
+	if (isset($_GET['newlang']) && preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_GET['newlang'])) {
 		$currentlang = $_GET['newlang'];
-	} elseif (isset($_COOKIE['lang']) && ereg("^([a-zA-Z0-9_\-]+)$", $_COOKIE['lang']) &&
+	} elseif (isset($_COOKIE['lang']) && preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_COOKIE['lang']) &&
 		(file_exists(BASEDIR."language/$_COOKIE[lang]/main.php"))) {
 		$currentlang = $_COOKIE['lang'];
 	} elseif (is_user()) {
@@ -164,7 +164,7 @@ if ($MAIN_CFG['global']['multilingual']) {
 	if (!file_exists(BASEDIR."language/$currentlang/main.php")) {
 		$currentlang = $MAIN_CFG['global']['language'];
 	}
-	setcookie('lang',$currentlang,gmtime()+31536000, $MAIN_CFG['cookie']['path']);
+	setcookie('lang',$currentlang, ['expires' => gmtime()+31536000, 'path' => $MAIN_CFG['cookie']['path']]);
 }
 /*
 else if () {
@@ -238,7 +238,8 @@ function detect_lang(&$language) {
 }
 
 function get_lang($module, $filename=false, $linenum=false, $once=true) {
-	static $loaded;
+	$path = null;
+ static $loaded;
 	$file = strtolower($module);
 	if (isset($loaded[$file])) { return true; }
 	global $currentlang, $MAIN_CFG, $LNG;
@@ -280,12 +281,13 @@ function get_lang($module, $filename=false, $linenum=false, $once=true) {
 }
 
 function lang_selectbox($current, $fieldname='alanguage', $all=true, $return_list=false) {
-	static $languages;
+	$matches = [];
+ static $languages;
 	if (!isset($languages)) {
 		$handle = opendir('language');
 		while ($file = readdir($handle)) {
 			if (file_exists(BASEDIR."language/$file/main.php")) { $languages[] = $file; }
-			elseif (ereg('lang-(.*).php$', $file, $matches)) { $languages[] = $matches[1]; }
+			elseif (preg_match('#lang\-(.*).php$#m', $file, $matches)) { $languages[] = $matches[1]; }
 		}
 		closedir($handle);
 		sort($languages);

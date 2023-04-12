@@ -30,7 +30,7 @@ class sql_mngr
 	//
 	// Constructor
 	//
-	function sql_mngr(&$owner)
+	function __construct(&$owner)
 	{
 		$this->_owner =& $owner;
 		$this->fields = array(
@@ -68,7 +68,8 @@ class sql_mngr
 
 	function get_versions()
 	{
-		$version['engine'] = 'MySQLi';
+		$version = [];
+  $version['engine'] = 'MySQLi';
 		$version['client'] = mysqli_get_client_info();
 		$version['server'] = $this->_owner->connect_id->server_info;
 		return $version;
@@ -76,7 +77,8 @@ class sql_mngr
 
 	function get_details()
 	{
-		$result = $this->_owner->query('SHOW VARIABLES', false, true);
+		$details = [];
+  $result = $this->_owner->query('SHOW VARIABLES', false, true);
 		while ($row = $result->fetch_row()) { $details[$row[0]] = $row[1]; }
 		$result->free();
 		$details['engine']  = 'MySQLi';
@@ -108,10 +110,11 @@ class sql_mngr
 
 	function list_databases()
 	{
-		$databases = array();
+		$result = null;
+  $databases = array();
 		//hopefully mysqli and mysql exts are both loaded
 		if (function_exists('mysql_list_dbs') && strpos(ini_get('disable_functions'), 'mysql_list_dbs') === false) {
-			$result = mysql_list_dbs($this->_owner->connect_id);
+			$result = mysqli_query('SHOW DATABASES');
 		}
 		if (!$result) $result = $this->_owner->query('SHOW DATABASES', true);
 		if ($result) {
@@ -221,7 +224,7 @@ class sql_mngr
 				if ($type == 'TEXT' || $type == 'BLOB') {
 					return $this->alter_table("$table CHANGE $field[0] $field[1] $type".($null?'':' NOT').' NULL');
 				}
-				if (eregi('VARBINARY', $type)) {
+				if (preg_match('#VARBINARY#mi', $type)) {
 					$ret = $result = $this->_owner->query("SELECT $field[1] FROM $table GROUP BY $field[1]");
 					if ($ret && $this->_owner->num_rows($result) > 0) {
 						$ret = $this->_owner->query("ALTER TABLE $table ADD df_varbin_tmp $type NULL DEFAULT NULL");

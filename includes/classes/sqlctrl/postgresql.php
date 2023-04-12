@@ -19,7 +19,8 @@ class SQLCtrl extends DBCtrl {
 
 	function backup($database, $tables, $filename, $structure=true, $data=true, $drop=true, $compress=true, $full=false)
 	{
-		global $db;
+		$regs = [];
+  global $db;
 		$schema = $database;
 		if (!is_array($tables) || empty($tables)) {
 			trigger_error('No tables to backup', E_USER_WARNING);
@@ -32,8 +33,8 @@ class SQLCtrl extends DBCtrl {
 		//$search_path = preg_replace('#^{(.*?)}$#', '\\1', $search_path[0][0]);
 		# doing some DOS-CRLF magic...
 		# this looks better under WinX
-		if (ereg('[^(]*\((.*)\)[^)]*',$_SERVER['HTTP_USER_AGENT'],$regs)) {
-			if (eregi('Win', $regs[1])) { $crlf = "\r\n"; }
+		if (preg_match('#[^\(]*\((.*)\)[^\)]*#m',$_SERVER['HTTP_USER_AGENT'],$regs)) {
+			if (preg_match('#Win#mi', $regs[1])) { $crlf = "\r\n"; }
 		}
 
 		if (GZIPSUPPORT) {
@@ -93,7 +94,7 @@ class SQLCtrl extends DBCtrl {
 		global $db;
 		foreach ($tables as $table) {
 			$indexes = $db->list_indexes($table);
-			if (!count($indexes)) continue;
+			if (!(is_countable($indexes) ? count($indexes) : 0)) continue;
 			$list = $crlf.'--'.$crlf.'-- Index and Constraint for table '.$table.$crlf.'--'.$crlf;
 			foreach ($indexes as $relname => $data) {
 //				$row = $db->sql_ufetchrow("SELECT pg_get_indexdef($data[oid])", SQL_NUM);
@@ -127,7 +128,7 @@ class SQLCtrl extends DBCtrl {
 		foreach ($tables as $table) {
 			$schema_create = $crlf.'--'.$crlf.'-- Table structure for table '.$table.$crlf.'--'.$crlf;
 			$indexes = $db->list_indexes($table);
-			if (0 < count($indexes)) {
+			if (0 < (is_countable($indexes) ? count($indexes) : 0)) {
 				if (isset($indexes['PRIMARY'])) {
 					$schema_create .='ALTER TABLE ONLY '.$schema.'.'.$table.' DROP CONSTRAINT '.$table."_pkey;$crlf";
 					unset($indexes['PRIMARY']);

@@ -29,7 +29,7 @@ if (isset($_GET['test'])) {
 	$code = '123test';
 	include_once('themes/default/theme.php');
 } else {
-	$gfxid = isset($_GET['id']) ? $_GET['id'] : 0;
+	$gfxid = $_GET['id'] ?? 0;
 	if (isset($CPG_SESS['gfx'][$gfxid])) {
 		$code = $CPG_SESS['gfx'][$gfxid];
 	} else {

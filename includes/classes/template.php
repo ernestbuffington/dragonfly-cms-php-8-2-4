@@ -49,7 +49,7 @@ class cpg_template
 	// this will hash handle names to the compiled/uncompiled code for that handle.
 	var $compiled_code = array();
 
-	function cpg_template()
+	function __construct()
 	{
 		global $MAIN_CFG, $CPG_SESS;
 		if (!is_dir(BASEDIR.'themes/default/template')) { trigger_error("'default' theme does not exist", E_USER_ERROR); }
@@ -112,7 +112,8 @@ class cpg_template
 	// Load a compiled template if possible, if not, recompile it
 	function _tpl_load(&$handle)
 	{
-		// If we don't have a file assigned to this handle, die.
+		$pos = null;
+  // If we don't have a file assigned to this handle, die.
 		if (!isset($this->files[$handle])) {
 			trigger_error("template->_tpl_load(): No file specified for handle $handle", E_USER_ERROR);
 		}
@@ -131,7 +132,7 @@ class cpg_template
 			$this->cachepath = 'cache/tpl_'.$this->tpl.'_';
 		}
 
-		$filename = ereg_replace('/', '#', $this->filename[$handle]);
+		$filename = preg_replace('#\/#m', '#', $this->filename[$handle]);
 		$filename = $this->cachepath.$filename.'.inc';
 
 		// Don't recompile page if the original template is older then the compiled cache
@@ -183,7 +184,7 @@ class cpg_template
 			$str = &$this->_tpldata;
 			for ($i = 0; $i < $blockcount; $i++)  {
 				$str = &$str[$blocks[$i]]; 
-				$str = &$str[count($str) - 1]; 
+				$str = &$str[(is_countable($str) ? count($str) : 0) - 1]; 
 			} 
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given

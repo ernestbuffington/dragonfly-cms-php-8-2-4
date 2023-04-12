@@ -19,7 +19,8 @@ class SQLCtrl extends DBCtrl {
 
 	function backup($database, $tables, $filename, $structure=true, $data=true, $drop=true, $compress=true, $full=false)
 	{
-		if (!is_array($tables) || empty($tables)) {
+		$regs = [];
+  if (!is_array($tables) || empty($tables)) {
 			trigger_error('No tables to backup', E_USER_WARNING);
 			return false;
 		}
@@ -27,8 +28,8 @@ class SQLCtrl extends DBCtrl {
 		$esc = ((SQL_LAYER == 'postgresql') ? '--': '#');
 		# doing some DOS-CRLF magic...
 		# this looks better under WinX
-		if (ereg('[^(]*\((.*)\)[^)]*',$_SERVER['HTTP_USER_AGENT'],$regs)) {
-			if (eregi('Win', $regs[1])) { $crlf = "\r\n"; }
+		if (preg_match('#[^\(]*\((.*)\)[^\)]*#m',$_SERVER['HTTP_USER_AGENT'],$regs)) {
+			if (preg_match('#Win#mi', $regs[1])) { $crlf = "\r\n"; }
 		}
 
 		if (GZIPSUPPORT) {
@@ -86,7 +87,7 @@ class SQLCtrl extends DBCtrl {
 			if (!empty($row['Extra'])) $schema_create .= " $row[Extra]";
 			$schema_create .= ",$crlf";
 		}
-		$schema_create = ereg_replace(",$crlf".'$', '', $schema_create);
+		$schema_create = preg_replace(",$crlf".'$', '', $schema_create);
 
 		$result = $db->list_indexes("$database.$table");
 		foreach ($result as $key => $row) {

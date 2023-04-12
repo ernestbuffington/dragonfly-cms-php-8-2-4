@@ -39,7 +39,7 @@ function group_select($select_name, $default_group = 0)
 		$group_name[$db->sql_numrows($result)]['group_id'] = 0;
 		$group_name[$db->sql_numrows($result)]['group_name'] = $lang['Not_assigned'];
 
-		for($i = 0; $i < count($group_name); $i++) {
+		for($i = 0; $i < (is_countable($group_name) ? count($group_name) : 0); $i++) {
 			if ($default_group < 1) {
 				$selected = ($i == 0) ? ' selected="selected"' : '';
 			} else {
@@ -76,7 +76,8 @@ function download_select($select_name, $group_id = 0)
 
 function category_select($select_name, $group_id = 0)
 {
-	global $db, $types_category, $modes_category;
+	$category_type = null;
+ global $db, $types_category, $modes_category;
 	$result = $db->sql_query("SELECT group_id, cat_id FROM " . EXTENSION_GROUPS_TABLE);
 	$rows = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
@@ -123,14 +124,15 @@ function size_select($select_name, $size_compare)
 
 function quota_limit_select($select_name, $default_quota = -1)
 {
-	global $db, $lang;
+	$quota_name = [];
+ global $db, $lang;
 	$result = $db->sql_query("SELECT quota_limit_id, quota_desc FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit ASC");
 	$quota_select = '<select name="' . $select_name . '">';
 	$quota_name[0]['quota_limit_id'] = -1;
 	$quota_name[0]['quota_desc'] = $lang['Not_assigned'];
 	if ( ($db->sql_numrows($result)) > 0 ) {
 		$rows = $db->sql_fetchrowset($result);
-		for ($i = 0; $i < count($rows); $i++) {
+		for ($i = 0; $i < (is_countable($rows) ? count($rows) : 0); $i++) {
 			$quota_name[] = $rows[$i];
 		}
 	}
@@ -144,14 +146,15 @@ function quota_limit_select($select_name, $default_quota = -1)
 
 function default_quota_limit_select($select_name, $default_quota = 0)
 {
-	global $db, $lang;
+	$quota_name = [];
+ global $db, $lang;
 	$result = $db->sql_query("SELECT quota_limit_id, quota_desc FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit ASC");
 	$quota_select = '<select name="' . $select_name . '">';
 	$quota_name[0]['quota_limit_id'] = 0;
 	$quota_name[0]['quota_desc'] = $lang['No_quota_limit'];
 	if ( ($db->sql_numrows($result)) > 0 ) {
 		$rows = $db->sql_fetchrowset($result);
-		for ($i = 0; $i < count($rows); $i++) {
+		for ($i = 0; $i < (is_countable($rows) ? count($rows) : 0); $i++) {
 			$quota_name[] = $rows[$i];
 		}
 	}

@@ -69,7 +69,9 @@ function session_pagestart()
 
 function auth($type, $forum_id, $userdata, $f_access = '')
 {
-	global $db, $lang;
+	$a_sql = null;
+ $auth_fields = [];
+ global $db, $lang;
 
 	switch( $type )
 	{
@@ -228,7 +230,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 					break;
 			}
 		} else {
-			for ($k = 0; $k < count($f_access); $k++) {
+			for ($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 				$value = $f_access[$k][$key];
 				$f_forum_id = $f_access[$k]['forum_id'];
 				if (!isset($u_access[$f_forum_id])) $u_access[$f_forum_id] = false;
@@ -273,7 +275,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	if ($forum_id != AUTH_LIST_ALL) {
 		$auth_user['auth_mod'] = (is_user() ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0);
 	} else {
-		for ($k = 0; $k < count($f_access); $k++) {
+		for ($k = 0; $k < (is_countable($f_access) ? count($f_access) : 0); $k++) {
 			$f_forum_id = $f_access[$k]['forum_id'];
 			if (!isset($u_access[$f_forum_id])) $u_access[$f_forum_id] = false;
 			$auth_user[$f_forum_id]['auth_mod'] = (is_user() ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0);
@@ -286,8 +288,8 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 function auth_check_user($type, $key, $u_access, $is_admin)
 {
 	$auth_user = 0;
-	if (count($u_access)) {
-		for($j = 0; $j < count($u_access); $j++) {
+	if (is_countable($u_access) ? count($u_access) : 0) {
+		for($j = 0; $j < (is_countable($u_access) ? count($u_access) : 0); $j++) {
 			$result = 0;
 			switch($type) {
 				case AUTH_ACL:

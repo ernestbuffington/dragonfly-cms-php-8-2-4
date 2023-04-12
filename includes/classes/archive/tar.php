@@ -21,7 +21,7 @@ class archive_tar
 	var $filename;
 	var $type = 'tar';
 
-	function archive_tar($filename, $type='')
+	function __construct($filename, $type='')
 	{
 		$this->filename = $filename;
 		$this->type = 'tar';

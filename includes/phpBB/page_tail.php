@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB')) { exit; }
 global $module_name;
 $template->assign_vars(array(
 	'PHPBB_VERSION' => '1' . $board_config['version'],
-	'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : '',
+	'TRANSLATION_INFO' => $lang['TRANSLATION_INFO'] ?? '',
 	'ADMIN_LINK' => (can_admin($module_name) ? '<a href="'.adminlink($module_name).'">'.$lang['Admin_panel'].'</a><br /><br />' : ''),
 	'S_SIMPLE_FOOTER'=> $gen_simple_header
 	)

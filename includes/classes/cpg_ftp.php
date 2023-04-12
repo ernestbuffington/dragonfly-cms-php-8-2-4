@@ -19,7 +19,7 @@ class cpg_ftp {
 	var $connect_id;
 
 	// Constructor
-	function cpg_ftp($server, $user, $pass, $path, $passive=false) {
+	function __construct($server, $user, $pass, $path, $passive=false) {
 		if ($server == '') { $server = 'localhost'; }
 		if (!function_exists('ftp_connect')) {
 			if (is_admin()) { trigger_error('PHP FTP module not active', E_USER_ERROR); }
@@ -58,7 +58,7 @@ class cpg_ftp {
 		if (!$this->connect_id) return false;
 		// get contents of the current directory
 		$list = ftp_nlist($this->connect_id, $path);
-		for ($i = 0; $i < count($list); $i++) {
+		for ($i = 0; $i < (is_countable($list) ? count($list) : 0); $i++) {
 			if ($list[$i] == $name) return true;
 		}
 		return false;
@@ -69,7 +69,8 @@ class cpg_ftp {
 	}
 
 	function mkdir($dirname) {
-		if (!$this->connect_id) return false;
+		$name = null;
+  if (!$this->connect_id) return false;
 		$res = ftp_mkdir($this->connect_id, $name);
 		if ($res) ftp_site($this->connect_id, 'CHMOD 0755 ' . $dirname);
 		return $res;
@@ -81,7 +82,8 @@ class cpg_ftp {
 	}
 
 	function is_dir($name) {
-		if (!$this->connect_id) return false;
+		$info = [];
+  if (!$this->connect_id) return false;
 		if (substr($name, -1) == '/') $name = substr($name, 0, -1);
 		$dirname = strrchr($name, '/');
 		if ($dirname) {
@@ -92,8 +94,8 @@ class cpg_ftp {
 			$dirname = $name;
 		}
 		$rawlist = ftp_rawlist($this->connect_id, $path);
-		for ($i = 0; $i < count($rawlist); $i++) {
-			if (ereg('([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)', $rawlist[$i], $info) ) {
+		for ($i = 0; $i < (is_countable($rawlist) ? count($rawlist) : 0); $i++) {
+			if (preg_match('#([\-d])[rwxst\-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)#m', $rawlist[$i], $info) ) {
 				if ($info[1] == 'd' && $info[5] == $dirname) { return true; }
 			}
 		}
@@ -101,13 +103,14 @@ class cpg_ftp {
 	}
 
 	function dirlist($path='.', $fileinfo=true) {
-		if (!$this->connect_id) return false;
+		$info = [];
+  if (!$this->connect_id) return false;
 		if ($fileinfo) {
 			$rawlist = ftp_rawlist($this->connect_id, $path);
 			if (!$rawlist) return false;
 			$list = array();
 			for ($i = 0; $i < count($rawlist); $i++) {
-				if (ereg('([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)', $rawlist[$i], $info) ) {
+				if (preg_match('#([\-d])[rwxst\-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)#m', $rawlist[$i], $info) ) {
 					// Directory, Size, Date, Time, Filename
 					$list[] = array(($info[1] == 'd'), intval($info[2]), $info[3], $info[4], trim($info[5]));
 				}

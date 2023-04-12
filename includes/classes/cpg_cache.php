@@ -37,7 +37,7 @@ class Cache {
 			} else {
 				if (!is_int($value)) {
 					$value = str_replace('\\', "\\\\", trim($value));
-					$value = "'".ereg_replace("'", "\\'", $value)."'";
+					$value = "'".preg_replace('#\'#m', "\\'", $value)."'";
 				}
 				$return .= $value.",\n";
 			}
@@ -52,19 +52,19 @@ class Cache {
 			if (is_array($array)) {
 				$data .= "\$$name = array(\n".Cache::_array_parse($array).");";
 			} else {
-				global $$name;
-				if (is_array($$name)) { $data .= "\$$name = array(\n".Cache::_array_parse($$name).");"; }
+				global ${$name};
+				if (is_array(${$name})) { $data .= "\$$name = array(\n".Cache::_array_parse(${$name}).");"; }
 			}
 			file_write($filename, $data);
 		}
 	}
 	function array_load($name, $module_name='config', $global=true) {
-		if ($global) global $$name;
+		if ($global) global ${$name};
 		$filename = BASEDIR.'cache/'.$module_name."_$name.php";
 		if (file_exists($filename)) {
 			include($filename);
 			if (!defined('PHP_AS_NOBODY')) { define_nobody($filename); }
-			return $$name;
+			return ${$name};
 		}
 		return false;
 	}
@@ -89,7 +89,7 @@ class Cache {
 			foreach ($defines as $name => $value) {
 				if (!is_int($value)) {
 					$value = str_replace('\\', '\\\\', trim($value));
-					$value = "'".ereg_replace("'", "\\'", $value)."'";
+					$value = "'".preg_replace('#\'#m', "\\'", $value)."'";
 				}
 				$data .= "define('$name', $value);\n";
 			}

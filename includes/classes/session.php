@@ -27,7 +27,7 @@ class cpg_session {
 	//
 	// Constructor
 	//
-	function cpg_session($name='CMSSESSID', $time=180) {
+	function __construct($name='CMSSESSID', $time=180) {
 		global $CPG_SESS, $MAIN_CFG;
 		$this->sess_name = $name;
 		$this->sess_time = $time;
@@ -81,7 +81,7 @@ class cpg_session {
 		global $CPG_SESS, $MAIN_CFG;
 		$_SESSION = $CPG_SESS = array();
 		if (isset($_COOKIE[session_name()])) {
-			setcookie(session_name(), '', -1, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']);
+			setcookie(session_name(), '', ['expires' => -1, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]);
 			unset($_COOKIE[$this->sess_name]);
 		}
 		$this->started = false;
@@ -96,9 +96,9 @@ class cpg_session {
 		if ($this->started) {
 			global $CPG_SESS, $module_name;
 			$_SESSION['SECURITY']['page'] = $module_name;
-			$CPG_SESS['admin']['page'] = (isset($_GET['op']) ? $_GET['op'] : (isset($_POST['op']) ? $_POST['op'] : ''));
+			$CPG_SESS['admin']['page'] = ($_GET['op'] ?? $_POST['op'] ?? '');
 			$CPG_SESS['user']['page'] = $module_name;
-			$CPG_SESS['user']['file'] = (isset($_GET['file']) ? $_GET['file'] : (isset($_POST['file']) ? $_POST['file'] : ''));
+			$CPG_SESS['user']['file'] = ($_GET['file'] ?? $_POST['file'] ?? '');
 			$CPG_SESS['user']['uri'] = get_uri();
 			if (isset($CPG_SESS['user']['redirect']) && $CPG_SESS['user']['redirect'] != $CPG_SESS['user']['uri'] && $module_name != 'Your_Account') {
 				unset($CPG_SESS['user']['redirect']);

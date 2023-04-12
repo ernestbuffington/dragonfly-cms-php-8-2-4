@@ -57,7 +57,7 @@ class SMTP
 	 * @access public
 	 * @return void
 	 */
-	function SMTP() {
+	function __construct() {
 		$this->smtp_conn = 0;
 		$this->error = null;
 		$this->helo_rply = null;
@@ -333,7 +333,7 @@ class SMTP
 			# now send the lines to the server
 			foreach ($lines_out as $line_out) {
 				if (strlen($line_out) > 0) {
-					if (substr($line_out, 0, 1) == '.') { $line_out = '.'.$line_out; }
+					if (str_starts_with($line_out, '.')) { $line_out = '.'.$line_out; }
 				}
 				fputs($this->smtp_conn,$line_out.$this->CRLF);
 			}
@@ -378,7 +378,8 @@ class SMTP
 	 * @return string array
 	 */
 	function Expand($name) {
-		$this->error = null; # so no confusion is caused
+		$list = [];
+  $this->error = null; # so no confusion is caused
 
 		if (!$this->connected()) {
 			$this->error = array('error' => 'Called Expand() without being connected');
@@ -405,7 +406,9 @@ class SMTP
 
 		# parse the reply and place in our array to return to user
 		$entries = explode($this->CRLF,$rply);
-		while (list(,$l) = each($entries)) { $list[] = substr($l,4); }
+		foreach ($entries as $l) {
+      $list[] = substr($l,4);
+  }
 
 		return $list;
 	}

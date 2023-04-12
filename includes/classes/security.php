@@ -29,7 +29,9 @@ class Security
 
 	function init()
 	{
-		# Show error page if the http server sends an error
+		$ipn = null;
+  $mac = null;
+  # Show error page if the http server sends an error
 		if (isset($_SERVER['REDIRECT_STATUS']) && $_SERVER['REDIRECT_STATUS'] >= 400 && $_SERVER['REDIRECT_STATUS'] <= 503) {
 			cpg_error('', $_SERVER['REDIRECT_STATUS']);
 		}
@@ -70,7 +72,7 @@ class Security
 			# is it a referer spam?
 			if ($MAIN_CFG['_security']['referers'] && !$_SESSION['SECURITY']['banned'] &&
 			    !empty($_SERVER['HTTP_REFERER']) &&
-			    strpos($_SERVER['HTTP_REFERER'], $MAIN_CFG['server']['domain']) === false &&
+			    strpos($_SERVER['HTTP_REFERER'], (string) $MAIN_CFG['server']['domain']) === false &&
 			    !Security::check_domain($_SERVER['HTTP_REFERER']))
 			{
 				$_SESSION['SECURITY']['banned'] = 801;
@@ -285,7 +287,7 @@ class Security
 			if (empty($row[1])) { continue; }
 			if ($bot && empty($where)) {
 				break;
-			} else if (eregi(preg_quote($row[1]), $_SERVER['HTTP_USER_AGENT'])) {
+			} else if (preg_match(preg_quote($row[1]), $_SERVER['HTTP_USER_AGENT'])) {
 				$bot = $row;
 			}
 		}
@@ -346,7 +348,7 @@ class Security
 
 	function _log_serializer($log)
 	{
-		for($i=0; $i<count($log); ++$i) {
+		for($i=0; $i<(is_countable($log) ? count($log) : 0); ++$i) {
 			foreach ($log[$i] as $key => $val) {
 				$log[$i][$key] = Fix_Quotes($val, true);
 			}

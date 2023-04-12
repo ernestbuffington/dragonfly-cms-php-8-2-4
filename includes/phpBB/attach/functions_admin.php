@@ -75,7 +75,8 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = -1)
 //
 function sort_multi_array ($sort_array, $key, $sort_order, $pre_string_sort = -1) 
 {
-	foreach ($sort_array as $k => $c) {
+	$volume = [];
+ foreach ($sort_array as $k => $c) {
 		$volume[$k] = $c[$key];
 	}
 	if ($sort_order == 'DESC') {
@@ -142,7 +143,7 @@ function collect_attachments()
 		if (!$file_listing) {
 			message_die(GENERAL_ERROR, 'Unable to get Raw File Listing. Please be sure the LIST command is enabled at your FTP Server.');
 		}
-		for ($i = 0; $i < count($file_listing); $i++) {
+		for ($i = 0; $i < (is_countable($file_listing) ? count($file_listing) : 0); $i++) {
 			if (!$file_listing[0] && $file_listing[4] != 'index.php' && $file_listing[4] != '.htaccess') {
 				$file_attachments[] = $file_listing[4];
 			}
@@ -189,7 +190,7 @@ function get_formatted_dirsize()
 		if (!$file_listing) {
 			return $lang['Not_available'];
 		}
-		for ($i = 0; $i < count($file_listing); $i++) {
+		for ($i = 0; $i < (is_countable($file_listing) ? count($file_listing) : 0); $i++) {
 			if (!$file_listing[1] && $file_listing[4] != 'index.php' && $file_listing[4] != '.htaccess') {
 				$upload_dir_size += $file_listing[1];
 			}
@@ -203,7 +204,15 @@ function get_formatted_dirsize()
 //
 function search_attachments($order_by, &$total_rows)
 {
-	global $db, $_POST, $_GET, $lang;
+	$search_author = null;
+ $search_keyword_fname = null;
+ $search_keyword_comment = null;
+ $search_count_smaller = null;
+ $search_count_greater = null;
+ $search_size_smaller = null;
+ $search_size_greater = null;
+ $search_days_greater = null;
+ global $db, $_POST, $_GET, $lang;
 	
 	$where_sql = array();
 
@@ -216,11 +225,11 @@ function search_attachments($order_by, &$total_rows)
 	{
 		if( isset($_POST[$search_vars[$i]]) || isset($_GET[$search_vars[$i]]) )
 		{
-			$$search_vars[$i] = ( isset($_POST[$search_vars[$i]]) ) ? $_POST[$search_vars[$i]] : $_GET[$search_vars[$i]];
+			${$search_vars}[$i] = $_POST[$search_vars[$i]] ?? $_GET[$search_vars[$i]];
 		}
 		else
 		{
-			$$search_vars[$i] = '';
+			${$search_vars}[$i] = '';
 		}
 	}
 
@@ -325,7 +334,7 @@ function limit_array($array, $start, $pagelimit)
 	//
 	// array from start - start+pagelimit
 	//
-	$limit = ( count($array) < $start + $pagelimit ) ? count($array) : $start + $pagelimit;
+	$limit = ( (is_countable($array) ? count($array) : 0) < $start + $pagelimit ) ? count($array) : $start + $pagelimit;
 	$limit_array = array();
 	for ($i = $start; $i < $limit; $i++) {
 		$limit_array[] = $array[$i];
