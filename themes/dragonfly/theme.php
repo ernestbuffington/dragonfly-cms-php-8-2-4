@@ -55,8 +55,8 @@ function themeheader() {
 		$img = $Blocks->hideblock('601') ? 'plus.png' : 'minus.png';
 		$imgr = '<img style="float:right; cursor:pointer;" alt="'._TOGGLE.'" title="'._TOGGLE.'" id="pic601" src="themes/'.$CPG_SESS['theme'].'/images/'.$img.'" onclick="blockswitch(\'601\');" />';
 	}
-	$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-	$css_ie = ereg('MSIE 7.0', $user_agent) ? 'ie7' : (ereg('MSIE ([0-6].[0-9]{1,2})', $user_agent) ? 'ie6' : ((isset($_SESSION['SECURITY']['UA']) && $_SESSION['SECURITY']['UA'] == 'Safari') ? 'safari' : ((isset($_SESSION['SECURITY']['UA']) && $_SESSION['SECURITY']['UA'] == 'Opera') ? 'opera' : '')));
+	$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+	$css_ie = preg_match('#MSIE 7.0#m', $user_agent) ? 'ie7' : (preg_match('#MSIE ([0-6].[0-9]{1,2})#m', $user_agent) ? 'ie6' : ((isset($_SESSION['SECURITY']['UA']) && $_SESSION['SECURITY']['UA'] == 'Safari') ? 'safari' : ((isset($_SESSION['SECURITY']['UA']) && $_SESSION['SECURITY']['UA'] == 'Opera') ? 'opera' : '')));
 	$cpgtpl->assign_vars(array(
 		'CSS_IE'		=> ($css_ie) ? '<link rel="stylesheet" type="text/css" href="themes/'.$CPG_SESS['theme'].'/style/'.$css_ie.'.css" />' : '',
 		'PUBLIC_HEADER' => !defined('ADMIN_PAGES'),
@@ -78,7 +78,7 @@ function themeheader() {
 		'U_FORUMS'     => getlink('Forums'),
 		'U_MY_ACCOUNT' => getlink(is_user() ? 'Your_Account' : 'Your_Account&amp;file=register'),
 		'U_ADMININDEX' => $adminindex,
-		'S_MAIN_MENU'  => isset($mmcontent) ? $mmcontent : false
+		'S_MAIN_MENU'  => $mmcontent ?? false
 	));
 	$Blocks->display('l');
 }
@@ -124,7 +124,8 @@ function theme_close_form() {
 
 ************************************************************************************/
 function theme_yesno_option($name, $value=0) {
-	$sel[(!$value)] = '';
+	$sel = [];
+ $sel[(!$value)] = '';
 	$sel[$value] = ' selected="selected"';
 	$select = '<select class="set" name="'.$name.'" id="'.$name."\">\n";
 	$select .= '<option value="1"'.$sel[1].">"._YES."</option>\n";
@@ -142,10 +143,11 @@ function theme_yesno_option($name, $value=0) {
 
 ************************************************************************************/
 function theme_select_option($name, $value, $array) {
-	$sel[$value] = ' selected="selected"';
+	$sel = [];
+ $sel[$value] = ' selected="selected"';
 	$select = '<select class="set" name="'.$name.'" id="'.$name."\">\n";
 	foreach($array as $var) {
-		$select .= '<option'.(isset($sel[$var])?$sel[$var]:'').">$var</option>\n";
+		$select .= '<option'.($sel[$var] ?? '').">$var</option>\n";
 	}
 	return $select.'</select>';
 }
