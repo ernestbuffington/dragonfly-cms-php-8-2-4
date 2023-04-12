@@ -151,8 +151,11 @@ if (!$go) {
 <input type="hidden" name="step" value="'.(!empty($current_version) ? '3' : '1').'" />
 <input type="submit" value="'.$instlang['agree'].'" class="formfield" /></p>';
 }
-elseif (isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 0 && !preg_match('://'.$_SERVER['HTTP_HOST'], $_SERVER['HTTP_REFERER'])) {
-	echo 'Posting from another server is not allowed';
+//elseif (isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 0 && !preg_match('://'.$_SERVER['HTTP_HOST'], $_SERVER['HTTP_REFERER'])) {
+elseif (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'localhost/' !== false))
+{
+  echo '<a type="button" onclick="history.back(-1);">Back</a>';
+	//echo 'Posting from another server is not allowed';
 }
 elseif (file_exists(BASEDIR."install/step$go.php")) {
 	include(BASEDIR."install/step$go.php");
