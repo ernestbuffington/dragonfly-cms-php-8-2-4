@@ -25,7 +25,7 @@ $cookie_path = str_replace('\\', '/', $cookie_path); //Damn' windows
 if (substr($cookie_path,-1) != '/') $cookie_path .= '/';
 $domain = preg_replace('#www.#m', '', getenv('HTTP_HOST'));
 $setup = array(
-	'siten'		   => 'My Dragonfly Site',
+	'siten'		   => 'Dragonfly CodersExchange',
 	'domain'	   => getenv('HTTP_HOST'),
 	'path'		   => $cookie_path,
 	'adminm'	   => 'webmaster@'.$domain,
