@@ -192,11 +192,11 @@ if (isset($_POST['submit'])) {
 		$suffixies = $_POST['suffixies'];
 		$s = (strpos($suffixies,',') !== false) ? explode(',',$suffixies) : $suffixies;
 	}
-	$all = isset($_POST['all'])?$_POST['all']:false;
-	$links = isset($_POST['links'])?$_POST['links']:false;
-	$recursive = isset($_POST['recursive'])?$_POST['recursive']:false;
-	$copy = isset($_POST['copy'])?$_POST['copy']:false;
-	$force = isset($_POST['force'])?$_POST['force']:false;
+	$all = $_POST['all'] ?? false;
+	$links = $_POST['links'] ?? false;
+	$recursive = $_POST['recursive'] ?? false;
+	$copy = $_POST['copy'] ?? false;
+	$force = $_POST['force'] ?? false;
 	if (empty($source)) {
 		$error = 'ERROR: Source is not specified!';
 	} else if (!file_exists($source)) {

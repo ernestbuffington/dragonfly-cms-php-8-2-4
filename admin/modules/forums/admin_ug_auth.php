@@ -30,12 +30,12 @@ if (!($count = $db->sql_count(FORUMS_TABLE))) {
 	return;
 }
 $params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL, 'adv' => 'adv');
-while (list($var, $param) = each($params)) {
-	if (!empty($_POST[$param]) || !empty($_GET[$param])) {
-		$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
-	} else {
-		$$var = '';
-	}
+foreach ($params as $var => $param) {
+    if (!empty($_POST[$param]) || !empty($_GET[$param])) {
+   		${$var} = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
+   	} else {
+   		${$var} = '';
+   	}
 }
 
 $user_id = intval($user_id);
@@ -82,8 +82,8 @@ $field_names = array(
 //
 function check_auth($type, $key, $u_access, $is_admin) {
 	$auth_user = 0;
-	if (count($u_access)) {
-		for($j = 0; $j < count($u_access); $j++) {
+	if (is_countable($u_access) ? count($u_access) : 0) {
+		for($j = 0; $j < (is_countable($u_access) ? count($u_access) : 0); $j++) {
 			$result = 0;
 			switch($type) {
 				case AUTH_ACL:
@@ -165,9 +165,9 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 			}
 			$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="'.adminlink("&amp;do=ug_auth&amp;mode=$mode").'">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="'.adminlink($op).'">', '</a>');
 		} else {
-			$change_mod_list = (isset($_POST['moderator'])) ? $_POST['moderator'] : false;
+			$change_mod_list = $_POST['moderator'] ?? false;
 			if (empty($adv)) {
-				$change_acl_list = (isset($_POST['private'])) ? $_POST['private'] : false;
+				$change_acl_list = $_POST['private'] ?? false;
 			} else {
 				$change_acl_list = array();
 				for ($j = 0; $j < count($forum_auth_fields); $j++) {
@@ -486,7 +486,7 @@ else if (($mode == 'user' && (isset($_POST['username']) || $user_id ) ) || ($mod
 		if (empty($adv)) {
 			if ($forum_auth_level[$forum_id] == AUTH_ACL) {
 				$allowed = 1;
-				for($j = 0; $j < count($forum_auth_level_fields[$forum_id]); $j++) {
+				for($j = 0; $j < (is_countable($forum_auth_level_fields[$forum_id]) ? count($forum_auth_level_fields[$forum_id]) : 0); $j++) {
 					if (!$auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]]) {
 						$allowed = 0;
 					}

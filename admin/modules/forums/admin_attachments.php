@@ -41,31 +41,31 @@ require(CORE_PATH.'phpBB/attach/functions_admin.php');
 // Init Vars
 //
 if( isset($_POST['mode']) || isset($_GET['mode']) ) {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 } else {
 	$mode = '';
 }
 
 if( isset($_POST['e_mode']) || isset($_GET['e_mode']) ) {
-	$e_mode = ( isset($_POST['e_mode']) ) ? $_POST['e_mode'] : $_GET['e_mode'];
+	$e_mode = $_POST['e_mode'] ?? $_GET['e_mode'];
 } else {
 	$e_mode = '';
 }
 
 if(isset($_GET['size']) || isset($_POST['size'])) {
-	$size = (isset($_POST['size'])) ? $_POST['size'] : $_GET['size'];
+	$size = $_POST['size'] ?? $_GET['size'];
 } else {
 	$size = '';
 }
 
 if(isset($_GET['quota_size']) || isset($_POST['quota_size'])) {
-	$quota_size = (isset($_POST['quota_size'])) ? $_POST['quota_size'] : $_GET['quota_size'];
+	$quota_size = $_POST['quota_size'] ?? $_GET['quota_size'];
 } else {
 	$quota_size = '';
 }
 
 if(isset($_GET['pm_size']) || isset($_POST['pm_size'])) {
-	$pm_size = (isset($_POST['pm_size'])) ? $_POST['pm_size'] : $_GET['pm_size'];
+	$pm_size = $_POST['pm_size'] ?? $_GET['pm_size'];
 } else {
 	$pm_size = '';
 }
@@ -155,7 +155,7 @@ $select_pm_size_mode = size_select('pm_size', $pm_size);
 if ($search_imagick) {
 	$imagick = '';
 	
-	if (eregi('convert', $imagick)) {
+	if (preg_match('#convert#mi', $imagick)) {
 		return (TRUE);
 	} else if ($imagick != 'none') {
 		if (!WINDOWS) {
@@ -504,9 +504,9 @@ else if ($submit && $mode == 'shadow')
 	//
 	// Delete Attachments from file system...
 	//
-	$attach_file_list = ( isset($_POST['attach_file_list']) ) ?	 $_POST['attach_file_list'] : array();
+	$attach_file_list = $_POST['attach_file_list'] ?? array();
 	
-	for ($i = 0; $i < count($attach_file_list); $i++)
+	for ($i = 0; $i < (is_countable($attach_file_list) ? count($attach_file_list) : 0); $i++)
 	{
 		unlink_attach($attach_file_list[$i]);
 	}
@@ -514,7 +514,7 @@ else if ($submit && $mode == 'shadow')
 	//
 	// Delete Attachments from table...
 	//
-	$attach_id_list = ( isset($_POST['attach_id_list']) ) ?	 $_POST['attach_id_list'] : array();
+	$attach_id_list = $_POST['attach_id_list'] ?? array();
 	$attach_id_sql = implode(', ', $attach_id_list);
 	if( $attach_id_sql != '' ) {
 		$db->sql_query('DELETE FROM ' . ATTACHMENTS_DESC_TABLE . ' WHERE attach_id IN (' . $attach_id_sql . ')');
@@ -534,7 +534,7 @@ else if ($mode == 'shadow') {
 
 	$shadow_attachments = array();
 	$shadow_row = array();
-	$hidden = isset($hidden) ? $hidden : NULL;
+	$hidden ??= NULL;
 	$template->assign_vars(array(
 		'L_SHADOW_TITLE' => $lang['Shadow_attachments'],
 		'L_SHADOW_EXPLAIN' => $lang['Shadow_attachments_explain'],
@@ -585,7 +585,7 @@ else if ($mode == 'shadow') {
 	//
 	
 	// Go through all Files on the filespace and see if all are stored within the DB
-	for ($i = 0; $i < count($file_attachments); $i++)
+	for ($i = 0; $i < (is_countable($file_attachments) ? count($file_attachments) : 0); $i++)
 	{
 		if (count($table_attachments['attach_id']) > 0)
 		{
@@ -688,7 +688,7 @@ else if ($mode == 'cats') {
 	$result = $db->sql_query("SELECT group_name, cat_id FROM " . EXTENSION_GROUPS_TABLE . " WHERE cat_id > 0 ORDER BY cat_id");
 	$row = $db->sql_fetchrowset($result);
 
-	for ($i = 0; $i < count($row); $i++) {
+	for ($i = 0; $i < (is_countable($row) ? count($row) : 0); $i++) {
 		if ($row[$i]['cat_id'] == IMAGE_CAT) {
 			$s_assigned_group_images[] = $row[$i]['group_name'];
 		} else if ($row[$i]['cat_id'] == STREAM_CAT) {
@@ -843,12 +843,12 @@ else if ($submit && $mode == 'quota')
 	//
 	// Change Quota Limit
 	//
-	$quota_change_list = ( isset($_POST['quota_change_list']) ) ? $_POST['quota_change_list'] : array();
-	$quota_desc_list = ( isset($_POST['quota_desc_list']) ) ? $_POST['quota_desc_list'] : array();
-	$filesize_list = ( isset($_POST['max_filesize_list']) ) ? $_POST['max_filesize_list'] : array();
-	$size_select_list = ( isset($_POST['size_select_list']) ) ? $_POST['size_select_list'] : array();
+	$quota_change_list = $_POST['quota_change_list'] ?? array();
+	$quota_desc_list = $_POST['quota_desc_list'] ?? array();
+	$filesize_list = $_POST['max_filesize_list'] ?? array();
+	$size_select_list = $_POST['size_select_list'] ?? array();
 	$allowed_list = array();
-	for ($i = 0; $i < count($quota_change_list); $i++) {
+	for ($i = 0; $i < (is_countable($quota_change_list) ? count($quota_change_list) : 0); $i++) {
 		$filesize_list[$i] = ( $size_select_list[$i] == 'kb' ) ? round($filesize_list[$i] * 1024) : ( ($size_select_list[$i] == 'mb') ? round($filesize_list[$i] * 1048576) : $filesize_list[$i] );
 		$sql = "UPDATE " . QUOTA_LIMITS_TABLE . "
 		SET quota_desc = '" . trim(strip_tags($quota_desc_list[$i])) . "', quota_limit = " . $filesize_list[$i] . "
@@ -859,7 +859,7 @@ else if ($submit && $mode == 'quota')
 	//
 	// Delete Quota Limits
 	//
-	$quota_id_list = ( isset($_POST['quota_id_list']) ) ?  $_POST['quota_id_list'] : array();
+	$quota_id_list = $_POST['quota_id_list'] ?? array();
 	$quota_id_sql = implode(', ', $quota_id_list);
 	if ($quota_id_sql != '') {
 		$db->sql_query('DELETE FROM ' . QUOTA_LIMITS_TABLE . ' WHERE quota_limit_id IN (' . $quota_id_sql . ')');
@@ -871,8 +871,8 @@ else if ($submit && $mode == 'quota')
 	// Add Quota Limit ?
 	//
 	$quota_desc = ( isset($_POST['quota_description']) ) ?	trim(strip_tags($_POST['quota_description'])) : '';
-	$filesize = ( isset($_POST['add_max_filesize']) ) ?	 $_POST['add_max_filesize'] : '';
-	$size_select = ( isset($_POST['add_size_select']) ) ?  $_POST['add_size_select'] : '';
+	$filesize = $_POST['add_max_filesize'] ?? '';
+	$size_select = $_POST['add_size_select'] ?? '';
 	$add = ( isset($_POST['add_quota_check']) ) ? TRUE : FALSE;
 
 	if ($quota_desc != '' && $add) {
@@ -939,7 +939,7 @@ else if ($mode == 'quota') {
 
 	$result = $db->sql_query("SELECT * FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit DESC");
 	$rows = $db->sql_fetchrowset($result);
-	for ($i = 0; $i < count($rows); $i++) {
+	for ($i = 0; $i < (is_countable($rows) ? count($rows) : 0); $i++) {
 		$size_format = ($rows[$i]['quota_limit'] >= 1048576) ? 'mb' : ( ($rows[$i]['quota_limit'] >= 1024) ? 'kb' : 'b' );
 
 		if ( $rows[$i]['quota_limit'] >= 1048576) {

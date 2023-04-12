@@ -37,7 +37,7 @@ require_once(CORE_PATH.'phpBB/attach/functions_admin.php');
 //
 // Init Variables
 //
-$start = ( isset($_GET['start']) ) ? $_GET['start'] : 0;
+$start = $_GET['start'] ?? 0;
 
 if(isset($_POST['order'])) {
 	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
@@ -48,19 +48,19 @@ if(isset($_POST['order'])) {
 }
 
 if(isset($_GET['mode']) || isset($_POST['mode'])) {
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 } else {
 	$mode = '';
 }
 
 if( isset($_GET['view']) || isset($_POST['view']) ) {
-	$view = ( isset($_POST['view']) ) ? $_POST['view'] : $_GET['view'];
+	$view = $_POST['view'] ?? $_GET['view'];
 } else {
 	$view = '';
 }
 
 if(isset($_GET['uid']) || isset($_POST['u_id'])) {
-	$uid = (isset($_POST['u_id'])) ? $_POST['u_id'] : $_GET['uid'];
+	$uid = $_POST['u_id'] ?? $_GET['uid'];
 } else {
 	$uid = '';
 }
@@ -206,14 +206,14 @@ if (!empty($sort_order))
 
 $submit_change = ( isset($_POST['submit_change']) ) ? TRUE : FALSE;
 $delete = ( isset($_POST['delete']) ) ? TRUE : FALSE;
-$delete_id_list = ( isset($_POST['delete_id_list']) ) ?	 $_POST['delete_id_list'] : array();
+$delete_id_list = $_POST['delete_id_list'] ?? array();
 
 $confirm = isset($_POST['confirm']) ? TRUE : FALSE;
 
-if ($confirm && count($delete_id_list) > 0) {
+if ($confirm && (is_countable($delete_id_list) ? count($delete_id_list) : 0) > 0) {
 	$attachments = array();
 	delete_attachment(-1, $delete_id_list);
-} else if ( ($delete) && (count($delete_id_list)) > 0 ) {
+} else if ( ($delete) && (is_countable($delete_id_list) ? count($delete_id_list) : 0) > 0 ) {
 	//
 	// Not confirmed, show confirmation message
 	//	  
@@ -222,7 +222,7 @@ if ($confirm && count($delete_id_list) > 0) {
 	$hidden_fields .= '<input type="hidden" name="order" value="' . $sort_order . '" />';
 	$hidden_fields .= '<input type="hidden" name="u_id" value="' . $uid . '" />';
 	$hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
-	for($i = 0; $i < count($delete_id_list); $i++) {
+	for($i = 0; $i < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $i++) {
 		$hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="' . $delete_id_list[$i] . '" />';
 	}
 
@@ -256,16 +256,16 @@ $template->assign_vars(array(
 );
 
 if ($submit_change && $view == 'attachments') {
-	$attach_change_list = ( isset($_POST['attach_id_list']) ) ? $_POST['attach_id_list'] : array();
-	$attach_comment_list = ( isset($_POST['attach_comment_list']) ) ? $_POST['attach_comment_list'] : array();
-	$attach_download_count_list = ( isset($_POST['attach_count_list']) ) ? $_POST['attach_count_list'] : array();
+	$attach_change_list = $_POST['attach_id_list'] ?? array();
+	$attach_comment_list = $_POST['attach_comment_list'] ?? array();
+	$attach_download_count_list = $_POST['attach_count_list'] ?? array();
 
 	//
 	// Generate correct Change List
 	//
 	$attachments = array();
 
-	for ($i = 0; $i < count($attach_change_list); $i++) {
+	for ($i = 0; $i < (is_countable($attach_change_list) ? count($attach_change_list) : 0); $i++) {
 		$attachments['_' . $attach_change_list[$i]]['comment'] = htmlprepare($attach_comment_list[$i]);
 		$attachments['_' . $attach_change_list[$i]]['download_count'] = intval($attach_download_count_list[$i]);
 	}
@@ -347,9 +347,9 @@ else if ($view == 'search') {
 		// Category to search
 		//
 		$s_categories = '<option value="-1">' . $lang['All_available'] . '</option>';
-		while( list($cat_id, $cat_title) = each($list_cat)) {
-			$s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
-		}
+		foreach ($list_cat as $cat_id => $cat_title) {
+      $s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
+  }
 	} else {
 		message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
 	}
@@ -434,7 +434,7 @@ else if ($view == 'username') {
 			$members = limit_array($members, $start, $board_config['topics_per_page']);
 		}
 		
-		for ($i = 0; $i < count($members); $i++) {
+		for ($i = 0; $i < (is_countable($members) ? count($members) : 0); $i++) {
 			$username = $members[$i]['username'];
 			$total_attachments = $members[$i]['total_attachments'];
 			$total_size = $members[$i]['total_size'];
@@ -536,13 +536,13 @@ else if ($view == 'attachments') {
 		$num_attach = $db->sql_numrows($result);
 	}
 	
-	if (count($attachments) > 0)
+	if ((is_countable($attachments) ? count($attachments) : 0) > 0)
 	{
-		for ($i = 0; $i < count($attachments); $i++)
+		for ($i = 0; $i < (is_countable($attachments) ? count($attachments) : 0); $i++)
 		{
 			$delete_box = '<input type="checkbox" name="delete_id_list[]" value="' . $attachments[$i]['attach_id'] . '" />';
 
-			for ($j = 0; $j < count($delete_id_list); $j++)
+			for ($j = 0; $j < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $j++)
 			{
 				if ($delete_id_list[$j] == $attachments[$i]['attach_id'])
 				{

@@ -44,7 +44,7 @@ $forum_auth_ary = array(
 // Mode setting
 //
 if( isset($_POST['mode']) || isset($_GET['mode']) ) {
-    $mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+    $mode = $_POST['mode'] ?? $_GET['mode'];
     $mode = htmlprepare($mode);
 } else {
     $mode = "";
@@ -139,6 +139,7 @@ function get_list($mode, $id, $select)
 
 function renumber_order($mode, $cat = 0)
 {
+    $catfield = null;
     global $db;
 
     switch($mode)
@@ -192,7 +193,11 @@ function renumber_order($mode, $cat = 0)
 if( isset($_POST['addforum']) || isset($_POST['addcategory']) ) {
     $mode = ( isset($_POST['addforum']) ) ? 'addforum' : 'addcat';
     if( $mode == 'addforum' ) {
-        list($cat_id) = each($_POST['addforum']);
+        (list($cat_id))[1] = current($_POST['addforum']);
+        (list($cat_id))['value'] = current($_POST['addforum']);
+        (list($cat_id))[0] = key($_POST['addforum']);
+        (list($cat_id))['key'] = key($_POST['addforum']);
+        next($_POST['addforum']);
         $cat_id = intval($cat_id);
         $forumname = $_POST['forumname'][$cat_id];
     }
@@ -251,8 +256,8 @@ if( !empty($mode) ) {
 
             // These two options ($lang['Status_unlocked'] and $lang['Status_locked']) seem to be missing from
             // the language files.
-            $lang['Status_unlocked'] = isset($lang['Status_unlocked']) ? $lang['Status_unlocked'] : 'Unlocked';
-            $lang['Status_locked'] = isset($lang['Status_locked']) ? $lang['Status_locked'] : 'Locked';
+            $lang['Status_unlocked'] ??= 'Unlocked';
+            $lang['Status_locked'] ??= 'Locked';
 
             $statuslist = "<option value=\"" . FORUM_UNLOCKED . "\" $forumunlocked>" . $lang['Status_unlocked'] . "</option>\n";
             $statuslist .= "<option value=\"" . FORUM_LOCKED . "\" $forumlocked>" . $lang['Status_locked'] . "</option>\n";
@@ -282,8 +287,8 @@ if( !empty($mode) ) {
                 'L_PRUNE_FREQ' => $lang['prune_freq'],
                 'L_DAYS' => $lang['Days'],
 
-                'PRUNE_DAYS' => ( isset($pr_row['prune_days']) ) ? $pr_row['prune_days'] : 7,
-                'PRUNE_FREQ' => ( isset($pr_row['prune_freq']) ) ? $pr_row['prune_freq'] : 1,
+                'PRUNE_DAYS' => $pr_row['prune_days'] ?? 7,
+                'PRUNE_FREQ' => $pr_row['prune_freq'] ?? 1,
                 'FORUM_NAME' => $forumname,
                 'DESCRIPTION' => $forumdesc)
             );
@@ -306,7 +311,7 @@ if( !empty($mode) ) {
             // Default permissions of public ::
             //
             $field_sql = $value_sql = '';
-            while( list($field, $value) = each($forum_auth_ary) ) {
+            foreach ($forum_auth_ary as $field => $value) {
                 $field_sql .= ", $field";
                 $value_sql .= ", $value";
             }

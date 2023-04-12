@@ -89,7 +89,7 @@ $disallow_select = '<select name="disallowed_id">';
 if( trim($disallowed) == '' ) {
 	$disallow_select .= '<option value="">' . $lang['no_disallowed'] . '</option>';
 }
-else for( $i = 0; $i < count($disallowed); $i++ ) {
+else for( $i = 0; $i < (is_countable($disallowed) ? count($disallowed) : 0); $i++ ) {
 	$disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';
 }
 

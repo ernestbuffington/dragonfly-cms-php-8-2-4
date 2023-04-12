@@ -31,7 +31,7 @@ require("includes/phpBB/functions_admin.php");
 // Get the forum ID for pruning
 //
 if( isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]) ) {
-	$forum_id = ( isset($_POST[POST_FORUM_URL]) ) ? $_POST[POST_FORUM_URL] : $_GET[POST_FORUM_URL];
+	$forum_id = $_POST[POST_FORUM_URL] ?? $_GET[POST_FORUM_URL];
 	if( $forum_id == -1 ) {
 		$forum_sql = '';
 	} else {

@@ -21,8 +21,8 @@
 if (!defined('ADMIN_PAGES')) { exit; }
 // Any mode passed?
 if( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = ( isset($_GET['mode']) ) ? $_GET['mode'] : $_POST['mode'];
-	$target = ( isset($_GET['target']) ) ? $_GET['target'] : $_POST['target'];
+	$mode = $_GET['mode'] ?? $_POST['mode'];
+	$target = $_GET['target'] ?? $_POST['target'];
 } else {
 	$mode = "";
 }
@@ -75,7 +75,7 @@ switch( $mode )
 			get_lang('Your_Account');
 			while ($file = readdir($avatar_dir)) {
 				// This is where the script will filter out any file that doesn't match the patterns
-				if( $file != "." && $file != ".." && ereg("\.(gif|jpg|jpeg|png)$",$file) ) {
+				if( $file != "." && $file != ".." && preg_match('#\.(gif|jpg|jpeg|png)$#m',$file) ) {
 					$stats = stat($real_avatar_dir.'/'.$file);
 
 					// Alternating row colows code

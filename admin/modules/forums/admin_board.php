@@ -21,7 +21,7 @@ if (!Cache::array_load('board_config', 'Forums', true)) {
 	$result = $db->sql_query("SELECT * FROM " . CONFIG_TABLE);
 	while ($row = $db->sql_fetchrow($result)) {
 		$board_config[$row['config_name']] =  str_replace("'", "\'",$row['config_value']);
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $board_config[$config_name];
+		$new[$config_name] = $_POST[$config_name] ?? $board_config[$config_name];
 		if ($config_name == 'smilies_path') {
 			$new['smilies_path'] = 'images/smiles';
 		}
@@ -36,7 +36,7 @@ if (!Cache::array_load('board_config', 'Forums', true)) {
 	Cache::array_save('board_config', 'Forums');
 } elseif( isset($_POST['submit']) )  {
 	foreach ($board_config as $config_name => $config_value){
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $board_config[$config_name];
+		$new[$config_name] = $_POST[$config_name] ?? $board_config[$config_name];
 		if ($config_name == 'smilies_path') {
 			$new['smilies_path'] = 'images/smiles';
 		}		

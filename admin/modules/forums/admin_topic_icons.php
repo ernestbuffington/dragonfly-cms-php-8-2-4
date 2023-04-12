@@ -81,7 +81,7 @@ if(isset($_POST['addicon']))
 	} else if ( !empty($forum_ids) && !empty($icon_name) && !empty($icon_path)) {
 		//add forum specific
 		//create the icon for each forum
-		for ($i = 0; $i < count($forum_ids); $i++) {
+		for ($i = 0; $i < (is_countable($forum_ids) ? count($forum_ids) : 0); $i++) {
 			$forum_id = intval($forum_ids[$i]);
 			$db->sql_query("INSERT INTO ".TOPIC_ICONS_TABLE." (forum_id, icon_url, icon_name) VALUES($forum_id, '$icon_path', '$icon_name')");
 		}
@@ -116,20 +116,20 @@ if( $total_categories = $db->sql_numrows($q_categories) ) {
 					'U_VIEWFORUM' => getlink("&amp;file=viewforum&amp;" . POST_FORUM_URL . "=$forum_id"),
 					'FORUM_ID' => $forum_id)
 				);
-				
+
 				//get custom icons for this forum
 				$topic_icons = get_topic_icons($forum_id, false);
 
 				//and display them
-				while( list($key, $val) = each($topic_icons) ) {
-					$template->assign_block_vars('catrow.forumrow.icon', array(
-					'ICON_SRC' => $val['icon_url'],
-					'U_REMOVE_ICON' => adminlink("&amp;do=topic_icons&amp;remove=true&amp;id=" . $val['icon_id']))
-					);
-				}
+				foreach ($topic_icons as $key => $val) {
+        $template->assign_block_vars('catrow.forumrow.icon', array(
+   					'ICON_SRC' => $val['icon_url'],
+   					'U_REMOVE_ICON' => adminlink("&amp;do=topic_icons&amp;remove=true&amp;id=" . $val['icon_id']))
+   					);
+    }
 
 			}// if ... forumid == catid
-			
+
 		} // for ... forums
 
 	} // for ... categories
@@ -140,12 +140,11 @@ if( $total_categories = $db->sql_numrows($q_categories) ) {
 $topic_icons = get_topic_icons(-1, false);
 
 //and display them
-while( list($key, $val) = each($topic_icons) )
-{
-	$template->assign_block_vars('globalicon', array(
-		'ICON_SRC' => $val['icon_url'],
-		'U_REMOVE_GLOBAL_ICON' => adminlink("&amp;do=topic_icons&amp;remove=true&amp;id=" . $val['icon_id']))
-	);
+foreach ($topic_icons as $key => $val) {
+    $template->assign_block_vars('globalicon', array(
+   		'ICON_SRC' => $val['icon_url'],
+   		'U_REMOVE_GLOBAL_ICON' => adminlink("&amp;do=topic_icons&amp;remove=true&amp;id=" . $val['icon_id']))
+   	);
 }
 
 $template->set_filenames(array('body' => 'forums/admin/topic_icons_select_body.html'));

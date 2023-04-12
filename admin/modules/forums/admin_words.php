@@ -26,7 +26,7 @@
 /************************************************************************/
 if (!defined('ADMIN_PAGES')) { exit; }
 if( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = isset($_POST['mode']) ? $_POST['mode'] : isset($_GET['mode']) ? $_GET['mode'] : '';
+	$mode = $_POST['mode'] ?? isset($_GET['mode']) ? $_GET['mode'] : '';
 	$mode = htmlprepare($mode);
 } else {
 	//
@@ -95,7 +95,7 @@ if( $mode != "" ) {
 		message_die(GENERAL_MESSAGE, $message);
 	} else if( $mode == "delete" ) {
 		if( isset($_POST['id']) ||	isset($_GET['id']) ) {
-			$word_id = ( isset($_POST['id']) ) ? $_POST['id'] : $_GET['id'];
+			$word_id = $_POST['id'] ?? $_GET['id'];
 			$word_id = intval($word_id);
 		} else {
 			$word_id = 0;
@@ -113,7 +113,7 @@ if( $mode != "" ) {
 
 	$result = $db->sql_query("SELECT * FROM ".WORDS_TABLE." ORDER BY word");
 	$word_rows = $db->sql_fetchrowset($result);
-	$word_count = count($word_rows);
+	$word_count = is_countable($word_rows) ? count($word_rows) : 0;
 	$template->assign_vars(array(
 		"L_WORDS_TITLE" => $lang['Words_title'],
 		"L_WORDS_TEXT" => $lang['Words_explain'],

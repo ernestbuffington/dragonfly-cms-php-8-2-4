@@ -52,7 +52,7 @@ $template->assign_vars(array(
 
 if(isset($_GET['size']) || isset($_POST['size']))
 {
-	$size = (isset($_POST['size'])) ? $_POST['size'] : $_GET['size'];
+	$size = $_POST['size'] ?? $_GET['size'];
 }
 else
 {
@@ -61,7 +61,7 @@ else
 
 if( isset($_POST['mode']) || isset($_GET['mode']) )
 {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 }
 else
 {
@@ -70,7 +70,7 @@ else
 
 if( isset($_POST['e_mode']) || isset($_GET['e_mode']) )
 {
-	$e_mode = ( isset($_POST['e_mode']) ) ? $_POST['e_mode'] : $_GET['e_mode'];
+	$e_mode = $_POST['e_mode'] ?? $_GET['e_mode'];
 }
 else
 {
@@ -96,16 +96,16 @@ if ($submit && $mode == 'extensions')
 	//
 	// Change Extensions ?
 	//
-	$extension_change_list = ( isset($_POST['extension_change_list']) ) ? $_POST['extension_change_list'] : array();
-	$extension_explain_list = ( isset($_POST['extension_explain_list']) ) ? $_POST['extension_explain_list'] : array();
-	$group_select_list = ( isset($_POST['group_select']) ) ? $_POST['group_select'] : array();
+	$extension_change_list = $_POST['extension_change_list'] ?? array();
+	$extension_explain_list = $_POST['extension_explain_list'] ?? array();
+	$group_select_list = $_POST['group_select'] ?? array();
 
 	//
 	// Generate correct Change List
 	//
 	$extensions = array();
 
-	for ($i = 0; $i < count($extension_change_list); $i++) {
+	for ($i = 0; $i < (is_countable($extension_change_list) ? count($extension_change_list) : 0); $i++) {
 		$extensions['_' . $extension_change_list[$i]]['comment'] = htmlprepare($extension_explain_list[$i]);
 		$extensions['_' . $extension_change_list[$i]]['group_id'] = intval($group_select_list[$i]);
 	}
@@ -113,7 +113,7 @@ if ($submit && $mode == 'extensions')
 	$result = $db->sql_query("SELECT * FROM " . EXTENSIONS_TABLE . " ORDER BY ext_id");
 	if ( ($db->sql_numrows($result)) > 0 ) {
 		$extension_row = $db->sql_fetchrowset($result);
-		for ($i = 0; $i < count($extension_row); $i++) {
+		for ($i = 0; $i < (is_countable($extension_row) ? count($extension_row) : 0); $i++) {
 			if ( ($extension_row[$i]['comment'] != $extensions['_' . $extension_row[$i]['ext_id']]['comment']) || (intval($extension_row[$i]['group_id']) != intval($extensions['_' . $extension_row[$i]['ext_id']]['group_id'])) ) {
 				$sql = "UPDATE " . EXTENSIONS_TABLE . " 
 				SET comment = '" . $extensions['_' . $extension_row[$i]['ext_id']]['comment'] . "', group_id = " . $extensions['_' . $extension_row[$i]['ext_id']]['group_id'] . "
@@ -126,7 +126,7 @@ if ($submit && $mode == 'extensions')
 	//
 	// Delete Extension ?
 	//
-	$extension_id_list = ( isset($_POST['extension_id_list']) ) ?  $_POST['extension_id_list'] : array();
+	$extension_id_list = $_POST['extension_id_list'] ?? array();
 	$extension_id_sql = implode(', ', $extension_id_list);
 	if ( $extension_id_sql != '' ) {
 		$db->sql_query('DELETE FROM ' . EXTENSIONS_TABLE . ' WHERE ext_id IN (' . $extension_id_sql . ')');
@@ -146,7 +146,7 @@ if ($submit && $mode == 'extensions')
 			'ADD_EXTENSION_EXPLAIN' => $extension_explain,
 			)
 		);
-	
+
 		//if (!$error) {
 			//
 			// check extension
@@ -166,7 +166,7 @@ if ($submit && $mode == 'extensions')
 					}
 				}
 			}
-			
+
 			//
 			// Extension Forbidden ?
 			//
@@ -183,7 +183,7 @@ if ($submit && $mode == 'extensions')
 						}
 					}
 				}
-		
+
 			}
 
 			if (!$error) {
@@ -237,7 +237,7 @@ if ($mode == 'extensions') {
 
 	$extension_row = $db->sql_ufetchrowset("SELECT * FROM " . EXTENSIONS_TABLE . " ORDER BY group_id, extension");
 
-	for ($i = 0; $i < count($extension_row); $i++) {
+	for ($i = 0; $i < (is_countable($extension_row) ? count($extension_row) : 0); $i++) {
 		if ($submit) {
 			$template->assign_block_vars('extension_row', array(
 				'EXT_ID' => $extension_row[$i]['ext_id'],
@@ -265,20 +265,20 @@ if ($submit && $mode == 'groups')
 	//
 	// Change Extension Groups ?
 	//
-	$group_change_list = ( isset($_POST['group_change_list']) ) ? $_POST['group_change_list'] : array();
-	$extension_group_list = ( isset($_POST['extension_group_list']) ) ? $_POST['extension_group_list'] : array();
-	$group_allowed_list = ( isset($_POST['allowed_list']) ) ? $_POST['allowed_list'] : array();
-	$download_mode_list = ( isset($_POST['download_mode_list']) ) ? $_POST['download_mode_list'] : array();
-	$category_list = ( isset($_POST['category_list']) ) ? $_POST['category_list'] : array();
-	$upload_icon_list = ( isset($_POST['upload_icon_list']) ) ? $_POST['upload_icon_list'] : array();
-	$filesize_list = ( isset($_POST['max_filesize_list']) ) ? $_POST['max_filesize_list'] : array();
-	$size_select_list = ( isset($_POST['size_select_list']) ) ? $_POST['size_select_list'] : array();
+	$group_change_list = $_POST['group_change_list'] ?? array();
+	$extension_group_list = $_POST['extension_group_list'] ?? array();
+	$group_allowed_list = $_POST['allowed_list'] ?? array();
+	$download_mode_list = $_POST['download_mode_list'] ?? array();
+	$category_list = $_POST['category_list'] ?? array();
+	$upload_icon_list = $_POST['upload_icon_list'] ?? array();
+	$filesize_list = $_POST['max_filesize_list'] ?? array();
+	$size_select_list = $_POST['size_select_list'] ?? array();
 
 	$allowed_list = array();
 
-	for ($i = 0; $i < count($group_allowed_list); $i++)
+	for ($i = 0; $i < (is_countable($group_allowed_list) ? count($group_allowed_list) : 0); $i++)
 	{
-		for ($j = 0; $j < count($group_change_list); $j++)
+		for ($j = 0; $j < (is_countable($group_change_list) ? count($group_change_list) : 0); $j++)
 		{
 			if ($group_allowed_list[$i] == $group_change_list[$j])
 			{
@@ -287,7 +287,7 @@ if ($submit && $mode == 'groups')
 		}
 	}
 
-	for ($i = 0; $i < count($group_change_list); $i++) {
+	for ($i = 0; $i < (is_countable($group_change_list) ? count($group_change_list) : 0); $i++) {
 		$allowed = ( isset($allowed_list[$i]) ) ? '1' : '0';
 		$filesize_list[$i] = ( $size_select_list[$i] == 'kb' ) ? round($filesize_list[$i] * 1024) : ( ($size_select_list[$i] == 'mb') ? round($filesize_list[$i] * 1048576) : $filesize_list[$i] );
 		$sql = "UPDATE " . EXTENSION_GROUPS_TABLE . "
@@ -299,7 +299,7 @@ if ($submit && $mode == 'groups')
 	//
 	// Delete Extension Groups
 	//
-	$group_id_list = ( isset($_POST['group_id_list']) ) ?  $_POST['group_id_list'] : array();
+	$group_id_list = $_POST['group_id_list'] ?? array();
 	$group_id_sql = implode(', ', $group_id_list);
 
 	if ($group_id_sql != '') {
@@ -314,11 +314,11 @@ if ($submit && $mode == 'groups')
 	// Add Extensions ?
 	//
 	$extension_group = ( isset($_POST['add_extension_group']) ) ?  trim(strip_tags($_POST['add_extension_group'])) : '';
-	$download_mode = ( isset($_POST['add_download_mode']) ) ?  $_POST['add_download_mode'] : '';
-	$cat_id = ( isset($_POST['add_category']) ) ?  $_POST['add_category'] : '';
-	$upload_icon = ( isset($_POST['add_upload_icon']) ) ?  $_POST['add_upload_icon'] : '';
-	$filesize = ( isset($_POST['add_max_filesize']) ) ?	 $_POST['add_max_filesize'] : '';
-	$size_select = ( isset($_POST['add_size_select']) ) ?  $_POST['add_size_select'] : '';
+	$download_mode = $_POST['add_download_mode'] ?? '';
+	$cat_id = $_POST['add_category'] ?? '';
+	$upload_icon = $_POST['add_upload_icon'] ?? '';
+	$filesize = $_POST['add_max_filesize'] ?? '';
+	$size_select = $_POST['add_size_select'] ?? '';
 	$is_allowed = ( isset($_POST['add_allowed']) ) ? '1' : '0';
 	$add = ( isset($_POST['add_extension_group_check']) ) ? TRUE : FALSE;
 
@@ -430,7 +430,7 @@ if ($mode == 'groups') {
 		$template->assign_block_vars('grouprow', array(
 			'GROUP_ID' => $extension_group[$i]['group_id'],
 			'EXTENSION_GROUP' => $extension_group[$i]['group_name'],
-			'UPLOAD_ICON' => isset($extension_group[$i]['upload_icon']) ? $extension_group[$i]['upload_icon']: '',
+			'UPLOAD_ICON' => $extension_group[$i]['upload_icon'] ?? '',
 
 			'S_ALLOW_SELECTED' => $s_allowed,
 			'S_SELECT_CAT' => category_select('category_list[]', $extension_group[$i]['group_id']),
@@ -464,7 +464,7 @@ if ($submit && $mode == 'forbidden') {
 	//
 	// Store new forbidden extension or delete selected forbidden extensions
 	//
-	$extension = ( isset($_POST['extension_id_list']) ) ? $_POST['extension_id_list'] : array();
+	$extension = $_POST['extension_id_list'] ?? array();
 	$extension_id_sql = implode(', ', $extension);
 	if( $extension_id_sql != '' ) {
 		$db->sql_query("DELETE FROM " . FORBIDDEN_EXTENSIONS_TABLE . " WHERE ext_id IN (" . $extension_id_sql . ")");
@@ -552,7 +552,7 @@ if ($mode == 'forbidden') {
 
 if ($e_mode == 'perm') {
 	if( isset($_POST['e_group']) || isset($_GET['e_group']) ) {
-		$group = ( isset($_POST['e_group']) ) ? $_POST['e_group'] : $_GET['e_group'];
+		$group = $_POST['e_group'] ?? $_GET['e_group'];
 	} else {
 		$group = -1;
 	}
@@ -569,10 +569,10 @@ $delete_forum = (isset($_POST['del_forum'])) ? TRUE : FALSE;
    
 // Add Forums
 if (($add_forum) && ($e_mode == 'perm') && ($group != -1)) {
-	$add_forums_list = ( isset($_POST['entries']) ) ? $_POST['entries'] : array();
+	$add_forums_list = $_POST['entries'] ?? array();
 	$add_all_forums = FALSE;
 
-	for ($i = 0; $i < count($add_forums_list); $i++) {
+	for ($i = 0; $i < (is_countable($add_forums_list) ? count($add_forums_list) : 0); $i++) {
 		if ($add_forums_list[$i] == GPERM_ALL) {
 			$add_all_forums = TRUE;
 		}
@@ -596,7 +596,7 @@ if (($add_forum) && ($e_mode == 'perm') && ($group != -1)) {
 		}
 		
 		// Generate array for Auth_Pack, do not add doubled forums
-		for ($i = 0; $i < count($add_forums_list); $i++) {
+		for ($i = 0; $i < (is_countable($add_forums_list) ? count($add_forums_list) : 0); $i++) {
 			if (!in_array($add_forums_list[$i], $auth_p)) {
 				$auth_p[] = $add_forums_list[$i];
 			}
@@ -610,7 +610,7 @@ if (($add_forum) && ($e_mode == 'perm') && ($group != -1)) {
 
 // Delete Forums
 if (($delete_forum) && ($e_mode == 'perm') && ($group != -1)) {
-	$delete_forums_list = ( isset($_POST['entries']) ) ? $_POST['entries'] : array();
+	$delete_forums_list = $_POST['entries'] ?? array();
 	// Get the current Forums
 	$sql = "SELECT forum_permissions FROM " . EXTENSION_GROUPS_TABLE . "
 	WHERE group_id = " . intval($group) . " LIMIT 1";
@@ -619,7 +619,7 @@ if (($delete_forum) && ($e_mode == 'perm') && ($group != -1)) {
 	$auth_p2 = auth_unpack(trim($row['forum_permissions']));
 	$auth_p = array();
 	// Generate array for Auth_Pack, delete the chosen ones
-	for ($i = 0; $i < count($auth_p2); $i++) {
+	for ($i = 0; $i < (is_countable($auth_p2) ? count($auth_p2) : 0); $i++) {
 		if (!in_array($auth_p2[$i], $delete_forums_list)) {
 			$auth_p[] = $auth_p2[$i];
 		}
@@ -681,12 +681,12 @@ if (($e_mode == 'perm') && ($group != -1)) {
 
 	reset($forum_option_values);
 	
-	while (list($value, $option) = each($forum_option_values)) {
-		$template->assign_block_vars('forum_option_values', array(
-			'VALUE' => $value,
-			'OPTION' => $option)
-		);
-	}
+	foreach ($forum_option_values as $value => $option) {
+     $template->assign_block_vars('forum_option_values', array(
+   			'VALUE' => $value,
+   			'OPTION' => $option)
+   		);
+ }
 
 	$template->assign_var_from_handle('GROUP_PERMISSIONS_BOX', 'perm_box');
 
@@ -720,9 +720,9 @@ if (($e_mode == 'perm') && ($group != -1)) {
 	reset($empty_perm_forums);
 	$message = '';
 	
-	while (list($forum_id, $forum_name) = each($empty_perm_forums)) {
-		$message .= ( $message == '' ) ? $forum_name : '<br />' . $forum_name;
-	}
+	foreach ($empty_perm_forums as $forum_id => $forum_name) {
+     $message .= ( $message == '' ) ? $forum_name : '<br />' . $forum_name;
+ }
 
 	if (count($empty_perm_forums) > 0) {
 		$template->set_filenames(array('perm_reg_header' => 'forums/error_body.html'));

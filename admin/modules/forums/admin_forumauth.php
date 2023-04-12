@@ -138,7 +138,7 @@ if (empty($forum_id)) {
 	$cat_id = 0;
 	$template->set_filenames(array('body' => 'forums/admin/auth_select_body.html'));
 	$select_list = '<select name="' . POST_FORUM_URL . '">';
-	for ($i = 0; $i < count($forum_rows); $i++) {
+	for ($i = 0; $i < (is_countable($forum_rows) ? count($forum_rows) : 0); $i++) {
 		if ($cat_id != $forum_rows[$i]['cat_id']) {
 			if ($cat_id > 0) $select_list .= '</optgroup>';
 			$cat_id = $forum_rows[$i]['cat_id'];
@@ -167,16 +167,16 @@ if (empty($forum_id)) {
 	$forum_name = $forum_rows[0]['forum_name'];
 
 	reset($simple_auth_ary);
-	while(list($key, $auth_levels) = each($simple_auth_ary)) {
-		$matched = 1;
-		for ($k = 0; $k < count($auth_levels); $k++) {
-			$matched_type = $key;
-			if ($forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k]) {
-				$matched = 0;
-			}
-		}
-		if ($matched) { break; }
-	}
+	foreach ($simple_auth_ary as $key => $auth_levels) {
+     $matched = 1;
+     for ($k = 0; $k < (is_countable($auth_levels) ? count($auth_levels) : 0); $k++) {
+   			$matched_type = $key;
+   			if ($forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k]) {
+   				$matched = 0;
+   			}
+   		}
+     if ($matched) { break; }
+ }
 
 	//
 	// If we didn't get a match above then we
