@@ -168,6 +168,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
 		  //////__DIR__ . '/includes/cmsinit.inc', // fuckover file extension renames
 		  
+		  __DIR__ . '/install.php',
+		  
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',
 		  //////__DIR__ . '/admin/*',
