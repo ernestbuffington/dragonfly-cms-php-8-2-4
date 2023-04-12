@@ -59,23 +59,40 @@ if (file_exists($config_file)) {
 }
 
 function check_inst($die=false) {
+	
 	global $db, $prefix, $dbname, $instlang;
-	if (!is_object($db)) return 0;
-	if (defined('NO_DB')) return 0;
+	
+	if (!is_object($db)) { return 0; }
+	
+	if (defined('NO_DB')) { return 0; }
+	
 	$databases = $db->list_databases();
-	if (!isset($dbname) || !isset($databases[$dbname]) && !empty($databases)) return 0;
-	if (SQL_LAYER != 'postgresql') { $db->select_db($dbname); }
-	if ($result = $db->query('SELECT cfg_value FROM '.$prefix.'_config_custom WHERE cfg_name=\'global\' AND cfg_field=\'Version_Num\'', true)) {
-		list($version) = $db->sql_fetchrow($result);
-		if ($die && $version == CPG_NUKE) {
-			inst_header();
-			echo $instlang['s1_already'];
-			footer();
-			exit;
-		}
-		return $version;
+	
+	if (SQL_LAYER != 'postgresql') 
+	{ 
+	  $db->select_db($dbname);
 	}
-	return 0;
+	
+	// why the fuck would we check for version infomation in a database that has not been created yet???
+	/*
+	$result = $db->query('SELECT cfg_value FROM '.$prefix.'_config_custom WHERE cfg_name=\'global\' AND cfg_field=\'Version_Num\'');
+	list($version) = $db->sql_fetchrow($result);
+		
+	if ($die && $version == CPG_NUKE) {
+	  inst_header();
+		echo $instlang['s1_already'];
+		footer();
+		exit;
+	}
+	return $version;
+	*/
+	if (!isset($dbname) || !isset($databases[$dbname]) && !empty($databases)) {
+	  echo '<div align="center"><strong>Database name does not exist, please create one in cPanel before you start the install.</strong></div>';	
+	}
+	else 
+	{
+	  return 0;
+	}
 }
 
 function get_db_vars($db) {
