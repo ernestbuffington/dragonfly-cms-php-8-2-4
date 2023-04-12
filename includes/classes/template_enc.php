@@ -33,10 +33,9 @@
 
 class tpl_encode
 {
-
 	// The all seeing all doing compile method. Parts are inspired by or directly
 	// from Smarty
-	function compile($code, $no_echo = false, $echo_var = '')
+	public static function compile($code, $no_echo = false, $echo_var = '')
 	{
 		// Remove any "loose" php ... we want to give admins the ability
 		// to switch on/off PHP for a given template. Allowing unchecked
@@ -149,7 +148,7 @@ class tpl_encode
 		return  (!$no_echo) ? $template_php : "\$$echo_var .= '" . $template_php . "'";
 	}
 
-	function compile_var_tags(&$text_blocks)
+	public static function compile_var_tags(&$text_blocks)
 	{
 		// change template varrefs into PHP varrefs
 		$varrefs = array();
@@ -170,7 +169,7 @@ class tpl_encode
 		return;
 	}
 
-	function compile_tag_block($tag_args)
+	public static function compile_tag_block($tag_args)
 	{
 		// Allow for control of looping (indexes start from zero):
 		// foo(2)	: Will start the loop on the 3rd entry
@@ -209,7 +208,7 @@ class tpl_encode
 	// Compile IF tags - much of this is from Smarty with
 	// some adaptions for our block level methods
 	//
-	function compile_tag_if($tag_args, $elseif)
+	public static function compile_tag_if($tag_args, $elseif)
 	{
 		/* Tokenize args for 'if' tag. */
 		preg_match_all('/(?:
@@ -315,7 +314,7 @@ class tpl_encode
 		return (($elseif) ? '} elseif (' : 'if (') . (implode(' ', $tokens) . ') { ');
 	}
 
-	function compile_tag_define($tag_args, $option)
+	public static function compile_tag_define($tag_args, $option)
 	{
 		preg_match('#^(([a-z0-9\-_]+?\.)+?)?\$([A-Z][A-Z0-9_\-]*?) = (\'?)(.*?)(\'?)$#', $tag_args, $match);
 		if (empty($match[3]) || empty($match[5])) {
@@ -352,9 +351,9 @@ class tpl_encode
 	}
 
 	// This is from Smarty
-	function _parse_is_expr($is_arg, $tokens) {
+	public static function _parse_is_expr($is_arg, $tokens) {
 		$expr = null;
-  $expr_end =	0;
+        $expr_end =	0;
 		$negate_expr = false;
 		if (($first_token = array_shift($tokens)) == 'not') {
 			$negate_expr = true;
@@ -407,7 +406,7 @@ class tpl_encode
 	 * It's ready to be inserted into an "echo" line in one of the templates.
 	 * NOTE: expects a trailing "." on the namespace.
 	 */
-	function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
+	public static function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
 	{
 		# Strip the trailing period.
 		$namespace = substr($namespace, 0, strlen($namespace) - 1);
@@ -426,7 +425,7 @@ class tpl_encode
 	 * If $include_last_iterator is true, then [$_childN_i] will be appended to the form shown above.
 	 * NOTE: does not expect a trailing "." on the blockname.
 	 */
-	function generate_block_data_ref($blockname, $include_last_iterator, $defop)
+	public static function generate_block_data_ref($blockname, $include_last_iterator, $defop)
 	{
 		# Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
@@ -443,7 +442,7 @@ class tpl_encode
 		return $varref;
 	}
 
-	function compile_write(&$handle, &$data)
+	public static function compile_write(&$handle, &$data)
 	{
 		$filename = preg_replace('#\/#m', '#', $this->filename[$handle]);
 		$filename = $this->cachepath.$filename.'.inc';
