@@ -146,16 +146,16 @@ if (isset($_COOKIE[$CONFIG['cookie_name'] . '_fav'])) {
 	}
 }
 // global var cleansing 9/26/2004 5:12PM akamu
-$cat = isset($_POST['cat']) ? $_POST['cat'] : isset($_GET['cat']) ? $_GET['cat'] : 0;
+$cat = $_POST['cat'] ?? isset($_GET['cat']) ? $_GET['cat'] : 0;
 if (!is_numeric($cat)) $cat = NULL;
 
-$album = isset($_POST['album']) ? $_POST['album'] : (isset($_GET['album']) ? $_GET['album'] : NULL);
+$album = $_POST['album'] ?? $_GET['album'] ?? NULL;
 if (!is_numeric($album)) $album = NULL;
 
-$pid = isset($_POST['pid']) ? $_POST['pid'] : (isset($_GET['pid']) ? $_GET['pid'] : NULL);
+$pid = $_POST['pid'] ?? $_GET['pid'] ?? NULL;
 if (!is_numeric($pid)) $pid = NULL;
 
-$pos = isset($_POST['pos']) ? $_POST['pos'] : (isset($_GET['pos']) ? $_GET['pos'] : NULL);
+$pos = $_POST['pos'] ?? $_GET['pos'] ?? NULL;
 if (!is_numeric($pos)) $pos = NULL;
 
 

@@ -16,7 +16,7 @@
 
 class Method
 {
-	function priv($file, $class, $function)
+	public static function priv($file, $class, $function)
 	{
 		if (PHPVERS >= 43) {
 			$tmp = debug_backtrace();

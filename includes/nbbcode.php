@@ -334,10 +334,12 @@ function make_clickable($text)
 	$ret = ' ' . $text;
 	$ret = preg_replace_callback('#(^|[
  ])([\w]+?://[\w]+[^ "
-	<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
+
+	<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
 	$ret = preg_replace_callback('#(^|[
  ])((www|ftp)\.[^ "	
-<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
+
+<]*)#is', fn($matches) => $matches[1] . shrink_url($matches[2]) . '</a>', $ret);
 	$ret = preg_replace("#(^|[\n ])([a-z0-9&\-_\.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1 \\2 &#64; \\3", $ret);
 	$ret = substr($ret, 1);
 	return($ret);
@@ -396,11 +398,11 @@ function message_prepare($message, $html_on, $bbcode_on)
 
 class BBCode {
 
-	function encode_html($text) {
+	public static function encode_html($text) {
 		return (preg_match('#<#m', $text)) ? htmlprepare($text, false, ENT_NOQUOTES) : $text;
 	}
 
-	function encode($text)
+	public static function encode($text)
 	{
 		# Split all bbcodes.
 		$text_parts = BBCode::split_bbcodes($text);
@@ -421,7 +423,7 @@ class BBCode {
 		return trim($text);
 	}
 
-	function decode($text, $allowed=0, $allow_html=false)
+	public static function decode($text, $allowed=0, $allow_html=false)
 	{
 		global $bb_codes;
 		# First: If there isn't a "[" and a "]" in the message, don't bother.
@@ -539,7 +541,7 @@ class BBCode {
 		return trim($text);
 	}
 
-	function split_bbcodes($text)
+	public static function split_bbcodes($text)
 	{
 		$curr_pos = 0;
 		$str_len = strlen($text);
@@ -637,7 +639,7 @@ class BBCode {
 		return $text;
 	}
 
-	function decode_code($text)
+	public static function decode_code($text)
 	{
 		global $bb_codes;
 		$text = substr($text, 6, -7);
@@ -647,7 +649,7 @@ class BBCode {
 		return $bb_codes['code_start']."<pre>$text</pre>".$bb_codes['code_end'];
 	}
 
-	function decode_php($text)
+	public static function decode_php($text)
 	{
 		global $bb_codes;
 		$text = str_replace("\r\n", "\n", substr($text, 5, -6)); # Windows
@@ -686,7 +688,7 @@ class BBCode {
 		return $bb_codes['php_start']."<pre>$text</pre>".$bb_codes['php_end'];
 	}
 
-	function decode_list($text)
+	public static function decode_list($text)
 	{
 		// &(?![a-z]{2,6};|#[0-9]{1,4};)
 		$items = explode('[*]', $text);

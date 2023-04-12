@@ -17,7 +17,7 @@ if (!defined('CPG_NUKE')) { exit; }
 
 class Menu {
 
-	function mmimage($image) {
+	public static function mmimage($image) {
 		global $CPG_SESS;
 		if (isset($CPG_SESS['mmimages'][$CPG_SESS['theme']][$image])) {
 			return $CPG_SESS['mmimages'][$CPG_SESS['theme']][$image];

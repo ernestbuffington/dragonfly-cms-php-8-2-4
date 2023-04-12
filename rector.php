@@ -192,11 +192,18 @@ return static function (RectorConfig $rectorConfig): void {
 		  		  
 		  //__DIR__ . '/includes/db/*',
 		  
-		  __DIR__ . '/includes/classes/*',		  
+		  //////__DIR__ . '/includes/classes/cpg_debugger.php',		  
+		  //////__DIR__ . '/includes/classes/archive/*',		  
+		  //////__DIR__ . '/includes/classes/sqlctrl/*',		  
 		  
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',
 		  //////__DIR__ . '/admin/*',
+
+		  __DIR__ . '/includes/coppermine/init.inc',
+		  //////__DIR__ . '/includes/coppermine/*/*',
+		  //////__DIR__ . '/includes/coppermine/*',
+		  
 		  
 		  //////__DIR__ . '/blocks/*',
 		  

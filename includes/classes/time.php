@@ -209,21 +209,21 @@ $l10n_dst_regions = array(
 class L10NTime {
 
 	# Convert the GMT time to local time
-	function tolocal($time, $region, $gmt) {
+	public static function tolocal($time, $region, $gmt) {
 		if ($gmt != 0) { $time += (3600*$gmt); }
 		return (L10NTime::in_dst($time, $region)) ? $time+3600 : $time;
 	}
 
 	# Convert 01-01-2005 12:00:00 GMT to 01-01-2005 12:00:00 Local Time
 	# Convert the local time to GMT
-	function toGMT($time, $region, $gmt) {
+	public static function toGMT($time, $region, $gmt) {
 		$time -= ($gmt*3600);
 		return (L10NTime::in_dst($time, $region)) ? $time-3600 : $time;
 	}
 
-	function strftime($format, $time, $region=0, $gmt=0) {
+	public static function strftime($format, $time, $region=0, $gmt=0) {
 		$datetime = [];
-  global $LNG;
+        global $LNG;
 		# check if we already have a unix timestamp else convert 
 		if (!is_numeric($time)) {
 			# 'YEAR-MONTH-DAY HOUR:MIN:SEC' aka MySQL DATETIME
@@ -248,9 +248,9 @@ class L10NTime {
 		return preg_replace_callback('#_([DlFM])([0-9]{1,2})#', fn($matches) => $LNG['_time'][$matches[1]][intval($matches[2])], $time);
 	}
 
-	function date($format, $time, $region=0, $gmt=0) {
+	public static function date($format, $time, $region=0, $gmt=0) {
 		$datetime = [];
-  global $LNG;
+        global $LNG;
 		# check if we already have a unix timestamp else convert 
 		if (!is_numeric($time)) {
 			# 'YEAR-MONTH-DAY HOUR:MIN:SEC' aka MySQL DATETIME
@@ -269,7 +269,7 @@ class L10NTime {
 		return preg_replace_callback('#_([DlFM])([0-9]{1,2})#', fn($matches) => $LNG['_time'][$matches[1]][intval($matches[2])], $time);
 	}
 
-	function strtotime($time, $now=0) {
+	public static function strtotime($time, $now=0) {
 		static $php5;
 		if ($now < 1) $now = gmtime();
 		$time = strtotime($time, $now);
@@ -285,7 +285,7 @@ class L10NTime {
 	}
 
 	# Check if the local time is inside DST depending on region
-	function in_dst($localtime, $region)
+	public static function in_dst($localtime, $region)
 	{
 		global $l10n_dst_regions;
 		if (!isset($l10n_dst_regions[$region]) || $region <= 0) return false;
@@ -295,17 +295,17 @@ class L10NTime {
 	}
 
 	# Convert the local time to DST depending on region
-	function get_dst_time($localtime, $region)
+	public static function get_dst_time($localtime, $region)
 	{
 		return (L10NTime::in_dst($localtime, $region)) ? $localtime+3600 : $localtime;
 	}
 /*
   Start internal functions mostly not used outside this class
 */
-	function get_dst_switch($localtime, $data)
+	public static function get_dst_switch($localtime, $data)
 	{
 		$gdata = [];
-  $this_year = L10NTime::date('Y', $localtime);
+        $this_year = L10NTime::date('Y', $localtime);
 		if (isset($data[3]) && $data[3] == -1) {
 			# DST switch is on a jalali calendar day so convert
 			$jdate = L10NTime::gregorian_to_jalali($this_year, L10NTime::date('n', $localtime), L10NTime::date('j', $localtime));
@@ -328,7 +328,7 @@ class L10NTime {
 		return $switchtime-$time;
 	}
 
-	function is_dst($localtime, $start, $end)
+	public static function is_dst($localtime, $start, $end)
 	{
 		$dst_start = L10NTime::get_dst_switch($localtime, $start);
 		$dst_end = L10NTime::get_dst_switch($localtime, $end);
@@ -341,7 +341,7 @@ class L10NTime {
 		}
 	}
 
-	function gregorian_to_jalali($g_y, $g_m, $g_d)
+	public static function gregorian_to_jalali($g_y, $g_m, $g_d)
 	{
 		$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 		$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
@@ -372,7 +372,7 @@ class L10NTime {
 		return array($jy, $jm, $jd);
 	}
 
-	function jalali_to_gregorian($j_y, $j_m, $j_d)
+	public static function jalali_to_gregorian($j_y, $j_m, $j_d)
 	{
 		$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 		$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
