@@ -49,8 +49,8 @@ if (extension_loaded('gd')) {
 }
 $gd = preg_replace('#bundled \((.*?) compatible\)#', '\\1', $gd);
 $ini['register_globals'] = ini_get('register_globals');
-$ini['magic_quotes'] = get_magic_quotes_gpc();
-$ini['magic_quotes_sybase'] = ini_get('magic_quotes_sybase');
+$ini['magic_quotes'] = 0;
+$ini['magic_quotes_sybase'] = 0;
 $ini['ini_set'] = !preg_match('#ini_set#m', ini_get('disable_functions'));
 $ini['LEO'] = preg_match('#Apache#m', $_SERVER['SERVER_SOFTWARE']);
 
