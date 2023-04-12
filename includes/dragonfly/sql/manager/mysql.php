@@ -64,7 +64,8 @@ class MySQL extends \Poodle\SQL\Manager\MySQL
 
 	public function get_versions()
 	{
-		$version['engine'] = $this->SQL->engine;
+		$version = [];
+  $version['engine'] = $this->SQL->engine;
 		$version['client'] = $this->SQL->client_info;
 		$version['server'] = $this->SQL->server_info;
 		return $version;
@@ -72,7 +73,8 @@ class MySQL extends \Poodle\SQL\Manager\MySQL
 
 	public function get_details()
 	{
-		$result = $this->SQL->query('SHOW VARIABLES');
+		$details = [];
+  $result = $this->SQL->query('SHOW VARIABLES');
 		while ($row = $result->fetch_row()) { $details[$row[0]] = $row[1]; }
 		$result->free();
 		$details['engine']  = $this->SQL->engine;

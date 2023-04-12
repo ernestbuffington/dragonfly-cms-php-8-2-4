@@ -63,7 +63,8 @@ class Postgresql extends \Poodle\SQL\Manager\PostgreSQL
 
 	public function get_versions()
 	{
-		$version['engine'] = 'PostgreSQL';
+		$version = [];
+  $version['engine'] = 'PostgreSQL';
 		$version['client'] = 'N/A';
 		$version['server'] = 'N/A';
 		$version = array_merge($version, pg_version($this->SQL->connect_id));
@@ -128,7 +129,8 @@ class Postgresql extends \Poodle\SQL\Manager\PostgreSQL
 
 	public function list_schemas()
 	{
-		$result = $this->SQL->query('
+		$schemas = [];
+  $result = $this->SQL->query('
 			SELECT
 				nspname
 			FROM
@@ -354,7 +356,8 @@ class Postgresql extends \Poodle\SQL\Manager\PostgreSQL
 
 	public function alter_index($mode, $table, $name, $columns='')
 	{
-		$this->create_patterns();
+		$schema = null;
+  $this->create_patterns();
 		switch ($mode)
 		{
 			case 'index':
@@ -378,7 +381,9 @@ class Postgresql extends \Poodle\SQL\Manager\PostgreSQL
 
 	public function get_sequence($table, $schema='')
 	{
-		if ($schema == '') {
+		$sequence = [];
+  $data = null;
+  if ($schema == '') {
 			$schema = $this->get_current_schema();
 		}
 		if (!$result = $this->SQL->query("
@@ -410,7 +415,8 @@ class Postgresql extends \Poodle\SQL\Manager\PostgreSQL
 
 	public function list_sequences($schema='')
 	{
-		if ($schema == '') {
+		$sequence = [];
+  if ($schema == '') {
 			$schema = $this->get_current_schema();
 		}
 		$result = $this->SQL->query("

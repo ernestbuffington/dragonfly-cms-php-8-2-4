@@ -11,7 +11,7 @@ namespace Dragonfly\Page\Menu;
 class User
 {
 
-	private static $active;
+	private static ?bool $active = null;
 
 	public static function init()
 	{

@@ -31,11 +31,11 @@ class MySQLi extends \MySQLi implements \Poodle\SQL\Interfaces\Adapter
 			'flags'   => null,
 			'options' => array(), # php.net/mysqli_options
 			'ssl'     => array(   # php.net/mysqli_ssl_set
-				'key'  => null,
-				'cert' => null,
-				'ca'   => null,
-				'capath' => null,
-				'cipher' => null,
+			'key'  => null,
+			'cert' => null,
+			'ca'   => null,
+			'capath' => null,
+			'cipher' => null,
 			),
 			'storage_engine' => null,
 			'query_cache_type' => 1,
@@ -208,10 +208,10 @@ class MySQLi extends \MySQLi implements \Poodle\SQL\Interfaces\Adapter
 	public function search(array $fields, &$text)
 	{
 		static
-			$ft_max_word_len = 0,
-			$ft_min_word_len = 0,
-			$innodb_ft_max_token_size = 0,
-			$innodb_ft_min_token_size = 0;
+		$ft_max_word_len = 0,
+		$ft_min_word_len = 0,
+		$innodb_ft_max_token_size = 0,
+		$innodb_ft_min_token_size = 0;
 		$text = preg_replace('/\\s+&\\s+!/', ' -', $text); // NOT
 		$text = preg_replace('/\\s+&\\s+/', ' +', $text);  // AND
 		$text = preg_replace('/\\s+|\\s+/', ' ', $text);   // OR
@@ -338,7 +338,10 @@ class MySQLi_UseResult extends \MySQLi_Result
 
 	public function fetch_all($resulttype=\Poodle\SQL::ASSOC, $type_cast=false)
 	{
-//		if (!$type_cast && method_exists('MySQLi_Result', 'fetch_all')) { return parent::fetch_all($resulttype); } # MYSQLI_NUM | MYSQLI_ASSOC | MYSQLI_BOTH
+		//if (!$type_cast && method_exists('MySQLi_Result', 'fetch_all')) { 
+		//  return parent::fetch_all($resulttype); 
+		//} # MYSQLI_NUM | MYSQLI_ASSOC | MYSQLI_BOTH
+		
 		$rows = array();
 		if ($resulttype === \Poodle\SQL::BOTH) { while ($row = $this->fetch_array($type_cast)) $rows[] = $row; }
 		else if ($resulttype === \Poodle\SQL::NUM) { while ($row = $this->fetch_row($type_cast)) $rows[] = $row; }
@@ -356,10 +359,21 @@ class MySQLi_UseResult extends \MySQLi_Result
 class MySQLi_Result extends MySQLi_UseResult implements \Poodle\SQL\Interfaces\Result
 {
 	# ArrayAccess
-	public function offsetExists($k)  { return ($k >= 0 && $k < $this->num_rows); }
-	public function offsetGet($k)     { return ($this->data_seek($k) ? $this->fetch_assoc() : null); }
-	public function offsetSet($k, $v) { return; }
-	public function offsetUnset($k)   { return; }
+	public function offsetExists($k)  { 
+	  return ($k >= 0 && $k < $this->num_rows); 
+	}
+	
+	public function offsetGet($k)     { 
+	  return ($this->data_seek($k) ? $this->fetch_assoc() : 0); 
+	}
+	
+	public function offsetSet($k, $v) { 
+	  return; 
+	}
+	public function offsetUnset($k)   
+	{ 
+	  return; 
+	}
 	# Countable
 	public function count()   { return $this->num_rows; }
 }

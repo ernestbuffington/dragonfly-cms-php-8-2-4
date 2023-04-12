@@ -18,7 +18,7 @@ namespace Dragonfly\Page\Menu;
 
 class Admin
 {
-	const
+	public const
 		BLOCK =  1,
 		GRAPH =  2,
 		CSS   =  4,
