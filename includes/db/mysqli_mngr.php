@@ -32,25 +32,25 @@ class sql_mngr
 	//
 	function __construct(&$owner)
 	{
-		$this->_owner =& $owner;
+		$this->_owner = $owner;
 		$this->fields = array(
-			'SERIAL4' => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-			'SERIAL8' => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
-			'TEXT' => 'TEXT',
-			'BLOB' => 'BLOB',
-			'BOOL' => 'BOOL',       # synonyms for TINYINT(1)
-//			'BOOL' => 'TINYINT(1)', # MySQL >= 5.0.3 -> BIT
-//			'BIT' => 'BIT',         # MySQL < 5.0.3 -> BIT == TINYINT(1); # MySQL >= 5.0.3 -> BIT(N) == bits per value
-			'INT1' => 'TINYINT',
-			'INT2' => 'SMALLINT',
-			'INT3' => 'MEDIUMINT',
-			'INT4' => 'INT',
-			'INT8' => 'BIGINT',
-			'CHAR' => 'CHAR',
-			'VARCHAR' => 'VARCHAR',
-			'FLOAT4' => 'FLOAT',
-			'FLOAT8' => 'DOUBLE',
-			'DECIMAL' => 'DECIMAL'
+		'SERIAL4' => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+		'SERIAL8' => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+		'TEXT' => 'TEXT',
+		'BLOB' => 'BLOB',
+		'BOOL' => 'BOOL',       # synonyms for TINYINT(1)
+//		'BOOL' => 'TINYINT(1)', # MySQL >= 5.0.3 -> BIT
+//		'BIT' => 'BIT',         # MySQL < 5.0.3 -> BIT == TINYINT(1); # MySQL >= 5.0.3 -> BIT(N) == bits per value
+		'INT1' => 'TINYINT',
+		'INT2' => 'SMALLINT',
+		'INT3' => 'MEDIUMINT',
+		'INT4' => 'INT',
+		'INT8' => 'BIGINT',
+		'CHAR' => 'CHAR',
+		'VARCHAR' => 'VARCHAR',
+		'FLOAT4' => 'FLOAT',
+		'FLOAT8' => 'DOUBLE',
+		'DECIMAL' => 'DECIMAL'
 		);
 	}
 	function _create_patterns()
