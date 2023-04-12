@@ -197,7 +197,7 @@ function form_pic_info($text)
 	$winsizeX = $CURRENT_PIC['pwidth'] + 16;
 	$winsizeY = $CURRENT_PIC['pheight'] + 16;
 	$thispid = $CURRENT_PIC['pid'];
-			$thumb_link = '<a href="'.getlink("&amp;file=displayimagepopup&amp;pid=$thispid&amp;fullsize=1")."\" target=\"" . uniqid(rand()) . "\" onClick=\"MM_openBrWindow('".getlink("&amp;file=displayimagepopup&amp;pid=$thispid&amp;fullsize=1")."','" . uniqid(rand()) . "','toolbar=yes,status=yes,resizable=yes,scrollbars=yes,width=$winsizeX,height=$winsizeY');return false\">";
+			$thumb_link = '<a href="'.getlink("&amp;file=displayimagepopup&amp;pid=$thispid&amp;fullsize=1")."\" target=\"" . uniqid(random_int(0, mt_getrandmax())) . "\" onClick=\"MM_openBrWindow('".getlink("&amp;file=displayimagepopup&amp;pid=$thispid&amp;fullsize=1")."','" . uniqid(random_int(0, mt_getrandmax())) . "','toolbar=yes,status=yes,resizable=yes,scrollbars=yes,width=$winsizeX,height=$winsizeY');return false\">";
 			$thumb_url = get_pic_url($CURRENT_PIC, 'thumb');
 	//$thumb_link = $CPG_URL . '&amp;file=displayimage&amp;pos=' . (- $CURRENT_PIC['pid']);
 	$filename = htmlprepare($CURRENT_PIC['filename']);
@@ -378,7 +378,7 @@ function get_user_albums($user_id)
 } 
 
 //define('META_LNK','&amp;cat=0');
-pageheader((isset($title) ? $title : ''));
+pageheader(($title ?? ''));
 
 if (GALLERY_ADMIN_MODE) {
 	$public_albums_list = get_albumlist();

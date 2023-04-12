@@ -44,7 +44,7 @@ if (!in_array($pic, $FAVPICS)) {
 } 
 
 $data = base64_encode(serialize($FAVPICS));
-setcookie($CONFIG['cookie_name'] . '_fav', $data, time() + 86400 * 30, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']);
+setcookie($CONFIG['cookie_name'] . '_fav', $data, ['expires' => time() + 86400 * 30, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]);
 
 $location = getlink("&file=displayimage&pid=".$pic);
 pageheader(INFO, $location);

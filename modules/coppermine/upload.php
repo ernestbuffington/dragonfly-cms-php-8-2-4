@@ -91,7 +91,7 @@ EOT;
 
 function form_alb_list_box($text, $name) {
     global $CONFIG, $public_albums_list;
-    $sel_album = isset($_GET['album']) ? $_GET['album'] : 0;
+    $sel_album = $_GET['album'] ?? 0;
                 
 echo <<<EOT
         <tr>

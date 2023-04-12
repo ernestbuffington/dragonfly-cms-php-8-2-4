@@ -49,11 +49,11 @@ else if (isset($_POST['submit'])) {
 }
 else {
 	$CPG_SESS['submit_story'] = true;
-	$story = isset($_POST['story']) ? $_POST['story'] : false;
-	$storyext = isset($_POST['storyext']) ? $_POST['storyext'] : false;
+	$story = $_POST['story'] ?? false;
+	$storyext = $_POST['storyext'] ?? false;
 	$subject = isset($_POST['subject']) ? htmlprepare($_POST['subject']) : false;
 	$topic = isset($_POST['topic']) ? intval($_POST['topic']) : 0;
-	$alanguage = isset($_POST['alanguage']) ? $_POST['alanguage'] : '';
+	$alanguage = $_POST['alanguage'] ?? '';
 
 	require_once(BASEDIR.'includes/wysiwyg/wysiwyg.inc');
 	$story_editor = new Wysiwyg('submitnews', 'story', '100%', '200px', $story);
@@ -77,7 +77,7 @@ else {
 		echo '<div style="text-align:center;" class="gen"><b>'._NEWSUBPREVIEW.'</b></div><br />
 		<div style="text-align:center;">'._CHECKSTORY.'</div><br />
 		<table class="newsarticle" style="width:70%; margin:auto;"><tr><td>
-		<img src="images/topics/'.$topicimage.'" style="border:0; float:right;" alt="'.(isset($topictext) ? $topictext : '').'" title="'.(isset($topictext) ? $topictext : '').'" />
+		<img src="images/topics/'.$topicimage.'" style="border:0; float:right;" alt="'.($topictext ?? '').'" title="'.($topictext ?? '').'" />
 		<span class="gen"><b>'.$subject.'</b></span><br /><br />
 		<span style="font-size:10px;">'.$f_story;
 		if ($f_storyext != '') {

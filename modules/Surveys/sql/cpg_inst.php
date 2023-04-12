@@ -24,7 +24,7 @@ class Surveys {
 	var $website;
 	var $dbtables;
 // class constructor
-	function Surveys() {
+	function __construct() {
 		$this->radmin = true;
 		$this->version = '1.2';
 		$this->modname = 'Surveys';

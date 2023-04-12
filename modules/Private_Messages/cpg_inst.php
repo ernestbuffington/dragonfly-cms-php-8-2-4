@@ -22,7 +22,7 @@ class Private_Messages {
 	var $author;
 	var $website;
 	var $dbtables;
-	function Private_Messages() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.1';
 		$this->modname = 'Private Messaging';

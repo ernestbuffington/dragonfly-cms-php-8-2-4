@@ -299,7 +299,7 @@ $sql .=" FROM ".POSTS_TABLE." p, ".USERS_TABLE." u, ".POSTS_TEXT_TABLE." pt
 				AND pt.post_id = p.post_id
 				AND u.user_id = p.poster_id
 		ORDER BY p.post_time $post_time_order
-		LIMIT $start, ".(isset($finish)? ((($finish - $start) > 0)? ($finish - $start): -$finish): $board_config['posts_per_page']);
+		LIMIT $start, ".(isset($finish)? (($finish - $start) > 0 ? $finish - $start : -$finish): $board_config['posts_per_page']);
 $result = $db->sql_query($sql);
 
 $postrow = array();
@@ -403,8 +403,8 @@ $printer_alt =  _PRINTER;
 // Set a cookie for this topic
 //
 if (is_user()) {
-	$tracking_topics = isset($CPG_SESS[$module_name]['track_topics']) ? $CPG_SESS[$module_name]['track_topics'] : array();
-	$tracking_forums = isset($CPG_SESS[$module_name]['track_forums']) ? $CPG_SESS[$module_name]['track_forums'] : array();
+	$tracking_topics = $CPG_SESS[$module_name]['track_topics'] ?? array();
+	$tracking_forums = $CPG_SESS[$module_name]['track_forums'] ?? array();
 	if ( !empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]) ) {
 		$topic_last_read = ( $tracking_topics[$topic_id] > $tracking_forums[$forum_id] ) ? $tracking_topics[$topic_id] : $tracking_forums[$forum_id];
 	} else if ( !empty($tracking_topics[$topic_id]) || !empty($tracking_forums[$forum_id]) ) {
@@ -556,7 +556,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
 		ORDER BY vr.vote_option_id ASC";
 	$vote_info = $db->sql_ufetchrowset($sql, SQL_ASSOC);
 	if ( $vote_info ) {
-		$vote_options = count($vote_info);
+		$vote_options = is_countable($vote_info) ? count($vote_info) : 0;
 		$vote_id = $vote_info[0]['vote_id'];
 		$vote_title = $vote_info[0]['vote_text'];
 
@@ -564,7 +564,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
 		$user_voted = ( $row = $db->sql_fetchrow($result) ) ? TRUE : 0;
 		$db->sql_freeresult($result);
 		if ( isset($_GET['vote']) || isset($_POST['vote']) ) {
-			$view_result = ( ( ( isset($_GET['vote']) ) ? $_GET['vote'] : $_POST['vote'] ) == 'viewresult' ) ? TRUE : 0;
+			$view_result = ( ( $_GET['vote'] ?? $_POST['vote'] ) == 'viewresult' ) ? TRUE : 0;
 		} else {
 			$view_result = 0;
 		}
@@ -580,7 +580,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
 			}
 
 			$vote_graphic = 0;
-			$vote_graphic_max = count($images['voting_graphic']);
+			$vote_graphic_max = is_countable($images['voting_graphic']) ? count($images['voting_graphic']) : 0;
 
 			for($i = 0; $i < $vote_options; $i++) {
 				$vote_percent = ( $vote_results_sum > 0 ) ? $vote_info[$i]['vote_result'] / $vote_results_sum : 0;
@@ -663,7 +663,7 @@ if ( !empty($forum_topic_data['topic_vote']) )
 		}
 		if (count($post_id_array) > 0) {
 			$rows = get_attachments_from_post($post_id_array);
-			$num_rows = count($rows);
+			$num_rows = is_countable($rows) ? count($rows) : 0;
 			if ($num_rows > 0) {
 				reset($attachments);
 				for ($i = 0; $i < $num_rows; $i++) {
@@ -702,7 +702,7 @@ for ($i = 0; $i < $total_posts; $i++) {
 	$poster_posts = ($poster_id != ANONYMOUS) ? $lang['Posts'].': '.$postrow[$i]['user_posts'] : '';
 
 	$poster_from = ($postrow[$i]['user_from'] && $poster_id != ANONYMOUS) ? $lang['Location'].': '.$postrow[$i]['user_from'] : '';
-	$poster_from = ereg_replace('.gif', '', $poster_from);
+	$poster_from = preg_replace('#.gif#m', '', $poster_from);
 	$poster_joined = ($poster_id != ANONYMOUS) ? $lang['Joined'].': '.formatDateTime($postrow[$i]['user_regdate'], '%b %d, %Y') : '';
 	$poster_bio = ($poster_id != ANONYMOUS && $postrow[$i]['bio'] != '') ? sprintf($lang['About_user'],$postrow[$i]['username']).': '.$postrow[$i]['bio'].'<br/ >' : ''; 
 	$poster_timezone = ($poster_id != ANONYMOUS && $postrow[$i]['user_timezone'] != '') ? $lang['Timezone']. ': '.$lang['tz'][$postrow[$i]['user_timezone']].'<br/ >' : '';
@@ -754,14 +754,14 @@ for ($i = 0; $i < $total_posts; $i++) {
 	$rank_image = '';
 	if ($poster_id != ANONYMOUS) {
 		if ($postrow[$i]['user_rank']) {
-			for($j = 0; $j < count($ranksrow); $j++) {
+			for($j = 0; $j < (is_countable($ranksrow) ? count($ranksrow) : 0); $j++) {
 				if ( $postrow[$i]['user_rank'] == $ranksrow[$j]['rank_id'] && $ranksrow[$j]['rank_special'] ) {
 					$poster_rank = $ranksrow[$j]['rank_title'];
 					$rank_image = ( $ranksrow[$j]['rank_image'] ) ? '<img src="'.$ranksrow[$j]['rank_image'].'" alt="'.$poster_rank.'" title="'.$poster_rank.'" style="border:0;" /><br />' : '';
 				}
 			}
 		} else {
-			for($j = 0; $j < count($ranksrow); $j++) {
+			for($j = 0; $j < (is_countable($ranksrow) ? count($ranksrow) : 0); $j++) {
 				if ( $postrow[$i]['user_posts'] >= $ranksrow[$j]['rank_min'] && !$ranksrow[$j]['rank_special'] ) {
 					$poster_rank = $ranksrow[$j]['rank_title'];
 					$rank_image = ($ranksrow[$j]['rank_image']) ? '<img src="'.$ranksrow[$j]['rank_image'].'" alt="'.$poster_rank.'" title="'.$poster_rank.'" style="border:0;" /><br />' : '';
@@ -819,7 +819,7 @@ for ($i = 0; $i < $total_posts; $i++) {
 			$postrow[$i]['user_website'] = '';
 		}
 		if (!empty($postrow[$i]['user_website'])) {
-			if (substr($postrow[$i]['user_website'],0, 7) != 'http://') {
+			if (!str_starts_with($postrow[$i]['user_website'], 'http://')) {
 				$postrow[$i]['user_website'] = 'http://'.$postrow[$i]['user_website'];
 			}
 			$www = array(
@@ -1004,7 +1004,7 @@ for ($i = 0; $i < $total_posts; $i++) {
 	if ($highlight_match) {
 		// This was shamelessly 'borrowed' from volker at multiartstudio dot de
 		// via php.net's annotated manual
-		$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#(".$highlight_match.")#i', '<span style=\"color:#FFA34F;\"><b>\\\\1</b></span>', '\\0')", '>'.$message.'<'), 1, -1));
+		$message = str_replace('\"', '"', substr(preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', fn($matches) => preg_replace('#($highlight_match)#i', $matches[1], $matches[0]), '>'.$message.'<'), 1, -1));
 	}
 
 	//
@@ -1013,9 +1013,9 @@ for ($i = 0; $i < $total_posts; $i++) {
 	if (count($orig_word)) {
 		$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 		if ($user_sig != '') {
-			$user_sig = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>'.$user_sig.'<'), 1, -1));
+			$user_sig = str_replace('\"', '"', substr(preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', fn($matches) => preg_replace($orig_word, $replacement_word, $matches[0]), '>'.$user_sig.'<'), 1, -1));
 		}
-		$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>'.$message.'<'), 1, -1));
+		$message = str_replace('\"', '"', substr(preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', fn($matches) => preg_replace($orig_word, $replacement_word, $matches[0]), '>'.$message.'<'), 1, -1));
 	}
 
 	//

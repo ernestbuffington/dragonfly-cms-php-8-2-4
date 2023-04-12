@@ -238,8 +238,8 @@ function update_user($user_id)
 
     $user_active_cp = $_POST['user_active_cp'];
     $user_group_cp = $_POST['user_group_cp'];
-    $group_list = isset($_POST['group_list']) ? $_POST['group_list'] : '';
-    $username = isset($username) ? $username : '';
+    $group_list = $_POST['group_list'] ?? '';
+    $username ??= '';
 
     $sql = "SELECT user_id FROM {$CONFIG['TABLE_USERS']} WHERE username = '" . Fix_Quotes($username) . "' AND user_id != $user_id";
     $result = $db->sql_query($sql);
@@ -264,7 +264,7 @@ function update_user($user_id)
     $db->sql_query($sql_update);
 }
 
-$opp = isset($_POST['opp']) ? $_POST['opp'] : (isset($_GET['opp']) ? $_GET['opp'] : '');
+$opp = $_POST['opp'] ?? $_GET['opp'] ?? '';
 
 switch ($opp){
     case 'edit' :
@@ -278,13 +278,13 @@ switch ($opp){
             }
             $db->sql_freeresult($result);
         } else {
-            $user_id = intval(isset($_GET['user_id']) ? $_GET['user_id'] : (isset($_POST['user_id']) ? $_POST['user_id'] : -1));
+            $user_id = intval($_GET['user_id'] ?? $_POST['user_id'] ?? -1);
         }
         if (isset($user_id) && USER_ID == $user_id && !can_admin()) {
             cpg_die(_ERROR, ERR_EDIT_SELF, __FILE__, __LINE__);
         }
         pageheader(U_TITLE);
-        edit_user((isset($user_id) ? $user_id : ''));
+        edit_user(($user_id ?? ''));
         pagefooter();
         break;
 

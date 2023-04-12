@@ -47,7 +47,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
   global $db, $CONFIG, $HIDE_USER_CAT, $CPG_M_DIR, $CPG_M_URL;
   $categories_data = get_categories_data();
   $rowset = array();
-  for ($i=0;$i<count($categories_data);$i++) {
+  for ($i=0;$i<(is_countable($categories_data) ? count($categories_data) : 0);$i++) {
     if ($categories_data[$i]['parent'] != $parent) continue;
     $rowset[] = $categories_data[$i];
   }
@@ -57,7 +57,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
     foreach ($rowset as $subcat) {
       $album_count = 0;
       if ($subcat['cid'] == USER_GAL_CAT) {
-        for ($i=0;$i<count($albums_data);$i++) {
+        for ($i=0;$i<(is_countable($albums_data) ? count($albums_data) : 0);$i++) {
           if ($albums_data[$i]['category'] < FIRST_USER_CAT) continue;
             $album_set_array[] = $albums_data[$i]['aid'];
             $album_count++;
@@ -72,7 +72,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
             $HIDE_USER_CAT = 0;
           }
         } else {
-          for ($i=0;$i<count($albums_data);$i++) {
+          for ($i=0;$i<(is_countable($albums_data) ? count($albums_data) : 0);$i++) {
             if ($albums_data[$i]['category'] >= FIRST_USER_CAT) continue;
             $album_set_array[] = $albums_data[$i]['aid'];
           }
@@ -99,6 +99,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 // List all categories
 function get_cat_list(&$cat_data, &$statistics)
 {
+  $current_album_set = null;
   global $db, $CONFIG, $BREADCRUMB_TEXT, $STATS_IN_ALB_LIST;
   global $HIDE_USER_CAT;
   global $cat;
@@ -132,10 +133,10 @@ function get_cat_list(&$cat_data, &$statistics)
   }
   // Gather gallery statistics
   if ($cat == 0) {
-    $album_count = count(get_albums_data());
+    $album_count = is_countable(get_albums_data()) ? count(get_albums_data()) : 0;
     $picture_count = cpg_tablecount($CONFIG['TABLE_PICTURES'], 'count(*)', __FILE__,__LINE__);
     $comment_count = cpg_tablecount($CONFIG['TABLE_COMMENTS'], 'count(*)', __FILE__,__LINE__);
-    $cat_count = count(get_categories_data());
+    $cat_count = is_countable(get_categories_data()) ? count(get_categories_data()) : 0;
     $hit_count = cpg_tablecount($CONFIG['TABLE_PICTURES'], 'sum(hits)', __FILE__,__LINE__);
     if (count($cat_data)) {
       $statistics = strtr(STAT1, array(
@@ -212,7 +213,7 @@ function list_users()
     $user_album_count = $user['alb_count'];
 
     // User avatar as config opt
-    if (!eregi("blank.gif", $user['avatar']) && strlen($user['avatar']) > 3 && $CONFIG['avatar_private_album']) {
+    if (!preg_match('#blank.gif#mi', $user['avatar']) && strlen($user['avatar']) > 3 && $CONFIG['avatar_private_album']) {
       global $MAIN_CFG;
       if ($user['user_avatar_type'] == 1) {
         $avatar = $MAIN_CFG['avatar']['path'].'/';
@@ -262,6 +263,9 @@ function list_users()
 // Redone for a cleaner approach: DJMaze
 function list_cat_albums($cat = 0, $buffer = true)
 {
+  $vis = [];
+  $cross_ref = [];
+  $alb_list = [];
   global $db, $CONFIG, $USER, $PAGE, $USER_DATA, $CPG_M_DIR;
 
   if ($cat == 0 && $buffer) return '';
@@ -305,7 +309,7 @@ function list_cat_albums($cat = 0, $buffer = true)
          "WHERE category = '$cat' $visible ORDER BY pos " .
          "LIMIT " . $lower_limit . "," . ($upper_limit - $lower_limit);
   $alb_thumbs = $db->sql_ufetchrowset($sql,SQL_BOTH,__FILE__,__LINE__);
-  $disp_album_count = count($alb_thumbs);
+  $disp_album_count = is_countable($alb_thumbs) ? count($alb_thumbs) : 0;
   $album_set = '';
   foreach($alb_thumbs as $value) {
     $album_set .= $value['aid'] . ', ';

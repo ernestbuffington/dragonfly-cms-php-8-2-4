@@ -39,7 +39,7 @@ function get_subcat_data($parent, $ident = '')
 {
 	global $CONFIG, $CAT_LIST, $db;
 	$rowset = $db->sql_ufetchrowset('SELECT cid, catname, description FROM '.$CONFIG['TABLE_CATEGORIES']." WHERE parent = '$parent' ORDER BY pos",SQL_BOTH,__FILE__,__LINE__);
-	if (($cat_count = count($rowset)) > 0) {
+	if (($cat_count = is_countable($rowset) ? count($rowset) : 0) > 0) {
 		$pos = 0;
 		foreach ($rowset as $subcat) {
 			if ($pos > 0) {
@@ -100,7 +100,8 @@ function cat_list_box($highlight = 0, $curr_cat, $on_change_refresh = true)
 } 
 function form_alb_thumb()
 {
-	global $CONFIG, $current_category, $cid, $db;
+	$lang_catmgr_php = [];
+ global $CONFIG, $current_category, $cid, $db;
 	$results = $db->sql_query("SELECT pid, filepath, filename, url_prefix FROM {$CONFIG['TABLE_PICTURES']},{$CONFIG['TABLE_ALBUMS']} WHERE {$CONFIG['TABLE_PICTURES']}.aid = {$CONFIG['TABLE_ALBUMS']}.aid AND {$CONFIG['TABLE_ALBUMS']}.category = '$cid' AND approved='1' ORDER BY filename",false, __FILE__, __LINE__);
 	if (!$db->sql_numrows($results)) {
 		echo '<tr>
@@ -216,7 +217,7 @@ function display_cat_list()
 	} 
 } 
 
-$opp = isset($_POST['opp']) ? $_POST['opp'] : '';
+$opp = $_POST['opp'] ?? '';
 
 $current_category = array('cid' => '0', 'catname' => '', 'parent' => '0', 'description' => '');
 switch ($opp) {
@@ -263,7 +264,7 @@ switch ($opp) {
 		break;
 } 
 
-$oppe = isset($_POST['oppe']) ? $_POST['oppe'] : '';
+$oppe = $_POST['oppe'] ?? '';
 
 $current_category = array('cid' => '0', 'catname' => '', 'parent' => '0', 'description' => '');
 switch ($oppe) {
@@ -313,7 +314,7 @@ switch ($oppe) {
 		if (!isset($_POST['cid'])) cpg_die(_CRITICAL_ERROR, sprintf(MISS_PARAM, 'deletecat'), __FILE__, __LINE__);
 		$cid = intval($_POST['cid']);
 		if(isset($_POST['cancel'])) {
-			$redirect = (isset($CPG_SESS['user']['redirect']) ? $CPG_SESS['user']['redirect'] : getlink("&file=catmgr"));
+			$redirect = ($CPG_SESS['user']['redirect'] ?? getlink("&file=catmgr"));
 			url_redirect($redirect);
 		}
 		if (!isset($_POST['confirm'])) {

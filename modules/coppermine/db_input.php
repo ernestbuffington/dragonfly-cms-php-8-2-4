@@ -58,7 +58,7 @@ if (!isset($_GET['event']) && !isset($_POST['event'])) {
 	cpg_die(_CRITICAL_ERROR, PARAM_MISSING, __FILE__, __LINE__);
 } 
 
-$event = isset($_POST['event']) ? $_POST['event'] : $_GET['event'];
+$event = $_POST['event'] ?? $_GET['event'];
 //$event = isset($_POST['event']) ? $_POST['event'] : NULL;
 switch ($event) {
 	
@@ -360,20 +360,20 @@ switch ($event) {
 		$picnamearray = preg_split('//', implode('.', $picname), -1, PREG_SPLIT_NO_EMPTY);
 		$picname='';
 		foreach ($picnamearray AS $char) {
-			if (!ereg('^[a-zA-Z0-9_\-]+$', $char)) {
-				if (ereg('^([áàaaaâãä]+)$', $char)) {
+			if (!preg_match('#^[a-zA-Z0-9_\\\\\-]+$#m', $char)) {
+				if (preg_match('#^([áàaaaâãä]+)$#m', $char)) {
 					$char  = 'a';
-				} elseif (ereg('^([éèæëê?]+)$', $char)) {
+				} elseif (preg_match('#^([éèæëê\?]+)$#m', $char)) {
 					$char  = 'e';
-				} elseif (ereg('^([ìíîï??]+)$', $char)) {
+				} elseif (preg_match('#^([ìíîï\?\?]+)$#m', $char)) {
 					$char  = 'i';
-				} elseif(ereg('^([ðòóôõöøœo?]+)$', $char)) {
+				} elseif(preg_match('#^([ðòóôõöøœo\?]+)$#m', $char)) {
 					$char  = 'o';
-				} elseif(ereg('^([ùúûü?]+)$', $char)) {
+				} elseif(preg_match('#^([ùúûü\?]+)$#m', $char)) {
 					$char  = 'u';
-				} elseif(ereg('^([ýþÿ?]+)$', $char)) {
+				} elseif(preg_match('#^([ýþÿ\?]+)$#m', $char)) {
 					$char  = 'y';
-				} elseif(ereg('^([ccccç]+)$', $char)) {
+				} elseif(preg_match('#^([ccccç]+)$#m', $char)) {
 					$char  = 'c';
 				} else {
 					$char  = '_';

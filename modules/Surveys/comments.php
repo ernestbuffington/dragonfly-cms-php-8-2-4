@@ -65,7 +65,8 @@ function navbar($poll_id, $title, $thold, $mode, $order) {
 }
 
 function DisplayKids($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0) {
-	global $userinfo, $anonpost, $commentlimit, $prefix, $db, $cpgtpl;
+	$parentid = null;
+ global $userinfo, $anonpost, $commentlimit, $prefix, $db, $cpgtpl;
 	$comments = 0;
 	$result = $db->sql_query("SELECT tid, pid, poll_id, date, name, email, host_name, subject, comment, score, reason FROM ".$prefix."_pollcomments WHERE pid='$tid' ORDER BY date, tid");
 	if ($mode == 'nested' || $mode == 'flat') {
@@ -162,7 +163,8 @@ function DisplayKids($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0) {
 }
 
 function DisplayComments($poll_id, $title, $pid=0, $tid=0) {
-	global $hr, $userinfo, $commentlimit, $anonpost, $prefix, $db;
+	$parentid = null;
+ global $hr, $userinfo, $commentlimit, $anonpost, $prefix, $db;
 	global $bgcolor1, $bgcolor2, $bgcolor3;
 	global $moderate, $cpgtpl, $CPG_SESS;
 	if (empty($CPG_SESS['comments']['mode'])) { $CPG_SESS['comments']['mode'] = 'thread'; }
@@ -276,7 +278,7 @@ function singlecomment($tid, $poll_id) {
 
 function replyform($poll_id, $pid, $subject='', $comment='') {
 	global $userinfo;
-	if (!eregi('Re:',$subject)) $subject = 'Re: '.substr($subject,0,81);
+	if (!preg_match('#Re:#mi',$subject)) $subject = 'Re: '.substr($subject,0,81);
 	if (is_user()) {
 		$user = '<a href="'.getlink('Your_Account').'">'.$userinfo['username'].'</a>';
 	} else {
@@ -379,7 +381,7 @@ if (isset($_POST['thold'])) {
 if (isset($_POST['op']) && $_POST['op'] == 'moderate') {
 	if ((is_admin() && $moderate > 0) || ($moderate == 2 && is_user())) {
 		foreach($_POST AS $key => $val) {
-		if (ereg('dkn', $key)) {
+		if (preg_match('#dkn#m', $key)) {
 			$val = explode(':', $val);
 			$val[0] = intval($val[0]);
 			$val[1] = intval($val[1]);
@@ -394,7 +396,7 @@ if (isset($_POST['op']) && $_POST['op'] == 'moderate') {
 				} elseif ($val[1] < 5 && $val[0] > -1) {
 					$q .= "-1, reason='$val[1]'";
 				}
-				$db->sql_query($q.' WHERE tid='.intval(ereg_replace('dkn', '', $key)));
+				$db->sql_query($q.' WHERE tid='.intval(preg_replace('#dkn#m', '', $key)));
 			}
 		}
 		}

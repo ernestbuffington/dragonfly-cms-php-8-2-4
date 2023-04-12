@@ -27,10 +27,10 @@ function userCheck($username, $user_email) {
 	foreach ($DeniedUserNames as $denieduser) { $deniedusers .= "|($denieduser)"; }
 	foreach ($CensorList as $denieduser) { $deniedusers .= "|($denieduser)"; }
 	$words = array();
-	if (eregi($deniedusers, $username, $words)) {
+	if (preg_match('#' . preg_quote($deniedusers, '#') . '#mi', $username, $words)) {
 		cpg_error(_NAMEDENIED." <b>\"$words[0]\"</b>");
 	}
-	if (empty($username) || eregi("(\ |\*|#|\\\|%|\"|'|`|&|\^|@)",$username)) {
+	if (empty($username) || preg_match('#\(\\\ \|\\\\\*\|#\|\\\\\\\\\|%\|"\|\'\|`\|&\|\\\\\^\|@\)#mi',$username)) {
 		cpg_error(_ERRORINVNICK);
 	}
 	$email = Security::check_email($user_email);
@@ -89,8 +89,8 @@ function member_block() {
 	
 	get_lang('Your_Account');
 
-	$op = isset($_GET['op']) ? $_GET['op'] : '';
-	$mode = isset($_GET['edit']) ? $_GET['edit'] : (isset($_POST['save']) ? $_POST['save'] : '');
+	$op = $_GET['op'] ?? '';
+	$mode = $_GET['edit'] ?? $_POST['save'] ?? '';
 	$content = '<span class="gen">'._TB_INFO.'</span><div style="margin-left: 8px;">'
 		.((isset($_GET['profile']) && $_GET['profile'] == $userinfo['user_id']) ? '<b>'._TB_PROFILE_INFO.'</b>' : '<a href="'.getlink('Your_Account&amp;profile='.$userinfo['user_id']).'">'._TB_PROFILE_INFO.'</a>').'<br />'
 		.(($mode == 'profile') ? '<b>'._TB_EDIT_PROFILE.'</b>' : '<a href="'.getlink('Your_Account&amp;edit=profile').'">'._TB_EDIT_PROFILE.'</a>').'<br />'
@@ -125,7 +125,7 @@ function member_block() {
 	WHERE (privmsgs_to_userid='.$userinfo['user_id'].' AND privmsgs_type = 3)
 	OR (privmsgs_from_userid='.$userinfo['user_id'].' AND privmsgs_type = 4)', SQL_NUM);
 
-		$folder = isset($_GET['folder']) ? $_GET['folder'] : '';
+		$folder = $_GET['folder'] ?? '';
 		$content .= '<span class="gen">'._TB_PRIVMSGS.'</span><div style="margin-left: 8px;">'
 			.(($folder == 'inbox') ? '<b>'._TB_PRIVMSGS_INBOX.': '.$pm_inbox.'</b>' : '<a href="'.getlink('Private_Messages&amp;folder=inbox').'">'._TB_PRIVMSGS_INBOX.': <b>'.$pm_inbox.'</b></a>').'<br />'
 			.(($folder == 'outbox') ? '<b>'._TB_PRIVMSGS_OUTBOX.': '.$pm_outbox.'</b>' : '<a href="'.getlink('Private_Messages&amp;folder=outbox').'">'._TB_PRIVMSGS_OUTBOX.': <b>'.$pm_outbox.'</b></a>').'<br />'
@@ -165,7 +165,7 @@ function make_pass($length, $type=5) {
 	
 	shuffle($chars);
 	$pass = '';
-	for ($x=0; $x<$length; $x++) { $pass .= $chars[mt_rand(0, (sizeof($chars)-1))]; }
+	for ($x=0; $x<$length; $x++) { $pass .= $chars[random_int(0, (sizeof($chars)-1))]; }
 	
 	return $pass;
 }
@@ -199,7 +199,7 @@ function ma_formfield($type, $field, $size, $userinfo) {
 		$themelist = array();
 		$handle=opendir('themes');
 		while ($file = readdir($handle)) {
-			if (!ereg('[.]',$file) && $file != 'CVS' && file_exists("themes/$file/theme.php")) { $themelist[] = "$file"; }
+			if (!preg_match('#[\.]#m',$file) && $file != 'CVS' && file_exists("themes/$file/theme.php")) { $themelist[] = "$file"; }
 		}
 		closedir($handle);
 		natcasesort($themelist);

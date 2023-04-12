@@ -71,7 +71,7 @@ $cpgtpl->assign_vars(array(
 $assoc = '';
 if ($story['associated'] != '') {
 	if (substr($story['associated'], -1) == '-') $story['associated'] = substr($story['associated'], 0, -1);
-	$story['associated'] = ereg_replace('-', ',', $story['associated']);
+	$story['associated'] = preg_replace('#\-#m', ',', $story['associated']);
 	$result = $db->sql_query('SELECT topicid, topicimage, topictext from '.$prefix."_topics WHERE topicid IN ($story[associated])");
 	while ($atop = $db->sql_fetchrow($result)) {
 		$atop['topicimage'] = (file_exists("themes/$CPG_SESS[theme]/images/topics/$atop[topicimage]") ? "themes/$CPG_SESS[theme]/" : '')."images/topics/$atop[topicimage]";

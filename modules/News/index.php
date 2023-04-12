@@ -35,7 +35,7 @@ if (isset($_POST['score']) && isset($_POST['sid'])) {
 			$rcookie[] = $sid;
 			$db->sql_query("UPDATE ".$prefix."_stories SET score=score+$score, ratings=ratings+1 WHERE sid=$sid");
 			$info = base64_encode(implode(':', $rcookie));
-			setcookie('ratecookie',$info,gmtime()+3600, $MAIN_CFG['cookie']['path']);
+			setcookie('ratecookie',$info, ['expires' => gmtime()+3600, 'path' => $MAIN_CFG['cookie']['path']]);
 		}
 		cpg_error($rated, _ARTICLERATING, getlink('News&file=article&sid='.$sid));
 	} else {

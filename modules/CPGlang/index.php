@@ -20,9 +20,9 @@ if (!defined('_SUCCESS_MESSAGE_SENT')) get_lang('Contact');
 require_once('header.php');
 $op = ((isset($_POST['op']) && $_POST['op']!='') ? $_POST['op'] : NULL);
 $op = strtolower($op);
-$sender_name = isset($_POST['sender_name']) ? $_POST['sender_name'] : '';
-$sender_email = isset($_POST['sender_email']) ? $_POST['sender_email'] : '';
-$filename = isset($_POST['filename']) ? $_POST['filename'] : NULL;
+$sender_name = $_POST['sender_name'] ?? '';
+$sender_email = $_POST['sender_email'] ?? '';
+$filename = $_POST['filename'] ?? NULL;
 $send = '';
 global $userinfo, $MAIN_CFG;
 $qs = '?';
@@ -107,7 +107,7 @@ if ($useflags) {
 	for ($i = 0; $i < sizeof($langlist); $i++) {
 		if ($langlist[$i]!="") {
 			$tl = $langlist[$i];
-			$altlang = (isset($langsel[$langlist[$i]]) ? $langsel[$langlist[$i]] : $langlist[$i]);
+			$altlang = ($langsel[$langlist[$i]] ?? $langlist[$i]);
 			$content .= "<a href=\"{$self}{$qs}newlang=$tl\">";
 			$imge = "images/language/flag-$tl.png";
 			// akamu fix for broken images if lang doesn't have flag
@@ -127,7 +127,7 @@ if ($useflags) {
 			// akamu fix uses current page for value passed to js onChange
 			$content .= "<option value=\"{$self}{$qs}newlang=$langlist[$i]\"";
 			if($langlist[$i]==$currentlang) $content .= ' selected="selected"';
-			$content .= '>'.(isset($langsel[$langlist[$i]]) ? $langsel[$langlist[$i]] : $langlist[$i])."</option>\n";
+			$content .= '>'.($langsel[$langlist[$i]] ?? $langlist[$i])."</option>\n";
 		}
 	}
 	$content .= '</select></div></form>';
@@ -140,7 +140,7 @@ if ($op!='send' && is_user()) {
 	$sender_email = $userinfo['user_email'];
 }
 
-$thisad = ereg_replace(':','',_ADMIN);
+$thisad = preg_replace('#:#m','',_ADMIN);
 OpenTable();
 echo '<table width="100%">
 <tr style="background-color:#FFFFE6;padding-left: 3px">
@@ -236,7 +236,7 @@ if ($op != 'send') {
 			$const = array();
 			foreach($thefile as $line){
 				$line = trim($line);
-				if (substr($line, 0, 6) == 'define') {
+				if (str_starts_with($line, 'define')) {
 					$line = substr($line, 8, -3);
 					$pos1 = strpos($line, ',');
 					$def = substr($line, 0, $pos1-1);
@@ -330,12 +330,12 @@ echo'<tr style="background-color:#FFFFE6"><td style="padding: 3px">'.$lng.'</td>
 	}
 	if ($send != 'no') {
 		$mailcontent='';
-		while (list ($key, $val) = each ($_POST)) {
-			strip_tags(removecrlf("$key => $val"));
-			//if ($val != ''){
-			$mailcontent .= "$key = $val \n";
-			//}
-		}
+		foreach ($_POST as $key => $val) {
+      strip_tags(removecrlf("$key => $val"));
+      //if ($val != ''){
+      $mailcontent .= "$key = $val \n";
+      //}
+  }
 		require_once(BASEDIR.'includes/classes/phpmailer.php');
 		$CLASS['mail']->ClearAll();
 		$sender_name = removecrlf($sender_name);

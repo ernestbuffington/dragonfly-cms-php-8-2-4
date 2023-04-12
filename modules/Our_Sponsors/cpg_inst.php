@@ -22,7 +22,7 @@ class Our_Sponsors {
 	var $author;
 	var $website;
 	var $dbtables;
-	function Our_Sponsors() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.1';
 		$this->modname = 'Our Sponsors';

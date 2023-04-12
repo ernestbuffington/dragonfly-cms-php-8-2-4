@@ -22,7 +22,7 @@ class Statistics {
 	var $author;
 	var $website;
 	var $dbtables;
-	function Statistics() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.1';
 		$this->modname = 'Statistics';

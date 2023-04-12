@@ -52,7 +52,8 @@ function FriendSend($sid) {
 }
 
 function SendStory() {
-	global $sitename, $prefix, $db, $CPG_SESS, $pagetitle, $userinfo;
+	$mailer_message = null;
+ global $sitename, $prefix, $db, $CPG_SESS, $pagetitle, $userinfo;
 
 	if (!isset($CPG_SESS['send_story']) && !$CPG_SESS['send_story']) { cpg_error(_SPAMGUARDPROTECTED); }
 

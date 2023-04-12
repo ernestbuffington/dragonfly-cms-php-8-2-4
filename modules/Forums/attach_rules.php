@@ -25,7 +25,7 @@ define('IN_PHPBB', true);
 $phpbb_root_path = 'modules/Forums/';
 include($phpbb_root_path.'common.php');
 if ($module_title == '') {
-	$mod_name = ereg_replace('_', ' ', $name);
+	$mod_name = preg_replace('#_#m', ' ', $name);
 } else {
 	$mod_name = $module_title;
 }

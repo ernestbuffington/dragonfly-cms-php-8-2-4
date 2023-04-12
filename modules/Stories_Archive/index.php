@@ -16,7 +16,7 @@
 if (!defined('CPG_NUKE')) { exit; }
 $pagetitle .= _STORIESARCHIVE;
 
-$sa = isset($_GET['sa']) ? $_GET['sa'] : '';
+$sa = $_GET['sa'] ?? '';
 
 if ($sa == 'show_month') {
 	$year = (isset($_GET['year']) && intval($_GET['year']) > 0) ? intval($_GET['year']) : gmdate('Y');

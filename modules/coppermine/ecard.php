@@ -28,7 +28,7 @@ if (!USER_CAN_SEND_ECARDS) cpg_die(_ERROR, ACCESS_DENIED, __FILE__, __LINE__);
 $max_anon_ecards = 1;
 // if (!isset($_COOKIE['ecard'])){
 if (($_COOKIE['ecard'] != 0) && (USER_ID != 1)) {
-	setcookie('ecard', $max_anon_ecards, 0, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); // time()+60*60*24
+	setcookie('ecard', $max_anon_ecards, ['expires' => 0, 'path' => $MAIN_CFG['cookie']['path'], 'domain' => $MAIN_CFG['cookie']['domain']]); // time()+60*60*24
 } 
 // }
 require_once("includes/nbbcode.php");
@@ -37,8 +37,8 @@ require_once("includes/nbbcode.php");
 // init.inc $album = $_GET['album'];
 // init.inc $pos = intval($_GET['pos']);
 $thisalbum= "a.aid = $album";
-$sender_name = $_POST['sender_name'] ? $_POST['sender_name'] :  (isset($USER['name']) ? $USER['name'] : CPG_USERNAME);
-$sender_email = $_POST['sender_email']? $_POST['sender_email'] : (isset($USER['email']) ? $USER['email'] : '');
+$sender_name = $_POST['sender_name'] ? $_POST['sender_name'] :  ($USER['name'] ?? CPG_USERNAME);
+$sender_email = $_POST['sender_email']? $_POST['sender_email'] : ($USER['email'] ?? '');
 $recipient_name = $_POST['recipient_name'];
 $recipient_email = $_POST['recipient_email'];
 $greetings = $_POST['greetings'];
@@ -52,8 +52,8 @@ $row = $db->sql_fetchrow($result);
 $thumb_pic_url = get_pic_url($row, 'thumb');
 // Check supplied email address
 $valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
-$valid_sender_email = eregi($valid_email_pattern, $sender_email);
-$valid_recipient_email = eregi($valid_email_pattern, $recipient_email);
+$valid_sender_email = preg_match('#' . preg_quote($valid_email_pattern, '#') . '#mi', $sender_email);
+$valid_recipient_email = preg_match('#' . preg_quote($valid_email_pattern, '#') . '#mi', $recipient_email);
 $invalid_email = '<font size="1">' . INVALID_EMAIL . '</font>';
 if (!$valid_sender_email && count($_POST) > 0) $sender_email_warning = $invalid_email;
 if (!$valid_recipient_email && count($_POST) > 0) $recipient_email_warning = $invalid_email;

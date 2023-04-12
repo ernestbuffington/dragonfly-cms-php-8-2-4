@@ -194,7 +194,7 @@ function parse_list($value)
  * Main code starts here
  */
 
-$what = isset($_POST['what']) ? $_POST['what'] :  $_GET['what'];
+$what = $_POST['what'] ?? $_GET['what'];
 switch ($what) {
 	
 	// Album manager (don't necessarily delete something ;-)
@@ -214,7 +214,7 @@ switch ($what) {
 		$orig_sort_order = parse_list($_POST['sort_order']);
 		foreach ($orig_sort_order as $album) {
 			$op = parse_orig_sort_order($album);
-			if (count ($op) == 2) {
+			if ((is_countable($op) ? count ($op) : 0) == 2) {
 				$db->sql_query("UPDATE $CONFIG[TABLE_ALBUMS] SET pos='{$op['pos']}' WHERE aid='{$op['aid']}' $restrict", false, __FILE__, __LINE__);
 			} else {
 				cpg_die (sprintf(CRITICAL_ERROR, ERR_INVALID_DATA, $_POST['sort_order']), __FILE__, __LINE__);
@@ -299,7 +299,7 @@ switch ($what) {
 		if (!(GALLERY_ADMIN_MODE || USER_ADMIN_MODE)) cpg_die(_ERROR, ACCESS_DENIED, __FILE__, __LINE__);
 
 		//$pid = (int)$_GET['id'];
-		$pid = isset($_POST['id']) ? $_POST['id'] : (isset($_GET['id']) ? $_GET['id'] : NULL);
+		$pid = $_POST['id'] ?? $_GET['id'] ?? NULL;
 		if (!is_numeric($pid)) cpg_die(_CRITICAL_ERROR, NON_EXIST_AP, __FILE__, __LINE__);
 		if(isset($_POST['cancel'])) {
 			$redirect = getlink("&file=displayimage&pid=".$pid);
@@ -329,7 +329,7 @@ switch ($what) {
 	
 	case 'album':
 		if (!(GALLERY_ADMIN_MODE || USER_ADMIN_MODE)) cpg_die(_ERROR, ACCESS_DENIED, __FILE__, __LINE__);
-		$aid = isset($_POST['id']) ? $_POST['id'] : NULL;
+		$aid = $_POST['id'] ?? NULL;
 		if (!is_numeric($aid)) cpg_die(_CRITICAL_ERROR, NON_EXIST_AP, __FILE__, __LINE__);
 		$result = $db->sql_query("SELECT category FROM {$CONFIG['TABLE_ALBUMS']} WHERE aid = ".$aid, false, __FILE__, __LINE__);
 		list($cat) = $db->sql_fetchrow($result);
@@ -364,7 +364,7 @@ switch ($what) {
 	
 	case 'user':
 		//$user_id = (int)$_GET['id'];
-		$user_id = isset($_POST['id']) ? $_POST['id'] : cpg_die(_ERROR, PERM_DENIED, __FILE__, __LINE__);
+		$user_id = $_POST['id'] ?? cpg_die(_ERROR, PERM_DENIED, __FILE__, __LINE__);
 		if (!is_numeric($user_id)) cpg_die(_CRITICAL_ERROR, $ERR_UNKNOWN_USE, __FILE__, __LINE__);
 		if (!is_admin()) cpg_die(_ERROR, PERM_DENIED, __FILE__, __LINE__);
 		if ($CLASS['member']->demo){

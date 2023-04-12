@@ -28,7 +28,7 @@ require_once('modules/'.$module_name.'/nukebb.php');
 // Start initial var setup
 //
 if (isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL])) {
-	$forum_id = intval(isset($_GET[POST_FORUM_URL]) ? $_GET[POST_FORUM_URL] : $_POST[POST_FORUM_URL]);
+	$forum_id = intval($_GET[POST_FORUM_URL] ?? $_POST[POST_FORUM_URL]);
 } else {
 	$forum_id = '';
 }
@@ -96,7 +96,7 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view']) {
 // Handle marking posts
 //
 if (isset($_GET['mark']) || isset($_POST['mark'])) {
-	$mark_read = (isset($_POST['mark'])) ? $_POST['mark'] : $_GET['mark'];
+	$mark_read = $_POST['mark'] ?? $_GET['mark'];
 	if ($mark_read == 'topics') {
 		if (is_user()) {
 			$CPG_SESS[$module_name]['track_forums'][$forum_id] = gmtime();
@@ -111,8 +111,8 @@ if (isset($_GET['mark']) || isset($_POST['mark'])) {
 // End handle marking posts
 //
 
-$tracking_topics = isset($CPG_SESS[$module_name]['track_topics']) ? $CPG_SESS[$module_name]['track_topics'] : array();
-$tracking_forums = isset($CPG_SESS[$module_name]['track_forums']) ? $CPG_SESS[$module_name]['track_forums'] : array();
+$tracking_topics = $CPG_SESS[$module_name]['track_topics'] ?? array();
+$tracking_forums = $CPG_SESS[$module_name]['track_forums'] ?? array();
 
 //
 // Do the forum Prune
@@ -166,7 +166,7 @@ if (!cache_load_array('forum_moderators', $module_name)) {
 	$moderators = $forum_moderators[$forum_id];
 }
 
-$l_moderators = ( count($moderators) == 1 ) ? $lang['Moderator'] : $lang['Moderators'];
+$l_moderators = ( (is_countable($moderators) ? count($moderators) : 0) == 1 ) ? $lang['Moderator'] : $lang['Moderators'];
 $forum_moderators = ( count($moderators) ) ? implode(', ', $moderators) : $lang['None'];
 unset($moderators);
 
@@ -308,7 +308,7 @@ if ($forum_row['forum_type'] == 1) {
 		'L_LAST_POST' => $lang['Last_Post'],
 		'U_MARK_READ' => getlink("&amp;mark=forums"),
 	));
-	for($j = 0; $j < count($forum_data); $j++) {
+	for($j = 0; $j < (is_countable($forum_data) ? count($forum_data) : 0); $j++) {
 		$sub_forum_id = $forum_data[$j]['forum_id'];
 		if ($forum_data[$j]['forum_type'] == 2) {
 			$forumlink = getlink($forum_data[$j]['forum_link']);

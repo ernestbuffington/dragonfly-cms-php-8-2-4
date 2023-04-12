@@ -22,7 +22,7 @@ include($phpbb_root_path.'common.php');
 
 if (isset($_GET['printertopic'])) $showblocks = 0;
 if ($module_title == '') {
-	$mod_name = ereg_replace('_', ' ', $name);
+	$mod_name = preg_replace('#_#m', ' ', $name);
 } else {
 	$mod_name = $module_title;
 }

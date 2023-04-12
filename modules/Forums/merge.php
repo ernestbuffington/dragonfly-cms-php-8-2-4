@@ -36,11 +36,11 @@ function get_topic_id($topic)
 	// is it an url with topic id or post id ?
 	else {
 		$name = explode('?', $topic);
-		$parms = ( isset($name[1]) ) ? $name[1] : $name[0];
+		$parms = $name[1] ?? $name[0];
 		parse_str($parms, $parm);
 		$found = false;
 		$topic_id = 0;
-		while ((list($key, $val) = each($parm)) && !$found) {
+		while (!$found) {
 			$vals = explode('#', $val);
 			$val = $vals[0];
 			if (empty($val)) $val = 0;
@@ -61,6 +61,11 @@ function get_topic_id($topic)
 				$topic_id = intval($val);
 			}
 		}
+  (list($key, $val))[1] = current($parm);
+  (list($key, $val))['value'] = current($parm);
+  (list($key, $val))[0] = key($parm);
+  (list($key, $val))['key'] = key($parm);
+  next($parm);
 	}
 	return $topic_id;
 }
@@ -152,7 +157,7 @@ if (isset($_POST[POST_FORUM_URL]) || isset($_GET[POST_FORUM_URL])) {
 	$forum_id = (isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : intval($_GET[POST_FORUM_URL]);
 }
 if (isset($_POST['fid']) || isset($_GET['fid'])) {
-	$fid = (isset($_POST['fid'])) ? $_POST['fid'] : $_GET['fid'];
+	$fid = $_POST['fid'] ?? $_GET['fid'];
 	if (substr($fid, 0, 1) == POST_FORUM_URL) {
 		$forum_id = intval(substr($fid, 1));
 	}

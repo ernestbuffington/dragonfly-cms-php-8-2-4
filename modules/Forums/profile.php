@@ -34,9 +34,9 @@ init_userprefs($userdata);
 // Start of program proper
 //
 if ( isset($_GET['mode']) || isset($_POST['mode']) ) {
-	$mode = ( isset($_GET['mode']) ) ? $_GET['mode'] : $_POST['mode'];
+	$mode = $_GET['mode'] ?? $_POST['mode'];
 	if ( $mode == 'viewprofile' ) {
-		$username = ( isset($_GET[POST_USERS_URL]) ) ? $_GET[POST_USERS_URL] : $_POST[POST_USERS_URL];
+		$username = $_GET[POST_USERS_URL] ?? $_POST[POST_USERS_URL];
 		url_refresh(getlink('Your_Account&profile='.$username), 0);
 	} else if ( $mode == 'email' ) {
 		require_once('includes/phpBB/usercp_email.php');

@@ -40,7 +40,7 @@ if (isset($_POST['search'])) {
 //if (!isset($page)) $page = 1;
 $page = isset($_GET['page']) ? intval($_GET['page']) : (isset($_POST['page']) ? intval($_POST['page']) : 1) ;
 $album = isset($_GET['album']) ? intval($_GET['album']) : '';
-$meta = isset($_GET['meta']) ? $_GET['meta'] : (isset($_POST['meta']) ? $_POST['meta'] : '');
+$meta = $_GET['meta'] ?? $_POST['meta'] ?? '';
 //$cat = isset($_GET['cat']) ? intval($_GET['cat']) : 0;
 if ($meta != '') {
     if ($album != '') {
@@ -54,7 +54,7 @@ if ($meta != '') {
 } else {
     $thisalbum = "a.category = cat";
 }
-pageheader(isset($CURRENT_ALBUM_DATA) ? $CURRENT_ALBUM_DATA['description'] : isset($_GET["meta"]) ? $lang_meta_album_names[$_GET['meta']] : '');
+pageheader((isset($CURRENT_ALBUM_DATA) ? $CURRENT_ALBUM_DATA['description'] : isset($_GET["meta"])) ? $lang_meta_album_names[$_GET['meta']] : '');
 set_breadcrumb(!is_numeric($album));
 display_thumbnails($meta, $album, $cat, $page, $CONFIG['thumbcols'], $CONFIG['thumbrows'], true);
 // strpos ( string haystack, string needle [, int offset])

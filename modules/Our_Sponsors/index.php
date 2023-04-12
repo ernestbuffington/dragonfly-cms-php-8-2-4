@@ -29,9 +29,18 @@ function show_table_datahead($caption) {
 	<td bgcolor="'.$bgcolor3.'" align="center"><strong>'._CLICKSPERCENT.'</strong></tr>';
 }
 function show_table_data($row, $bgcolor) {
-	global $bgcolor2;
+	$bid = null;
+ $imageurl = null;
+ $text_bg = null;
+ $textban = null;
+ $clickurl = null;
+ $text_title = null;
+ $impmade = null;
+ $imptotal = null;
+ $clicks = null;
+ global $bgcolor2;
 	foreach($row as $var => $value) {
-		$$var = $value;
+		${$var} = $value;
 	}
 	echo '</tr><td'.$bgcolor.' align="center">'.$bid.'</td>';
 	$this_size = getimagesize($imageurl);
@@ -62,8 +71,16 @@ function show_table_data($row, $bgcolor) {
 	echo '<td'.$bgcolor.' align="center"><strong>'.$percent.'</strong></td></tr>';
 }
 function display_all_banners($row) {
-	foreach($row as $var => $value) {
-		$$var = $value;
+	$textban = null;
+ $text_width = null;
+ $text_height = null;
+ $text_bg = null;
+ $clickurl = null;
+ $text_clr = null;
+ $text_title = null;
+ $imageurl = null;
+ foreach($row as $var => $value) {
+		${$var} = $value;
 	}
 	echo '<table class="head"><tr><td>';
 	if ($textban) {

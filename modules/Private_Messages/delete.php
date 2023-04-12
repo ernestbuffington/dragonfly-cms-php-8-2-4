@@ -24,7 +24,7 @@ if ( isset($mark_list) && !is_array($mark_list) ) {
 if (!$confirm) {
 	$s_hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" />';
 	$s_hidden_fields .= ( isset($_POST['delete']) ) ? '<input type="hidden" name="delete" value="true" />' : '<input type="hidden" name="deleteall" value="true" />';
-	for($i = 0; $i < count($mark_list); $i++) {
+	for($i = 0; $i < (is_countable($mark_list) ? count($mark_list) : 0); $i++) {
 		$s_hidden_fields .= '<input type="hidden" name="mark[]" value="'.intval($mark_list[$i]).'" />';
 	}
 	//
@@ -32,7 +32,7 @@ if (!$confirm) {
 	//
 	$pagetitle .= ' '._BC_DELIM.' '.$lang['Confirm_delete_pm'];
 	cpg_delete_msg(getlink('&amp;folder='.$folder),
-	               ((count($mark_list) == 1) ? $lang['Confirm_delete_pm'] : $lang['Confirm_delete_pms']),
+	               (((is_countable($mark_list) ? count($mark_list) : 0) == 1) ? $lang['Confirm_delete_pm'] : $lang['Confirm_delete_pms']),
 	               $s_hidden_fields);
 }
 else {
@@ -61,7 +61,7 @@ else {
 		}
 		unset($delete_type);
 	}
-	if (count($mark_list)) {
+	if (is_countable($mark_list) ? count($mark_list) : 0) {
 		$delete_sql_id = '';
 		for ($i = 0; $i < sizeof($mark_list); $i++) {
 			$delete_sql_id .= (($delete_sql_id != '') ? ', ' : '').intval($mark_list[$i]);
@@ -96,27 +96,27 @@ else {
 				}
 				while ($row = $db->sql_fetchrow($result));
 				if (sizeof($update_users)) {
-					while (list($type, $users) = each($update_users)) {
-						while (list($user_id, $dec) = each($users)) {
-							$update_list[$type][$dec][] = $user_id;
-						}
-					}
+					foreach ($update_users as $type => $users) {
+         foreach ($users as $user_id => $dec) {
+             $update_list[$type][$dec][] = $user_id;
+         }
+     }
 					unset($update_users);
-					while (list($type, $dec_ary) = each($update_list)) {
-						switch ($type) {
-							case 'new':
-								$type = "user_new_privmsg";
-								break;
-							case 'unread':
-								$type = "user_unread_privmsg";
-								break;
-						}
-						while (list($dec, $user_ary) = each($dec_ary)) {
-							$user_ids = implode(', ', $user_ary);
-							$db->sql_query("UPDATE ".$user_prefix."_users 
+					foreach ($update_list as $type => $dec_ary) {
+         switch ($type) {
+   							case 'new':
+   								$type = "user_new_privmsg";
+   								break;
+   							case 'unread':
+   								$type = "user_unread_privmsg";
+   								break;
+   						}
+         foreach ($dec_ary as $dec => $user_ary) {
+             $user_ids = implode(', ', $user_ary);
+             $db->sql_query("UPDATE ".$user_prefix."_users 
 							SET $type = $type - $dec WHERE user_id IN ($user_ids)");
-						}
-					}
+         }
+     }
 					unset($update_list);
 					unset($_SESSION['CPG_SESS']);
 				}

@@ -43,9 +43,9 @@ if (isset($_POST['sendMessage'])) {
 	$personal_message = preg_replace($brackets_array, $brackets_replacements, $personal_message);
 	
 	if (!isset($error)) {
-		$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+		$gfxid = $_POST['gfxid'] ?? 0;
 		$code = $CPG_SESS['gfx'][$gfxid];
-		$gfx_check  = isset($_POST['gfx_contact_check']) ? $_POST['gfx_contact_check'] : '';
+		$gfx_check  = $_POST['gfx_contact_check'] ?? '';
 		if (strlen($gfx_check) < 2 || $code != $gfx_check) {
 			$error = _SECURITYCODE.' incorrect';
 		}

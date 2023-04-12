@@ -92,7 +92,7 @@ function form_yes_no($text, $catname) {
         return;
     }
 
-    $value = isset($ALBUM_DATA[$catname]) ? $ALBUM_DATA[$catname] : false;
+    $value = $ALBUM_DATA[$catname] ?? false;
     $yes_selected = $value ? 'selected="selected"' : '';
     $no_selected = !$value  ? 'selected="selected"' : '';
 

@@ -15,8 +15,11 @@
 **********************************************/
 if (!defined('CPG_NUKE')) { exit; }
 function edituser(&$userinfo) {
-	global $db, $prefix, $user_prefix, $pagetitle, $allowmailchange, $allowusertheme;
-	$mode = isset($_GET['edit']) ? $_GET['edit'] : 'profile';
+	$rank_select = [];
+ $sel = [];
+ $section = null;
+ global $db, $prefix, $user_prefix, $pagetitle, $allowmailchange, $allowusertheme;
+	$mode = $_GET['edit'] ?? 'profile';
 	if ($mode == 'admin' && !defined('ADMIN_PAGES')) $mode = 'profile';
 	if ($mode == 'reg_details') {
 		$pagetitle .= ' '._BC_DELIM.' '._MA_REGISTRATION_INFO;
@@ -59,7 +62,7 @@ function edituser(&$userinfo) {
 		<br /><br />';
 		$action = adminlink('users&amp;id='.$userinfo['user_id']);
 	}
-	if (!eregi('http://',$userinfo['user_website']) && !empty($userinfo['user_website'])) {
+	if (!preg_match('#http:\/\/#mi',$userinfo['user_website']) && !empty($userinfo['user_website'])) {
 		$userinfo['user_website'] = "http://$userinfo[user_website]";
 	}
 	global $MAIN_CFG;
@@ -182,7 +185,7 @@ elseif ($mode == 'admin') {
 	</td>
   </tr><tr>
 	<td class="row1" valign="top"><span class="gen">'._SUSPENDREASON.'</span>
-	<td class="row2"><textarea name="suspendreason" rows="5" cols="40" wrap="virtual">'.(isset($userinfo['susdel_reason']) ? $userinfo['susdel_reason'] : '').'</textarea></td>
+	<td class="row2"><textarea name="suspendreason" rows="5" cols="40" wrap="virtual">'.($userinfo['susdel_reason'] ?? '').'</textarea></td>
   </tr>';
 }
 else {
@@ -217,8 +220,11 @@ else {
 }
 
 function saveuser(&$userinfo) {
-	global $db, $user_prefix, $MAIN_CFG, $allowusertheme, $CPG_SESS, $SESS;
-	$mode = isset($_POST['save']) ? $_POST['save'] : 'profile';
+	$mailer_message = null;
+ $section = null;
+ $new_password = null;
+ global $db, $user_prefix, $MAIN_CFG, $allowusertheme, $CPG_SESS, $SESS;
+	$mode = $_POST['save'] ?? 'profile';
 	if ($mode == 'admin' && !defined('ADMIN_PAGES')) $mode = 'profile';
 	if ($mode == 'profile') {
 		$section = 'section=1 OR section=2';
@@ -234,7 +240,7 @@ function saveuser(&$userinfo) {
 		$current_password = isset($_POST['current_password']) ? md5($_POST['current_password']) : '';
 		if (isset($_POST['new_password'])) {
 			$new_password =  $_POST['new_password'];
-			$verify_password = isset($_POST['verify_password']) ? $_POST['verify_password'] : '';
+			$verify_password = $_POST['verify_password'] ?? '';
 			if ($new_password != $verify_password) {
 				cpg_error(_PASSDIFFERENT, 'ERROR: Password mismatch');
 			} elseif ($new_password != '') {
@@ -249,7 +255,7 @@ function saveuser(&$userinfo) {
 				}
 			}
 		}
-		$user_email = isset($_POST['user_email']) ? $_POST['user_email'] : $userinfo['user_email'];
+		$user_email = $_POST['user_email'] ?? $userinfo['user_email'];
 		if (($allowmailchange || defined('ADMIN_PAGES')) && $user_email != $userinfo['user_email']) {
 			if ($current_password != $userinfo['user_password'] && !defined('ADMIN_PAGES')) { cpg_error('Password incorrect'); }
 			if (is_email($user_email) < 1) {
@@ -259,7 +265,7 @@ function saveuser(&$userinfo) {
 			$sql .= "user_email='$user_email'";
 		}
 		if (defined('ADMIN_PAGES') && isset($_POST['username']) && $_POST['username'] != $userinfo['username']) {
-			if (eregi("(\ |\*|#|\\\|%|\"|'|`|&|\^|@)", $_POST['username'])) { cpg_error(_ERRORINVNICK); }
+			if (preg_match('#\(\\\ \|\\\\\*\|#\|\\\\\\\\\|%\|"\|\'\|`\|&\|\\\\\^\|@\)#mi', $_POST['username'])) { cpg_error(_ERRORINVNICK); }
 			if ($db->sql_count($user_prefix.'_users u, '.$user_prefix.'_users_temp t', "u.username='$_POST[username]' OR t.username='$_POST[username]' LIMIT 0,1") > 0) {
 				cpg_error(_NICKTAKEN);
 			}
@@ -270,7 +276,7 @@ function saveuser(&$userinfo) {
 	elseif ($mode == 'avatar') {
 		require_once('modules/'.basename(dirname(__FILE__)).'/avatars.php');
 		// Local avatar?
-		$avatar_local = isset($_POST['user_avatar']) ? $_POST['user_avatar'] : '';
+		$avatar_local = $_POST['user_avatar'] ?? '';
 		// Remote avatar?
 		$avatar_remoteurl = !empty($_POST['avatarremoteurl']) ? htmlprepare($_POST['avatarremoteurl']) : '';
 		// Upload avatar thru remote or upload?
@@ -321,7 +327,7 @@ function saveuser(&$userinfo) {
 	}
 	elseif ($mode == 'admin') {
 		$sql = 'user_allow_pm='.intval($_POST['user_allow_pm']).', user_allowavatar='.intval($_POST['user_allowavatar']).', user_rank='.intval($_POST['user_rank']);
-		$suspendreason = isset($_POST['suspendreason']) ? $_POST['suspendreason'] : 'no reason';
+		$suspendreason = $_POST['suspendreason'] ?? 'no reason';
 		if ($_POST['suspendreason'] != $userinfo['susdel_reason']) {
 			$sql .= ', susdel_reason=\''.Fix_Quotes($suspendreason)."'";
 		}
@@ -332,7 +338,7 @@ function saveuser(&$userinfo) {
 			if ($suspendreason > '') {
 				$message .= "\n\n"._SUSPENDREASON."\n$suspendreason";
 			}
-			$from = 'noreply@'.ereg_replace('www.', '', $MAIN_CFG['server']['domain']);
+			$from = 'noreply@'.preg_replace('#www.#m', '', $MAIN_CFG['server']['domain']);
 			if (!send_mail($mailer_message, $message, 0, _ACCTSUSPEND, $userinfo['user_email'], $userinfo['username'], $from)) {
 				trigger_error($mailer_message, E_USER_WARNING);
 			}

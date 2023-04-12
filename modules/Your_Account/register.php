@@ -57,7 +57,8 @@ if (Security::check_post()) {
 
 // start register form
 function register_form() {
-	global $db, $user_prefix, $CPG_SESS, $user_cfg, $userinfo, $MAIN_CFG;
+	$registerinfo = [];
+ global $db, $user_prefix, $CPG_SESS, $user_cfg, $userinfo, $MAIN_CFG;
 	$coppa = (empty($_GET['coppa'])) ? 0 : true;
 
 	$registerinfo['username']['text'] = _USERNAME;
@@ -79,12 +80,12 @@ function register_form() {
   <tr>
 	<td class="row2" colspan="2"><span class="gensmall">'._MA_ITEMS_REQUIRED.'</span></td>
   </tr>';
-	while (list($field, $info) = each($registerinfo)) {
-		echo '<tr>
-	<td class="row1" width="38%"><span class="gen">'.$info['text'].': *</span>'.(isset($info['msg']) ? $info['msg'] : '').'</td>
+	foreach ($registerinfo as $field => $info) {
+     echo '<tr>
+	<td class="row1" width="38%"><span class="gen">'.$info['text'].': *</span>'.($info['msg'] ?? '').'</td>
 	<td class="row2"><input type="'.$info['type'].'" class="post" style="width:200px" name="'.$field.'" size="25" maxlength="'.$info['length'].'" /></td>
   </tr>';
-	}
+ }
 	// Add the additional fields to form if activated
 	$result = $db->sql_query("SELECT * FROM ".$user_prefix."_users_fields WHERE visible > 0 ORDER BY section");
 	if ($db->sql_numrows($result)) {
@@ -126,7 +127,8 @@ function register_form() {
 } // end register form
 
 function register_check() {
-	global $db, $user_cfg, $sec_code, $MAIN_CFG;
+	$fields = [];
+ global $db, $user_cfg, $sec_code, $MAIN_CFG;
 	$username = Fix_Quotes($_POST['username'],1);
 	$email = strtolower(Fix_Quotes($_POST['email'],1));
 	$password = Fix_Quotes($_POST['password'],1);
@@ -196,7 +198,8 @@ function welcome_pm() {
 }
 
 function register_finish() {
-	global $db, $user_cfg, $user_prefix, $sitename, $sec_code, $CPG_SESS, $userinfo, $MAIN_CFG;
+	$mailer_message = null;
+ global $db, $user_cfg, $user_prefix, $sitename, $sec_code, $CPG_SESS, $userinfo, $MAIN_CFG;
 	if ($sec_code & 4) {
 		if (!validate_secimg()) { cpg_error(_SECCODEINCOR); }
 	}
@@ -212,7 +215,7 @@ function register_finish() {
 	$password = ($random ? "\n"._PASSWORD.': '.$fields['password'] : '');
 
 	mt_srand ((double)microtime()*1000000);
-	$check_num = mt_rand(0, 1000000);
+	$check_num = random_int(0, 1000000);
 	$check_num = md5($check_num);
 	$new_password = md5($fields['password']);
 	$user_regdate = gmtime();
@@ -253,7 +256,7 @@ function register_finish() {
 		OpenTable();
 		echo '<center><b>'._ACCOUNTRESERVED.'</b><br /><br />'._YOUAREPENDING.'<br /><br />'._THANKSAPPL." $sitename!</center>";
 	}
-	$from = 'noreply@'.ereg_replace('www.', '', $MAIN_CFG['server']['domain']);
+	$from = 'noreply@'.preg_replace('#www.#m', '', $MAIN_CFG['server']['domain']);
 	if (!send_mail($mailer_message,$message,0,$subject,$user_email,$username,$from)) {
 		echo 'Member mail: '.$mailer_message;
 	}

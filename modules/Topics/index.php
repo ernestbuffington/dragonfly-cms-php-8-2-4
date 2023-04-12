@@ -41,7 +41,7 @@ if ($db->sql_numrows($result) > 0) {
 		<span class=\"content\">
 		<strong>&#8226;</strong>&nbsp;<strong>"._TOPIC.":</strong> $topictext<br />
 		<strong>&#8226;</strong>&nbsp;<strong>"._TOTNEWS.":</strong> $row[stories]<br />
-		<strong>&#8226;</strong>&nbsp;<strong>"._TOTREADS.":</strong> ".(isset($row['readcount']) ? $row['readcount'] : 0)."</span>
+		<strong>&#8226;</strong>&nbsp;<strong>"._TOTREADS.":</strong> ".($row['readcount'] ?? 0)."</span>
 		</td>
 		<td valign=\"top\" style=\"background:$bgcolor3;\">";
 

@@ -24,7 +24,7 @@ class Forums {
 	var $website;
 	var $dbtables;
 // class constructor
-	function Forums() {
+	function __construct() {
 		$this->radmin = true;
 		$this->version = '1.0.0';
 		$this->modname = 'CPG-BB';

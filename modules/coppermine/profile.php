@@ -74,7 +74,7 @@ EOT;
 EOT;
             break;
 
-     
+
 
         default:
             cpg_die(_CRITICAL_ERROR, 'Invalid action for form creation ' . $element[0], __FILE__, __LINE__);
@@ -118,7 +118,7 @@ EOT;
         echo '<form method="post" action="'.getlink("").'" enctype="multipart/form-data" accept-charset="$chset">';
         make_form($edit_profile_form_param, $form_data);
         echo <<<EOT
-        
+
         </form>
 
 EOT;
@@ -132,7 +132,7 @@ EOT;
         }
     /*        break;
         default :
- 
+
         $sql = "SELECT username, user_email, user_regdate as user_regdate_cp, group_name, " . "user_from, user_interests, user_website, user_occ " . "FROM {$CONFIG['TABLE_USERS']} AS u " . "INNER JOIN {$CONFIG['TABLE_USERGROUPS']} AS g ON user_group_cp = group_id " . "WHERE user_id ='$uid'";
 
         $result = $db->sql_query($sql);
@@ -156,7 +156,7 @@ EOT;
         make_form($display_profile_form_param, $form_data);
         endtable();
         pagefooter();
-    
+
         break;
 }*/ 
 

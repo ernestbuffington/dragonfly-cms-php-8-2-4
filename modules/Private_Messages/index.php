@@ -484,14 +484,14 @@ if ( $mode == 'newpm' ) {
 	//
 	generate_smilies('inline', '-10');
 
-	$privmsg_subject = preg_replace($html_entities_match, $html_entities_replace, (isset($privmsg_subject)?$privmsg_subject:''));
+	$privmsg_subject = preg_replace($html_entities_match, $html_entities_replace, ($privmsg_subject ?? ''));
 	$privmsg_subject = str_replace('"', '&quot;', $privmsg_subject);
 
 	$template->assign_vars(array(
 		'S_PREVIEW_BOX' => ($preview && !$error),
 		'SUBJECT' => $privmsg_subject,
-		'USERNAME' => preg_replace($html_entities_match, $html_entities_replace, (isset($to_username)?$to_username:'')),
-		'MESSAGE' => isset($privmsg_message)?$privmsg_message:'',
+		'USERNAME' => preg_replace($html_entities_match, $html_entities_replace, ($to_username ?? '')),
+		'MESSAGE' => $privmsg_message ?? '',
 		'HTML_STATUS' => $html_status,
 		'SMILIES_STATUS' => $smilies_status,
 		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="'.getlink('Forums&amp;file=faq&amp;mode=bbcode').'" target="_phpbbcode">', '</a>'),

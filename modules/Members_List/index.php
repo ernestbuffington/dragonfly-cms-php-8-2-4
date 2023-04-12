@@ -29,9 +29,9 @@ $members_per_page = 25;
 global $MAIN_CFG, $CPG_SESS;
 
 $start = (isset($_GET['start']) && intval($_GET['start'])) ? $_GET['start'] : 0;
-$sort_order = isset($_POST['order']) ? $_POST['order'] : (isset($_GET['order']) ? $_GET['order'] : '');
+$sort_order = $_POST['order'] ?? $_GET['order'] ?? '';
 $sort_order = (isset($sort_order) && $sort_order == 'DESC') ? 'DESC' : 'ASC';
-$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : 'default');
+$mode = $_POST['mode'] ?? $_GET['mode'] ?? 'default';
 
 // Generate page //
 $pagetitle .= _Members_ListLANG;
@@ -90,8 +90,8 @@ if (!defined('TEMPLATE_CONFIG')) {
 	cpg_error("Could not open $template_name template config file");
 }
 $img_lang = ( file_exists(realpath($current_template_path.'/lang_'.$MAIN_CFG['global']['language'])) ) ? $MAIN_CFG['global']['language'] : 'english';
-while (list($key, $value) = each($images)) {
-	if (!is_array($value)) { $images[$key] = str_replace('{LANG}', 'lang_'.$img_lang, $value); }
+foreach ($images as $key => $value) {
+    if (!is_array($value)) { $images[$key] = str_replace('{LANG}', 'lang_'.$img_lang, $value); }
 }
 
 $ranksrow = $db->sql_ufetchrowset("SELECT * FROM ".$prefix."_bbranks 
@@ -112,7 +112,7 @@ if ($row = $db->sql_fetchrow($result)) {
 		if ($row['user_website'] == "http:///" || $row['user_website'] == "http://"){
 			$row['user_website'] =	'';
 		}
-		if (($row['user_website'] != '' ) && (substr($row['user_website'],0, 7) != "http://")) {
+		if (($row['user_website'] != '' ) && (!str_starts_with($row['user_website'], "http://"))) {
 			$row['user_website'] = "http://".$row['user_website'];
 		}
 		$row['user_from'] = str_replace('.gif', '', $row['user_from']);
@@ -136,7 +136,7 @@ if ($row = $db->sql_fetchrow($result)) {
 			}
 		}
 		$rank_image = $poster_rank = '';
-		for ($j = 0; $j < count($ranksrow); $j++) {
+		for ($j = 0; $j < (is_countable($ranksrow) ? count($ranksrow) : 0); $j++) {
 			if (($row['user_rank'] && $row['user_rank'] == $ranksrow[$j]['rank_id'] && $ranksrow[$j]['rank_special']) ||
 			    (!$row['user_rank'] && $row['user_posts'] >= $ranksrow[$j]['rank_min'] && !$ranksrow[$j]['rank_special'])) {
 				$poster_rank = $ranksrow[$j]['rank_title'];

@@ -46,18 +46,18 @@ function send_file_to_browser($attachment, $upload_dir)
 	// Determine the Browser the User is using, because of some nasty incompatibilities.
 	// Most of the methods used in this function are from phpMyAdmin. :)
 	//
-	$HTTP_USER_AGENT = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT))	 {
+	$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'] ?? '';
+	if (preg_match('#Opera(\/| )([0-9].[0-9]{1,2})#m', $HTTP_USER_AGENT))	 {
 		$browser_agent = 'opera';
-	} else if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT)) {
+	} else if (preg_match('#MSIE ([0-9].[0-9]{1,2})#m', $HTTP_USER_AGENT)) {
 		$browser_agent = 'ie';
-	} else if (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT)) {
+	} else if (preg_match('#OmniWeb\/([0-9].[0-9]{1,2})#m', $HTTP_USER_AGENT)) {
 		$browser_agent = 'omniweb';
-	} else if (ereg('Netscape([0-9]{1})', $HTTP_USER_AGENT)) {
+	} else if (preg_match('#Netscape([0-9]{1})#m', $HTTP_USER_AGENT)) {
 		$browser_agent = 'netscape';
-	} else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT)) {
+	} else if (preg_match('#Mozilla\/([0-9].[0-9]{1,2})#m', $HTTP_USER_AGENT)) {
 		$browser_agent = 'mozilla';
-	} else if (ereg('Konqueror/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT)) {
+	} else if (preg_match('#Konqueror\/([0-9].[0-9]{1,2})#m', $HTTP_USER_AGENT)) {
 		$browser_agent = 'konqueror';
 	} else {
 		$browser_agent = 'other';
@@ -93,7 +93,7 @@ function send_file_to_browser($attachment, $upload_dir)
 		} else {
 			// Correct the mime type - we force application/octetstream for all files, except images
 			// Please do not change this, it is a security precaution
-			if (!ereg('image', $attachment['mimetype'])) {
+			if (!preg_match('#image#m', $attachment['mimetype'])) {
 				$attachment['mimetype'] = ($browser_agent == 'ie' || $browser_agent == 'opera') ? 'application/octetstream' : 'application/octet-stream';
 			}
 			if (!($fp = fopen($filename, 'rb'))) {
@@ -186,7 +186,7 @@ if (empty($attachment)) {
 $authorised = FALSE;
 
 $auth_pages = $db->sql_ufetchrowset('SELECT * FROM ' . ATTACHMENTS_TABLE . ' WHERE attach_id = ' . $attachment['attach_id']);
-$num_auth_pages = count($auth_pages);
+$num_auth_pages = is_countable($auth_pages) ? count($auth_pages) : 0;
 
 for ($i = 0; $i < $num_auth_pages && $authorised == FALSE; $i++) {
 	if (intval($auth_pages[$i]['post_id']) != 0) {
@@ -212,7 +212,7 @@ if (!$authorised) {
 // Get Information on currently allowed Extensions
 //
 $rows = $db->sql_ufetchrowset("SELECT e.extension, g.download_mode FROM " . EXTENSION_GROUPS_TABLE . " g, " . EXTENSIONS_TABLE . " e WHERE (g.allow_group = 1) AND (g.group_id = e.group_id)");
-$num_rows = count($rows);
+$num_rows = is_countable($rows) ? count($rows) : 0;
 for ($i = 0; $i < $num_rows; $i++) {
 	$extension = strtolower(trim($rows[$i]['extension']));
 	$allowed_extensions[] = $extension;

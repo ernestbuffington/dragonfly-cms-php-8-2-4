@@ -43,9 +43,9 @@ $comment_count = cpg_tablecount($CONFIG['TABLE_COMMENTS'], "count(*)", __FILE__,
 
 if (!$comment_count) cpg_die(INFO , NO_COMMENT, __FILE__, __LINE__);
 
-$start = isset($_GET['start']) ? $_GET['start'] : 0;
+$start = $_GET['start'] ?? 0;
 $start = intval($start);
-$count = isset($_GET['count']) ? $_GET['count'] : 25;
+$count = $_GET['count'] ?? 25;
 $count = intval($count);
 $next_target = getlink('&amp;file=reviewcom&amp;start=' . ($start + $count) . '&amp;count=' . $count);
 $prev_target = getlink('&amp;file=reviewcom&amp;start=' . max(0, $start - $count) . '&amp;count=' . $count);

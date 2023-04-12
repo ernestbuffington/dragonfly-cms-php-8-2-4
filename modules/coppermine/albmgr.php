@@ -23,7 +23,7 @@ define('ALBMGR_PHP', true);
 global $THEME_DIR;
 require("modules/" . $module_name . "/include/load.inc");
 //init.inc $cat = (isset($_GET['cat']) ? $_GET['cat'] : isset($_POST['cat'])? $_POST['cat'] : 0);
-$cat = intval(isset($_POST['cat']) ? $_POST['cat'] : (isset($_GET['cat']) ? $_GET['cat'] : 0));
+$cat = intval($_POST['cat'] ?? $_GET['cat'] ?? 0);
 //init.inc $album = (isset($_GET['album']) ? $_GET['album'] : isset($_POST['album'])? $_POST['album'] : NULL);
     if ($cat == USER_GAL_CAT) {
         $thisalbum = 'category > ' . FIRST_USER_CAT;
@@ -153,7 +153,7 @@ EOT;
                 <table width="100%">
 <?php
 // Now let's create the list of albums that belong to the choosen category
-if (count($rowset) > 0) {
+if ((is_countable($rowset) ? count($rowset) : 0) > 0) {
     $result = $db->sql_query("SELECT pos FROM {$CONFIG['TABLE_ALBUMS']} WHERE category = $cat ORDER BY pos DESC LIMIT 0,1");
     list($last) = $db->sql_fetchrow($result);
     foreach ($rowset as $album) {

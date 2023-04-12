@@ -17,7 +17,7 @@
   $Author: nanocaiordo $
   $Date: 2007/04/06 10:52:34 $
 ****************************************************************************/
-if (eregi("modules/", $_SERVER['PHP_SELF'])) {
+if (preg_match('#modules\/#mi', $_SERVER['PHP_SELF'])) {
     die ("You can't access this file directly...");
 }
 define('DISPLAYIMAGE_PHP', true);
@@ -53,7 +53,7 @@ header('Content-language: ' . LANG_COUNTRY_CODE );
 if (isset($_GET['picfile'])) {
     $picfile = $_GET['picfile'];
     $picname = $CONFIG['fullpath'].$picfile;
-    if (ereg('\.\.', $picfile)) {
+    if (preg_match('#\.\.#m', $picfile)) {
         $picfile = 'Error';
         $picname = 'images/error.gif';
     }

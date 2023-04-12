@@ -55,7 +55,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
 	if ($row['user_website'] == 'http:///' || $row['user_website'] == 'http://'){
 		$row['user_website'] =	'';
 	}
-	if ($row['user_website'] != '' && substr($row['user_website'],0, 7) != 'http://') {
+	if ($row['user_website'] != '' && !str_starts_with($row['user_website'], 'http://')) {
 		$row['user_website'] = 'http://'.$row['user_website'];
 	}
 	$www_img = ( $row['user_website'] ) ? '<a href="'.$row['user_website'].'" target="_userwww"><img src="'.$images['icon_www'].'" alt="'.$lang['Visit_website'].'" title="'.$lang['Visit_website'].'" style="border:0;" /></a>' : '';
@@ -88,7 +88,7 @@ if (isset($_GET['g']) || isset($_POST['g'])) {
 }
 
 if (isset($_POST['mode']) || isset($_GET['mode'])) {
-	$mode = htmlprepare(isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode']);
+	$mode = htmlprepare($_POST['mode'] ?? $_GET['mode']);
 } else {
 	$mode = '';
 }
@@ -256,7 +256,7 @@ else if ( $group_id )
 					$members = ( isset($_POST['approve']) || isset($_POST['deny']) ) ? $_POST['pending_members'] : $_POST['members'];
 
 					$sql_in = '';
-					for($i = 0; $i < count($members); $i++) {
+					for($i = 0; $i < (is_countable($members) ? count($members) : 0); $i++) {
 						$sql_in .= ( ( $sql_in != '' ) ? ', ' : '' ).intval($members[$i]);
 					}
 
@@ -357,7 +357,7 @@ else if ( $group_id )
 			AND ug.user_id <> '".$group_moderator['user_id']."'
 		ORDER BY u.username";
 	$group_members = $db->sql_ufetchrowset($sql);
-	$members_count = count($group_members);
+	$members_count = is_countable($group_members) ? count($group_members) : 0;
 	$db->sql_freeresult($result);
 
 	$sql = "SELECT u.username, u.user_id, u.user_rank, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_icq, u.user_aim, u.user_yim, u.user_msnm
@@ -368,7 +368,7 @@ else if ( $group_id )
 			AND u.user_id = ug.user_id
 		ORDER BY u.username";
 	$modgroup_pending_list = $db->sql_ufetchrowset($sql);
-	$modgroup_pending_count = count($modgroup_pending_list);
+	$modgroup_pending_count = is_countable($modgroup_pending_list) ? count($modgroup_pending_list) : 0;
 
 	$is_group_member = 0;
 	if ( $members_count ) {
@@ -390,7 +390,7 @@ else if ( $group_id )
 		}
 	}
 
-	$pagetitle .= ' '._BC_DELIM.' '.(isset($group_info['group_name']) ? $group_info['group_name'] : $lang['Group_member_join']);
+	$pagetitle .= ' '._BC_DELIM.' '.($group_info['group_name'] ?? $lang['Group_member_join']);
 	define('HEADER_INC', TRUE);
 	require_once("header.php");
 	OpenTable();

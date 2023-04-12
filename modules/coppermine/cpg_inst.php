@@ -24,7 +24,7 @@ class coppermine {
 
 	var $prefix;
 	var $base;
-	function coppermine() {
+	function __construct() {
 		$this->radmin = true;
 		$this->version = '1.3.1';
 		$this->modname = 'Coppermine';

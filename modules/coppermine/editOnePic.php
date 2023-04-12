@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
 } else {
     $pid = -1;
 }*/ 
-$pid = (isset($_POST['id']) ? $_POST['id'] : cpg_die(_CRITICAL_ERROR, sprintf(MISS_PARAM, 'id'), __FILE__, __LINE__)); 
+$pid = ($_POST['id'] ?? cpg_die(_CRITICAL_ERROR, sprintf(MISS_PARAM, 'id'), __FILE__, __LINE__)); 
 $title = EDIT_PICS;
 pageheader($title);
 // Code after this is Specific to the individual actions - it would be preferable to have each actions in their own inc file

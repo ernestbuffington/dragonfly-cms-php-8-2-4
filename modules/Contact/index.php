@@ -22,10 +22,10 @@ require_once('includes/nbbcode.php');
 $subject = $MAIN_CFG['global']['sitename'] .' '._FEEDBACK;
 $recip = '';
 
-$sender_name = isset($_POST['sender_name']) ? $_POST['sender_name'] : '';
-$sender_email = isset($_POST['sender_email']) ? $_POST['sender_email'] : '';
+$sender_name = $_POST['sender_name'] ?? '';
+$sender_email = $_POST['sender_email'] ?? '';
 $send_to = (is_admin() && isset($_POST['send_to'])) ? $_POST['send_to'] : '';
-$message = isset($_POST['message']) ? $_POST['message'] : '';
+$message = $_POST['message'] ?? '';
 $bb = ($MAIN_CFG['email']['allow_html_email'] || is_admin()) ? bbcode_table('message', 'email_mod', 0) : '';
 $html = ($MAIN_CFG['email']['allow_html_email'] || is_admin()) ? 1 : 0;
 if (is_admin()) {
@@ -59,9 +59,9 @@ if (!isset($_POST['opi'])) {
 	if (empty($message)) { $error = _ENT_MESSAGE_LABEL; }
 	if (!is_email($sender_email)) { $error = $PHPMAILER_LANG['from_failed'].' '.$sender_email; }
 	if (!isset($error)) {
-		$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+		$gfxid = $_POST['gfxid'] ?? 0;
 		$code = $CPG_SESS['gfx'][$gfxid];
-		$gfx_check  = isset($_POST['gfx_contact_check']) ? $_POST['gfx_contact_check'] : '';
+		$gfx_check  = $_POST['gfx_contact_check'] ?? '';
 		if (strlen($gfx_check) < 2 || $code != $gfx_check) {
 			$error = _SECURITYCODE.' incorrect';
 		}

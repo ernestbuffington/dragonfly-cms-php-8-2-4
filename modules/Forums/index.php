@@ -39,7 +39,7 @@ $viewcat = ( !empty($_GET[POST_CAT_URL]) ) ? $_GET[POST_CAT_URL] : -1;
 // Handle marking posts
 //
 if( isset($_GET['mark']) || isset($_POST['mark']) ) {
-	$mark_read = ( isset($_POST['mark']) ) ? $_POST['mark'] : $_GET['mark'];
+	$mark_read = $_POST['mark'] ?? $_GET['mark'];
 	if ($mark_read == 'forums') {
 		if (is_user()) {
 			$CPG_SESS[$module_name]['track_all'] = gmtime();
@@ -66,10 +66,10 @@ if (!cache_load_array('category_rows', $module_name)) {
 	cache_save_array('category_rows', $module_name);
 }
 
-if( $total_categories = count($category_rows) ) {
+if( $total_categories = is_countable($category_rows) ? count($category_rows) : 0 ) {
 	require_once('includes/phpBB/functions_display.php');
 	$forum_data = display_forums();
-	if ( !($total_forums = count($forum_data)) ) {
+	if ( !($total_forums = is_countable($forum_data) ? count($forum_data) : 0) ) {
 		message_die(GENERAL_MESSAGE, $lang['No_forums']);
 	}
 

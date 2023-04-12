@@ -57,7 +57,7 @@ if(!isset($_POST['pollid']) && !isset($_GET['pollid'])) {
 	return;
 } else {
 	$poll_id = isset($_POST['pollid']) ? intval($_POST['pollid']) : intval($_GET['pollid']);
-	$op = isset($_POST['op']) ? $_POST['op'] : (isset($_GET['op']) ? $_GET['op'] : '');
+	$op = $_POST['op'] ?? $_GET['op'] ?? '';
 }
 
 require_once("modules/$module_name/comments.php");
@@ -70,7 +70,7 @@ if (isset($_POST['vote_id'])) {
 		$db->sql_query('UPDATE '.$prefix."_poll_data SET option_count=option_count+1 WHERE poll_id='$poll_id' AND vote_id=".intval($_POST['vote_id']));
 		$db->sql_query('UPDATE '.$prefix."_poll_desc SET voters=voters+1 WHERE poll_id='$poll_id'");
 	}
-	$forwarder = isset($_POST['forwarder']) ? $_POST['forwarder'] : 0;
+	$forwarder = $_POST['forwarder'] ?? 0;
 	if (strlen($forwarder<5)) $forwarder=getlink('&op=results&pollid='.$poll_id);
 	url_redirect($forwarder);
 }
@@ -206,7 +206,8 @@ function pollVoted($poll_id) {
 }
 
 function pollResults($poll_id) {
-	global $db, $prefix, $ThemeSel;
+	$salto = null;
+ global $db, $prefix, $ThemeSel;
 	if (!isset($poll_id)) $poll_id = 1;
 	$holdtitle = $db->sql_ufetchrow('SELECT poll_title, artid FROM '.$prefix."_poll_desc WHERE poll_id='$poll_id'", SQL_NUM);
 	echo "<b>$holdtitle[0]</b><br /><br />";

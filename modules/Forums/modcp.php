@@ -66,7 +66,7 @@ $lock = ( isset($_POST['lock']) ) ? TRUE : FALSE;
 $unlock = ( isset($_POST['unlock']) ) ? TRUE : FALSE;
 
 if ( isset($_POST['mode']) || isset($_GET['mode']) ) {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 	$mode = htmlprepare($mode);
 } else {
 	if ( $delete ) {
@@ -150,9 +150,9 @@ switch( $mode )
 	  require_once("includes/phpBB/page_header.php");
 	  if ( $confirm ) {
 		require_once("includes/phpBB/functions_search.php");
-		$topics = ( isset($_POST['topic_id_list']) ) ?	$_POST['topic_id_list'] : array($topic_id);
+		$topics = $_POST['topic_id_list'] ?? array($topic_id);
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++) {
+		for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 		  $topic_id_sql .= ( ( $topic_id_sql != '' ) ? ', ' : '' ).intval($topics[$i]);
 		}
 		$result = $db->sql_query("SELECT topic_id FROM ".TOPICS_TABLE
@@ -237,7 +237,7 @@ switch( $mode )
 
 		if (isset($_POST['topic_id_list'])) {
 		  $topics = $_POST['topic_id_list'];
-		  for($i = 0; $i < count($topics); $i++) {
+		  for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 			$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="'.intval($topics[$i]).'" />';
 		  }
 		} else {
@@ -269,9 +269,9 @@ switch( $mode )
 		$new_forum_id = intval($_POST['new_forum']);
 		$old_forum_id = $forum_id;
 		if ( $new_forum_id != $old_forum_id ) {
-		  $topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+		  $topics = $_POST['topic_id_list'] ?? array($topic_id);
 		  $topic_list = '';
-		  for($i = 0; $i < count($topics); $i++) {
+		  for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 			$topic_list .= ( ( $topic_list != '' ) ? ', ' : '' ).intval($topics[$i]);
 		  }
 		  $sql = "SELECT * FROM ".TOPICS_TABLE."
@@ -279,7 +279,7 @@ switch( $mode )
 		  $result = $db->sql_query($sql);
 		  $row = $db->sql_fetchrowset($result);
 		  $db->sql_freeresult($result);
-		  for($i = 0; $i < count($row); $i++) {
+		  for($i = 0; $i < (is_countable($row) ? count($row) : 0); $i++) {
 			$topic_id = $row[$i]['topic_id'];
 			if ( isset($_POST['move_leave_shadow']) ) {
 				// Insert topic in the old forum that indicates that the forum has moved.
@@ -315,7 +315,7 @@ switch( $mode )
 		$hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="'.POST_FORUM_URL.'" value="'.$forum_id.'" />';
 		if ( isset($_POST['topic_id_list']) ) {
 		  $topics = $_POST['topic_id_list'];
-		  for($i = 0; $i < count($topics); $i++) {
+		  for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 			$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="'.intval($topics[$i]).'" />';
 		  }
 		} else {
@@ -344,9 +344,9 @@ switch( $mode )
 	  if ( empty($_POST['topic_id_list']) && empty($topic_id) ) {
 		message_die(GENERAL_MESSAGE, $lang['None_selected']);
 	  }
-	  $topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+	  $topics = $_POST['topic_id_list'] ?? array($topic_id);
 	  $topic_id_sql = '';
-	  for($i = 0; $i < count($topics); $i++) {
+	  for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 		$topic_id_sql .= ( ( $topic_id_sql != '' ) ? ', ' : '' ).intval($topics[$i]);
 	  }
 	  $sql = "UPDATE ".TOPICS_TABLE."
@@ -371,9 +371,9 @@ switch( $mode )
 	  if ( empty($_POST['topic_id_list']) && empty($topic_id) ) {
 		message_die(GENERAL_MESSAGE, $lang['None_selected']);
 	  }
-	  $topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+	  $topics = $_POST['topic_id_list'] ?? array($topic_id);
 	  $topic_id_sql = '';
-	  for($i = 0; $i < count($topics); $i++) {
+	  for($i = 0; $i < (is_countable($topics) ? count($topics) : 0); $i++) {
 		$topic_id_sql .= ( ( $topic_id_sql != "") ? ', ' : '' ).intval($topics[$i]);
 	  }
 	  $sql = "UPDATE ".TOPICS_TABLE."
@@ -400,7 +400,7 @@ switch( $mode )
 	  $post_id_sql = '';
 	  if (isset($_POST['split_type_all']) || isset($_POST['split_type_beyond'])) {
 		$posts = $_POST['post_id_list'];
-		for ($i = 0; $i < count($posts); $i++) {
+		for ($i = 0; $i < (is_countable($posts) ? count($posts) : 0); $i++) {
 		  $post_id_sql .= (($post_id_sql != '') ? ', ' : '').intval($posts[$i]);
 		}
 	  }
@@ -576,7 +576,7 @@ switch( $mode )
 	  $page_title = $lang['Mod_CP'];
 	  require_once('includes/phpBB/page_header.php');
 
-	  $rdns_ip_num = ( isset($_GET['rdns']) ) ? $_GET['rdns'] : '';
+	  $rdns_ip_num = $_GET['rdns'] ?? '';
 
 	  if ( !$post_id ) {
 		message_die(GENERAL_MESSAGE, $lang['No_such_post']);

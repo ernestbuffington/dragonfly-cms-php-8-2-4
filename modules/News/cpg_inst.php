@@ -22,7 +22,7 @@ class News {
 	var $author;
 	var $website;
 	var $dbtables;
-	function News() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.1';
 		$this->modname = 'News';

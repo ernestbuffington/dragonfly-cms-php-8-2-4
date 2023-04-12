@@ -42,7 +42,7 @@ init_userprefs($userdata);
 // Obtain initial var settings
 //
 if(isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL])) {
-	$user_id = (isset($_POST[POST_USERS_URL])) ? $_POST[POST_USERS_URL] : $_GET[POST_USERS_URL];
+	$user_id = $_POST[POST_USERS_URL] ?? $_GET[POST_USERS_URL];
 } else {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
@@ -65,7 +65,7 @@ if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] !
 $page_title = $lang['User_acp_title'];
 require_once("includes/phpBB/page_header.php");
 
-$start = (isset($_GET['start'])) ? $_GET['start'] : 0;
+$start = $_GET['start'] ?? 0;
 
 if(isset($_POST['order'])) {
 	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
@@ -76,7 +76,7 @@ if(isset($_POST['order'])) {
 }
 
 if (isset($_GET['mode']) || isset($_POST['mode'])) {
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 } else {
 	$mode = '';
 }
@@ -149,13 +149,13 @@ if (!empty($sort_order)) {
 }
 
 $delete = ( isset($_POST['delete']) ) ? TRUE : FALSE;
-$delete_id_list = ( isset($_POST['delete_id_list']) ) ?	 $_POST['delete_id_list'] : array();
+$delete_id_list = $_POST['delete_id_list'] ?? array();
 
 $confirm = ( isset($_POST['confirm']) ) ? TRUE : FALSE;
 
-if ( ($confirm) && (count($delete_id_list) > 0) ) {
+if ( ($confirm) && ((is_countable($delete_id_list) ? count($delete_id_list) : 0) > 0) ) {
 	$attachments = array();
-	for ($i = 0; $i < count($delete_id_list); $i++) {
+	for ($i = 0; $i < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $i++) {
 		$result = $db->sql_query("SELECT post_id FROM ".ATTACHMENTS_TABLE." WHERE attach_id = ".$delete_id_list[$i]);
 		if ($result) {
 			$row = $db->sql_fetchrow($result);
@@ -168,14 +168,14 @@ if ( ($confirm) && (count($delete_id_list) > 0) ) {
 	}
 
 
-} else if ($delete && count($delete_id_list) > 0) {
+} else if ($delete && (is_countable($delete_id_list) ? count($delete_id_list) : 0) > 0) {
 	// Not confirmed, show confirmation message
 	$hidden_fields = '<input type="hidden" name="view" value="'.$view.'" />';
 	$hidden_fields .= '<input type="hidden" name="mode" value="'.$mode.'" />';
 	$hidden_fields .= '<input type="hidden" name="order" value="'.$sort_order.'" />';
 	$hidden_fields .= '<input type="hidden" name="'.POST_USERS_URL.'" value="'.$profiledata['user_id'].'" />';
 	$hidden_fields .= '<input type="hidden" name="start" value="'.$start.'" />';
-	for($i = 0; $i < count($delete_id_list); $i++) {
+	for($i = 0; $i < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $i++) {
 		$hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="'.$delete_id_list[$i].'" />';
 	}
 	$template->assign_vars(array(
@@ -250,8 +250,8 @@ if ($num_attach_ids > 0) {
 	$attachments = array();
 }
 
-if (count($attachments) > 0) {
-	for ($i = 0; $i < count($attachments); $i++) {
+if ((is_countable($attachments) ? count($attachments) : 0) > 0) {
+	for ($i = 0; $i < (is_countable($attachments) ? count($attachments) : 0); $i++) {
 		$row_color = ( !($i % 2) ) ? $bgcolor2 : $bgcolor1;
 		$row_class = ( !($i % 2) ) ? 'row1' : 'row2';
 
@@ -317,7 +317,7 @@ if (count($attachments) > 0) {
 		if (count($post_titles) > 0) {
 			$delete_box = '<input type="checkbox" name="delete_id_list[]" value="'.$attachments[$i]['attach_id'].'" />';
 
-			for ($j = 0; $j < count($delete_id_list); $j++) {
+			for ($j = 0; $j < (is_countable($delete_id_list) ? count($delete_id_list) : 0); $j++) {
 				if ($delete_id_list[$j] == $attachments[$i]['attach_id']) {
 					$delete_box = '<input type="checkbox" name="delete_id_list[]" value="'.$attachments[$i]['attach_id'].'" checked="checked" />';
 					break;

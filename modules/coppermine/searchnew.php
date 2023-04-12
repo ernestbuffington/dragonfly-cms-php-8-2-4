@@ -190,8 +190,8 @@ function getfoldercontent($folder, &$dir_array, &$pic_array, &$expic_array)
 			if ($file != "." && $file != "..") {
 				$dir_array[] = $file;
 			} 
-		} elseif (is_file($CONFIG['fullpath'] . $folder . $file) && eregi($img_to_find, $file)) {
-			if (strncmp($file, $CONFIG['thumb_pfx'], strlen($CONFIG['thumb_pfx'])) != 0 && strncmp($file, $CONFIG['normal_pfx'], strlen($CONFIG['normal_pfx'])) != 0 && $file != 'index.html') {
+		} elseif (is_file($CONFIG['fullpath'] . $folder . $file) && preg_match('#' . preg_quote($img_to_find, '#') . '#mi', $file)) {
+			if (!str_starts_with($file, $CONFIG['thumb_pfx']) && !str_starts_with($file, $CONFIG['normal_pfx']) && $file != 'index.html') {
 				$pic_array[] = $file;
 			}
 		}
@@ -388,7 +388,7 @@ if (isset($_POST['insert'])) {
 }
 elseif (isset($_GET['startdir'])) {
 	$startdir = $_GET['startdir'];
-	if (ereg('\.\.', $startdir)) die('Access denied: '.$startdir); // thanks to waraxe for finding this admin vulnerability
+	if (preg_match('#\.\.#m', $startdir)) die('Access denied: '.$startdir); // thanks to waraxe for finding this admin vulnerability
 	pageheader(PAGE_TITLE);
 	starttable("100%");
 	$action=getlink("&amp;file=searchnew&amp;insert=1");

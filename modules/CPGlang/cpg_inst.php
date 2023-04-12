@@ -22,7 +22,7 @@ class CPGlang {
 	var $author;
 	var $website;
 	var $dbtables;
-	function CPGlang() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.0';
 		$this->modname = 'CPG-Lang';

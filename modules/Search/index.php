@@ -79,7 +79,7 @@ if (!isset($_POST['search']) && !isset($_GET['search'])) {
 else {
 	$page  = isset($_GET['page']) ? intval($_GET['page']) : 0;
 	$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
-	$query = isset($_POST['search']) ? $_POST['search'] : $_GET['search'];
+	$query = $_POST['search'] ?? $_GET['search'];
 	$sql_query = Fix_Quotes($query);
 	$the_query = htmlprepare($query);
 	$url_query = urlencode($query);
@@ -119,7 +119,7 @@ else {
 							// layout the search results based on data we are given...
 							if (isset($result['header'])) echo $result['header'] . '<br />';
 
-							echo '<img src="'. (isset($result['image']) ? $result['image'] : 'images/folders.gif') . '" alt="" />&nbsp;';
+							echo '<img src="'. ($result['image'] ?? 'images/folders.gif') . '" alt="" />&nbsp;';
 							echo '<a href="'.$result['url'].'" class="option"><strong>'.$result['title'].'</strong></a><br />';
 							echo '<div style="padding-left:8px;">';
 

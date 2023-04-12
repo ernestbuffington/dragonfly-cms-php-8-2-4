@@ -38,25 +38,25 @@ init_userprefs($userdata);
 // Define initial vars
 //
 if ( isset($_POST['mode']) || isset($_GET['mode']) ) {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = $_POST['mode'] ?? $_GET['mode'];
 } else {
 	$mode = '';
 }
 
 if ( isset($_POST['search_keywords']) || isset($_GET['search_keywords']) ) {
-	$search_keywords = ( isset($_POST['search_keywords']) ) ? $_POST['search_keywords'] : $_GET['search_keywords'];
+	$search_keywords = $_POST['search_keywords'] ?? $_GET['search_keywords'];
 } else {
 	$search_keywords = '';
 }
 
 if ( isset($_POST['search_author']) || isset($_GET['search_author'])) {
-	$search_author = ( isset($_POST['search_author']) ) ? $_POST['search_author'] : $_GET['search_author'];
+	$search_author = $_POST['search_author'] ?? $_GET['search_author'];
 } else {
 	$search_author = '';
 }
 
-$search_id = ( isset($_GET['search_id']) ) ? $_GET['search_id'] : '';
-$show_results = ( isset($_POST['show_results']) ) ? $_POST['show_results'] : 'posts';
+$search_id = $_GET['search_id'] ?? '';
+$show_results = $_POST['show_results'] ?? 'posts';
 $show_results = ($show_results == 'topics') ? 'topics' : 'posts';
 
 if ( isset($_POST['search_terms']) ) {
@@ -109,7 +109,7 @@ if ( $mode == 'searchuser' ) {
 	// This handles the simple windowed user search functions called from various other scripts
 	//
 	if ( isset($_POST['search_username']) ) {
-		if (!eregi("\*", $_POST['search_username'])) $_POST['search_username'] = "*".$_POST['search_username']."*";
+		if (!preg_match('#\*#mi', $_POST['search_username'])) $_POST['search_username'] = "*".$_POST['search_username']."*";
 		username_search($_POST['search_username']);
 	} else {
 		username_search('');
@@ -192,9 +192,9 @@ if ( $mode == 'searchuser' ) {
 			$stopword_array = file('language/' . $board_config['default_lang'] . '/Forums/search_stopwords.txt');
 			$synonym_array = file('language/' . $board_config['default_lang'] . '/Forums/search_synonyms.txt');
 
-			$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', $search_keywords, $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
+			$split_search = ( !strstr($multibyte_charset, (string) $lang['ENCODING']) ) ?  split_words(clean_words('search', $search_keywords, $stopword_array, $synonym_array), 'search') : preg_split('# #m', $search_keywords);
 
-			$search_msg_only = ( !$search_fields ) ? "AND m.title_match = 0" : ( ( strstr($multibyte_charset, $lang['ENCODING']) ) ? '' : '' );
+			$search_msg_only = ( !$search_fields ) ? "AND m.title_match = 0" : ( ( strstr($multibyte_charset, (string) $lang['ENCODING']) ) ? '' : '' );
 
 			$word_count = 0;
 			$current_match_type = 'or';
@@ -202,7 +202,7 @@ if ( $mode == 'searchuser' ) {
 			$word_match = array();
 			$result_list = array();
 
-			for($i = 0; $i < count($split_search); $i++) {
+			for($i = 0; $i < (is_countable($split_search) ? count($split_search) : 0); $i++) {
 				if (preg_match('#^[\*%]+$#', trim($split_search[$i])) || preg_match('#^[^\*]{1,2}$#', str_replace(array('*', '%'), '', trim($split_search[$i])))) {
 					$split_search[$i] = '';
 					continue;
@@ -226,7 +226,7 @@ if ( $mode == 'searchuser' ) {
 							$current_match_type = 'and';
 						}
 
-						if ( !strstr($multibyte_charset, $lang['ENCODING']) ) {
+						if ( !strstr($multibyte_charset, (string) $lang['ENCODING']) ) {
 							$match_word = str_replace('*', '%', $split_search[$i]);
 							$sql = "SELECT m.post_id
 								FROM " . SEARCH_WORD_TABLE . " w, " . SEARCH_MATCH_TABLE . " m
@@ -259,9 +259,9 @@ if ( $mode == 'searchuser' ) {
 
 						if ( $current_match_type == 'and' && $word_count ) {
 							reset($result_list);
-							while( list($post_id, $match_count) = each($result_list) ) {
-								if (!isset($row[$post_id]) || !$row[$post_id]) { $result_list[$post_id] = 0; }
-							}
+							foreach ($result_list as $post_id => $match_count) {
+           if (!isset($row[$post_id]) || !$row[$post_id]) { $result_list[$post_id] = 0; }
+       }
 						}
 
 						$word_count++;
@@ -273,9 +273,9 @@ if ( $mode == 'searchuser' ) {
 			reset($result_list);
 
 			$search_ids = array();
-			while( list($post_id, $matches) = each($result_list) ) {
-				if ( $matches ) { $search_ids[] = $post_id; }
-			}
+			foreach ($result_list as $post_id => $matches) {
+       if ( $matches ) { $search_ids[] = $post_id; }
+   }
 
 			unset($result_list);
 			$total_match_count = count($search_ids);
@@ -301,11 +301,11 @@ if ( $mode == 'searchuser' ) {
 			}
 
 			$ignore_forum_sql = '';
-			while( list($key, $value) = each($is_auth_ary) ) {
-				if ( !$value['auth_read'] ) {
-					$ignore_forum_sql .= ( ( $ignore_forum_sql != '' ) ? ', ' : '' ) . $key;
-				}
-			}
+			foreach ($is_auth_ary as $key => $value) {
+       if ( !$value['auth_read'] ) {
+   					$ignore_forum_sql .= ( ( $ignore_forum_sql != '' ) ? ', ' : '' ) . $key;
+   				}
+   }
 
 			if ( $ignore_forum_sql != '' ) {
 				$auth_sql .= ( $auth_sql != '' ) ? " AND f.forum_id NOT IN ($ignore_forum_sql) " : "f.forum_id NOT IN ($ignore_forum_sql) ";
@@ -331,8 +331,8 @@ if ( $mode == 'searchuser' ) {
 				$count = 0;
 				$chunk = 0;
 
-				if (count($search_ids) > $limiter) {
-					for ($i = 0; $i < count($search_ids); $i++) {
+				if ((is_countable($search_ids) ? count($search_ids) : 0) > $limiter) {
+					for ($i = 0; $i < (is_countable($search_ids) ? count($search_ids) : 0); $i++) {
 						if ($count == $limiter) {
 							$chunk++;
 							$count = 0;
@@ -390,8 +390,8 @@ if ( $mode == 'searchuser' ) {
 				$count = 0;
 				$chunk = 0;
 
-				if (count($search_ids) > $limiter) {
-					for ($i = 0; $i < count($search_ids); $i++) {
+				if ((is_countable($search_ids) ? count($search_ids) : 0) > $limiter) {
+					for ($i = 0; $i < (is_countable($search_ids) ? count($search_ids) : 0); $i++) {
 						if ($count == $limiter) {
 							$chunk++;
 							$count = 0;
@@ -497,9 +497,9 @@ if ( $mode == 'searchuser' ) {
 		*/
 
 		mt_srand ((double) microtime() * 1000000);
-		$search_id = mt_rand();
+		$search_id = random_int(0, mt_getrandmax());
 		for($i = 0; $i < count($store_vars); $i++) {
-			$CPG_SESS[$module_name]['search'][$search_id][$store_vars[$i]] = $$store_vars[$i];
+			$CPG_SESS[$module_name]['search'][$search_id][$store_vars[$i]] = ${$store_vars}[$i];
 		}
 	} else {
 		$search_id = intval($search_id);
@@ -508,7 +508,7 @@ if ( $mode == 'searchuser' ) {
 				message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
 			}
 			for($i = 0; $i < count($store_vars); $i++) {
-				$$store_vars[$i] = $CPG_SESS[$module_name]['search'][$search_id][$store_vars[$i]];
+				${$store_vars}[$i] = $CPG_SESS[$module_name]['search'][$search_id][$store_vars[$i]];
 			}
 		}
 	}
@@ -594,15 +594,15 @@ if ( $mode == 'searchuser' ) {
 
 		$highlight_active = '';
 		$highlight_match = array();
-		for($j = 0; $j < count($split_search); $j++ ) {
+		for($j = 0; $j < (is_countable($split_search) ? count($split_search) : 0); $j++ ) {
 			$split_word = $split_search[$j];
 
 			if ( $split_word != 'and' && $split_word != 'or' && $split_word != 'not' ) {
 				$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $split_word) . ')\b#is';
 				$highlight_active .= " " . $split_word;
 
-				for ($k = 0; $k < count($synonym_array); $k++) {
-					list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$k])));
+				for ($k = 0; $k < (is_countable($synonym_array) ? count($synonym_array) : 0); $k++) {
+					list($replace_synonym, $match_synonym) = preg_split('# #m', trim(strtolower($synonym_array[$k])));
 
 					if ( $replace_synonym == $split_word ) {
 						$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $replace_synonym) . ')\b#is';
@@ -614,8 +614,8 @@ if ( $mode == 'searchuser' ) {
 
 		$highlight_active = urlencode(trim($highlight_active));
 
-		$tracking_topics = isset($CPG_SESS[$module_name]['track_topics']) ? $CPG_SESS[$module_name]['track_topics'] : array();
-		$tracking_forums = isset($CPG_SESS[$module_name]['track_forums']) ? $CPG_SESS[$module_name]['track_forums'] : array();
+		$tracking_topics = $CPG_SESS[$module_name]['track_topics'] ?? array();
+		$tracking_forums = $CPG_SESS[$module_name]['track_forums'] ?? array();
 
 		for($i = 0; $i < count($searchset); $i++) {
 			$forum_url = getlink("&amp;file=viewforum&amp;" . POST_FORUM_URL . '=' . $searchset[$i]['forum_id']);
@@ -627,7 +627,7 @@ if ( $mode == 'searchuser' ) {
 			}
 			$post_date = create_date($board_config['default_dateformat'], $searchset[$i]['post_time']);
 
-			$message = isset($searchset[$i]['post_text']) ? $searchset[$i]['post_text'] : '';
+			$message = $searchset[$i]['post_text'] ?? '';
 			$topic_title = $searchset[$i]['topic_title'];
 
 			$forum_id = $searchset[$i]['forum_id'];
@@ -1042,10 +1042,9 @@ if ( $s_forums != '' )
 	// Category to search
 	//
 	$s_categories = '<option value="-1">' . $lang['All_available'] . '</option>';
-	while( list($cat_id, $cat_title) = each($list_cat))
-	{
-		$s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
-	}
+	foreach ($list_cat as $cat_id => $cat_title) {
+     $s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
+ }
 }
 else
 {

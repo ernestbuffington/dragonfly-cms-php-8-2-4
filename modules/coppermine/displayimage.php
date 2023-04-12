@@ -157,11 +157,11 @@ function html_picture()
 				$hugwidth = '4';
 				$bgclr = '#000000';
 				$alt = CLICK_TO_CLOSE; // $lang_fullsize_popup[1];
-				$pic_html = '<a href="'.getlink("&amp;file=justsofullsize&amp;pid=$pid",false,true).'" target="' . uniqid(rand()) . "\" onclick=\"JustSoPicWindow('".getlink("&amp;file=justsofullsize&amp;pid=$pid",false,true)."','$winsizeX','$winsizeY','$alt','$bgclr','$hug','$hugwidth');return false\">";
+				$pic_html = '<a href="'.getlink("&amp;file=justsofullsize&amp;pid=$pid",false,true).'" target="' . uniqid(random_int(0, mt_getrandmax())) . "\" onclick=\"JustSoPicWindow('".getlink("&amp;file=justsofullsize&amp;pid=$pid",false,true)."','$winsizeX','$winsizeY','$alt','$bgclr','$hug','$hugwidth');return false\">";
 			} else {
 				$winsizeX = $CURRENT_PIC_DATA['pwidth'] + 16;
 				$winsizeY = $CURRENT_PIC_DATA['pheight'] + 16;
-				$pic_html = '<a href="'.getlink("&amp;file=displayimagepopup&amp;pid=$pid&amp;fullsize=1",true,true).'" target="' . uniqid(rand()) . "\" onclick=\"imgpop('".getlink("&amp;file=displayimagepopup&amp;pid=$pid&amp;fullsize=1",true,true)."','" . uniqid(rand()) . "','resizable=yes,scrollbars=yes,width=$winsizeX,height=$winsizeY,left=0,top=0');return false\">"; //toolbar=yes,status=yes,
+				$pic_html = '<a href="'.getlink("&amp;file=displayimagepopup&amp;pid=$pid&amp;fullsize=1",true,true).'" target="' . uniqid(random_int(0, mt_getrandmax())) . "\" onclick=\"imgpop('".getlink("&amp;file=displayimagepopup&amp;pid=$pid&amp;fullsize=1",true,true)."','" . uniqid(random_int(0, mt_getrandmax())) . "','resizable=yes,scrollbars=yes,width=$winsizeX,height=$winsizeY,left=0,top=0');return false\">"; //toolbar=yes,status=yes,
 				$pic_title = VIEW_FS . "\n ============== \n" . $pic_title; //added by gaugau
 			}
 			$pic_html .= "<img src=\"" . $picture_url . "\" {$image_size['geom']} class=\"image\" border=\"0\" alt=\"{$pic_title}\" title=\"{$pic_title}\" /><br />";
@@ -231,7 +231,8 @@ function html_rating_box()
 // Display picture information
 function html_picinfo()
 {
-	global $CONFIG, $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA, $THEME_DIR, $FAVPICS, $CPG_M_DIR;
+	$info = [];
+ global $CONFIG, $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA, $THEME_DIR, $FAVPICS, $CPG_M_DIR;
 	global $album,$lang_byte_units, $db;
 	if ($CURRENT_PIC_DATA['owner_id'] && $CURRENT_PIC_DATA['owner_name']) {
 		$owner_link = '<a href ="'.getlink('Your_Account&amp;profile=' . $CURRENT_PIC_DATA['owner_id']) . '">' . $CURRENT_PIC_DATA['owner_name'] . '</a> ';
@@ -440,7 +441,8 @@ function html_comments($pid)
 
 function slideshow()
 {
-	global $CONFIG, $template_display_picture, $CPG_M_DIR;
+	$start_img = null;
+ global $CONFIG, $template_display_picture, $CPG_M_DIR;
 	if (function_exists('theme_slideshow')) {
 		theme_slideshow();
 		return;
@@ -475,7 +477,7 @@ function slideshow()
 $pos = isset($_GET['pos']) ? intval($_GET['pos']) : 0;
 $pid = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
 $album = isset($_GET['album']) ? intval($_GET['album']) : '';
-$meta = isset($_GET['meta']) ? $_GET['meta'] : '';
+$meta = $_GET['meta'] ?? '';
 $cat = isset($_GET['cat']) ? intval($_GET['cat']) : '';
 
 // $thisalbum is passed to get_pic_data as a varible used in queries 
@@ -528,7 +530,7 @@ if ($meta == 'random' || ($meta == '' && !is_numeric($album)) || $pid > 0 || $po
 	$CURRENT_PIC_DATA = $pic_data[0];
 } else if (isset($_GET['pos'])){
 	$pic_data = get_pic_data($meta, $album, $pic_count, $album_name, $pos, 1, false);
-	if (count($pic_data) == 0 && $pos >= $pic_count) {
+	if ((is_countable($pic_data) ? count($pic_data) : 0) == 0 && $pos >= $pic_count) {
 		$pos = $pic_count - 1;
 		$human_pos = $pos + 1;
 		$pic_data = get_pic_data($meta, $album, $pic_count, $album_name, $pos, 1, false);
@@ -576,7 +578,7 @@ if (isset($_GET['slideshow'])){
 	set_breadcrumb(0);
 	// Display Filmstrip if the album is not search
 	if ($album != 'search') {
-		$film_strip = display_film_strip($meta, $album, (isset($cat) ? $cat : 0), $pos, true);
+		$film_strip = display_film_strip($meta, $album, ($cat ?? 0), $pos, true);
 	}
 	
 	theme_display_image($nav_menu, $picture, $votes, $pic_info, $comments, $film_strip); //,

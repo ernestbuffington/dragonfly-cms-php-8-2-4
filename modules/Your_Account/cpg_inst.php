@@ -22,7 +22,7 @@ class Your_Account {
 	var $author;
 	var $website;
 	var $dbtables;
-	function Your_Account() {
+	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.2';
 		$this->modname = 'My Account';

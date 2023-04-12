@@ -22,7 +22,7 @@ class Groups {
 	var $author;
 	var $website;
 	var $dbtables;
-	function Groups() {
+	function __construct() {
 		$this->radmin = true;
 		$this->version = '1.1';
 		$this->modname = 'Groups';

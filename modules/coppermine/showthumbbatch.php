@@ -29,6 +29,7 @@ define("READ_ERROR_ICON", $CPG_M_DIR . '/images/read_error48x48.gif');
 
 function makethumbnail($src_file, $newSize, $method)
 {
+    $dest_info = [];
     global $CONFIG;
 
     $content_type = array(

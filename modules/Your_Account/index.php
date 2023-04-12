@@ -30,7 +30,7 @@ function account_login($error='') {
 	$pagetitle .= ' '._BC_DELIM.' '._USERLOGIN;
 	require_once('header.php');
 	if (isset($_GET['redirect']) && !isset($CPG_SESS['user']['redirect'])) { $CPG_SESS['user']['redirect'] = $CPG_SESS['user']['uri']; }
-	$redirect = (isset($CPG_SESS['user']['redirect']) ? $CPG_SESS['user']['redirect'] : getlink());
+	$redirect = ($CPG_SESS['user']['redirect'] ?? getlink());
 	echo '<form action="'.$redirect.'" method="post"  enctype="multipart/form-data" accept-charset="utf-8"><table border="0" cellpadding="3" cellspacing="1" width="100%" class="forumline">';
 	if ($error) {
 		echo '<tr><td align="center" class="catleft" colspan="2"><b><span class="gen">'._ERROR.'</span></b></td></tr>
@@ -72,7 +72,8 @@ function pass_lost() {
 	<input type="submit" class="mainoption" value="'._SENDPASSWORD.'" /></form></td></tr></table>';
 }
 function mail_password() {
-	global $user_prefix, $db, $pagetitle, $userinfo;
+	$mailer_message = null;
+ global $user_prefix, $db, $pagetitle, $userinfo;
 	if ((!isset($_POST['lost_username']) || empty($_POST['lost_username'])) && (!isset($_POST['lost_email']) || empty($_POST['lost_email']))) { cpg_error('Please enter either a username or email address'); }
 	if (isset($_POST['lost_username']) && (!isset($_POST['lost_email']) || empty($_POST['lost_email']))) {
 		$username = Fix_Quotes($_POST['lost_username']);
@@ -92,7 +93,7 @@ function mail_password() {
 			global $sitename, $MAIN_CFG;
 			$code = $_POST['code'];
 			$areyou = substr($row['user_password'], 0, 10);
-			$from = 'noreply@'.ereg_replace('www.', '', $MAIN_CFG['server']['domain']);
+			$from = 'noreply@'.preg_replace('#www.#m', '', $MAIN_CFG['server']['domain']);
 			if ($areyou == $code) {
 				$newpass = make_pass(8, 5);
 				$message = _USERACCOUNT." '$username' "._AT." $sitename "._HASTHISEMAIL."  "._AWEBUSERFROM." ".decode_ip($userinfo["user_ip"])." "._HASREQUESTED."\n\n"._YOURNEWPASSWORD." $newpass\n\n "._YOUCANCHANGE." ".getlink('Your_Account', true, true)."\n\n"._IFYOUDIDNOTASK;
@@ -129,7 +130,7 @@ function date_short($raw_date) {
 	if (date('Y', mktime(0, 0, 0, $month, $day, $year)) == $year) {
 		return date('m/d/Y', mktime(0, 0, 0, $month, $day, $year));
 	} else {
-		return ereg_replace('2037$', $year, date('m/d/Y', mktime(0, 0, 0, $month, $day, 2037)));
+		return preg_replace('#2037$#m', $year, date('m/d/Y', mktime(0, 0, 0, $month, $day, 2037)));
 	}
 }
 function date_raw($date) {
@@ -259,7 +260,7 @@ elseif (is_user()) {
 			url_redirect(getlink());
 			break;
 		case 'savecomm':
-			$db->sql_query("UPDATE ".$user_prefix."_users SET umode='".Fix_Quotes($_POST['umode'])."', uorder='".intval($_POST['uorder'])."', thold='".intval($_POST['thold'])."', noscore='".(isset($_POST['noscore']) ? $_POST['noscore'] : 0)."', commentmax='".intval($_POST['commentmax'])."' WHERE user_id='".$userinfo['user_id']."'");
+			$db->sql_query("UPDATE ".$user_prefix."_users SET umode='".Fix_Quotes($_POST['umode'])."', uorder='".intval($_POST['uorder'])."', thold='".intval($_POST['thold'])."', noscore='".($_POST['noscore'] ?? 0)."', commentmax='".intval($_POST['commentmax'])."' WHERE user_id='".$userinfo['user_id']."'");
 			$_SESSION['CPG_USER'] = false;
 			unset($_SESSION['CPG_USER']);
 			url_redirect(getlink());

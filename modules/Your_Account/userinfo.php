@@ -16,7 +16,9 @@
 if (!defined('CPG_NUKE')) { exit; }
 
 function userinfo($username) {
-	global $db, $prefix, $user_prefix, $currentlang, $pagetitle, $MAIN_CFG, $CPG_SESS, $CLASS;
+	$board_config = [];
+ $blockslist = [];
+ global $db, $prefix, $user_prefix, $currentlang, $pagetitle, $MAIN_CFG, $CPG_SESS, $CLASS;
 	$owninfo = (is_user() && ($username == is_user() || strtolower($username) == strtolower($CLASS['member']->members[is_user()]['username'])));
 	if ($owninfo) {
 		$userinfo =& $CLASS['member']->members[is_user()];
@@ -65,7 +67,7 @@ function userinfo($username) {
 		$avatar = '<img src="'.$avatar.'" alt="" />';
 	}
 	if ($userinfo['user_website']) {
-		if (!eregi("http://", $userinfo['user_website'])) { $userinfo['user_website'] = "http://$userinfo[user_website]"; } 
+		if (!preg_match('#http:\/\/#mi', $userinfo['user_website'])) { $userinfo['user_website'] = "http://$userinfo[user_website]"; } 
 	}
 	if (strlen($userinfo['user_website']) < 8) { $userinfo['user_website'] = ''; }
 	echo '<table class="forumline" width="100%" cellspacing="1" cellpadding="3" border="0" align="center">';
@@ -241,7 +243,7 @@ function userinfo($username) {
 		if ($owninfo) {
 			if ($MAIN_CFG['member']['my_headlines']) {
 				$hid = isset($_POST['hid']) ? intval($_POST['hid']) : 0;
-				$url = isset($_POST['url']) ? $_POST['url'] : '';
+				$url = $_POST['url'] ?? '';
 				echo '<br />';
 				OpenTable();
 				echo '<center><b>'._MA_MYHEADLINES.'</b><br /><br />'._SELECTASITE.'<br /><br />'
@@ -264,11 +266,11 @@ function userinfo($username) {
 						$sql5 = 'SELECT sitename, headlinesurl FROM '.$prefix."_headlines WHERE hid='$hid'";
 						$result5 = $db->sql_query($sql5);
 						list($title, $url) = $db->sql_fetchrow($result5);
-						$siteurl = eregi_replace('http://', '', $url);
+						$siteurl = preg_replace('#http:\/\/#mi', '', $url);
 						$siteurl = explode('/', $siteurl);
 					} else {
-						if (!ereg('http://', $url)) { $url = 'http://'.$url; }
-						$siteurl = eregi_replace('http://', '', $url);
+						if (!preg_match('#http:\/\/#m', $url)) { $url = 'http://'.$url; }
+						$siteurl = preg_replace('#http:\/\/#mi', '', $url);
 						$siteurl = explode('/', $siteurl);
 						$title = 'http://'.$siteurl[0];
 					}
