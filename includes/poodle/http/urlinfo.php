@@ -63,7 +63,7 @@ class URLInfo implements \ArrayAccess
 		if ($getdata) { $file->data = $result->body; }
 		if ($detectAnim && false !== strpos($file->type, 'image/')) {
 			// split GIF frames, 1 = header, 2 = first/main frame, 3 = second frame
-			$file->animation = (count(preg_split('/\x00[\x00-\xFF]\x00\x2C/', $result->body)) > 2);
+			$file->animation = ((is_countable(preg_split('/\x00[\x00-\xFF]\x00\x2C/', $result->body)) ? count(preg_split('/\x00[\x00-\xFF]\x00\x2C/', $result->body)) : 0) > 2);
 		}
 
 		return $file;

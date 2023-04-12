@@ -21,6 +21,6 @@ namespace Poodle\Auth\Provider\OIDC;
 
 class Google extends \Poodle\Auth\Provider\OpenIDConnect
 {
-	const
+	public const
 		ISSUER_URI = 'https://accounts.google.com';
 }

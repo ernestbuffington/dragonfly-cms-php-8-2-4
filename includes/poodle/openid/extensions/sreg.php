@@ -13,7 +13,7 @@ namespace Poodle\OpenID\Extensions;
 
 class SREG extends \Poodle\OpenID\Message_Fields
 {
-	const
+	public const
 		NS_1_0 = 'http://openid.net/sreg/1.0',
 		NS_1_1 = 'http://openid.net/extensions/sreg/1.1';
 

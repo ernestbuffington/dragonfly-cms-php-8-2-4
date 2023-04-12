@@ -40,7 +40,7 @@ abstract class Headers
 
 	public static function setCookie($name, $value='', $expire=-1, $domain=null)
 	{
-		return setcookie($name, $value, $expire, \Poodle::$URI_BASE, $domain?$domain:$_SERVER['HTTP_HOST'], false);
+		return setcookie($name, $value, ['expires' => $expire, 'path' => \Poodle::$URI_BASE, 'domain' => $domain?$domain:$_SERVER['HTTP_HOST'], 'secure' => false]);
 	}
 
 	# tools.ietf.org/html/rfc2616#section-14.30

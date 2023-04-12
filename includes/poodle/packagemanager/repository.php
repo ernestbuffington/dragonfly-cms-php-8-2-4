@@ -4,7 +4,7 @@ namespace Poodle\PackageManager;
 
 class Repository
 {
-	const
+	public const
 		PKB = '-----BEGIN PUBLIC KEY-----',
 		PKE = '-----END PUBLIC KEY-----';
 

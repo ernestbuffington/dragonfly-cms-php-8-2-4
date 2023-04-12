@@ -13,7 +13,7 @@ namespace Poodle\OpenID\Extensions;
 
 class OAUTH extends \Poodle\OpenID\Message_Fields
 {
-	const
+	public const
 		NS_1_0 = 'http://specs.openid.net/extensions/oauth/1.0';
 
 	protected

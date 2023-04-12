@@ -25,7 +25,7 @@ namespace Poodle\Yadis;
 
 class XRDS
 {
-	const
+	public const
 		XMLNS_XRD_2_0 = 'xri://$xrd*($v*2.0)', // XRD XML namespace
 		XMLNS_XRDS    = 'xri://$xrds',         // XRDS XML namespace
 
@@ -75,7 +75,7 @@ class XRDS
 		$result = array();
 		foreach ($array as $k) {
 			shuffle($k);
-			$result = array_merge($result, $k);
+			$result = [...$result, ...$k];
 		}
 		return $result;
 	}
@@ -195,7 +195,7 @@ class XRDS
 class XRDS_Service
 {
 	public  $parser;
-	private $element;
+	private \DOMNode $element;
 
 	function __construct(\DOMNode $node, XRDS_XMLParser $parser)
 	{

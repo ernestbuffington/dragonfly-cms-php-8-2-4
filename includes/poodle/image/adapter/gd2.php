@@ -11,7 +11,7 @@ namespace Poodle\Image\Adapter;
 
 class GD2
 {
-	const
+	public const
 		COLOR_BLACK   = 11,
 		COLOR_BLUE    = 12,
 		COLOR_CYAN    = 13,

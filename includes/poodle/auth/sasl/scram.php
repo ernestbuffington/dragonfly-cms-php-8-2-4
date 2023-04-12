@@ -56,7 +56,7 @@ class Scram extends \Poodle\Auth\SASL
 			throw new \Exception('Server iterator not found');
 		}
 
-		if (substr($values['r'], 0, strlen($this->nonce)) !== $this->nonce) {
+		if (!str_starts_with($values['r'], $this->nonce)) {
 			throw new \Exception('Server invalid nonce');
 		}
 

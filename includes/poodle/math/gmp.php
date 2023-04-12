@@ -11,7 +11,7 @@ namespace Poodle\Math;
 
 abstract class GMP extends PHP
 {
-	const ENGINE = 'gmp';
+	public const ENGINE = 'gmp';
 
 	public static function add($l, $r, $d=14)
 	{

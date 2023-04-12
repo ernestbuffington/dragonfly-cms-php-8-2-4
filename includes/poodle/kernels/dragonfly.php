@@ -21,7 +21,7 @@ class Dragonfly extends \Poodle
 	use \Poodle\Events;
 
 	public
-		$mlf      = 'html',
+		$mlf      = 'html',           
 
 //		$CFG      = null,
 //		$L10N     = null,
@@ -214,7 +214,7 @@ class Dragonfly extends \Poodle
 
 	public function setCookie($name, $value='', $expire=-1)
 	{
-		return setcookie($name, $value, $expire, $this->base_uri, $this->cookie_domain?$this->cookie_domain:null, false);
+		return setcookie($name, $value, ['expires' => $expire, 'path' => $this->base_uri, 'domain' => $this->cookie_domain?$this->cookie_domain:null, 'secure' => false]);
 	}
 
 	public function run()

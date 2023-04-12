@@ -41,7 +41,7 @@ class Parser
 		$uri_attribs   = array('action','formaction','href','src','poster'),
 		$table_struct  = array('thead','tbody','tfoot');
 
-	const
+	public const
 		XMLNS = 'xmlns:tal="http://xml.zope.org/namespaces/tal"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:i18n="http://xml.zope.org/namespaces/i18n"';
@@ -166,13 +166,13 @@ class Parser
 
 	protected function log_error($msg, $line, $column = 0)
 	{
-		$i = count($this->nodes)-1;
+		$i = (is_countable($this->nodes) ? count($this->nodes) : 0)-1;
 		$this->errors[] = array(
 			'message'=> $msg,
 			'file'   => $this->file,
 			'line'   => $line,
 //			'column' => $column,
-			'node'   => isset($this->nodes[$i]) ? $this->nodes[$i] : ''
+			'node'   => $this->nodes[$i] ?? ''
 		);
 	}
 
@@ -226,7 +226,7 @@ class Parser
 		}
 
 		if ($this->HTML && 'tr' === $name) {
-			$c = count($this->nodes);
+			$c = is_countable($this->nodes) ? count($this->nodes) : 0;
 			if (!in_array($this->nodes[$c]['name'],self::$table_struct)
 			 && (!isset($this->nodes[$c-1]) || !in_array($this->nodes[$c-1]['name'],self::$table_struct)))
 			{
@@ -582,7 +582,7 @@ class Parser
 			break;
 
 		case 'for-each':
-			$var = isset($attribs['as']) ? $attribs['as'] : preg_replace('#^.*/([^/]+)$#D', '$1', $attribs['select']);
+			$var = $attribs['as'] ?? preg_replace('#^.*/([^/]+)$#D', '$1', $attribs['select']);
 			$this->push_character_data();
 			$this->data .= '<?php ' . self::create_foreach($var, $attribs['select']) . ' ?>';
 			$this->xsl_foreach[] = $var;
@@ -591,7 +591,7 @@ class Parser
 		case 'when': if (empty($this->xsl_choose[$level])) { break; }
 		case 'if':
 			$exp = $attribs['test'];
-			$var = ($i = count($this->xsl_foreach)) ? $this->xsl_foreach[$i-1].'->' : '';
+			$var = ($i = is_countable($this->xsl_foreach) ? count($this->xsl_foreach) : 0) ? $this->xsl_foreach[$i-1].'->' : '';
 			$exp = preg_replace('#([^!=><])=#', '$1==', $exp);
 			$exp = preg_replace('#(^|[^a-z>$])([a-z][a-z0-9_]+)(?=[^a-z0-9_]|$)#Di', '$1$ctx->'.$var.'$2', html_entity_decode($exp));
 			$exp = str_replace($var.'position()', 'repeat->'.$var.'index', $exp);
@@ -605,7 +605,7 @@ class Parser
 			break;
 
 		case 'value-of':
-			$this->data .= '<?php static::echo_data('.self::parse_expression((($i = count($this->xsl_foreach)) ? $this->xsl_foreach[$i-1] . '/' : '') . $attribs['select']).'); ?>';
+			$this->data .= '<?php static::echo_data('.self::parse_expression((($i = is_countable($this->xsl_foreach) ? count($this->xsl_foreach) : 0) ? $this->xsl_foreach[$i-1] . '/' : '') . $attribs['select']).'); ?>';
 			break;
 		}
 		return true;

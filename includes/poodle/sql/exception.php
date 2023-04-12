@@ -6,7 +6,7 @@ class Exception extends \Exception
 {
 
 	protected $query;
-	const
+	public const
 		NO_EXTENSION  = -1,
 		NO_CONNECTION = 1,
 		NO_DATABASE   = 2;
@@ -34,7 +34,7 @@ class Exception extends \Exception
 			}
 			$error .= '</div>';
 		} else {
-			$error .= 'The webmaster has been notified of the error</b><br />'.(isset($mailer_message)?$mailer_message:'');
+			$error .= 'The webmaster has been notified of the error</b><br />'.($mailer_message ?? '');
 		}
 		return $error;
 	}

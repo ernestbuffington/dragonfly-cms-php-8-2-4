@@ -68,7 +68,7 @@ class SoundCloud extends \Poodle\Auth\Provider
 			$credentials['redirect_uri'] = \Poodle\URI::appendArgs($_SERVER['REQUEST_URI'], $args);
 		}
 
-		$_SESSION['SOUNDCLOUD_AUTH']['state'] = md5(uniqid(mt_rand(), true));
+		$_SESSION['SOUNDCLOUD_AUTH']['state'] = md5(uniqid(random_int(0, mt_getrandmax()), true));
 		return new \Poodle\Auth\Result\Redirect('https://soundcloud.com/connect?'
 			. http_build_query(array(
 				'client_id' => $this->clientId,
@@ -98,7 +98,7 @@ class SoundCloud extends \Poodle\Auth\Provider
 			return new \Poodle\Auth\Result\Error(self::ERR_FAILURE, 'Retreiving SoundCloud access token failed.');
 		}
 
-		$user_info = json_decode($this->oauthRequest("https://api.soundcloud.com/me?oauth_token={$access_token}"));
+		$user_info = json_decode($this->oauthRequest("https://api.soundcloud.com/me?oauth_token={$access_token}"), null, 512, JSON_THROW_ON_ERROR);
 
 		// https://developers.soundcloud.com/docs/api/reference#me
 		$claimed_id  = "soundcloud-{$user_info->id}";
@@ -150,7 +150,7 @@ class SoundCloud extends \Poodle\Auth\Provider
 			return false;
 		}
 		if (200 != $result->status) {
-			$msg = json_decode($result->body);
+			$msg = json_decode($result->body, null, 512, JSON_THROW_ON_ERROR);
 			if ($msg && isset($msg->error)) {
 				trigger_error('SoundCloud OAuth: '.$msg->error, E_USER_WARNING);
 			} else if (isset($result->headers['www-authenticate'])) {
@@ -191,7 +191,7 @@ class SoundCloud extends \Poodle\Auth\Provider
 			return false;
 		}
 
-		$response_params = json_decode($access_token_response);
+		$response_params = json_decode($access_token_response, null, 512, JSON_THROW_ON_ERROR);
 		return empty($response_params->access_token) ? false : $response_params->access_token;
 	}
 

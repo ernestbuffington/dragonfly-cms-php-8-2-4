@@ -82,7 +82,7 @@ class Admin
 		$CFG->set('auth_cookie', 'name',          $_POST->text('config','auth_cookie','name'));
 		$CFG->set('auth_cookie', 'timeout',       $_POST->uint('config','auth_cookie','timeout'));
 		$CFG->set('auth_cookie', 'cipher',        $_POST->text('config','auth_cookie','cipher'));
-		$CFG->set('auth_cookie', 'cryptkey',      $_POST->text('config','auth_cookie','cryptkey') ?: sha1(mt_rand().microtime()));
+		$CFG->set('auth_cookie', 'cryptkey',      $_POST->text('config','auth_cookie','cryptkey') ?: sha1(random_int(0, mt_getrandmax()).microtime()));
 		$CFG->set('auth_cookie', 'compression',   $_POST->text('config','auth_cookie','compression'));
 
 		\Poodle\Notify::success('Configuration saved');

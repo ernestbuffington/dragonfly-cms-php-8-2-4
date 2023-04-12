@@ -12,7 +12,7 @@ namespace Poodle\Cache\Adapter;
 class APCu extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 {
 
-	const
+	public const
 		INFO_NAME = 'APC User Cache',
 		INFO_DESC = 'APC User Caching',
 		INFO_URL  = 'https://pecl.php.net/package/APCu';
@@ -48,7 +48,8 @@ class APCu extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 			$keys = $this->prefix . static::fixKey($keys);
 		} else if (is_array($keys)) {
 			array_walk($keys, function(&$v, $i) {
-				if (is_string($v)) {
+				$key = null;
+    if (is_string($v)) {
 					$v = $this->prefix . static::fixKey($v);
 				} else {
 					throw new \InvalidArgumentException('Cache->exists(): $keys['.$i.'] is of invalid type '.gettype($key));
@@ -86,7 +87,7 @@ class APCu extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 		$data = apcu_cache_info();
 		if ($data) {
 			foreach ($data['cache_list'] as $item) {
-				if (0 === strpos($item['info'], $this->prefix)) {
+				if (str_starts_with($item['info'], (string) $this->prefix)) {
 					$ret[] = substr($item['info'], strlen($this->prefix));
 				}
 			}

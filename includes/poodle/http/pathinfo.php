@@ -30,7 +30,7 @@ class PathInfo implements \ArrayAccess, \Countable, \Iterator
 	public function offsetSet($i,$v) {}
 	public function offsetUnset($i)  {}
 	# Countable
-	public function count()   { return count($this->path); }
+	public function count()   { return is_countable($this->path) ? count($this->path) : 0; }
 
 	public function getArrayCopy() { return $this->path; }
 }

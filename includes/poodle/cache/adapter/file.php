@@ -12,7 +12,7 @@ namespace Poodle\Cache\Adapter;
 class File extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 {
 
-	const
+	public const
 		INFO_NAME = 'File system',
 		INFO_DESC = 'File system based caching',
 		INFO_URL  = '';
@@ -52,7 +52,7 @@ class File extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 			foreach ($iterator as $path) {
 				if ($path->isDir()) {
 					rmdir($path);
-				} else if (0 !== strpos($path->getBasename(),'.')) {
+				} else if (!str_starts_with($path->getBasename(), '.')) {
 					unlink($path);
 				}
 			}

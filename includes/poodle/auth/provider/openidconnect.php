@@ -13,7 +13,7 @@ namespace Poodle\Auth\Provider;
 
 abstract class OpenIDConnect extends \Poodle\Auth\Provider
 {
-	const
+	public const
 		ISSUER_URI = '';
 
 	public function getAction($credentials=array())

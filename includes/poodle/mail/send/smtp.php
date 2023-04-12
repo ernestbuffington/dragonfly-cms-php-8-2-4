@@ -131,7 +131,9 @@ class SMTP extends \Poodle\Mail\Send
 
 	public function send()
 	{
-		# Try to make an SMTP connection when there's none
+		$header = null;
+  $body = null;
+  # Try to make an SMTP connection when there's none
 		$cfg = static::parseConfig($this->cfg);
 		if ($this->smtp_connected()) {
 			$this->smtp_reset();
@@ -232,7 +234,7 @@ class SMTP extends \Poodle\Mail\Send
 				$this->bad_rcpt[] = $recipient->address;
 			}
 		}
-		if (count($this->bad_rcpt)) {
+		if (is_countable($this->bad_rcpt) ? count($this->bad_rcpt) : 0) {
 			throw new \Exception($this->l10n('recipients_failed').implode(', ', $this->bad_rcpt), E_USER_ERROR);
 		}
 

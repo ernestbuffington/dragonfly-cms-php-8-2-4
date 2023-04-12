@@ -109,7 +109,7 @@ class PostgreSQL extends Importer
 			} else {
 				$q = "TABLE {$name} up to date";
 			}
-			$this->triggerAfterQuery($q, 1 + (count($table['keys']) - count($keys)));
+			$this->triggerAfterQuery($q, 1 + ((is_countable($table['keys']) ? count($table['keys']) : 0) - count($keys)));
 
 			foreach ($keys as $query) {
 				$this->SQL->query($query);
@@ -127,7 +127,7 @@ class PostgreSQL extends Importer
 
 			foreach ($table['columns'] as $field) {
 				if (empty($field['type'])) {
-					$this->aq_event->index += (1 + count($table['keys']));
+					$this->aq_event->index += (1 + (is_countable($table['keys']) ? count($table['keys']) : 0));
 					return;
 				}
 				$fields[] = $this->get_field_specification($field);
@@ -161,7 +161,7 @@ class PostgreSQL extends Importer
 			foreach ($comments as $query) {
 				$this->SQL->query($query);
 			}
-			$this->triggerAfterQuery("CREATE TABLE {$name}", 1 + (count($table['keys']) - count($keys)));
+			$this->triggerAfterQuery("CREATE TABLE {$name}", 1 + ((is_countable($table['keys']) ? count($table['keys']) : 0) - count($keys)));
 
 			foreach ($keys as $query) {
 				$this->SQL->query($query);

@@ -20,7 +20,7 @@ abstract class INI
 	{
 		if (!is_array(self::$vars)) { return $def; }
 		# get_cfg_var() returns the value from php.ini, while ini_get() returns the runtime value
-		return isset(self::$vars[$var]) ? self::$vars[$var] : ini_get($var);
+		return self::$vars[$var] ?? ini_get($var);
 	}
 
 	public static function getBool($var, $def=null)
@@ -128,7 +128,7 @@ abstract class INI
 			$_SESSION = array();
 			if (self::get('session.use_cookies')) {
 				$params = session_get_cookie_params();
-				setcookie(session_name(), '', -1, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+				setcookie(session_name(), '', ['expires' => -1, 'path' => $params['path'], 'domain' => $params['domain'], 'secure' => $params['secure'], 'httponly' => $params['httponly']]);
 			}
 			session_destroy();
 		}

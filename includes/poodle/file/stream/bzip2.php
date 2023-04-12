@@ -13,8 +13,8 @@ class Bzip2
 {
 
 	private $fp;
-	private $offset;
-	const type = 'bzip2';
+	private int $offset;
+	public const type = 'bzip2';
 
 	function __construct($filename)
 	{

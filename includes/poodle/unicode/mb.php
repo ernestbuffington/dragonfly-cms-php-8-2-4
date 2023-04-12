@@ -74,7 +74,7 @@ abstract class MB
 
 		# Issue on large strings?
 		preg_match_all('#.#su', $str, $str);
-		if (count($str[0]) <= $start) return '';
+		if ((is_countable($str[0]) ? count($str[0]) : 0) <= $start) return '';
 		return implode('', empty($end) ? array_slice($str[0], $start) : array_slice($str[0], $start, $end));
 	}
 

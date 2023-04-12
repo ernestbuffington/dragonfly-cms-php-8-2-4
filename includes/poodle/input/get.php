@@ -48,7 +48,7 @@ class GET extends \Poodle\Input
 	protected function _get($args)
 	{
 		if (!$args) { return null; }
-		$c = count($args);
+		$c = is_countable($args) ? count($args) : 0;
 		$v = $this;
 		for ($i=0; $i<$c; ++$i)
 		{

@@ -236,7 +236,7 @@ abstract class Client
 			if (200 == $result->status) {
 				return $result->body;
 			}
-			$msg = json_decode($result->body);
+			$msg = json_decode($result->body, null, 512, JSON_THROW_ON_ERROR);
 			if ($msg && isset($msg->error)) {
 				if (isset($msg->error_description)) {
 					throw new \Exception("{$msg->error} ({$msg->error_description})");

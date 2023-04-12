@@ -11,7 +11,7 @@ namespace Poodle;
 
 class DateTime extends \DateTime
 {
-	const STRING_FORMAT = 'Y-m-d H:i:s',
+	public const STRING_FORMAT = 'Y-m-d H:i:s',
 		// Format types
 		GREGORIAN   = 0,
 		SOLAR_HIJRI = 1;
@@ -171,7 +171,7 @@ class DateTime extends \DateTime
 
 class Date extends DateTime
 {
-	const STRING_FORMAT = 'Y-m-d';
+	public const STRING_FORMAT = 'Y-m-d';
 
 	function __construct($time = null)
 	{
@@ -186,7 +186,7 @@ class Date extends DateTime
 
 class Time extends DateTime
 {
-	const STRING_FORMAT = 'H:i:s';
+	public const STRING_FORMAT = 'H:i:s';
 
 	function __construct($time = null)
 	{

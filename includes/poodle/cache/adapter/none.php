@@ -12,7 +12,7 @@ namespace Poodle\Cache\Adapter;
 class None extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 {
 
-	const
+	public const
 		INFO_NAME = 'None',
 		INFO_DESC = 'No caching',
 		INFO_URL  = '';

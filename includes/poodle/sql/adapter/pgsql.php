@@ -12,7 +12,7 @@ namespace Poodle\SQL\Adapter;
 class PgSQL implements \Poodle\SQL\Interfaces\Adapter
 {
 
-	const
+	public const
 		ENGINE    = 'PostgreSQL',
 		TBL_QUOTE = '"';
 
@@ -164,7 +164,7 @@ class PgSQL implements \Poodle\SQL\Interfaces\Adapter
 			# MySQL regular expression
 			$query = preg_replace('#\s+NOT\s+REGEXP\s+\'#i',  ' !~ \'', $query);
 			$query = preg_replace('#\s+(REGEXP|RLIKE)\s+\'#i', ' ~ \'', $query);
-		} else if ('I' === $query[0] && 'INSERT IGNORE' === substr($query,0,13)) {
+		} else if ('I' === $query[0] && str_starts_with($query, 'INSERT IGNORE')) {
 			# MySQL INSERT IGNORE
 			$ignore = true;
 			$query = 'INSERT'.substr($query,13);
@@ -238,7 +238,8 @@ class PgSQL implements \Poodle\SQL\Interfaces\Adapter
 
 	public function search($fields, $text)
 	{
-		$text = \Poodle\Unicode::as_search_txt($text);
+		$db = null;
+  $text = \Poodle\Unicode::as_search_txt($text);
 		$prefix = $this->server_info < 8.3 ? "'default'," : '';
 		// https://www.postgresql.org/docs/9.1/static/textsearch-controls.html
 //		$tsquery = "plainto_tsquery({$prefix}'{$this->escape_string($text)}')";
@@ -360,7 +361,7 @@ class PgSQL_Result implements \Poodle\SQL\Interfaces\ResultIterator
 
 	public function fetch_object($class_name=null, array $params=null)
 	{
-		$class_name = $class_name ?: $this->object_name ?: 'stdClass';
+		$class_name = ($class_name ?: $this->object_name) ?: 'stdClass';
 		$params = $params ?: $this->object_params;
 		return $params
 			? pg_fetch_object($this->result, null, $class_name, $params)
@@ -393,7 +394,8 @@ class PgSQL_Result implements \Poodle\SQL\Interfaces\ResultIterator
 	}
 	public function fetch_field_direct($offset)
 	{
-		if ($this->field_count <= $offset || 0 > $offset) { return false; }
+		$field = null;
+  if ($this->field_count <= $offset || 0 > $offset) { return false; }
 		$type = pg_field_type($this->result, $offset);
 		$info = new \stdClass();
 		$info->name  = pg_field_name($this->result, $offset);

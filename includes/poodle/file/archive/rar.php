@@ -80,9 +80,10 @@ class RAR extends \Poodle\File\Archive
 
 	protected function load_toc()
 	{
-		if ($fp = rar_open($this->filename)) {
+		$entry = [];
+  if ($fp = rar_open($this->filename)) {
 			$entries = rar_list($fp);
-			$this->toc['cd']['entries'] = count($entries);
+			$this->toc['cd']['entries'] = is_countable($entries) ? count($entries) : 0;
 			$dir = null;
 			for ($i=0; $i<$this->toc['cd']['entries']; ++$i) {
 //			foreach ($entries as $entry) {

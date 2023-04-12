@@ -20,7 +20,7 @@ namespace Poodle\Mail;
 
 abstract class Send extends \Poodle\TPL implements \ArrayAccess
 {
-	const
+	public const
 		HEADER_ADD_TO = 1,
 		HEADER_ADD_BCC = 2,
 		HEADER_NO_SUBJECT = 4;
@@ -223,9 +223,9 @@ abstract class Send extends \Poodle\TPL implements \ArrayAccess
 	# successfully then it returns false.
 	public function prepare(&$header, &$body, $flags=0)
 	{
-		$count_to = count($this->recipients['To']);
-		$count_cc = count($this->recipients['Cc']);
-		$count_bcc = count($this->recipients['Bcc']);
+		$count_to = is_countable($this->recipients['To']) ? count($this->recipients['To']) : 0;
+		$count_cc = is_countable($this->recipients['Cc']) ? count($this->recipients['Cc']) : 0;
+		$count_bcc = is_countable($this->recipients['Bcc']) ? count($this->recipients['Bcc']) : 0;
 		if ($count_to+$count_cc+$count_bcc < 1) {
 			throw new \Exception(self::l10n('You must provide at least one recipient email address'), E_USER_ERROR);
 		}
@@ -277,16 +277,16 @@ abstract class Send extends \Poodle\TPL implements \ArrayAccess
 		### Create Header ###
 
 		# Set the boundaries
-		$uniq_id = md5(uniqid(mt_rand(), true));
+		$uniq_id = md5(uniqid(random_int(0, mt_getrandmax()), true));
 		$this->boundary = array('a1_'.$uniq_id, 'a2_'.$uniq_id);
 		$header = array(
 			'Date: '.gmdate('r'),
 			'From: '.$this->from->asEncodedString(),
 		);
-		if (count($this->reply_to)) {
+		if (is_countable($this->reply_to) ? count($this->reply_to) : 0) {
 			$header[] = 'Reply-to: '.$this->reply_to->asEncodedString();
 		}
-		if ($this->sender || count($this->from) > 1) {
+		if ($this->sender || (is_countable($this->from) ? count($this->from) : 0) > 1) {
 			$header[] = 'Sender: '.$this->__get('sender')->asEncodedString();
 		}
 		# MAIL sets the to address itself ?
@@ -320,7 +320,7 @@ abstract class Send extends \Poodle\TPL implements \ArrayAccess
 			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 			$header[] = "X-PHP-Originating-Script: ".fileowner($bt[1]['file']).":".basename($bt[1]['file']);
 		}
-		if (count($this->notify_to)) {
+		if (is_countable($this->notify_to) ? count($this->notify_to) : 0) {
 			$header[] = "Disposition-Notification-To: {$this->notify_to}";
 		}
 		# Add custom headers
@@ -586,7 +586,7 @@ abstract class Send extends \Poodle\TPL implements \ArrayAccess
 	{
 		$K = \Poodle::getKernel();
 		$K->L10N->load('poodle_mail');
-		return isset($K->L10N['_mail'][$key]) ? $K->L10N['_mail'][$key] : 'MAIL Language string failed to load: '.$key;
+		return $K->L10N['_mail'][$key] ?? 'MAIL Language string failed to load: '.$key;
 	}
 
 	# ArrayAccess

@@ -16,7 +16,7 @@ namespace Poodle\Math;
 
 abstract class PHP extends Base implements MathInterface
 {
-	const ENGINE = null;
+	public const ENGINE = null;
 
 	protected static function shiftDecimal($v, $shift = 2)
 	{

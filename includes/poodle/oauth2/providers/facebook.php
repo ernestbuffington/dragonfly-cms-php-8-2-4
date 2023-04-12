@@ -4,7 +4,7 @@ namespace Poodle\OAuth2\Providers;
 
 class Facebook extends \Poodle\OAuth2\Client
 {
-	const
+	public const
 		GRAPH_VERSION = 'v2.9';
 
 	protected
@@ -64,7 +64,7 @@ class Facebook extends \Poodle\OAuth2\Client
 		if (!$body) { $body = array(); }
 		if (!isset($body['appsecret_proof'])) {
 			$body['appsecret_proof'] = hash_hmac('sha256',
-				isset($body['access_token']) ? $body['access_token'] : "{$this->id}|{$this->secret}",
+				$body['access_token'] ?? "{$this->id}|{$this->secret}",
 				$this->secret);
 		}
 		return parent::HTTPRequest($method, $url, $body, $headers);

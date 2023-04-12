@@ -11,7 +11,7 @@ namespace Poodle\SQL\Adapter;
 
 class MySQLi extends \MySQLi implements \Poodle\SQL\Interfaces\Adapter
 {
-	const
+	public const
 		ENGINE    = 'MySQL',
 		TBL_QUOTE = '`';
 
@@ -169,12 +169,12 @@ class MySQLi extends \MySQLi implements \Poodle\SQL\Interfaces\Adapter
 		} catch (\Exception $e) {
 			// 'Incorrect string value' error can be when database is not utf8mb4,
 			// just convert them to HTML Entities and try again
-			if (strpos($e->getMessage(), 'Incorrect string value') !== 0) {
+			if (!str_starts_with($e->getMessage(), 'Incorrect string value')) {
 				throw $e;
 			}
 			parent::real_query(preg_replace_callback(
 			'#(\\xF0[\\x90-\\xBF][\\x80-\\xBF]{2}|[\\xF1-\\xF3][\\x80-\\xBF]{3}|\\xF4[\\x80-\\x8F][\\x80-\\xBF]{2})+#',
-			function($m){return mb_convert_encoding($m[0],'HTML-ENTITIES','UTF-8');},
+			fn($m) => mb_convert_encoding($m[0],'HTML-ENTITIES','UTF-8'),
 			$query));
 		}
 		if ($this->field_count) {
@@ -324,7 +324,7 @@ class MySQLi_UseResult extends \MySQLi_Result
 
 	public function fetch_object($class_name=null, array $params=null)
 	{
-		$class_name = $class_name ?: $this->object_name ?: 'stdClass';
+		$class_name = ($class_name ?: $this->object_name) ?: 'stdClass';
 		$params = $params ?: $this->object_params;
 		return $params
 			? parent::fetch_object($class_name, $params)

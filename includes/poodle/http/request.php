@@ -142,7 +142,7 @@ abstract class Request
 
 	public static function getSchemePort($scheme)
 	{
-		return isset(self::$scheme_ports[$scheme]) ? self::$scheme_ports[$scheme] : 0;
+		return self::$scheme_ports[$scheme] ?? 0;
 	}
 
 	protected static function parseHeaders($headers)

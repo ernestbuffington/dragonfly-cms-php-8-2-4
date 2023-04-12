@@ -25,7 +25,7 @@ class File
 		$error_val = null,
 		$moved     = false;
 
-	const
+	public const
 /*
 		UPLOAD_ERR_OK         = 0, // There is no error, the file uploaded with success.
 		UPLOAD_ERR_INI_SIZE   = 1, // The uploaded file exceeds the upload_max_filesize directive in php.ini.
@@ -210,6 +210,6 @@ class File
 
 	function __toString()
 	{
-		return $this->errno ? null : $this->moved ?: $this->tmpfile;
+		return ($this->errno ? null : $this->moved) ?: $this->tmpfile;
 	}
 }

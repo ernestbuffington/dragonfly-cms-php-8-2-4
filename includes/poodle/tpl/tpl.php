@@ -13,7 +13,7 @@ namespace Poodle;
 
 class TPL extends \Poodle\TPL\Context
 {
-	const
+	public const
 		OPT_PUSH_DOCTYPE = 1,
 		OPT_END_PARSER   = 2,
 		OPT_XMLREADER    = 4;
@@ -64,7 +64,7 @@ class TPL extends \Poodle\TPL\Context
 		// End old CPGTPL stuff
 
 		case 'bugs':         return \Poodle\Debugger::displayPHPErrors() ? \Poodle\Debugger::report() : null;
-		case 'bugs_json':    return \Poodle\Debugger::displayPHPErrors() ? json_encode(\Poodle\Debugger::report()) : null;
+		case 'bugs_json':    return \Poodle\Debugger::displayPHPErrors() ? json_encode(\Poodle\Debugger::report(), JSON_THROW_ON_ERROR) : null;
 		case 'memory_usage': return (is_object($this->L10N) ? $this->L10N->filesizeToHuman(memory_get_peak_usage()) : memory_get_peak_usage());
 		case 'parse_time':   return microtime(true)-$_SERVER['REQUEST_TIME_FLOAT'];
 		case 'tpl_time':     return $this->_total_time;
@@ -104,13 +104,13 @@ class TPL extends \Poodle\TPL\Context
 					}
 				}
 				if (\Poodle::$DEBUG & \Poodle::DBG_INCLUDED_FILES) {
-					$r['included_files'] = \Poodle::shortFilePath(array_filter(get_included_files(), function($v){return false===strpos($v,'tpl://');}));
+					$r['included_files'] = \Poodle::shortFilePath(array_filter(get_included_files(), fn($v) => false===strpos($v,'tpl://')));
 					sort($r['included_files']);
 				}
 				if (\Poodle::$DEBUG & \Poodle::DBG_DECLARED_CLASSES) {
 					// PHP 5.4.16: Invalid UTF-8 sequence in argument
 					// Somewhere there's a PHP memory bug so we filter out any class without '\'
-					$r['declared_classes'] = array_values(array_filter(get_declared_classes(), function($v){return !!strpos($v,'\\');}));
+					$r['declared_classes'] = array_values(array_filter(get_declared_classes(), fn($v) => !!strpos($v,'\\')));
 				}
 				if (\Poodle::$DEBUG & \Poodle::DBG_DECLARED_INTERFACES) {
 					$r['declared_interfaces'] = get_declared_interfaces();
@@ -120,7 +120,7 @@ class TPL extends \Poodle\TPL\Context
 					$r['parse_time'] = microtime(true)-$_SERVER['REQUEST_TIME_FLOAT'];
 				}
 			}
-			return str_replace('\\/','/',json_encode($r));
+			return str_replace('\\/','/',json_encode($r, JSON_THROW_ON_ERROR));
 		}
 		return parent::__get($key);
 	}
@@ -322,7 +322,8 @@ class TPL extends \Poodle\TPL\Context
 	# Check for a valid file
 	public function findFile($filename)
 	{
-		$lfilename = strtolower($filename);
+		$m = [];
+  $lfilename = strtolower($filename);
 		$files = array(
 			"{$this->tpl_path}{$this->tpl_type}/{$filename}.xml",
 			"{$this->tpl_path}{$this->tpl_type}/{$lfilename}.xml",
@@ -583,12 +584,12 @@ class TPL extends \Poodle\TPL\Context
 			$k = $blocks[0];
 			if (!isset($this->$k)) { return false; }
 			$top = $this->$k;
-			$arr = &$top[count($this->$k)-1];
+			$arr = &$top[(is_countable($this->$k) ? count($this->$k) : 0)-1];
 			$blockcount = count($blocks)-1;
 			for ($i = 1; $i < $blockcount; ++$i)  {
 				if (!isset($arr[$blocks[$i]])) { return false; }
 				$arr = &$arr[$blocks[$i]];
-				$arr = &$arr[count($arr) - 1];
+				$arr = &$arr[(is_countable($arr) ? count($arr) : 0) - 1];
 			}
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given

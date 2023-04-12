@@ -16,7 +16,7 @@ class Request extends \Poodle\OpenID\RelyingParty
 	protected
 		$anonymous = false;
 
-	const
+	public const
 		MODE_ASSOCIATE  = 'associate',            // http://openid.net/specs/openid-authentication-2_0.html#rfc.section.8
 		MODE_CHECKID_I  = 'checkid_immediate',    // http://openid.net/specs/openid-authentication-2_0.html#rfc.section.9
 		MODE_CHECKID_S  = 'checkid_setup',        // http://openid.net/specs/openid-authentication-2_0.html#rfc.section.9

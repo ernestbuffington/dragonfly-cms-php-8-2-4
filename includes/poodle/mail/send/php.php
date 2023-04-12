@@ -19,7 +19,9 @@ class PHP extends \Poodle\Mail\Send
 	# Sends mail using the PHP mail() function.
 	public function send()
 	{
-		$to = array();
+		$header = null;
+  $body = null;
+  $to = array();
 		foreach ($this->recipients['To'] as $recipient) {
 			$to[] = empty($recipient->name)
 				? $recipient->address

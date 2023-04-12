@@ -12,7 +12,7 @@ namespace Poodle;
 abstract class LOG
 {
 
-	const
+	public const
 		CREATE  = 1, # created data
 		MODIFY  = 2, # edited data. NOTE: don't confuse with UPDATE
 		DELETE  = 3, # removed data. TIP: place deleted data in message

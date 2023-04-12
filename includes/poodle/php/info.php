@@ -91,7 +91,7 @@ abstract class Info
 			unset($info['module_apache_environment']);       // Same as INFO_VARIABLES
 			unset($info['module_http_headers_information']); // Headers not needed
 
-			$info = array_filter($info, function($v){return $v['items'];});
+			$info = array_filter($info, fn($v) => $v['items']);
 		}
 		else
 		{

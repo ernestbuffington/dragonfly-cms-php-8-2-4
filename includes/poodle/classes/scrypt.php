@@ -17,7 +17,7 @@ namespace Poodle;
  */
 abstract class Scrypt
 {
-	const
+	public const
 		OPSLIMIT_INTERACTIVE = 534288,
 		MEMLIMIT_INTERACTIVE = 16777216,
 		STRPREFIX            = '$7$',
@@ -111,7 +111,8 @@ abstract class Scrypt
 
 	public static function verify($hash, $str)
 	{
-		$params = explode('$', $hash);
+		$string = null;
+  $params = explode('$', $hash);
 		if (count($params) == 5) {
 			$hash = base64_decode($params[4]);
 			$str = static::kdf($string, $params[3], $params[0], $params[1], $params[2], strlen($hash), true);
@@ -163,7 +164,7 @@ abstract class Scrypt
 		$value = 0;
 		$dstbits = min($dstbits, strlen($src)*6);
 		for ($bit = 0; $bit < $dstbits; $bit += 6) {
-			$value |= strpos(static::ITOA64, $src[$i++]) << $bit;
+			$value |= strpos(static::ITOA64, (string) $src[$i++]) << $bit;
 		}
 		return $value;
 	}

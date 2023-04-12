@@ -11,7 +11,7 @@ namespace Poodle\OpenID\RelyingParty;
 
 class Response_Exception extends \Exception
 {
-	const
+	public const
 		E_ERROR_MESSAGE = 1,
 		E_INVALID_MODE  = 2;
 
@@ -206,7 +206,7 @@ class Response extends \Poodle\OpenID\RelyingParty
 			// 14.2.1.  Relying Parties
 			// The Relying Party MUST accept an authentication response (Positive Assertions) that is missing
 			// the "openid.response_nonce" parameter. It SHOULD implement a method for preventing replay attacks.
-			$nonce = isset($_GET[self::V1_QUERY_NONCE_KEY]) ? $_GET[self::V1_QUERY_NONCE_KEY] : '';
+			$nonce = $_GET[self::V1_QUERY_NONCE_KEY] ?? '';
 			$server_url = '';
 		} else {
 			$nonce = $this->message['response_nonce'];
@@ -276,7 +276,7 @@ class Response extends \Poodle\OpenID\RelyingParty
 	protected function verifyV1Discovery($endpoint)
 	{
 		$k = self::V1_QUERY_CLAIMED_ID_KEY;
-		$claimed_id = isset($_GET[$k]) ? $_GET[$k] : null;
+		$claimed_id = $_GET[$k] ?? null;
 		if (!$claimed_id) {
 			if (!$endpoint) {
 				throw new Response_Exception('Claimed Identifier is missing');
@@ -357,7 +357,8 @@ class Response extends \Poodle\OpenID\RelyingParty
 
 	protected function discoverAndVerify($claimed_id, $to_match_endpoints)
 	{
-		$services = \Poodle\OpenID\Discover::ID($claimed_id, $this->fetcher);
+		$result = null;
+  $services = \Poodle\OpenID\Discover::ID($claimed_id, $this->fetcher);
 
 		if (!$services) {
 			throw new Response_Exception("No OpenID information found at {$claimed_id}");

@@ -12,7 +12,7 @@ namespace Poodle;
 abstract class Cache implements \ArrayAccess
 {
 
-	const
+	public const
 		INFO_NAME = '',
 		INFO_DESC = '',
 		INFO_URL  = '';

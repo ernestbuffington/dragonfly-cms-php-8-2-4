@@ -11,7 +11,7 @@ namespace Poodle\Math;
 
 abstract class BcMath extends Base implements MathInterface
 {
-	const ENGINE = 'bcmath';
+	public const ENGINE = 'bcmath';
 
 	public static function add($l, $r, $d=14) { return static::doMath('add', $l, $r, $d); }
 	public static function cmp($l, $r, $d=14) { return bccomp(static::getValid($l), static::getValid($r), $d); }

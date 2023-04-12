@@ -11,7 +11,7 @@ namespace Poodle;
 
 class SQL
 {
-	const
+	public const
 		STORE_RESULT = 0,
 		UNBUFFERED   = 1,
 		ADD_PREFIX   = 2,
@@ -68,7 +68,7 @@ class SQL
 				}
 				if ('I' === $query[0]) {
 					$query = preg_replace_callback('#([\(,]\s*)0x(([0-9a-f]{2}?)+)(\s*)#',
-						function($m){return $m[1] . $this->DBM->quoteBinary(pack('H*', $m[2])) . $m[4];},
+						fn($m) => $m[1] . $this->DBM->quoteBinary(pack('H*', $m[2])) . $m[4],
 						$query);
 				}
 				$query = preg_replace('#{([a-z0-9_]+)}#', "{$this->TBL->prefix}\$1", $query);

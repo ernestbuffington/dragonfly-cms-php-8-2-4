@@ -117,7 +117,8 @@ class OpenID extends \Poodle\Auth\Provider
 
 	protected function finish()
 	{
-		if (!isset($_SESSION['OpenID']['return_to'])) {
+		$identity_id = null;
+  if (!isset($_SESSION['OpenID']['return_to'])) {
 			return new \Poodle\Auth\Result\Error(self::ERR_CREDENTIAL_INVALID, 'A database record with the supplied identity_id ('.$identity_id.') could not be found.');
 		}
 		$response    = \Poodle\OpenID\RelyingParty::finish(null, $_SESSION['OpenID']['return_to']);
@@ -148,10 +149,10 @@ class OpenID extends \Poodle\Auth\Provider
 			$user = \Poodle\Identity::factory(array(
 				'nickname'  => $nick,
 				'email'     => isset($ext['email']) ? mb_strtolower($ext['email']) : '',
-				'givenname' => isset($ext[$fn]) ? $ext[$fn] : '',
-				'surname'   => isset($ext[$ln]) ? $ext[$ln] : '',
+				'givenname' => $ext[$fn] ?? '',
+				'surname'   => $ext[$ln] ?? '',
 				'language'  => isset($ext['language']) ? strtr(strtolower($ext['language']),'_','-') : '',
-				'timezone'  => isset($ext['timezone']) ? $ext['timezone'] : date_default_timezone_get(),
+				'timezone'  => $ext['timezone'] ?? date_default_timezone_get(),
 			));
 		} else {
 			$user = \Poodle\Identity\Search::byID($identity_id);

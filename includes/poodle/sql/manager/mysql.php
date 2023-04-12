@@ -66,7 +66,7 @@ class MySQL implements \Poodle\SQL\Interfaces\Manager
 		if ($result = $this->SQL->query("SHOW {$full} COLUMNS FROM {$table}"))
 		{
 			$return = array();
-			$re_cb = function($m){return strtoupper($m[1]);};
+			$re_cb = fn($m) => strtoupper($m[1]);
 			while ($row = $result->fetch_assoc()) {
 				$row['Type'] = preg_replace_callback('#^([a-z\s]+)#', $re_cb, $row['Type']);
 				$row['Type'] = str_replace(' unsigned', '', $row['Type']);

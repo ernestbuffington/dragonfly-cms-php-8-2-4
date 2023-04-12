@@ -41,7 +41,10 @@ class Sendmail extends SMTP
 	# Sends mail using the sendmail program.
 	public function send()
 	{
-		$command = escapeshellcmd($this->cfg) ?: ini_get('sendmail_path') ?: '/usr/sbin/sendmail -i -t';
+		$cfg = null;
+  $header = null;
+  $body = null;
+  $command = (escapeshellcmd($this->cfg) ?: ini_get('sendmail_path')) ?: '/usr/sbin/sendmail -i -t';
 		if (false !== strpos($command, ' -t')) {
 			if (isset($this->sender)) {
 //				$command .= ' -F ' . escapeshellarg("{$this->sender->name} <{$this->sender->address}>");

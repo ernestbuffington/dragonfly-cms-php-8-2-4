@@ -31,7 +31,7 @@ abstract class SASL
 		if (preg_match('/^([A-Z]+)(-.+)?$/Di', $type, $m)) {
 			$class = __CLASS__ . "\\{$m[1]}";
 			if (class_exists($class)) {
-				return new $class(isset($m[2]) ? $m[2] : null);
+				return new $class($m[2] ?? null);
 			}
 		}
 		throw new \Exception("Unsupported SASL mechanism type: {$type}");
@@ -41,7 +41,7 @@ abstract class SASL
 	{
 		if (preg_match('/^([A-Z]+)(-.+)?$/Di', $type, $m)) {
 			$class = __CLASS__ . "\\{$m[1]}";
-			return class_exists($class) && $class::isSupported(isset($m[2]) ? $m[2] : null);
+			return class_exists($class) && $class::isSupported($m[2] ?? null);
 		}
 		return false;
 	}

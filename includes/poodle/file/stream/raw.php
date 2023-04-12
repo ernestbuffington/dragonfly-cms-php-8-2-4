@@ -13,7 +13,7 @@ class Raw
 {
 
 	private $fp;
-	const type = 'default';
+	public const type = 'default';
 
 	function __construct($filename)
 	{

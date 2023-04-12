@@ -12,7 +12,7 @@ namespace Poodle;
 abstract class Auth
 {
 
-	const
+	public const
 		ERR_FAILURE            = 1,
 		ERR_IDENTITY_NOT_FOUND = 2, # Failure due to identity not being found.
 		ERR_IDENTITY_AMBIGUOUS = 3, # Failure due to identity being ambiguous.
@@ -52,7 +52,7 @@ abstract class Auth
 		shuffle($chars);
 		$l = count($chars)-1;
 		for ($x=0; $x<$length; ++$x) {
-			$c = $chars[mt_rand(0, $l)];
+			$c = $chars[random_int(0, $l)];
 			$pass .= is_int($c) ? chr($c) : $c;
 		}
 		return $pass;

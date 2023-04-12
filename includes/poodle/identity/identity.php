@@ -21,7 +21,7 @@ class Identity implements \ArrayAccess, \Iterator
 	protected static
 		$details_ids = null;
 
-	const
+	public const
 		TYPE_REMOVED  = -1,
 		TYPE_INACTIVE = 0,
 		TYPE_ACTIVE   = 1;
@@ -181,7 +181,7 @@ class Identity implements \ArrayAccess, \Iterator
 			$AC = \Poodle::getKernel()->CFG->auth_cookie;
 			if (!empty($AC->allow)) {
 				$result = $ID->authenticate($_COOKIE, array(
-					'class' => isset($AC->class) ? $AC->class : 'Poodle\\Auth\\Provider\\Cookie'
+					'class' => $AC->class ?? 'Poodle\\Auth\\Provider\\Cookie'
 				));
 				if ($result instanceof \Poodle\Auth\Result\Success && $result->user->id) {
 					$ID->updateLastVisit();

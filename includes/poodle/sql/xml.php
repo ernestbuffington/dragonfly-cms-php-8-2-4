@@ -49,7 +49,7 @@ class XML
 		}
 		if ($class) {
 			// This is faster then call_user_func_array()
-			switch (count($args))
+			switch (is_countable($args) ? count($args) : 0)
 			{
 			case 0: $ret = $class->{$method}(); break;
 			case 1: $ret = $class->{$method}($args[0]); break;

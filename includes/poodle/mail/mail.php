@@ -21,7 +21,7 @@ abstract class Mail
 	{
 		$CFG = \Poodle::getKernel()->CFG->mail;
 		$handler = $CFG->sender;
-		return self::open('send', $handler, isset($CFG->$handler) ? $CFG->$handler : '');
+		return self::open('send', $handler, $CFG->$handler ?? '');
 	}
 
 	# Removes the "\015\012" ("\r\n") which causes linebreaks in SMTP email.
@@ -44,7 +44,7 @@ abstract class Mail
 
 	protected static function Q_encode($value)
 	{
-		return preg_replace_callback('#[^!*+/\-A-Za-z]#', function($m){return '='.strtoupper(bin2hex($m[0]));}, $value);
+		return preg_replace_callback('#[^!*+/\-A-Za-z]#', fn($m) => '='.strtoupper(bin2hex($m[0])), $value);
 	}
 
 	# Encode a header string to best of Q, B, quoted or none.
@@ -94,7 +94,7 @@ abstract class Mail
 		$fn = $encoding.'_encode';
 		return trim($name) . preg_replace_callback(
 			'#(.{1,'.$chars.'})#',
-			function($m) use ($start, $fn, $end) {return $start . self::$fn($m[1]) . $end;},
+			fn($m) => $start . self::$fn($m[1]) . $end,
 			$value);
 	}
 

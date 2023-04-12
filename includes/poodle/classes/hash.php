@@ -11,7 +11,7 @@ namespace Poodle;
 
 abstract class Hash
 {
-	const
+	public const
 		BCRYPT_DEFAULT_WORK_FACTOR = 10;
 
 	public static
@@ -209,7 +209,7 @@ abstract class Hash
 			}
 			$result = $user_string == $known_string;
 		}
-		usleep(mt_rand(10000, 100000)); // wait between 0.01 and 0.1 second
+		usleep(random_int(10000, 100000)); // wait between 0.01 and 0.1 second
 		return $result;
 	}
 

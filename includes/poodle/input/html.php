@@ -192,8 +192,8 @@ class HTML
 	{
 		$flags |= ENT_HTML5;
 		// replace numeric entities
-		$string = preg_replace_callback('/&#x([0-9a-f]+);/i', function($m){return self::dec2utf8(hexdec($m[1]));}, $string);
-		$string = preg_replace_callback('/&#([0-9]+);/', function($m){return self::dec2utf8($m[1]);}, $string);
+		$string = preg_replace_callback('/&#x([0-9a-f]+);/i', fn($m) => self::dec2utf8(hexdec($m[1])), $string);
+		$string = preg_replace_callback('/&#([0-9]+);/', fn($m) => self::dec2utf8($m[1]), $string);
 		// replace literal entities
 		$entities = get_html_translation_table(HTML_ENTITIES, $flags, $charset);
 		if (!$entities) {
@@ -224,7 +224,7 @@ class HTML
 	{
 		return preg_replace_callback(
 			'#(\\xF0[\\x90-\\xBF][\\x80-\\xBF]{2}|[\\xF1-\\xF3][\\x80-\\xBF]{3}|\\xF4[\\x80-\\x8F][\\x80-\\xBF]{2})+#',
-			function($m){return mb_convert_encoding($m[0],'HTML-ENTITIES','UTF-8');},
+			fn($m) => mb_convert_encoding($m[0],'HTML-ENTITIES','UTF-8'),
 			$str);
 	}
 

@@ -44,13 +44,14 @@ abstract class Unicode
 	{
 		return preg_replace_callback(
 			'#([\x00-\x08\x0B\x0C\x0E-\x1F\x7F])#', // '#(\p{C})#u'
-			function($m){return '\\x'.bin2hex($m[1]);},
+			fn($m) => '\\x'.bin2hex($m[1]),
 			$str);
 	}
 
 	public static function to_latin($str)
 	{
-		$str = STR::tolower($str);
+		$to_latin = null;
+  $str = STR::tolower($str);
 		require __DIR__ . '/utf-8/to_latin.inc';
 		$str = strtr($str, $to_latin);
 		unset($to_latin);

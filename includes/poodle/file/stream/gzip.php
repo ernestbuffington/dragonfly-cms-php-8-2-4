@@ -13,8 +13,8 @@ class Gzip
 {
 
 	private $fp;
-	private $offset;
-	const type = 'gzip';
+	private int $offset;
+	public const type = 'gzip';
 
 	function __construct($filename)
 	{

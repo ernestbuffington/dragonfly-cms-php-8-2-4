@@ -84,7 +84,7 @@ class Symmetric
 		$compressor = self::$compressors[$this->options['compression']][$decode?'decode':'encode'];
 		if (isset($compressor['args'])) {
 			$largs = $compressor['args'];
-			if (2 === count($largs)) {
+			if (2 === (is_countable($largs) ? count($largs) : 0)) {
 				$data = $compressor[0]($data, $largs[0], $largs[1]);
 			} else {
 				$data = $compressor[0]($data, $largs[0]);
@@ -137,7 +137,7 @@ class Symmetric
 			$list = openssl_get_cipher_methods();
 			$list = array_diff($list, array_map('strtoupper',$list));
 			// ECB = insecure, GCM not supported
-			$list = array_filter($list, function($v){return !(strpos($v,'-ecb') || strpos($v,'-gcm'));});
+			$list = array_filter($list, fn($v) => !(strpos($v,'-ecb') || strpos($v,'-gcm')));
 			natcasesort($list);
 		}
 		return $list;

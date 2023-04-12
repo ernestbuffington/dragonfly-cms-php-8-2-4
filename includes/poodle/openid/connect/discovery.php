@@ -52,7 +52,7 @@ class Discovery
 			// 2.2.2. User Input using URL Syntax
 			// 2.2.3. User Input using Hostname and Port Syntax
 			} else {
-				if (empty($parts['scheme']) || 'http' !== substr($parts['scheme'], 0, 4)) {
+				if (empty($parts['scheme']) || !str_starts_with($parts['scheme'], 'http')) {
 					$parts['scheme'] = 'https';
 				}
 				unset($parts['fragment']);
@@ -77,7 +77,8 @@ class Discovery
 	// Uses WebFinger http://tools.ietf.org/html/rfc7033
 	public static function getProviderIssuer($host, $resource, $rel = 'http://openid.net/specs/connect/1.0/issuer')
 	{
-		$host = rtrim($host,'/');
+		$HTTP = null;
+  $host = rtrim($host,'/');
 		$result = $HTTP->get("https://{$host}/.well-known/webfinger?".http_build_query(array('resource' => $resource, 'rel' => $rel)));
 		if (200 != $result->status) {
 			throw new \Exception("Unable to get WebFinger of {$host}, status: {$result->status}");
@@ -87,7 +88,7 @@ class Discovery
 			throw new \Exception("Incorrect content type for WebFinger of {$host}");
 		}
 
-		$result = json_decode($result->body, true);
+		$result = json_decode($result->body, true, 512, JSON_THROW_ON_ERROR);
 		if (!$result) {
 			throw new \Exception("Invalid JSON content for WebFinger of {$host}");
 		}
@@ -96,7 +97,7 @@ class Discovery
 		}
 		$href = null;
 		foreach ($result['links'] as $link) {
-			if ($link['rel'] == $rel && !empty($link['href']) && 'https:' === substr($link['href'],0,6)) {
+			if ($link['rel'] == $rel && !empty($link['href']) && str_starts_with($link['href'], 'https:')) {
 				$href = $temp_link['href'];
 			}
 		}
@@ -121,7 +122,7 @@ class Discovery
 					throw new \Exception("Incorrect content type for openid-configuration of {$issuer}");
 				}
 
-				$discovery = json_decode($result->body, true);
+				$discovery = json_decode($result->body, true, 512, JSON_THROW_ON_ERROR);
 				if (!$discovery) {
 					throw new \Exception("Invalid JSON content for openid-configuration of {$issuer}");
 				}

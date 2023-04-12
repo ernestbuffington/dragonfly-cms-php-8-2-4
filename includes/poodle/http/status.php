@@ -12,7 +12,7 @@ namespace Poodle\HTTP;
 abstract class Status
 {
 	# Status Codes http://w3.org/Protocols/rfc2616/rfc2616-sec10.html
-	private static $codes = array(
+	private static array $codes = array(
 		// Informational 1xx
 		100 => 'Continue',
 		101 => 'Switching Protocols',
@@ -112,7 +112,7 @@ abstract class Status
 
 	public static function getCodeText($code)
 	{
-		return isset(self::$codes[$code]) ? self::$codes[$code] : false;
+		return self::$codes[$code] ?? false;
 	}
 
 }

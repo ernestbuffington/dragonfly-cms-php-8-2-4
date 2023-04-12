@@ -66,7 +66,7 @@ class Context
 		if ('SERVER'    === $name) { return $_SERVER; }
 		if ('KERNEL'    === $name) { return \Poodle::getKernel(); }
 		if ('RESOURCE'  === $name) { return \Poodle::getKernel()->RESOURCE; }
-		if ('REQUEST'   === $name) { return array('GET'=>$_GET,'POST'=>isset($_POST)?$_POST:null); }
+		if ('REQUEST'   === $name) { return array('GET'=>$_GET,'POST'=>$_POST ?? null); }
 		if ('SQL'       === $name) { return \Poodle::getKernel()->SQL; }
 		if ('CONFIG'    === $name) { return \Poodle::getKernel()->CFG; }
 		if ('IDENTITY'  === $name) { return \Poodle::getKernel()->IDENTITY; }

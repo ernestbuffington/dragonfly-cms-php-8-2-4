@@ -15,7 +15,7 @@ namespace Poodle\OpenID;
 
 abstract class RelyingParty
 {
-	const
+	public const
 		V1_QUERY_NONCE_KEY      = 'openid_nonce',
 		V1_QUERY_CLAIMED_ID_KEY = 'openid_cid',
 		/**

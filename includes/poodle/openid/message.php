@@ -13,7 +13,7 @@ namespace Poodle\OpenID;
 
 class Message implements \ArrayAccess
 {
-	const V1_URL_LIMIT = 2047;
+	public const V1_URL_LIMIT = 2047;
 
 	protected
 		$version = 0,
@@ -58,14 +58,14 @@ class Message implements \ArrayAccess
 			if ($ns) {
 				trigger_error("Cannot map {$uri} to alias {$alias}.");
 			} else {
-				$c = isset(self::$NS_CLASSES[$uri]) ? self::$NS_CLASSES[$uri] : 'Poodle\\OpenID\\Message_Fields';
+				$c = self::$NS_CLASSES[$uri] ?? 'Poodle\\OpenID\\Message_Fields';
 				$ns = new $c($uri, $alias);
 				$this->namespaces[$alias] = $ns;
 			}
 		}
 		return $ns;
 	}
-	public function getNamespaceByAlias($alias=null) { return isset($this->namespaces[$alias]) ? $this->namespaces[$alias] : null; }
+	public function getNamespaceByAlias($alias=null) { return $this->namespaces[$alias] ?? null; }
 	public function getNamespaceByURI($uri) {
 		foreach ($this->namespaces as $ns) { if ($ns->uri === $uri) return $ns; }
 		return null;
@@ -147,7 +147,7 @@ class Message implements \ArrayAccess
 	protected static $REGISTERED_ALIASES = array();
 	public static function getRegisteredNS($alias)
 	{
-		return isset(self::$REGISTERED_ALIASES[$alias]) ? self::$REGISTERED_ALIASES[$alias] : null;
+		return self::$REGISTERED_ALIASES[$alias] ?? null;
 	}
 	/**
 	 * Registers a (namespace URI, alias) mapping in a global namespace
@@ -190,7 +190,7 @@ class Message implements \ArrayAccess
 		$set_ns_key = !$this->isOpenIDv1(); // OpenID v1 doesn't know namespaces
 		foreach ($this->namespaces as $ns)
 		{
-			if (count($ns))
+			if (is_countable($ns) ? count($ns) : 0)
 			{
 				if ($set_ns_key && $ns->ns_key) $a[0][$ns->ns_key] = $ns->uri;
 				foreach ($ns as $k => $v) $a[1][$k] = $v;
@@ -355,7 +355,7 @@ class Message_Fields implements \ArrayAccess, \Countable, \Iterator
 	public function offsetGet($k)
 	{
 		$k = $this->fixKey($k);
-		return isset($this->fields[$k]) ? $this->fields[$k] : null;
+		return $this->fields[$k] ?? null;
 	}
 	public function offsetSet($k,$v)
 	{
@@ -369,7 +369,7 @@ class Message_Fields implements \ArrayAccess, \Countable, \Iterator
 	public function offsetUnset($k) { unset($this->fields[$this->fixKey($k)]); }
 
 	// Countable
-	public function count()   { return count($this->fields); }
+	public function count()   { return is_countable($this->fields) ? count($this->fields) : 0; }
 
 	// Iterator
 	protected $iterator_valid;

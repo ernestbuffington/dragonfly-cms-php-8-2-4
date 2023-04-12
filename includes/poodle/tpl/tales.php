@@ -13,7 +13,7 @@ namespace Poodle\TPL;
 
 abstract class Tales
 {
-	const
+	public const
 		DEFAULT_KEYWORD = '__DEFAULT__';
 
 	# T_STRING
@@ -31,7 +31,7 @@ abstract class Tales
 
 	# php.net/tokens
 	private static
-		$PHP_ALLOWED_TOKENS = array(
+		array $PHP_ALLOWED_TOKENS = array(
 			T_ARRAY,
 			T_ARRAY_CAST,
 			T_BOOLEAN_AND,

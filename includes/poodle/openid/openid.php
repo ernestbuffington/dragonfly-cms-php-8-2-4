@@ -13,7 +13,7 @@ namespace Poodle;
 
 abstract class OpenID
 {
-	const
+	public const
 		VERSION   = '1.0',
 
 		XMLNS_1_0 = 'http://openid.net/xmlns/1.0',

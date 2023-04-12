@@ -43,7 +43,8 @@ abstract class Importer extends \XMLReader
 	public function importDataFromString($str, $old_version = 0) { return $this->importData($str, $old_version, true); }
 	protected function importData($file, $old_version, $file_is_data = false)
 	{
-		if (!$this->validate($file, $file_is_data)) {
+		$data = null;
+  if (!$this->validate($file, $file_is_data)) {
 			return false;
 		}
 		if (!$this->loadData($this, $file, $file_is_data)) {
@@ -74,8 +75,8 @@ abstract class Importer extends \XMLReader
 							if (!empty($col['type'])) {
 								$col['notnull'] = (empty($col['nullable']) || 'true' !== $col['nullable']);
 								$col['binary']  = (!empty($col['binary']) && 'true' === $col['binary']);
-								$col['default'] = isset($col['default']) ? $col['default'] : null;
-								$col['comment'] = isset($col['comment']) ? $col['comment'] : null;
+								$col['default'] ??= null;
+								$col['comment'] ??= null;
 							}
 							$table['columns'][] = $col;
 						} else if ('key' === $this->name) {

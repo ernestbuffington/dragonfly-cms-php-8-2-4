@@ -60,7 +60,8 @@ class Cache
 
 	public function stream_write($data)
 	{
-		$this->data .= $data;
+		$CACHE = null;
+  $this->data .= $data;
 		return $CACHE->set($this->key, $this->data) ? strlen($data) : 0;
 	}
 

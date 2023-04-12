@@ -18,7 +18,7 @@ if (!defined('UUID_TYPE_RANDOM'))  { define('UUID_TYPE_RANDOM',  4); } # v4
 
 abstract class UUID
 {
-	const
+	public const
 		TYPE_DEFAULT   = UUID_TYPE_DEFAULT,
 		TYPE_TIME      = UUID_TYPE_TIME,   // v1, Time-based with unique or random host identifier
 		TYPE_DCE       = UUID_TYPE_DCE,    // v2, DCE Security version (with POSIX UIDs)

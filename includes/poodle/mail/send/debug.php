@@ -15,7 +15,9 @@ class Debug extends \Poodle\Mail\Send
 	# Sends mail using the PHP mail() function.
 	public function send()
 	{
-		$this->prepare($header, $body, self::HEADER_ADD_TO | self::HEADER_ADD_BCC);
+		$header = null;
+  $body = null;
+  $this->prepare($header, $body, self::HEADER_ADD_TO | self::HEADER_ADD_BCC);
 		echo htmlentities($header).'<br/><br/>';
 		echo htmlentities($body);
 		return true;

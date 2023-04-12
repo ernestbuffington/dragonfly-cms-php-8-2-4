@@ -152,7 +152,7 @@ class Tables implements \ArrayAccess, \Countable
 
 	public function getTable($name)
 	{
-		$tbl = isset($this->tables[$name]) ? $this->tables[$name] : $this->prefix.$name;
+		$tbl = $this->tables[$name] ?? $this->prefix.$name;
 		if (!is_object($tbl)) {
 			$tbl = $this->tables[$name] = new Table($tbl, $this->db);
 		}
@@ -210,5 +210,5 @@ class Tables implements \ArrayAccess, \Countable
 	public function offsetUnset($k)   { }
 
 	# Countable
-	public function count() { return count($this->tables); }
+	public function count() { return is_countable($this->tables) ? count($this->tables) : 0; }
 }

@@ -44,7 +44,7 @@ class AccessToken implements \ArrayAccess, \JsonSerializable
 		if (!isset($this->data[$key])) {
 			$key .= '_token';
 		}
-		return isset($this->data[$key]) ? $this->data[$key] : null;
+		return $this->data[$key] ?? null;
 	}
 
 	public function __isset($key)

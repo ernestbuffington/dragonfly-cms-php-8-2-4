@@ -24,7 +24,7 @@ namespace Poodle;
 class QRCode
 {
 
-	const
+	public const
 		ERROR_CORRECT_LEVEL_L = 1, // 7%
 		ERROR_CORRECT_LEVEL_M = 0, // 15%
 		ERROR_CORRECT_LEVEL_Q = 3, // 25%
@@ -87,7 +87,7 @@ class QRCode
 
 	function getDataCount()
 	{
-		return count($this->qrDataList);
+		return is_countable($this->qrDataList) ? count($this->qrDataList) : 0;
 	}
 
 	function getData($index)
@@ -184,7 +184,7 @@ class QRCode
 	protected function setupPositionAdjustPattern()
 	{
 		$pos = QRUtil::getPatternPosition($this->typeNumber);
-		$cnt = count($pos);
+		$cnt = is_countable($pos) ? count($pos) : 0;
 		for ($i = 0; $i < $cnt; ++$i) {
 			for ($j = 0; $j < $cnt; ++$j) {
 				$row = $pos[$i];
@@ -252,7 +252,7 @@ class QRCode
 		$row = $this->moduleCount - 1;
 		$bitIndex = 7;
 		$byteIndex = 0;
-		$length = count($data);
+		$length = is_countable($data) ? count($data) : 0;
 		for ($col = $this->moduleCount - 1; $col > 0; $col -= 2) {
 			if ($col == 6) --$col;
 			while (true) {
@@ -291,7 +291,7 @@ class QRCode
 		$maxEcCount = 0;
 		$dcdata = array();
 		$ecdata = array();
-		$cntBlocks = count($rsBlocks);
+		$cntBlocks = is_countable($rsBlocks) ? count($rsBlocks) : 0;
 
 		for ($r = 0; $r < $cntBlocks; ++$r) {
 
@@ -352,7 +352,7 @@ class QRCode
 	{
 		$rsBlocks = QRRSBlock::getRSBlocks($typeNumber, $errorCorrectLevel);
 		$buffer = new QRBitBuffer();
-		$cnt = count($dataArray);
+		$cnt = is_countable($dataArray) ? count($dataArray) : 0;
 		for ($i = 0; $i < $cnt; ++$i) {
 			$data = $dataArray[$i];
 			$buffer->put($data->getMode(), 4);
@@ -361,7 +361,7 @@ class QRCode
 		}
 
 		$totalDataCount = 0;
-		$cnt = count($rsBlocks);
+		$cnt = is_countable($rsBlocks) ? count($rsBlocks) : 0;
 		for ($i = 0; $i < $cnt; ++$i) {
 			$totalDataCount += $rsBlocks[$i]->getDataCount();
 		}
@@ -528,7 +528,7 @@ class QRCode
 
 abstract class QRUtil {
 
-	const
+	public const
 		MASK_PATTERN000 = 0,
 		MASK_PATTERN001 = 1,
 		MASK_PATTERN010 = 2,
@@ -1049,7 +1049,7 @@ class QRRSBlock {
 	static function getRSBlocks($typeNumber, $errorCorrectLevel)
 	{
 		$rsBlock = static::getRsBlockTable($typeNumber, $errorCorrectLevel);
-		$length = count($rsBlock) / 3;
+		$length = (is_countable($rsBlock) ? count($rsBlock) : 0) / 3;
 
 		$list = array();
 
@@ -1087,7 +1087,7 @@ class QRRSBlock {
 
 class QRData
 {
-	const
+	public const
 		MODE_NUMBER    = 1,
 		MODE_ALPHA_NUM = 2,
 		MODE_8BIT_BYTE = 4,
@@ -1328,7 +1328,7 @@ class QRPolynomial {
 	function __construct($num, $shift = 0)
 	{
 		$offset = 0;
-		$limit = count($num);
+		$limit = is_countable($num) ? count($num) : 0;
 		while ($offset < $limit && $num[$offset] == 0) {
 			++$offset;
 		}
@@ -1345,7 +1345,7 @@ class QRPolynomial {
 
 	function getLength()
 	{
-		return count($this->num);
+		return is_countable($this->num) ? count($this->num) : 0;
 	}
 
 	function multiply($e)
@@ -1419,7 +1419,7 @@ class QRBitBuffer {
 	function putBit($bit)
 	{
 		$bufIndex = (int)floor($this->length / 8);
-		if (count($this->buffer) <= $bufIndex) {
+		if ((is_countable($this->buffer) ? count($this->buffer) : 0) <= $bufIndex) {
 			$this->buffer[] = 0;
 		}
 		if ($bit) {

@@ -11,7 +11,7 @@ namespace Poodle\Identity;
 
 abstract class Request
 {
-	const
+	public const
 		TYPE_ACCOUNT  = 0,
 		TYPE_PASSWORD = 1,
 		TYPE_NEWEMAIL = 2;
@@ -55,7 +55,7 @@ abstract class Request
 		WHERE request_type = {$type}
 		  AND request_key = {$SQL->quote($key)}");
 		if ($data && !empty($data['details'])) {
-			$data['details'] = json_decode($data['details'], true);
+			$data['details'] = json_decode($data['details'], true, 512, JSON_THROW_ON_ERROR);
 		}
 		return $data;
 	}

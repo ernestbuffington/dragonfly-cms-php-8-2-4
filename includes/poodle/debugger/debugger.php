@@ -175,7 +175,7 @@ abstract class Debugger
 						break;
 					}
 				} else if (!empty($bt[$i]['file'])
-				 && false === strpos($bt[$i]['file'], $skip[0])
+				 && false === strpos($bt[$i]['file'], (string) $skip[0])
 				 && 'deprecated.php' !== basename($bt[$i]['file'])
 				 && !in_array($bt[$i]['file'], $skip))
 				{

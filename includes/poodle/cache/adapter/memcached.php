@@ -12,7 +12,7 @@ namespace Poodle\Cache\Adapter;
 class Memcached extends \Poodle\Cache implements \Poodle\Cache\Interfaces\Adapter
 {
 
-	const
+	public const
 		INFO_NAME = 'Memcached',
 		INFO_DESC = 'A high-performance, distributed memory object caching system',
 		INFO_URL  = 'http://php.net/memcached';

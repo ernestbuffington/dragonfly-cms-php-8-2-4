@@ -378,7 +378,7 @@ class Socket implements \Poodle\FTP\Interfaces\Adapter
 				SPSV
 				ESTP
 			*/
-			$this->features[$v[0]] = isset($v[1]) ? $v[1] : '';
+			$this->features[$v[0]] = $v[1] ?? '';
 		}
 		$this->passive = isset($this->features['PASV']);
 		return true;
@@ -487,7 +487,8 @@ class Socket implements \Poodle\FTP\Interfaces\Adapter
 
 	protected function startTransfer($cmd, $handle = null, $offset = 0)
 	{
-		$this->raw('TYPE I'); // FTP_BINARY
+		$socket = null;
+  $this->raw('TYPE I'); // FTP_BINARY
 
 		try {
 			if (!$this->use_stream) {

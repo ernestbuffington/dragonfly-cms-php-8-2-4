@@ -71,7 +71,8 @@ class FTP implements \Poodle\FTP\Interfaces\Adapter
 
 	public function fileSize($remote_file)
 	{
-		return $this->connection->fileSize($path);
+		$path = null;
+  return $this->connection->fileSize($path);
 	}
 
 	public function fget($handle, $remote_file, $resumepos = 0)

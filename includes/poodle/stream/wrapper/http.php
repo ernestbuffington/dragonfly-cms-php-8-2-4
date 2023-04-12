@@ -123,7 +123,8 @@ class HTTP
 	}
 	public function stream_flush()
 	{
-		if ($this->flushed || !$this->conn_id) { return false; }
+		$new_location = null;
+  if ($this->flushed || !$this->conn_id) { return false; }
 		$c = $this->context();
 		# send the headers
 		$this->flushed = true;
@@ -202,6 +203,6 @@ class HTTP
 	{
 		if (!$this->context) { $this->context = stream_context_create(); }
 		$c = stream_context_get_options($this->context);
-		return (isset($c['http']) ? $c['http'] : array());
+		return ($c['http'] ?? array());
 	}
 }

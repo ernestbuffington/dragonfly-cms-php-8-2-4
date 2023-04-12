@@ -14,13 +14,13 @@ namespace Poodle\OpenID\Extensions;
 
 class AX extends \Poodle\OpenID\Message_Fields
 {
-	const
+	public const
 		AX_DOM = 'http://axschema.org', // use http://schema.openid.net?
 
 		NS_1_0 = 'http://openid.net/srv/ax/1.0';
 
 	private static
-		$sreg_map = array(
+		array $sreg_map = array(
 			'country'   => 'http://axschema.org/contact/country/home',
 			'dob'       => 'http://axschema.org/birthDate',
 			'email'     => 'http://axschema.org/contact/email',
@@ -65,7 +65,7 @@ class AX extends \Poodle\OpenID\Message_Fields
 		if (preg_match('#^((type|count|value)\\.[^:,\\.]+|value\\.[^:,\\.]+\\.[0-9]+)$#D', $k)) return $k;
 		// Find by type uri
 		if (isset(self::$sreg_map[$k])) $uri = self::$sreg_map[$k];
-		if (0===strpos($k,self::AX_DOM)) $uri = $k;
+		if (str_starts_with($k, (string) self::AX_DOM)) $uri = $k;
 		if (isset($uri)) {
 			$type = array_search($uri, $this->fields, true);
 			if ($type && preg_match('#^type.([^:,\\.]+)#',$type,$m)) return 'value.'.$m[1];

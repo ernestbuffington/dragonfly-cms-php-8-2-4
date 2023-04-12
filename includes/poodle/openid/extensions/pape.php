@@ -13,7 +13,7 @@ namespace Poodle\OpenID\Extensions;
 
 class PAPE extends \Poodle\OpenID\Message_Fields
 {
-	const
+	public const
 		NS_1_0 = 'http://specs.openid.net/extensions/pape/1.0',
 
 		# 4

@@ -38,7 +38,7 @@ class Statement
 		$sql = $this->query;
 		if ($params) {
 			$params = $this->SQL->prepareValues($params);
-			$sql = preg_replace_callback('/\\$([1-9][0-9]*)/', function($m) use ($params) {return $params[$m[1]-1];}, $sql);
+			$sql = preg_replace_callback('/\\$([1-9][0-9]*)/', fn($m) => $params[$m[1]-1], $sql);
 		}
 		if ($this->params) {
 			$sql = strtr($sql, $this->SQL->prepareValues($this->params));
@@ -49,7 +49,7 @@ class Statement
 	public function prepare($query)
 	{
 		$prefix = $this->SQL->TBL->prefix;
-		$this->query = preg_replace_callback('/{([a-z0-9_]+)}/', function($m) use ($prefix) {return $prefix . $m[1];}, $query);
+		$this->query = preg_replace_callback('/{([a-z0-9_]+)}/', fn($m) => $prefix . $m[1], $query);
 		if (preg_match_all('/(:[0-9a-zA-Z_]+)/', $query, $m)) {
 			foreach ($m[1] as $param) {
 				$this->params[$param] = null;

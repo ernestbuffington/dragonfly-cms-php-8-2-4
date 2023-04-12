@@ -15,7 +15,7 @@ abstract class Exception
 	{
 		return str_replace('"','\\"', preg_replace_callback(
 			'#([\x00-\x08\x0B\x0C\x0E-\x1F\x7F])#',
-			function($m){return '\\x'.bin2hex($m[1]);},
+			fn($m) => '\\x'.bin2hex($m[1]),
 			$s));
 	}
 
@@ -73,12 +73,10 @@ abstract class Exception
 				try {
 					\Poodle\LOG::error($e->getCode(), $trace.$e->getMessage());
 				}
-				catch (\Throwable $e) {}
-				catch (\Exception $e) {}
+				catch (\Throwable|\Exception $e) {}
 				\Poodle\Report::error($title, 'An exception occured while processing this page. We have logged this error and will fix it when needed.');
 			}
 		}
-		catch (\Throwable $e) { exit($e->getMessage()); }
-		catch (\Exception $error) { exit($e->getMessage()); }
+		catch (\Throwable|\Exception $e) { exit($e->getMessage()); }
 	}
 }

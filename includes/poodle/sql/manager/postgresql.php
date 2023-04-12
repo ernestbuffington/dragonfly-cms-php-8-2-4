@@ -104,7 +104,7 @@ class PostgreSQL implements \Poodle\SQL\Interfaces\Manager
 		if ($result = $this->SQL->query($query))
 		{
 			$return = array();
-			$re_cb = function($m){return strtoupper($m[1]);};
+			$re_cb = fn($m) => strtoupper($m[1]);
 			while ($row = $result->fetch_assoc()) {
 				$row['data_type'] = preg_replace_callback('#^([a-z\s]+)#', $re_cb, $row['data_type']);
 				# do we have an serial ?
@@ -123,7 +123,7 @@ class PostgreSQL implements \Poodle\SQL\Interfaces\Manager
 					array('VARCHAR',           'CHAR',      'INT'),
 					$row['data_type']);
 				if (preg_match('#^([\d]+|\'(.*)?\')#',$row['column_default'], $match)) {
-					$row['column_default'] = isset($match[2])?$match[2]:$match[1];
+					$row['column_default'] = $match[2] ?? $match[1];
 				} else {
 					$row['column_default'] = null;
 				}

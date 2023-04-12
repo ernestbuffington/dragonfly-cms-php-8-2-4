@@ -21,7 +21,7 @@ class Report
 	{
 		return str_replace('"','\\"', preg_replace_callback(
 			'#([\x00-\x08\x0B\x0C\x0E-\x1F\x7F])#',
-			function($m){return '\\x'.bin2hex($m[1]);},
+			fn($m) => '\\x'.bin2hex($m[1]),
 			$s));
 	}
 

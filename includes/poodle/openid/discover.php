@@ -29,7 +29,7 @@ class Discover
 		}
 
 		if ($services && !$fetcher->supportsSSL()) {
-			$services = array_values(array_filter($services, function($s){return !\Poodle\URI::isHTTPS($s->server_url);}));
+			$services = array_values(array_filter($services, fn($s) => !\Poodle\URI::isHTTPS($s->server_url)));
 		}
 		return $services;
 	}
@@ -132,7 +132,7 @@ class Discover
 			// contain a type that comes earlier in the preferred types list
 			// come before service elements that come later. If a service
 			// element has more than one type, the most preferred one wins.
-			$prio = count($preferred_types);
+			$prio = is_countable($preferred_types) ? count($preferred_types) : 0;
 			foreach ($preferred_types as $i => $type) {
 				if (in_array($type, $service->type_uris)) {
 					$prio = $i;

@@ -23,7 +23,8 @@ class Association
 
 	public static function remove($url, $handle=null)
 	{
-		$SQL = \Poodle::getKernel()->SQL;
+		$server_url = null;
+  $SQL = \Poodle::getKernel()->SQL;
 		$handle = $handle ? " AND assoc_handle={$SQL->quote($handle)}" : '';
 		$SQL->TBL->auth_providers_assoc->delete("server_url={$SQL->quote($server_url)}{$handle}");
 	}
@@ -103,7 +104,7 @@ class Association
 				return false;
 			}
 			$request_message['assoc_type'] = $response_message['assoc_type'];
-			$request_message['session_type'] = $st = (isset($response_message['session_type']) ? $response_message['session_type'] : 'no-encryption');
+			$request_message['session_type'] = $st = ($response_message['session_type'] ?? 'no-encryption');
 			if ('no-encryption' != $st && (!\Poodle\Math::ENGINE || (preg_match('#DH-(.+)#',$st,$m) && !in_array(strtolower($m[1]), hash_algos()))))
 			{
 				trigger_error('Poodle\\OpenID\\RelyingParty\\Association provider response unsupported session_type: '.$response_message['session_type'], E_USER_WARNING);

@@ -11,7 +11,7 @@ namespace Poodle\Auth\Provider;
 
 class Facebook extends \Poodle\Auth\Provider
 {
-	const
+	public const
 		DEFAULT_GRAPH_VERSION = 'v2.6';
 
 	protected
