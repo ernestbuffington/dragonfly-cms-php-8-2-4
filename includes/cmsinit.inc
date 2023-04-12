@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') { exit; }
 umask(0);
 
 if (CAN_MOD_INI) {
-	ini_set('magic_quotes_sybase', 0);
+//	ini_set('magic_quotes_sybase', 0);
 //	ini_set('include_path', ini_get('include_path').';'.CORE_PATH);
 	ini_set('zlib.output_compression', 0);
 }
