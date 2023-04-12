@@ -50,8 +50,8 @@ if ($pic_count > 1000) {
 
 	$granularity = floor($total_count / 1000);
 	$cor_gran = ceil($total_count / $pic_count);
-	srand(time());
-	for ($i = 1; $i <= $cor_gran; $i++) $random_num_set = rand(0, $granularity) . ', ';
+	mt_srand(time());
+	for ($i = 1; $i <= $cor_gran; $i++) $random_num_set = random_int(0, $granularity) . ', ';
 	$random_num_set = substr($random_num_set, 0, -2);
 
 	$result = $db->sql_query("SELECT pid, filepath, filename, p.aid, p.title FROM ".$cpg_prefix."pictures AS p INNER JOIN ".$cpg_prefix."albums AS a ON (p.aid = a.aid AND ".VIS_GROUPS.") WHERE randpos IN ($random_num_set) AND approved=1 GROUP BY pid ORDER BY RAND() DESC LIMIT $limit");

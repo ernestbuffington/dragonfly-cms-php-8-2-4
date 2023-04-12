@@ -24,7 +24,7 @@ if ($numrows < 1) { return; }
 if ($numrows > 1) {
 	$numrows = $numrows-1;
 	mt_srand((double)microtime()*1000000);
-	$numrows = mt_rand(0, $numrows);
+	$numrows = random_int(0, $numrows);
 } else {
 	$numrows = 0;
 }

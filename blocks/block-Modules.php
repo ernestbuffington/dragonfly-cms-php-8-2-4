@@ -23,7 +23,7 @@ $content = '';
 // make home link show which module is there
 $home_title = _HOME;
 $home_title .= ' - ';
-$home_title .= (defined('_'.$main_module.'LANG'))? (constant('_'.$main_module.'LANG')) : ereg_replace('_', ' ', $main_module);
+$home_title .= (defined('_'.$main_module.'LANG'))? (constant('_'.$main_module.'LANG')) : preg_replace('#_#m', ' ', $main_module);
 
 /* Now we make the Modules block with the correspondent links */
 //$content .= "<b>&#8226;</b>&nbsp;<a href=\"".getlink()."\">"._HOME."</a><br />\n";
@@ -39,7 +39,7 @@ while (list($m_title, $custom_title, $m_view) = $db->sql_fetchrow($result)) {
 		if ($custom_title != '') {
 			$m_title2 = (defined('_'.$m_title.'LANG'))? (constant('_'.$m_title.'LANG')) : $custom_title;
 		} else {
-			$m_title2 = (defined('_'.$m_title.'LANG'))? (constant('_'.$m_title.'LANG')) : ($m_title2 = ereg_replace('_', ' ', $m_title));
+			$m_title2 = (defined('_'.$m_title.'LANG'))? (constant('_'.$m_title.'LANG')) : ($m_title2 = preg_replace('#_#m', ' ', $m_title));
 		}
 	}
 	if ($m_title != $main_module) {
@@ -63,7 +63,7 @@ if (is_admin()) {
 	ORDER BY title ASC");
 	$dummy = 1;
 	while (list($mn_title, $custom_title) = $db->sql_fetchrow($result)) {
-		$mn_title2 = ereg_replace('_', ' ', $mn_title);
+		$mn_title2 = preg_replace('#_#m', ' ', $mn_title);
 		if ($custom_title != '') {
 			$mn_title2 = $custom_title;
 		}
@@ -83,7 +83,7 @@ if (is_admin()) {
 	ORDER BY title ASC");
 	$dummy = 1;
 	while (list($mn_title, $custom_title) = $db->sql_fetchrow($result)) {
-		$mn_title2 = ereg_replace('_', ' ', $mn_title);
+		$mn_title2 = preg_replace('#_#m', ' ', $mn_title);
 		if ($custom_title != '') {
 			$mn_title2 = $custom_title;
 		}

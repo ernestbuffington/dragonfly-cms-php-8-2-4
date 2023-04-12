@@ -100,7 +100,7 @@ if ($useflags) {
 	for ($i = 0; $i < sizeof($langlist); $i++) {
 		if ($langlist[$i]!='') {
 			$imge = 'images/language/flag-'.$langlist[$i].'.png';
-			$altlang = (isset($langsel[$langlist[$i]]) ? $langsel[$langlist[$i]] : $langlist[$i]);
+			$altlang = ($langsel[$langlist[$i]] ?? $langlist[$i]);
 			if (defined('ADMIN_PAGES')) {
 				$content .= '<a href="'.$qs.$langlist[$i].'">';
 			} elseif (!isset($_GET['name']) && !isset($_POST['name'])) {
@@ -130,7 +130,7 @@ if ($useflags) {
 				$content .= '<option value="'.getlink($qs.$langlist[$i]).'"';
 			}
 			if ($langlist[$i]==$currentlang) $content .= ' selected="selected"';
-			$content .= '>'.(isset($langsel[$langlist[$i]]) ? $langsel[$langlist[$i]] : $langlist[$i])."</option>\n";
+			$content .= '>'.($langsel[$langlist[$i]] ?? $langlist[$i])."</option>\n";
 		}
 	}
 	$content .= '</select></div></form>';

@@ -31,7 +31,7 @@ if ($total < 1) {
 }
 
 while (list($url) = $db->sql_fetchrow($result)) {
-	$url2 = ereg_replace('_', ' ', $url);
+	$url2 = preg_replace('#_#m', ' ', $url);
 	
 	if (strlen($url2) > 18) {
 		$url2 = substr($url, 0, 20);

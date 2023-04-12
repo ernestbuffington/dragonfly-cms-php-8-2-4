@@ -76,7 +76,7 @@ if(is_user()) {
 	<a title="'._LOGOUTACCT.'" href="'.getlink('Your_Account&amp;op=logout&amp;redirect', false).'"><img src="images/blocks/login.gif" alt="" style="float:left;" /></a>&nbsp;<a title="'._LOGOUTACCT.'" href="'.getlink('Your_Account&amp;op=logout&amp;redirect', false).'">'._LOGOUT.'</a>';
 } else {
 	if (isset($_GET['redirect']) && !isset($CPG_SESS['user']['redirect'])) { $CPG_SESS['user']['redirect'] = $CPG_SESS['user']['uri']; }
-	$redirect = isset($CPG_SESS['user']['redirect']) ? $CPG_SESS['user']['redirect'] : get_uri();
+	$redirect = $CPG_SESS['user']['redirect'] ?? get_uri();
 	$content .= '<div style="text-align:center;"><img src="images/blocks/no_avatar.gif" alt="" /><br />'._BWEL.' <b>'._ANONYMOUS.'</b></div>
 	<hr /><form action="'.$redirect.'" method="post" enctype="multipart/form-data" accept-charset="utf-8" style="margin:0;"><div>
 	<span style="float:left; height:25px;">'._NICKNAME.'</span><span style="float:right; height:25px;"><input type="text" name="ulogin" size="10" maxlength="25" /></span><br />

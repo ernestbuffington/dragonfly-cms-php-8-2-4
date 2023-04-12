@@ -35,7 +35,7 @@ if ($numrows > 1) {
 	$r_topic = explode('-', $topic_array);
 	mt_srand((double)microtime()*1000000);
 	$numrows = $numrows-1;
-	$topic = mt_rand(0, $numrows);
+	$topic = random_int(0, $numrows);
 	$topic = $r_topic[$topic];
 } else {
 	$topic = 1;

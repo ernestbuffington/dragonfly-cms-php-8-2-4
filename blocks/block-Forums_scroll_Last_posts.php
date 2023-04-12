@@ -32,7 +32,7 @@ if (file_exists("themes/$CPG_SESS[theme]/images/forums/icon_mini_message.gif")) 
 $view = ' AND f.auth_view=0';
 if (can_admin('forums')) {
 	$view = '';
-} else if (is_user() && count($userinfo['_mem_of_groups'])) {
+} else if (is_user() && (is_countable($userinfo['_mem_of_groups']) ? count($userinfo['_mem_of_groups']) : 0)) {
 	foreach ($userinfo['_mem_of_groups'] as $id => $name) {
 		$groups[] = $id;
 	}
@@ -40,7 +40,7 @@ if (can_admin('forums')) {
 	while ($row = $db->sql_fetchrow($result)) {
 		$forums[] = $row[0];
 	}
-	if (count($forums)) {
+	if (is_countable($forums) ? count($forums) : 0) {
 		$view = ' AND (f.auth_view=0 OR f.forum_id IN ('.implode(',', $forums).'))';
 	}
 }

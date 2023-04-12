@@ -33,7 +33,7 @@ $qs .= 'prevtheme=';
 $handle = opendir('themes');
 $themelist = array();
 while ($file = readdir($handle)) {
-	if (!ereg('[.]', $file) && file_exists("themes/$file/theme.php")) {
+	if (!preg_match('#[\.]#m', $file) && file_exists("themes/$file/theme.php")) {
 		$themelist[] = $file;
 	}
 }
