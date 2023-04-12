@@ -22,16 +22,16 @@ define('SQL_BOTH', (SQL_ASSOC|SQL_NUM));  // MYSQL_BOTH,  PGSQL_BOTH
 class sql_parent
 {
 
-	var $connect_id;
-	var $persistent;
-	var $query_result;
-	var $num_queries = 0;
-	var $time = 0;
-	var $querylist = array();
-	var $querytime = 0;
+	public $connect_id;
+	public $persistent;
+	public $query_result;
+	public $num_queries = 0;
+	public $time = 0;
+	public $querylist = array();
+	public $querytime = 0;
 
-	var $file;
-	var $line;
+	public $file;
+	public $line;
 
 	public function _log($query, $failed=false)
 	{
@@ -63,7 +63,8 @@ class sql_parent
 
 	public function show_error($the_error, $bypass_error = FALSE, $no_connection = 0)
 	{
-		global $sitename, $adminmail, $cpgdebugger, $userinfo;
+		$mailer_message = null;
+  global $sitename, $adminmail, $cpgdebugger, $userinfo;
 
 		$this->_backtrace();
 		$the_error .= "\n\nIn: ".$this->file." on line: ".$this->line;
@@ -129,7 +130,7 @@ class sql_parent
 				// SPLIT when theres 'UNION (ALL|DISTINT|SELECT)'
 				$query_parts = preg_split('/(union)([\s\ \*\/]+)(all|distinct|select)/i', $query, -1, PREG_SPLIT_NO_EMPTY);
 				// and then merge the query_parts:
-				if (count($query_parts) > 1) {
+				if ((is_countable($query_parts) ? count($query_parts) : 0) > 1) {
 					$query = '';
 					foreach($query_parts AS $part) {
 						if ($query != '') $query .= 'UNI0N SELECT'; // a ZERO
@@ -195,7 +196,8 @@ class sql_parent
 
 	public function sql_fetchrowset($query_id=0, $result_type=SQL_BOTH)
 	{
-		$stime = get_microtime();
+		$result = [];
+  $stime = get_microtime();
 		if (!$query_id) { $query_id = $this->query_result; }
 		if ($query_id) {
 			while ($row = $this->fetch_array($query_id, $result_type)) {
@@ -203,7 +205,7 @@ class sql_parent
 			}
 		}
 		$this->time += (get_microtime()-$stime);
-		return isset($result) ? $result : NULL;
+		return $result ?? NULL;
 	}
 	public function sql_ufetchrowset($query='', $result_type=SQL_BOTH)
 	{

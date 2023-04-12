@@ -20,8 +20,8 @@ define('SQL_LAYER','postgresql');
 class sql_db extends sql_parent
 {
 
-	var $rownum = array();
-	var $last_insert_table;
+	public $rownum = array();
+	public $last_insert_table;
 
 	//
 	// Constructor
