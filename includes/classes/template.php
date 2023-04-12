@@ -152,10 +152,10 @@ class cpg_template
 			trigger_error("template->_tpl_load(): File ".$this->files[$handle]." does not exist or is empty", E_USER_ERROR);
 		}
 		require_once(CORE_PATH.'classes/template_enc.php');
-		$this->compiled_code[$handle] = tpl_encode::compile(trim(fread($fp, filesize($this->files[$handle]))));
+		$this->compiled_code[$handle] = (new tpl_encode)->compile(trim(fread($fp, filesize($this->files[$handle]))));
 		fclose($fp);
 		// Actually compile the code now.
-		tpl_encode::compile_write($handle, $this->compiled_code[$handle]);
+		(new tpl_encode)->compile_write($handle, $this->compiled_code[$handle]);
 	}
 
 	// Assign key variable pairs from an array
