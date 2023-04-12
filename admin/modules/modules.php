@@ -154,7 +154,7 @@ else if (isset($_GET['upgrade'])) {
 		cpg_error(_UPGRADEFAILED.': couldn\'t load installer');
 	}
 	require(CORE_PATH.'classes/installer.php');
-	$installer =& new cpg_installer(true, true);
+	$installer = new cpg_installer(true, true);
 	$module = new $class;
 	if ($module->upgrade($version)) {
 		if (!$installer->install()) {
@@ -272,7 +272,7 @@ else {
 		}
 		if (class_exists($class)) {
 			require(CORE_PATH.'classes/installer.php');
-			$installer =& new cpg_installer(true, true);
+			$installer = new cpg_installer(true, true);
 			$module = new $class;
 			$addmod = $module->install();
 			if (!$addmod) { cpg_error($module->description, 'Install Error'); }
@@ -313,7 +313,7 @@ else {
 				$CPG_SESS['admin']['uninstall'] = '';
 				unset($CPG_SESS['admin']['uninstall']);
 				require(CORE_PATH.'classes/installer.php');
-				$installer =& new cpg_installer(true, true);
+				$installer = new cpg_installer(true, true);
 				$module = new $class;
 				$module->uninstall();
 				if (!$installer->install()) {

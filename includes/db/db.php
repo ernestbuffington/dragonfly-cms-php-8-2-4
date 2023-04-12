@@ -374,6 +374,6 @@ class sql_parent
 
 if (defined('DB_TYPE')) { require(CORE_PATH.'db/'.DB_TYPE.'.php'); }
 if (!defined('INSTALL')) {
-	$db =& new sql_db($dbhost, $dbuname, $dbpass, $dbname);
+	$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname);
 	if (defined('NO_DB')) { cpg_error('<b>'.NO_DB.', sorry for the inconvenience<br /><br />We should be back shortly</b>'); }
 }

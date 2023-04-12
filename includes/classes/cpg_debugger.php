@@ -118,5 +118,5 @@ class cpg_debugger {
 }
 
 error_reporting(E_ALL);
-$cpgdebugger =& new cpg_debugger();
+$cpgdebugger = new cpg_debugger();
 $cpgdebugger->start();

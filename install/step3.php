@@ -117,7 +117,7 @@ else {
 	$tablelist = $db->list_tables();
 	$table_ids = array();
 
-	$installer =& new cpg_installer(true, true);
+	$installer = new cpg_installer(true, true);
 	$table_files = array('core', 'coppermine', 'forums', 'news', 'surveys');
 	$data_files = array('core', 'coppermine', 'forums');
 	if ($version == '0') {

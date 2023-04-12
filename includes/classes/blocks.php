@@ -226,4 +226,4 @@ class Blocks
 		return;
 	}
 }
-$Blocks =& new Blocks();
+$Blocks = new Blocks();

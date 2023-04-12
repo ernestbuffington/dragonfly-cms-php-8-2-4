@@ -57,7 +57,7 @@ if (file_exists($config_file)) {
 if ($go_connect) {
 	if (!isset($_POST['download'])) { echo '<h2>Trying to connect to SQL server</h2>'; }
 	$database = (SQL_LAYER == 'postgresql') ? $connect['database'] : '';
-	$db =& new sql_db($connect['host'], $connect['username'], $connect['password'], $database);
+	$db = new sql_db($connect['host'], $connect['username'], $connect['password'], $database);
 	if (!defined('NO_DB')) {
 		$connected = true;
 		if (SQL_LAYER == 'postgresql' && $connect['database'] == 'public') {

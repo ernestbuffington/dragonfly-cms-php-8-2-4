@@ -289,4 +289,4 @@ function adminmenu($url, $title, $image) {
 }
 
 global $CLASS;
-$CLASS['adminmenu'] =& new cpg_adminmenu();
+$CLASS['adminmenu'] = new cpg_adminmenu();

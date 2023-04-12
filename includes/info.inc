@@ -52,7 +52,7 @@ if ($module_name == 'credits') {
 		{
 			include('modules/'.$class.'/cpg_inst.php');
 			if (class_exists($class)) {
-				$module =& new $class;
+				$module = new $class;
 		echo '<tr>
 		<td colspan="4"><hr /></td>
 	</tr><tr>
