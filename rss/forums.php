@@ -53,7 +53,7 @@ if ($row = $db->sql_fetchrow($result)) {
 
 $category = 'Forums'.(isset($_GET['f']) ? ' - '.$row['forum_name'] : '');
 
-$BASEHREF = ereg_replace('//rss.', '//', $BASEHREF);
+$BASEHREF = preg_replace('#\/\/rss.#m', '//', $BASEHREF);
 header('Content-Type: text/xml'); // application/rss+xml
 //  <ttl>60</ttl> a number of minutes that indicates how long a channel can be cached before refresh.
 echo '<?xml version="1.0" encoding="UTF-8"?>

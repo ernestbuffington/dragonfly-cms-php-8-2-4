@@ -34,7 +34,7 @@ if ($row = $db->sql_fetchrow($result)) {
 	$date = date('D, d M Y H:i:s \G\M\T', gmtime());
 }
 
-$BASEHREF = ereg_replace('//rss.', '//', $BASEHREF);
+$BASEHREF = preg_replace('#\/\/rss.#m', '//', $BASEHREF);
 header('Content-Type: text/xml'); // application/rss+xml
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
