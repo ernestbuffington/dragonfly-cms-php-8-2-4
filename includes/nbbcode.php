@@ -597,7 +597,7 @@ class BBCode {
 	}
 
 	# split the bbcodes and use nl2br on everything except [php]
-	function split_on_bbcodes($text, $allowed=0, $allow_html=false)
+	public static function split_on_bbcodes($text, $allowed=0, $allow_html=false)
 	{
 		global $bb_codes;
 		# Split all bbcodes.
