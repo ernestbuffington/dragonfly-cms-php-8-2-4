@@ -18,14 +18,17 @@ if (!defined('INSTALL')) { exit; }
 inst_header();
 $server = get_db_vars($db);
 if ((!isset($current_version) || !$current_version) && !isset($_POST['version'])) {
+	
 	if (SQL_LAYER == 'mysql') {
 		echo $instlang['s1_good'].'<br /><br />';
-		if ($server['version'][0] < 4) {
+		
+		if ($server['version'][6] < 8) {
 			echo sprintf($instlang['s1_mysql'], $server['version']);
 			return;
 		}
 	}
 
+	/*
 	if ($db->sql_query('SELECT * FROM '.$user_prefix.'_users LIMIT 0', true)) {
 		if ($result = $db->sql_query('SELECT Version_Num FROM '.$prefix.'_config', true)) {
 		   list($current_version) = $db->sql_fetchrow($result);
@@ -53,6 +56,7 @@ if ((!isset($current_version) || !$current_version) && !isset($_POST['version'])
 		echo $instlang['s1_new'];
 		$current_version = 0;
 	}
+	*/
 	echo '<script language="JavaScript" type="text/javascript">
 <!--'."
 maketip('dbase','".$instlang['s1_dbconfig']."','".$instlang['s1_database']."');
