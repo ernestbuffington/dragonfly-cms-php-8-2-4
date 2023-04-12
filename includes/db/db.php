@@ -33,7 +33,7 @@ class sql_parent
 	var $file;
 	var $line;
 
-	function _log($query, $failed=false)
+	public function _log($query, $failed=false)
 	{
 		global $MAIN_CFG;
 		if (CPG_DEBUG || (is_admin() && !empty($MAIN_CFG['debug']['database']))) {
@@ -45,7 +45,7 @@ class sql_parent
 			}
 		}
 	}
-	function _backtrace()
+	public function _backtrace()
 	{
 		$this->file = 'unknown';
 		$this->line = 0;
@@ -61,7 +61,7 @@ class sql_parent
 		}
 	}
 
-	function show_error($the_error, $bypass_error = FALSE, $no_connection = 0)
+	public function show_error($the_error, $bypass_error = FALSE, $no_connection = 0)
 	{
 		global $sitename, $adminmail, $cpgdebugger, $userinfo;
 
@@ -98,18 +98,18 @@ class sql_parent
 		}
 	}
 
-	function sql_close()
+	public function sql_close()
 	{
 		if ($this->connect_id && !$this->persistent) {
 			$this->close();
 			$this->connect_id = false;
 		}
 	}
-	function sql_uquery($query, $bypass_error=FALSE)
+	public function sql_uquery($query, $bypass_error=FALSE)
 	{
 		return $this->sql_query($query, $bypass_error, TRUE);
 	}
-	function sql_query($query, $bypass_error=FALSE, $unbufferd=FALSE)
+	public function sql_query($query, $bypass_error=FALSE, $unbufferd=FALSE)
 	{
 		if (empty($query)) { return NULL; }
 		global $CLASS;
@@ -147,37 +147,37 @@ class sql_parent
 		return $this->query_result;
 	}
 
-	function sql_numrows($result=0)
+	public function sql_numrows($result=0)
 	{
 		if (!$result) { $result = $this->query_result; }
 		return ($result) ? $this->num_rows($result) : NULL;
 	}
 
-	function sql_affectedrows($query_id=0)
+	public function sql_affectedrows($query_id=0)
 	{
 		if (!$query_id) { $query_id = $this->query_result; }
 		return ($this->connect_id && $query_id) ? $this->affected_rows($query_id) : NULL;
 	}
 
-	function sql_numfields($result=0)
+	public function sql_numfields($result=0)
 	{
 		if (!$result) { $result = $this->query_result; }
 		return ($result) ? $this->num_fields($result) : NULL;
 	}
 
-	function sql_fieldname($offset, $result=0)
+	public function sql_fieldname($offset, $result=0)
 	{
 		if (!$result) { $result = $this->query_result; }
 		return ($result) ? $this->field_name($result, $offset) : NULL;
 	}
 
-	function sql_fieldtype($offset, $result=0)
+	public function sql_fieldtype($offset, $result=0)
 	{
 		if (!$result) { $result = $this->query_result; }
 		return ($result) ? $this->field_type($result, $offset) : NULL;
 	}
 
-	function sql_fetchrow($query_id=0, $result_type=SQL_BOTH)
+	public function sql_fetchrow($query_id=0, $result_type=SQL_BOTH)
 	{
 		$stime = get_microtime();
 		if (!$query_id) { $query_id = $this->query_result; }
@@ -185,7 +185,7 @@ class sql_parent
 		$this->time += (get_microtime()-$stime);
 		return $row;
 	}
-	function sql_ufetchrow($query='', $result_type=SQL_BOTH)
+	public function sql_ufetchrow($query='', $result_type=SQL_BOTH)
 	{
 		$query_id = $this->sql_query($query, false, true);
 		$result = $this->sql_fetchrow($query_id, $result_type);
@@ -193,7 +193,7 @@ class sql_parent
 		return $result;
 	}
 
-	function sql_fetchrowset($query_id=0, $result_type=SQL_BOTH)
+	public function sql_fetchrowset($query_id=0, $result_type=SQL_BOTH)
 	{
 		$stime = get_microtime();
 		if (!$query_id) { $query_id = $this->query_result; }
@@ -205,24 +205,24 @@ class sql_parent
 		$this->time += (get_microtime()-$stime);
 		return isset($result) ? $result : NULL;
 	}
-	function sql_ufetchrowset($query='', $result_type=SQL_BOTH)
+	public function sql_ufetchrowset($query='', $result_type=SQL_BOTH)
 	{
 		$query_id = $this->sql_query($query, false, true);
 		return $this->sql_fetchrowset($query_id, $result_type);
 	}
 
-	function sql_fetchfield()
+	public function sql_fetchfield()
 	{
 		return false;
 	}
 
-	function sql_rowseek($rownum, $result=0)
+	public function sql_rowseek($rownum, $result=0)
 	{
 		if (!$result) { $result = $this->query_result; }
 		return ($result) ? $this->data_seek($result, $rownum) : NULL;
 	}
 
-	function sql_freeresult(&$query_id)
+	public function sql_freeresult(&$query_id)
 	{
 		if (!$query_id) { $query_id = $this->query_result; }
 		if ($query_id) {
@@ -231,19 +231,19 @@ class sql_parent
 		}
 	}
 
-	function sql_nextid($idfield) {
+	public function sql_nextid($idfield) {
 		if (empty($idfield)) {
 			$this->show_error('You must specify an \'idfield\' in $db->sql_nextid($idfield)');
 		}
 		return ($this->connect_id) ? $this->insert_id($idfield) : NULL;
 	}
-	function sql_error($query_id=0) {
+	public function sql_error($query_id=0) {
 		if (!$query_id) { $query_id = $this->query_result; }
 		return $this->error($query_id);
 	}
-	function sql_escape_string($string) { return $this->escape_string($string); }
+	public function sql_escape_string($string) { return $this->escape_string($string); }
 
-	function sql_insert($table, $fields, $bypass_error=false)
+	public function sql_insert($table, $fields, $bypass_error=false)
 	{
 		if (is_array($fields) && !empty($fields)) {
 			foreach ($fields AS $field => $value) {
@@ -254,7 +254,7 @@ class sql_parent
 		}
 		return false;
 	}
-	function sql_update($table, $fields, $where, $bypass_error=false)
+	public function sql_update($table, $fields, $where, $bypass_error=false)
 	{
 		if (is_array($fields) && !empty($fields)) {
 			foreach ($fields AS $field => $value) {
@@ -265,7 +265,7 @@ class sql_parent
 		return false;
 	}
 
-	function sql_count($table, $where='')
+	public function sql_count($table, $where='')
 	{
 		if ($where != '') $where = "WHERE $where";
 		$query_id = $this->sql_query("SELECT COUNT(*) FROM $table $where", false, true);
@@ -277,94 +277,94 @@ class sql_parent
 	//
 	// Specific database management
 	//
-	function load_manager()
+	public function load_manager()
 	{
 		if (!empty($this->mngr) && is_object($this->mngr)) return;
 		require_once(CORE_PATH.'db/'.DB_TYPE.'_mngr.php');
 		$this->mngr = new sql_mngr($this);
 	}
 
-	function get_versions()
+	public function get_versions()
 	{
 		$this->load_manager();
 		return $this->mngr->get_versions();
 	}
-	function get_details()
+	public function get_details()
 	{
 		$this->load_manager();
 		return $this->mngr->get_details();
 	}
-	function create_table($query)
+	public function create_table($query)
 	{
 		$this->load_manager();
 		return $this->mngr->create_table($query);
 	}
-	function alter_table($query)
+	public function alter_table($query)
 	{
 		$this->load_manager();
 		return $this->mngr->alter_table($query);
 	}
-	function drop_table($table)
+	public function drop_table($table)
 	{
 		$this->load_manager();
 		return $this->mngr->drop_table($table);
 	}
-	function list_databases()
+	public function list_databases()
 	{
 		$this->load_manager();
 		return $this->mngr->list_databases();
 	}
-	function get_current_schema()
+	public function get_current_schema()
 	{
 		$this->load_manager();
 		return $this->mngr->get_current_schema();
 	}
-	function list_schemas()
+	public function list_schemas()
 	{
 		$this->load_manager();
 		return $this->mngr->list_schemas();
 	}
-	function list_tables($schema='')
+	public function list_tables($schema='')
 	{
 		$this->load_manager();
 		return $this->mngr->list_tables($schema);
 	}
-	function list_columns($table, $uniform=true, $backup=false)
+	public function list_columns($table, $uniform=true, $backup=false)
 	{
 		$this->load_manager();
 		return $this->mngr->list_columns($table, $uniform, $backup);
 	}
-	function list_indexes($table)
+	public function list_indexes($table)
 	{
 		$this->load_manager();
 		return $this->mngr->list_indexes($table);
 	}
-	function alter_field($mode, $table, $field, $type='', $null=true, $default='')
+	public function alter_field($mode, $table, $field, $type='', $null=true, $default='')
 	{
 		$this->load_manager();
 		return $this->mngr->alter_field($mode, $table, $field, $type, $null, $default);
 	}
-	function alter_index($mode, $table, $name, $columns='')
+	public function alter_index($mode, $table, $name, $columns='')
 	{
 		$this->load_manager();
 		return $this->mngr->alter_index($mode, $table, $name, $columns);
 	}
-	function get_sequence($table='', $schema='')
+	public function get_sequence($table='', $schema='')
 	{
 		$this->load_manager();
 		return $this->mngr->get_sequence($table, $schema);
 	}
-	function list_sequences($schema='')
+	public function list_sequences($schema='')
 	{
 		$this->load_manager();
 		return $this->mngr->list_sequences($schema);
 	}
-	function increment_serial($to, $table, $field)
+	public function increment_serial($to, $table, $field)
 	{
 		$this->load_manager();
 		return $this->mngr->increment_serial($to, $table, $field);
 	}
-	function optimize_table($table, $full=false)
+	public function optimize_table($table, $full=false)
 	{
 		$this->load_manager();
 		return $this->mngr->optimize_table($table, $full);
