@@ -167,8 +167,15 @@ return static function (RectorConfig $rectorConfig): void {
 		
     $rectorConfig->paths([
 		  //////__DIR__ . '/admin/*/*/*',
-		  __DIR__ . '/blocks/*',
-		//__DIR__ . '/includes/poodle/sql/xml/*',
+		  //////__DIR__ . '/admin/*/*',
+		  //////__DIR__ . '/admin/*',
+		  
+		  //////__DIR__ . '/blocks/*',
+		  
+		  //////__DIR__ . '/includes/*/*/*',
+		  //////__DIR__ . '/includes/*/*',
+		  //////__DIR__ . '/includes/*',
+		
     ]);
 
 };
