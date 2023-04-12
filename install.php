@@ -32,7 +32,7 @@ if ($go < 4 && isset($_COOKIE['installtest'])) { setcookie('installtest','',-1);
 
 $config_file = CORE_PATH.'config.php';
 if (file_exists($config_file)) {
-	$db =& new sql_db($dbhost, $dbuname, $dbpass, $dbname);
+	$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname);
 } else {
 	$adminindex = 'admin.php';
 	$mainindex = 'index.php';
