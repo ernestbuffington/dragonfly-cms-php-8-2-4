@@ -166,6 +166,8 @@ return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->rule(MysqlQueryMysqlErrorWithLinkRector::class);
 		
     $rectorConfig->paths([
+		  //////__DIR__ . '/includes/cmsinit.inc', // fuckover file extension renames
+		  
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',
 		  //////__DIR__ . '/admin/*',
@@ -200,8 +202,8 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/cpg_error.php',
 		  //////__DIR__ . '/error.php',
 		  //////__DIR__ . '/footer.php',
-		  __DIR__ . '/index.php',
-		  //__DIR__ . '/install.php',
+		  //////__DIR__ . '/index.php',
+		  //////__DIR__ . '/install.php',
 
 		
     ]);
