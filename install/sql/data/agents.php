@@ -106,7 +106,7 @@ $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'send.hu', 
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'shotgun.hu', 2)", TRUE);
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'skizo.hu', 2)", TRUE);
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'sniper.hu', 2)", TRUE);
-$db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, NULL, 'soldier.hu', 2)", TRUE);
+$db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'soldier.hu', 2)", TRUE);
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'theend.hu', 2)", TRUE);
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'warrior.hu', 2)", TRUE);
 $db->query("INSERT INTO {$prefix}_security {$stf} VALUES(NULL, NULL, 'webmail.hu', 2)", TRUE);
