@@ -185,6 +185,10 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/language/*/*',
 		  //////__DIR__ . '/language/*',
 
+		  //////__DIR__ . '/modules/*/*/*',
+		  //////__DIR__ . '/modules/*/*',
+		  __DIR__ . '/modules/*',
+
 		
     ]);
 
