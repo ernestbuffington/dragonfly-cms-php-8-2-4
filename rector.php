@@ -175,6 +175,12 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/includes/*/*/*',
 		  //////__DIR__ . '/includes/*/*',
 		  //////__DIR__ . '/includes/*',
+
+
+		  //////__DIR__ . '/install/*/*/*',
+		  //////__DIR__ . '/install/*/*',
+		  //////__DIR__ . '/install/*',
+
 		
     ]);
 
