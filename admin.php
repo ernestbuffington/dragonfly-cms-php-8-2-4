@@ -42,7 +42,7 @@ if (!is_admin()) {
 			CloseTable();
 			require('footer.php');
 		} else if (isset($_POST['fop']) && $_POST['fop'] == 'create_first') {
-			if (ereg('[0-9]', $_POST['pwd']) && ereg('[a-z]', $_POST['pwd']) && ereg('[A-Z]', $_POST['pwd'])) {
+			if (preg_match('#[0-9]#m', $_POST['pwd']) && preg_match('#[a-z]#m', $_POST['pwd']) && preg_match('#[A-Z]#m', $_POST['pwd'])) {
 				$name = $_POST['name'];
 				$email = $_POST['email'];
 				$pwd = md5($_POST['pwd']);
@@ -91,7 +91,7 @@ function GraphicAdmin($cat='all') {
 	}
 }
 
-$op = (isset($_GET['op']) ? $_GET['op'] : (isset($_POST['op']) ? $_POST['op'] : 'index'));
+$op = ($_GET['op'] ?? $_POST['op'] ?? 'index');
 if ($MAIN_CFG['global']['admingraphic'] >= '4' || strtolower($op) == 'forums') {
 	$theme = file_exists('themes/'.$CPG_SESS['theme'].'/style/cookmenu.js') ? $CPG_SESS['theme'] : 'default';
 	$modheader = '<script type="text/javascript" src="includes/javascript/JSCookMenu.js"></script>
@@ -101,16 +101,16 @@ if ($MAIN_CFG['global']['admingraphic'] >= '4' || strtolower($op) == 'forums') {
 global $CPG_SESS;
 if ($op == 'logout') {
 	unset($CPG_SESS['admin']);
-	$redir = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $mainindex;
+	$redir = $_SERVER['HTTP_REFERER'] ?? $mainindex;
 	cpg_error(_YOUARELOGGEDOUT, _ADMINMENU_LOGOUT, $redir);
 }
 else if ($CLASS['member']->admin_id) {
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $op)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_ADMIN)), _SEC_ERROR); }
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $op)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_ADMIN)), _SEC_ERROR); }
 	require_once(CORE_PATH.'classes/cpg_adminmenu.php');
 	$CLASS['adminmenu']->display();
 	if (file_exists('modules/'.$op.'/admin/index.inc')) {
-		$file = (isset($_GET['file']) ? $_GET['file'] : (isset($_POST['file']) ? $_POST['file'] : 'index'));
-		if (!ereg('^([a-zA-Z0-9_\-]+)$', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BLOCKFILE2)), _SEC_ERROR); }
+		$file = ($_GET['file'] ?? $_POST['file'] ?? 'index');
+		if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BLOCKFILE2)), _SEC_ERROR); }
 		$module_name = $op;
 		get_lang($op, -1);
 		include('modules/'.$op.'/admin/'.$file.'.inc');
@@ -125,7 +125,7 @@ else if ($CLASS['member']->admin_id) {
 	} elseif (is_dir('admin/case')) {
 		$casedir = dir('admin/case');
 		while ($func=$casedir->read()) {
-			if (substr($func, 0, 5) == 'case.') {
+			if (str_starts_with($func, 'case.')) {
 				include($casedir->path."/$func");
 			}
 		}
