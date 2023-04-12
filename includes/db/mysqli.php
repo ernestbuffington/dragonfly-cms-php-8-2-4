@@ -43,7 +43,7 @@ class sql_db extends sql_parent
 	//
 	// Base query method
 	//
-	function query($query, $bypass_error=FALSE, $unbufferd=false)
+	function query($query, $bypass_error=false, $unbufferd=false)
 	{
 		$this->querytime = get_microtime();
 		$this->query_result = $this->connect_id->query($query, ($unbufferd ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT));
