@@ -83,6 +83,7 @@ if (ini_get('output_buffering')) {
 if (!defined('INSTALL')) {
 	if (GZIPSUPPORT && !ini_get('zlib.output_compression') && isset($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('#gzip#mi', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
 		if (PHPVERS >= 43) { # PHP 4.2.x seems to give memleak
+		    ob_end_clean(); // do this nugga
 			ob_start('ob_gzhandler');
 		} else {
 			define('GZIP_COMPRESS', true);
