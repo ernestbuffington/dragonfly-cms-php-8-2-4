@@ -40,13 +40,13 @@
 $start_mem = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 require_once('includes/cmsinit.inc');
 
-$file = isset($_POST['file']) ? $_POST['file'] : (isset($_GET['file']) ? $_GET['file'] : 'index');
-if (!ereg('^([a-zA-Z0-9_\-]+)$', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BLOCKFILE2)), _SEC_ERROR); }
+$file = $_POST['file'] ?? $_GET['file'] ?? 'index';
+if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BLOCKFILE2)), _SEC_ERROR); }
 
 if (isset($_GET['name']) || isset($_POST['name'])) {
-	$module_name = strtolower(isset($_POST['name']) ? $_POST['name'] : $_GET['name']);
+	$module_name = strtolower($_POST['name'] ?? $_GET['name']);
 	$home = 0;
-	if (!ereg('^([a-z0-9_\-]+)$', $module_name)) {
+	if (!preg_match('#^([a-z0-9_\\\\\-]+)$#m', $module_name)) {
 		cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_MODULES)), _SEC_ERROR);
 	}
 	if ($SESS->new) update_referrer();
@@ -58,7 +58,7 @@ if (isset($_GET['name']) || isset($_POST['name'])) {
 		exit;
 	}
 	$module = $db->sql_ufetchrow('SELECT mid, title, custom_title, active, view, blocks, version FROM '.$prefix."_modules WHERE LOWER(title)='$module_name'", SQL_ASSOC);
-	$modpath = isset($module['title']) ? 'modules/'.$module['title'].'/'.$file.'.php' : 'modules/'.(isset($_POST['name']) ? $_POST['name'] : $_GET['name']).'/'.$file.'.php';
+	$modpath = isset($module['title']) ? 'modules/'.$module['title'].'/'.$file.'.php' : 'modules/'.($_POST['name'] ?? $_GET['name']).'/'.$file.'.php';
 	if (!file_exists($modpath)) {
 		cpg_error(sprintf(_MODULENOEXIST, (is_admin() ? $modpath : '')), 404);
 	}
@@ -76,7 +76,7 @@ if (isset($_GET['name']) || isset($_POST['name'])) {
 		if ($module['custom_title'] != '') 	{ 
 			$module_title = /*defined($module['custom_title']) ? constant($module['custom_title']) :*/ $module['custom_title'];
 		} else {
-			$module_title = defined('_'.$module_name.'LANG') ? constant('_'.$module_name.'LANG') : ereg_replace('_', ' ', $module_name);
+			$module_title = defined('_'.$module_name.'LANG') ? constant('_'.$module_name.'LANG') : preg_replace('#_#m', ' ', $module_name);
 		}
 		$module_version = $module['version'];
 		$module_id = $module['mid'];
@@ -124,7 +124,7 @@ function update_referrer() {
 	if ($MAIN_CFG['global']['httpref'] && isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
 		$referer = Fix_Quotes($_SERVER['HTTP_REFERER']);
 		$httprefmax = (int)$MAIN_CFG['global']['httprefmax'];
-		if (ereg('://', $referer) && !eregi($MAIN_CFG['server']['domain'], $referer)) {
+		if (preg_match('#:\/\/#m', $referer) && !preg_match($MAIN_CFG['server']['domain'], $referer)) {
 			if (!$db->sql_query('UPDATE '.$prefix.'_referer SET lasttime='.gmtime().' WHERE url=\''.htmlprepare($referer).'\'', true) || !$db->sql_affectedrows()) {
 				$db->sql_query('INSERT INTO '.$prefix."_referer (url, lasttime) VALUES ('".htmlprepare($referer)."', ".gmtime().")", true);
 			}

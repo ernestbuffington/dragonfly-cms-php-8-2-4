@@ -198,9 +198,9 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/admin.php',
 		  //////__DIR__ . '/banners.php',
 		  //////__DIR__ . '/cpg_error.php',
-		  __DIR__ . '/error.php',
-		  //__DIR__ . '/footer.php',
-		  //__DIR__ . '/index.php',
+		  //////__DIR__ . '/error.php',
+		  //////__DIR__ . '/footer.php',
+		  __DIR__ . '/index.php',
 		  //__DIR__ . '/install.php',
 
 		
