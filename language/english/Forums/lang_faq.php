@@ -24,7 +24,7 @@
     2002-12-15    Philip M. White (pwhite@mailhaven.com)
         Fixed many minor grammatical problems.
 */
- 
+
 // 
 // To add an entry to your FAQ simply add a line to this file in this format:
 // $faq[] = array("question", "answer");
@@ -36,8 +36,8 @@
 //
 // The FAQ items will appear on the FAQ page in the same order they are listed in this file
 //
- 
-  
+
+
 $faq[] = array("--","Login and Registration Issues");
 $faq[] = array("Why can't I log in?", "Have you registered? Seriously, you must register in order to log in. Have you been banned from the board? (A message will be displayed if you have.) If so, you should contact the webmaster or board administrator to find out why. If you have registered and are not banned and you still cannot log in then check and double-check your username and password. Usually this is the problem; if not, contact the board administrator -- they may have incorrect configuration settings for the board.");
 $faq[] = array("Why do I need to register at all?", "You may not have to -- it is up to the administrator of the board as to whether you need to register in order to post messages. However, registration will give you access to additional features not available to guest users such as definable avatar images, private messaging, emailing to fellow users, usergroup subscription, etc. It only takes a few minutes to register so it is recommended you do so.");
