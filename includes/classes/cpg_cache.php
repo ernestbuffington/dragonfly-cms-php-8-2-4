@@ -16,7 +16,7 @@
 
 class Cache {
 
-	function clear() {
+	public static function clear() {
 		$cache_dir = BASEDIR.'cache';
 		$cache = dir($cache_dir);
 		while($file = $cache->read()) {
@@ -27,7 +27,7 @@ class Cache {
 		$cache->close();
 	}
 
-	function _array_parse($array, $space='  ') {
+	public static function _array_parse($array, $space='  ') {
 		$return = '';
 		foreach($array as $key => $value) {
 			$key = is_int($key) ? $key : "'$key'";
@@ -44,7 +44,7 @@ class Cache {
 		}
 		return $return;
 	}
-	function array_save($name, $module_name='config', $array=false) {
+	public static function array_save($name, $module_name='config', $array=false) {
 		$cache_dir = BASEDIR.'cache';
 		$filename = $cache_dir.'/'.$module_name."_$name.php";
 		if (is_dir($cache_dir) && is_writable($cache_dir)) {
@@ -58,7 +58,7 @@ class Cache {
 			file_write($filename, $data);
 		}
 	}
-	function array_load($name, $module_name='config', $global=true) {
+	public static function array_load($name, $module_name='config', $global=true) {
 		if ($global) global ${$name};
 		$filename = BASEDIR.'cache/'.$module_name."_$name.php";
 		if (file_exists($filename)) {
@@ -68,11 +68,11 @@ class Cache {
 		}
 		return false;
 	}
-	function array_delete($name, $module_name='config') {
+	public static function array_delete($name, $module_name='config') {
 		Cache::remove($name, $module_name);
 	}
 
-	function remove($name, $module_name='config') {
+	public static function remove($name, $module_name='config') {
 		$cache_dir = BASEDIR.'cache';
 		$filename = "$cache_dir/$module_name"."_$name.php";
 		if (is_dir($cache_dir) && is_writable($cache_dir) && file_exists($filename)) {
@@ -81,7 +81,7 @@ class Cache {
 		clearstatcache();
 	}
 
-	function defines_save($name, $module_name, $defines) {
+	public static function defines_save($name, $module_name, $defines) {
 		$cache_dir = BASEDIR.'cache';
 		$filename = $cache_dir.'/'.$module_name."_$name.php";
 		if (is_dir($cache_dir) && is_writable($cache_dir)) {
@@ -96,7 +96,7 @@ class Cache {
 			file_write($filename, $data);
 		}
 	}
-	function defines_load($name, $module_name) {
+	public static function defines_load($name, $module_name) {
 		$filename = BASEDIR.'cache/'.$module_name."_$name.php";
 		if (file_exists($filename)) {
 			include_once($filename);
