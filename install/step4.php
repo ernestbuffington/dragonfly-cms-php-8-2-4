@@ -41,7 +41,8 @@ function session_test($setup) {
 	if (isset($setup['sessionpath'])) session_save_path($setup['sessionpath']);
 	session_set_cookie_params(0, $setup['cookiepath'], $setup['cookiedom']); // [, bool secure]
 	session_start();
-	session_register('installtest');
+	//session_register('installtest'); // silly rabbit Dont use session_register(), session_is_registered() and session_unregister() it's been gone since PHP 5.4.0
+	$_SESSION['sessionpath']= "installtest";
 }
 
 if (isset($_POST['domain'])) {
@@ -58,8 +59,8 @@ if (isset($_POST['domain'])) {
 		|| empty($_POST['membercookie'])
 		|| empty($_POST['cpgcookie'])) {
 		$error = $instlang['s2_error_empty'];
-	} elseif (!preg_match('#^[_\.\+0-9a-z-]+@(([a-z]{1,25}\.)?[0-9a-z-]{2,63}\.[a-z]{2,6}(\.[a-z]{2,6})?)$#', $setup['adminm'])) {
-		$error = $instlang['s2_error_email'];
+	//} elseif (!preg_match("/^(?:[\w\d-]?\.?)+@(?:(?:[\w\d]\-?)+\.)+\w{2,4}$/", $setup['adminm'])) {
+	//	$error = $instlang['s2_error_email'];
 	} elseif (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['admincookie']) ||
 			  !preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['membercookie'])) {
 		$error = $instlang['s2_error_cookiename'];
