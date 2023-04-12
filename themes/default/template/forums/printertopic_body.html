@@ -1,0 +1,32 @@
+<!-- INCLUDE forums/overall_header.html -->
+<a class="maintitle" href="{U_VIEW_TOPIC}" style="color:black;">{TOPIC_TITLE}</a><br />
+<table><tr><td>
+<form action="{U_VIEW_TOPIC}" method="get">
+<span class="gensmall" style="color:black;"><b>{PAGINATION}</b></span>
+<span class="gensmall">
+    <input class="get" type="text" maxlength="5" size="5" name="start_rel" value="{START_REL}" />
+    <input class="get" type="text" maxlength="5" size="5" name="finish_rel" value="{FINISH_REL}" />
+    <input type="hidden" name="t" value="{TOPIC_ID}" />
+    <input type="hidden" name="printertopic" value="1" />
+    <input type="submit" name="submit" value="O_o" class="mainoption" />
+</span>
+</table>
+
+<span class="nav"><a href="{U_INDEX}" class="nav" style="color:black;">{SITENAME}</a> -> <a href="{U_VIEW_FORUM}" class="nav" style="color:black;">{FORUM_NAME}</a></span>
+
+{POLL_DISPLAY}
+
+<!-- BEGIN postrow -->
+<center><hr style="width:80%;"></center>
+<span class="name"><a name="{postrow.U_POST_ID}"></a></span><span class="postdetails">#{postrow.POST_NUMBER}:&nbsp;<font color=black><b>{postrow.POST_SUBJECT}</b> {L_AUTHOR}:&nbsp;<b>{postrow.POSTER_NAME}</b>,&nbsp;</font></span><span class="postdetails"><font color=black>{postrow.POSTER_FROM}</font></span>
+<a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" style="border:0; width:12px; height:9px;" /></a><span class="postdetails"><font color=black>{L_POSTED}: {postrow.POST_DATE}</font><span class="gen"><br />
+<span class="gensmall">&nbsp;&nbsp;&nbsp;&nbsp;----</span><br />
+<span class="postbody">{postrow.MESSAGE}</span><span class="gensmall">{postrow.EDITED_MESSAGE}</span>
+<!-- END postrow -->
+
+<span class="gensmall"><center><hr style="width:48%;"><hr style="width:16%;"><hr style="width:4%;"></center><span>
+<span class="nav"><a href="{U_INDEX}" class="nav" style="color:black;">{SITENAME}</a> -> <a href="{U_VIEW_FORUM}" class="nav" style="color:black;">{FORUM_NAME}</a></span>
+<p align="right"><span class="gensmall">{S_TIMEZONE}</span></p><span class="nav">{PAGINATION}</span>
+<center><span class="nav">{PAGE_NUMBER}</span></center>
+</form>
+<!-- INCLUDE forums/overall_footer.html -->

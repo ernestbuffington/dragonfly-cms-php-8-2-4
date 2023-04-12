@@ -3,135 +3,151 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/header.php,v $
+  $Revision: 9.33 $
+  $Author: nanocaiordo $
+  $Date: 2007/12/12 12:54:17 $
 **********************************************/
-if (!class_exists('Dragonfly', false)) { exit; }
+if (!defined('CPG_NUKE')) { exit; }
 define('HEADER_OPEN', true);
 
-if ('HEAD' === $_SERVER['REQUEST_METHOD']) {
-	\Dragonfly\Net\Http::headersFlush();
-	exit;
+# 1-2 queries
+function online() {
+	global $userinfo, $prefix, $db, $module_title, $SESS, $mainindex;
+	if ($SESS->dbupdate) {
+		$url = get_uri();
+		$uname = $SESS->sess_id;
+		$guest = 1;
+		if (is_user()) {
+			$uname = $userinfo['username'];
+			$guest = 0;
+		} elseif (SEARCHBOT) {
+			$uname = SEARCHBOT;
+			$guest = 3;
+		}
+		if (is_admin()) {
+			global $CLASS;
+			if ($guest == 1) { $uname = $CLASS['member']->admin['aid']; }
+			$guest = 2;
+			if (defined('ADMIN_PAGES')) $url = $mainindex;
+		}
+		$uname = Fix_Quotes($uname);
+		if (empty($uname)) return; # something screwey
+		$ctime = gmtime();
+		$custom_title = Fix_Quotes(($module_title) ? $module_title : _HOME);
+		$url = Fix_Quotes(str_replace('&', '&amp;', $url));
+		if ($db->sql_count($prefix.'_session', "uname='$uname'")) {
+			$db->sql_query('UPDATE '.$prefix."_session SET time='$ctime', module='$custom_title', url='$url', guest='$guest' WHERE uname='$uname'", true);
+		} else {
+			$db->sql_query('INSERT INTO '.$prefix."_session (uname, time, host_addr, guest, module, url) VALUES ('$uname', '$ctime', {$userinfo['user_ip']}, '$guest', '$custom_title', '$url')", true);
+		}
+	}
 }
-
-function head()
-{
-	global $METATAGS, $Blocks,
-		$bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $textcolor1, $textcolor2, $CPG_SESS,
-		$Module, $pagetitle;
-	$K = \Dragonfly::getKernel();
-
-	//if (300 < $_SESSION['SECURITY']['status']) { online(); }
-	if (empty($_SESSION['SECURITY']['banned'])) {
-		if ($K->SESSION) {
-			$K->SESSION->online();
-		}
-	}
-
-	define('THEME_PATH', 'themes/'.($K->OUT->theme?:'default').'/');
-	header('imagetoolbar: no');
-	header(\Dragonfly\Net\Http::$contentType['html']);
-	$MAIN_CFG = $K->CFG;
-	if ($MAIN_CFG->global->block_frames) {
-		header('X-Frame-Options: SAMEORIGIN');
-	}
-
-	$header = '';
-	$userinfo = $K->IDENTITY;
-
-	$GLOBALS['DF']->setState(DF::BOOT_HEADER);
-
-	$Blocks = new \Dragonfly\Blocks($Module ? $Module->mid : 0);
-	$Blocks->prepare(\Dragonfly\Blocks::LEFT);
-	$Blocks->prepare(\Dragonfly\Blocks::CENTER);
-	$Blocks->prepare(\Dragonfly\Blocks::RIGHT);
-	$Blocks->prepare(\Dragonfly\Blocks::DOWN);
-
-	// v9
-	$bgcolor1 = $bgcolor2 = $bgcolor3 = $bgcolor4 = '#FFFFFF';
-	$textcolor1 = $textcolor2 = '#000000';
-	$cpgtpl = $K->OUT;
-	$CPG_SESS = $_SESSION['CPG_SESS'];
-
-	// include theme code
-	require_once(THEME_PATH .'theme.php');
+function head() {
+	global $BASEHREF, $METATAGS, $slogan, $sitename, $userinfo, $showblocks, $index,
+		$bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $textcolor1, $textcolor2, $Blocks,
+		$pagetitle, $modheader, $MAIN_CFG, $CPG_SESS, $module_name, $CLASS, $adminindex;
+	include_once('themes/'.$CPG_SESS['theme'].'/theme.php');
 	if (!defined('THEME_VERSION')) { define('THEME_VERSION', '9.0'); }
+	if (!defined('_BROWSER_LANGCODE')) { define('_BROWSER_LANGCODE', _LANGCODE); }
+	if (!defined('_CHARSET')) { define('_CHARSET', 'UTF-8'); }
 
-	themeheader();
-	if (!function_exists('themefooter')) {
-		function themefooter()
-		{
-			\Dragonfly::getKernel()->OUT->display('footer');
-		}
+	# Work around for "current" Apache 2 + PHP module which seems to not cope with private cache control setting
+	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2')) {
+		header('Cache-Control: no-cache, pre-check=0, post-check=0');
+	} else {
+		header('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
 	}
-
-	if ($METATAGS) {
-		foreach ($METATAGS as $name => $content) {
-			\Dragonfly\Page::metatag($name, $content);
-		}
+	header('imagetoolbar: no');
+	$message = '';
+	$header = '<base href="'.$BASEHREF.'" />'."\n";
+	foreach ($METATAGS as $name => $content) {
+		$header .= '<meta name="'.$name.'" content="'.$content.'" />'."\n";
 	}
+	$header .= '<title>'.$sitename.(!empty($pagetitle) ? ' '._BC_DELIM.' '.strip_tags($pagetitle) : '').'</title>';
+	if (file_exists('themes/'.$CPG_SESS['theme'].'/images/favicon.ico')) {
+		$header .= '<link rel="shortcut icon" href="'.$BASEHREF.'themes/'.$CPG_SESS['theme'].'/images/favicon.ico" type="image/x-icon" />'."\n";
+	} else if (file_exists('favicon.ico')) {
+		$header .= '<link rel="shortcut icon" href="'.$BASEHREF.'favicon.ico" type="image/x-icon" />'."\n";
+	}
+//	$header .= '<script type="text/javascript" src="includes/javascript/MM_funcs.js"></script>'."\n\n";
+	if ($MAIN_CFG['global']['block_frames']) {
+		$header .= '<script type="text/javascript">if (self != top) top.location.replace(self.location)</script>'."\n";
+	}
+	if ($MAIN_CFG['global']['admin_help']) {
+		$header .= '<script type="text/javascript" src="includes/javascript/infobox.js"></script>'."\n";
+	}
+	$header .= '<script type="text/javascript" src="includes/javascript/blockscript.js"></script>
+'.$modheader.'
+<link rel="copyright" href="'.getlink('credits').'" title="Copyrights" />
+<link rel="author" href="'.getlink('Members_List').'" title="'._Members_ListLANG.'" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="rss/news2.php" />
+';
 /*
-	if (!defined('ADMIN_PAGES')) {
-		\Dragonfly\Page::tag('link rel="canonical" href="'.BASEHREF.URL::canonical(true).'"');
-	}
-	$L10N = $K->L10N;
-	if ($L10N->multilingual) {
-		foreach ($L10N->getActiveList() as $lng) {
-			if ($lng['value'] != $L10N->lng) {
-				\Dragonfly\Page::link('alternate', URL::lang($lng['value']), $lng['value']);
-			}
+	$languages = lang_selectbox('', '', false, true);
+	for ($i=0; $i < sizeof($languages); $i++) {
+		if ($languages[$i] != '') {
+			$header .= '<link rel="alternate" type="text/html" href="?newlang='.$languages[$i].'" hreflang="'.get_langcode($languages[$i]).'" lang="'.get_langcode($languages[$i]).'" title="Version '.ucfirst($languages[$i]).'" />'."\n";
 		}
-		unset($lng);
 	}
 */
-	if (is_user() && $userinfo->popup_pm && $userinfo->new_privmsg && $Module && $Module->name != 'Private_Messages' && \Dragonfly\Modules::isActive('Private_Messages')) {
-		$L10N = $K->L10N;
-		$L10N->load('Private_Messages');
-		\Poodle\Notify::message(
-			$L10N->get(($userinfo->new_privmsg > 1) ? 'You_new_pms' : 'You_new_pm')
-			.'. '.sprintf($L10N['Click_view_privmsg'], '<a href="'.htmlspecialchars(URL::index('Private_Messages&folder=inbox')).'">', '</a>')
-		);
+	if ($module_name != 'Private_Messages' && is_user() && is_active('Private_Messages') && $userinfo['user_popup_pm'] && $userinfo['user_new_privmsg']) {
+		$header .= '
+<script type="text/javascript">
+<!--
+	window.open(\''.getlink('Private_Messages&file=index&mode=newpm', false).'\', \'\', \'height=150,resizable=yes,width=400\');
+//-->
+</script>';
 	}
-	if ($MAIN_CFG->global->maintenance) {
-		\Poodle\Notify::warning(_SYS_MAINTENANCE .' [<a href="'.htmlspecialchars(URL::admin('settings&s=1')).'">'._RESET.'</a>]');
+	if ($MAIN_CFG['global']['maintenance']) { $message = '<strong>'._SYS_MESSAGE.'</strong><br />'._SYS_MAINTENANCE; }
+	if (is_admin() && $CLASS['member']->demo) {
+		$message .= ($message == '') ? '<strong>'._SYS_MESSAGES.'</strong>' : '<br />';
+		$message .= '<br />'._SYS_DEMO;
 	}
-	if (is_admin() && DF_MODE_INSTALL) {
-		\Poodle\Notify::warning('Installer mode still active, [<a href="'.htmlspecialchars(URL::admin('settings&s=11')).'">'._RESET.'</a>].');
-	}
-	if (Dragonfly::isDemo()) {
-		\Poodle\Notify::warning(_SYS_DEMO);
-	}
-	if (is_file('header_hooks.php')) {
-		include_once('header_hooks.php');
-	}
-	if (!\Dragonfly\Page::get('title')) {
-		if (!empty($pagetitle)) { \Dragonfly\Page::title($pagetitle, false); }
-	}
-
-	$K->OUT->assign_vars(array(
-		'I18N'         => 'enctype="multipart/form-data"',
-		'B_PAGETITLE'  => 1 < strlen(strip_tags(\Dragonfly\Page::get('title'))), #TODO check strip_tags in class
-		'S_HEADER_TAGS'=> \Dragonfly\Page::getHeaders(),
-		'S_SITENAME'   => $MAIN_CFG->global->sitename,
-		'S_BLOCK_FRAMES' => intval($MAIN_CFG->global->block_frames),
-		'B_SIDE_LEFT'  => !!$K->OUT->leftblock,
-		'B_SIDE_CENTER'=> !!$K->OUT->centerblock,
-		'B_SIDE_RIGHT' => !!$K->OUT->rightblock,
-		'B_SIDE_DOWN'  => !!$K->OUT->bottomblock,
-		'CSS_DATA'     => \Dragonfly\Output\Css::flushToTpl(),
-		'JS_DATA'      => \Dragonfly\Output\Js::flushToTpl(),
+	$index = ($showblocks > 1) ? 1 : 0;
+	themeheader();
+	global $cpgtpl, $ownpagetitle, $home;
+	$adminmenuitems = $admincssmenuitems = false;
+	$cpgtpl->assign_vars(array(
+		'IMPORTANT_MESSAGE' => $message,
+		'S_TEXTDIR'	 => _TEXT_DIR,
+		'S_LANGCODE'	=> _BROWSER_LANGCODE,
+		'S_HEADER_TAGS' => $header,
+		'S_LEFTBLOCKS'  => ($Blocks->showblocks & 1),
+		'S_RIGHTBLOCKS' => ($Blocks->showblocks & 2),
+		'I18N'		  => 'enctype="multipart/form-data" accept-charset="utf-8"'
 	));
-
-	if (!defined('ADMIN_PAGES')) {
-		if (class_exists('Dragonfly\\Modules\\Statistics\\Counter')) {
-			\Dragonfly\Modules\Statistics\Counter::inc();
+	if (!$home) {
+		if (defined('ADMIN_PAGES') && is_admin() && !(isset($_GET['op']) && $_GET['op'] == 'logout')) {
+			require_once('includes/classes/cpg_adminmenu.php');
+			$adminmenuitems = $CLASS['adminmenu']->display('all', 'jsmenu');
+			$admincssmenuitems = ($MAIN_CFG['global']['admingraphic'] & 4);
 		}
-		require_once('includes/functions/messagebox.php');
 	}
-
-	$K->OUT->display('header');
+	$cpgtpl->assign_vars(array(
+		'PAGE_TITLE'   => ($home || isset($ownpagetitle[$module_name]))?'':$pagetitle,
+		'S_ADMIN_MENU' => $adminmenuitems,
+		'S_ADMIN_CSSMENU' => $admincssmenuitems
+	));
+	unset($modheader);
 }
 
+if (empty($_SESSION['SECURITY']['banned'])) { online(); }
+global $home, $cpgtpl, $Blocks;
+$Blocks->init();
 head();
+if (!defined('ADMIN_PAGES')) {
+	require_once('includes/counter.php');  # 2-3 queries
+	if ($home) {
+		require_once('includes/functions/messagebox.php');
+		message_box();
+	}
+}
+$Blocks->display('c');
+$cpgtpl->set_filenames(array('cpgheader' => 'header.html'));
+$cpgtpl->display('cpgheader');

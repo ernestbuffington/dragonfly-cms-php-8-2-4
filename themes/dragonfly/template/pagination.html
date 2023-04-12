@@ -1,0 +1,17 @@
+<!-- IF B_PAGINATION -->
+<table width="100%"><tr>
+<!-- IF PAGINATION_PREV --><td class="pagneutral"><a href="{PAGINATION_PREV}" title="{L_PREVIOUS}">&lt;</a></td><!-- ENDIF -->
+<td><br /></td>
+<!-- BEGIN pagination -->
+	<!-- IF pagination.URL -->
+	<td class="paginact"><a href="{pagination.URL}">{pagination.PAGE}</a></td>
+	<!-- ELSE -->
+	<td class="pagact">{pagination.PAGE}</td>
+	<!-- ENDIF -->
+<!-- END pagination -->
+<td><br /></td>
+<!-- IF PAGINATION_NEXT -->
+<td class="pagneutral"><a href="{PAGINATION_NEXT}" title="{L_NEXT}">&gt;</a></td>
+<!-- ENDIF -->
+</tr></table>
+<!-- ENDIF -->

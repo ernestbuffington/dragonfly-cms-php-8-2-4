@@ -1,0 +1,38 @@
+<script type='text/javascript'>
+<!--
+function checkForm() {
+	if (document.post.message.value.length < 2) {
+		alert("{L_EMPTY_MESSAGE}");
+		return false;
+	} else {
+		return true;
+	}
+}
+//-->
+</script>
+
+<form action="{U_POST_ACTION}" method='post' onsubmit='return checkForm(this)'  {I18N}>
+<table class="forumline" width="100%" cellspacing="1" cellpadding="3" border="0">
+  <tr>
+    <th colspan="2" style="padding:0px; height:25px;"><b>{L_QUICK_REPLY}</b></th>
+  </tr><tr>
+    <!-- IF S_IS_ANON -->
+    <td align="right" class="row1"><span class="gen"><b>{L_USERNAME}:</b></span></td>
+    <td class="row1"><input class='post' type='text' name='username' size='25' maxlength='25' style="width: 450px;" value='' /></td>
+  </tr><tr>
+    <!-- ENDIF -->
+    <td align="right" class="row1" valign="top"><span class="gen"><b>{L_MESSAGE}:</b></span></td>
+    <td class="row1" style="padding-top: 0px; padding-bottom: 0px;">
+    <textarea name="message" style="width: 450px; height: 140px;" wrap="virtual" class="post"></textarea><br />
+    <input type="checkbox" name="quick_quote" value="{S_QREPLY_MSG}" /> {L_QUICK_QUOTE}<br />
+    <input type="checkbox" name="attach_sig" {S_QREPLY_SIG} /> {L_ATTACH_SIGNATURE}
+    </td>
+  </tr><tr>
+    <td colspan="2" class="catbottom" align="center" style="padding:0px; height:28px;">
+    {S_HIDDEN_QREPLY_FIELDS}
+    <input type="submit" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;<input type="submit" accesskey="s" name="post" class="mainoption" value="{L_SUBMIT}" />
+    </td>
+  </tr>
+</table>
+</form>
+

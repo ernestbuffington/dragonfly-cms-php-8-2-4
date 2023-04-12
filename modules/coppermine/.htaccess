@@ -1,0 +1,13 @@
+# CPG Dragonfly CMS
+# Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+# Released under the GNU GPL version 2 or any later version
+
+# $Source: /cvs/html/modules/coppermine/.htaccess,v $
+# $Revision: 9.2 $
+# $Author: djmaze $
+# $Date: 2007/02/17 12:31:01 $
+
+# deny most common
+<filesmatch "\.inc$">
+deny from all
+</filesmatch>

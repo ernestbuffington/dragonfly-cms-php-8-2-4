@@ -1,0 +1,59 @@
+<!-- INCLUDE admin/security/menu.html -->
+<!-- INCLUDE admin/security/list.html -->
+
+<ul style="list-style:none;"><li>
+<fieldset style="border:0;">
+<!-- IF U_PAGE == 'referers' || U_PAGE == 'mails' -->
+<fieldset style="border:1px solid #069;width:320px;"><legend>{L_NEW}</legend>
+<form method="post" name="post" action="{REQUEST_URI}">
+<label class="set">{L_BAN_NAME}</label><input type="text" name="new_entry" /><br />
+<label class="set"></label><input type="submit" name="submit" value="Add"/>
+</form>
+</fieldset>
+<!-- ELSEIF U_PAGE == 'ips' || U_PAGE == 'shields' -->
+<fieldset style="border:1px solid #069;width:320px;">
+<legend><!-- IF U_PAGE == 'ips' -->Ban<!-- ELSE -->Shield<!-- ENDIF --> an <a href="http://en.wikipedia.org/wiki/IPv4" target="_blank">IPv4</a> address</legend>
+<form method="post" name="post" action="{REQUEST_URI}">
+<label class="set" for="ban_ipv4_s">IPv4 start</label><input name="ban_ipv4_s" id="ban_ipv4_s" type="text"/><br />
+<label class="set" for="ban_ipv4_e">IPv4 end</label><input name="ban_ipv4_e" id="ban_ipv4_e" type="text"/> <i>(read note)</i><br />
+<label class="set" for="description">Description</label><textarea name="description" id="description"></textarea><br />
+<label class="set"></label><input type="submit" value="Add IPv4" />
+<p>NOTE: Only use 'IPv4 end' if you want to add a whole IPv4 range.</p>
+</form>
+</fieldset>
+<fieldset style="border:1px solid #069;width:320px;">
+<legend><!-- IF U_PAGE == 'ips' -->Ban<!-- ELSE -->Shield<!-- ENDIF --> an <a href="http://en.wikipedia.org/wiki/IPv6" target="_blank">IPv6</a> by MAC address</legend>
+<form method="post" name="post" action="{REQUEST_URI}">
+<label class="set" for="ban_mac"><a href="http://en.wikipedia.org/wiki/MAC_address" target="_blank">MAC</a> address</label><input name="ban_mac" id="ban_mac" type="text"/><br />
+<label class="set" for="ban_details">Description</label><textarea name="ban_details" id="ban_details"></textarea><br />
+<label class="set"></label><input type="submit" value="Add MAC" />
+</form>
+</fieldset>
+<!-- ELSEIF U_PAGE == 'bots' -->
+<fieldset style="border:1px solid #069;width:320px;"><legend>{L_NEW}</legend>
+<form method="post" name="post" action="{REQUEST_URI}">
+<p><label class="set" for="ua_name">{L_BAN_NAME} name*</label><input name="ua_name" id="ua_name" type="text" /></p>
+<p><label class="set" for="ua_fullname">UA detect string*</label><input name="ua_fullname" id="ua_fullname" type="text" /></p>
+<p><label class="set" for="ua_hostname">{L_BAN_NAME} hostname</label><input name="ua_hostname" id="ua_hostname" type="text" /></p>
+<p><label class="set" for="ua_url">{L_URL}</label><input name="ua_url" id="ua_url" type="text" /></p>
+<p><label class="set" for="ua_ban_type">{L_BAN_TYPE}</label><select name="ua_ban_type" id="ua_ban_type"><option value="0">{L_INACTIVE}</option><option value="-1">{L_ACTIVE}</option></select></p>
+<span id="ranges">
+<p><label class="set" for="ban_ipv4_s_0">IPv4 start*</label><input name="ban_ipv4_s[]" id="ban_ipv4_s_0" type="text" onfocus="newRange.enable();" /></p>
+<p><label class="set" for="ban_ipv4_e_0">IPv4 end</label><input name="ban_ipv4_e[]" id="ban_ipv4_e_0" type="text"/> <i>(read note)</i></p>
+<noscript>
+<p><label class="set" for="ban_ipv4_s_1">IPv4 start*</label><input name="ban_ipv4_s[]" id="ban_ipv4_s_1" type="text" /></p>
+<p><label class="set" for="ban_ipv4_e_1">IPv4 end</label><input name="ban_ipv4_e[]" id="ban_ipv4_e_1" type="text" /> <i>(read note)</i></p>
+<p><label class="set" for="ban_ipv4_s_2">IPv4 start*</label><input name="ban_ipv4_s[]" id="ban_ipv4_s_2" type="text" /></p>
+<p><label class="set" for="ban_ipv4_e_2">IPv4 end</label><input name="ban_ipv4_e[]" id="ban_ipv4_e_2" type="text" /> <i>(read note)</i></p>
+</noscript>
+</span>
+<p id="buttonarea" style="display:none"><label class="set" for="new_range">Create additional IP range</label><input type="button" id="new_range" value="Add IP range" onclick="newRange.add();"></p>
+<p><label class="set" for="ban_details">Description</label><textarea name="ban_details" id="ban_details"></textarea></p>
+<p>NOTE: Only use 'IPv4 end' if you want to add a whole IPv4 range.</p>
+<p>* mandatory.</p>
+<p><label class="set"></label><input type="submit" name="submit" value="Add {L_BAN_NAME}"/></p>
+</form>
+</fieldset>
+</fieldset>
+<!-- ENDIF -->
+</li></ul>

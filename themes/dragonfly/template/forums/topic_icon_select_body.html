@@ -1,0 +1,21 @@
+<script language="Javascript">
+{ICONS_ARRAY}
+function iconpreview() {
+document.images.icon_preview.src=icons_array[document.post.topic_icon.options[document.post.topic_icon.selectedIndex].value];
+}
+</script>
+<tr>
+    <td class="row1" width="22%"><span class="gen"><b>Topic icon</b></span></td>
+    <td class="row2" width="78%"><span class="gen"> 
+        <select style="width:175px" name="topic_icon" onclick="iconpreview()">
+            <option value="0">No icon</option>
+            <!-- BEGIN topic_icon_option -->
+            <option value="{topic_icon_option.S_ICON_ID}" {topic_icon_option.S_SELECTED}>{topic_icon_option.S_ICON_NAME}</option>
+            <!-- END topic_icon_option -->
+        </select> 
+        <img width="15" height="15" src="images/spacer.gif" name="icon_preview"/>
+    </span></td>
+</tr>
+<script language="javascript">
+iconpreview();
+</script>

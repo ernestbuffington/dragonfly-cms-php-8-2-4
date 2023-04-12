@@ -6,6 +6,9 @@
  *	 copyright			  : (C) 2001 The phpBB Group
  *	 email				  : support@phpbb.com
  *
+ *	 $Id: faq.php,v 9.7 2007/05/15 00:01:59 phoenix Exp $
+ *
+ *
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,85 +19,105 @@
  *	 (at your option) any later version.
  *
  ***************************************************************************/
+if (!defined('CPG_NUKE')) { exit; }
+require_once('modules/'.$module_name.'/nukebb.php');
 
-if (!defined('IN_PHPBB')) { define('IN_PHPBB', true); }
-require_once(__DIR__ . '/common.php');
-
+//
+// Start session management
+//
+$userdata = session_pagestart($user_ip, PAGE_FAQ);
+init_userprefs($userdata);
+//
+// End session management
+//
 $faq = array();
 
 //
 // Load the appropriate faq file
 //
-if ('bbcode' == $_GET['mode']) {
-	$lang_file = 'lang_bbcode';
-	$l_title = $lang['BBCode_guide'];
+if( isset($_GET['mode']) ) {
+	switch( $_GET['mode'] )
+	{
+		case 'bbcode':
+			$lang_file = 'lang_bbcode';
+			$l_title = $lang['BBCode_guide'];
+			break;
+		default:
+			$lang_file = 'lang_faq';
+			$l_title = $lang['FAQ'];
+			break;
+	}
 } else {
 	$lang_file = 'lang_faq';
 	$l_title = $lang['FAQ'];
 }
-if (is_file("includes/l10n/{$template->L10N->lng}/Forums/{$lang_file}.php")) {
-	require_once "includes/l10n/{$template->L10N->lng}/Forums/{$lang_file}.php";
-} else {
-	require_once "includes/l10n/en/Forums/{$lang_file}.php";
-}
-
+require_once('language/'.$board_config['default_lang'].'/Forums/'.$lang_file.'.php');
 //
 // Pull the array data from the lang pack
 //
 $j = $counter = $counter_2 = 0;
-$faq_blocks = $faq_blocks_titles = array();
+$faq_block = $faq_block_titles = array();
 
-foreach ($faq as $faq_item) {
-	if ($faq_item[0] != '--') {
-		$faq_blocks[$j][$counter]['id'] = $counter_2;
-		$faq_blocks[$j][$counter]['question'] = $faq_item[0];
-		$faq_blocks[$j][$counter]['answer'] = $faq_item[1];
-		++$counter;
-		++$counter_2;
+for($i = 0; $i < count($faq); $i++) {
+	if( $faq[$i][0] != '--' ) {
+		$faq_block[$j][$counter]['id'] = $counter_2;
+		$faq_block[$j][$counter]['question'] = $faq[$i][0];
+		$faq_block[$j][$counter]['answer'] = $faq[$i][1];
+		$counter++;
+		$counter_2++;
 	} else {
 		$j = ( $counter != 0 ) ? $j + 1 : 0;
-		$faq_blocks_titles[$j] = $faq_item[1];
+		$faq_block_titles[$j] = $faq[$i][1];
 		$counter = 0;
 	}
 }
-unset($faq);
 
 //
 // Lets build a page ...
 //
+$page_title = $l_title;
+require_once('includes/phpBB/page_header.php');
 
-\Dragonfly\Page::title($l_title);
+make_jumpbox('viewforum');
 
 $template->assign_vars(array(
 	'L_FAQ_TITLE' => $l_title,
 	'L_BACK_TO_TOP' => $lang['Back_to_top'],
-));
+	'L_GO' => $lang['Go'])
+);
 
-foreach ($faq_blocks as $i => $faq_block) {
-	if (count($faq_block)) {
+for($i = 0; $i < count($faq_block); $i++) {
+	if( count($faq_block[$i]) ) {
 		$template->assign_block_vars('faq_block', array(
-			'BLOCK_TITLE' => $faq_blocks_titles[$i]
-		));
+			'BLOCK_TITLE' => $faq_block_titles[$i])
+		);
 		$template->assign_block_vars('faq_block_link', array(
-			'BLOCK_TITLE' => $faq_blocks_titles[$i]
-		));
-		foreach ($faq_block as $faq_item) {
+			'BLOCK_TITLE' => $faq_block_titles[$i])
+		);
+
+		for($j = 0; $j < count($faq_block[$i]); $j++) {
+			$row_color = ( !($j % 2) ) ? $bgcolor2 : $bgcolor1;
+			$row_class = ( !($j % 2) ) ? 'row1' : 'row2';
+
 			$template->assign_block_vars('faq_block.faq_row', array(
-				'FAQ_QUESTION' => $faq_item['question'],
-				'FAQ_ANSWER' => $faq_item['answer'],
-				'U_FAQ_ID' => $faq_item['id'],
-				'REQUEST_URI' => $_SERVER['REQUEST_URI']
-			));
+				'ROW_COLOR' => $row_color,
+				'ROW_CLASS' => $row_class,
+				'FAQ_QUESTION' => $faq_block[$i][$j]['question'],
+				'FAQ_ANSWER' => $faq_block[$i][$j]['answer'],
+				'U_FAQ_ID' => $faq_block[$i][$j]['id'],
+				'REQUEST_URI' => get_uri())
+			);
 
 			$template->assign_block_vars('faq_block_link.faq_row_link', array(
-				'FAQ_LINK' => $faq_item['question'],
-				'U_FAQ_LINK' => $_SERVER['REQUEST_URI'].'#' . $faq_item['id']
-			));
+				'ROW_COLOR' => $row_color,
+				'ROW_CLASS' => $row_class,
+				'FAQ_LINK' => $faq_block[$i][$j]['question'],
+				'U_FAQ_LINK' => get_uri().'#' . $faq_block[$i][$j]['id'])
+			);
 		}
 	}
 }
-unset($faq_blocks, $faq_blocks_titles);
 
-require_once('includes/phpBB/page_header.php');
-make_jumpbox('viewforum');
-$template->display('forums/faq_body');
+$template->set_filenames(array('body' => 'forums/faq_body.html'));
+
+require_once('includes/phpBB/page_tail.php');

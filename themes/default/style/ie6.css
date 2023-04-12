@@ -1,0 +1,20 @@
+/**
+* CPG Dragonfly CMS
+* Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: ie6.css,v 1.3 2007/09/27 04:43:39 phoenix Exp $
+*/
+body {
+  behavior:url(/includes/css/csshover.htc);
+  scrollbar-face-color: #DEE3E7;
+  scrollbar-highlight-color: #FFFFFF;
+  scrollbar-shadow-color: #DEE3E7;
+  scrollbar-3dlight-color: #D1D7DC;
+  scrollbar-arrow-color: #006699;
+  scrollbar-track-color: #EFEFEF;
+  scrollbar-darkshadow-color: #98AAB1;
+}
+.code,.quote {
+  width: 450px;
+  word-wrap: break-word;
+}

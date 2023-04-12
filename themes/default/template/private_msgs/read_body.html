@@ -1,0 +1,117 @@
+
+<table cellspacing="2" cellpadding="2" border="0" align="center">
+  <tr>
+    <td valign="middle">{INBOX_IMG}</td>
+    <td valign="middle"><span class="cattitle">{INBOX} &nbsp;</span></td>
+    <td valign="middle">{SENTBOX_IMG}</td>
+    <td valign="middle"><span class="cattitle">{SENTBOX} &nbsp;</span></td>
+    <td valign="middle">{OUTBOX_IMG}</td>
+    <td valign="middle"><span class="cattitle">{OUTBOX} &nbsp;</span></td>
+    <td valign="middle">{SAVEBOX_IMG}</td>
+    <td valign="middle"><span class="cattitle">{SAVEBOX}</span></td>
+  </tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="2" cellpadding="2" border="0">
+  <tr>
+      <td valign="middle">{REPLY_PM_IMG}</td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="4" cellspacing="1" width="100%" class="forumline">
+<form method="post" action="{S_PRIVMSGS_ACTION}" {I18N}>
+    <tr>
+      <th colspan="3" class="thHead" style="white-space:nowrap;">{BOX_NAME} :: {L_MESSAGE}</th>
+    </tr>
+    <tr>
+      <td class="row2"><span class="genmed">{L_FROM}:</span></td>
+      <td style="width:100%;" class="row2" colspan="2"><span class="genmed">{MESSAGE_FROM}</span></td>
+    </tr>
+    <tr>
+      <td class="row2"><span class="genmed">{L_TO}:</span></td>
+      <td style="width:100%;" class="row2" colspan="2"><span class="genmed">{MESSAGE_TO}</span></td>
+    </tr>
+    <tr>
+      <td class="row2"><span class="genmed">{L_POSTED}:</span></td>
+      <td style="width:100%;" class="row2" colspan="2"><span class="genmed">{POST_DATE}</span></td>
+    </tr>
+    <tr>
+      <td class="row2"><span class="genmed">{L_SUBJECT}:</span></td>
+      <td style="width:100%;" class="row2"><span class="genmed">{POST_SUBJECT}</span></td>
+      <td style="white-space:nowrap;" class="row2" align="right"> {QUOTE_PM_IMG} {EDIT_PM_IMG}</td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="3" class="row1"><span class="postbody">{MESSAGE}</span></td>
+    </tr>
+    <tr>
+      <td style="width:78%; height:28px;" valign="bottom" colspan="3" class="row1">
+        <table cellspacing="0" cellpadding="0" border="0" height="18">
+          <tr>
+            <td valign="middle" style="white-space:nowrap;">{PROFILE_IMG} {PM_IMG} {EMAIL_IMG}
+              {WWW_IMG} {AIM_IMG} {YIM_IMG} {MSN_IMG}</td><td>&nbsp;</td><td valign="top" style="white-space:nowrap;"><script type="text/javascript"><!--
+
+        if ( navigator.userAgent.toLowerCase().indexOf('mozilla') != -1 && navigator.userAgent.indexOf('5.') == -1 )
+            document.write('{ICQ_IMG}');
+        else
+            document.write('<div style="position:relative"><div style="position:absolute">{ICQ_IMG}</div><div style="position:absolute;left:3px">{ICQ_STATUS_IMG}</div></div>');
+
+          //-->
+          </script><noscript>{ICQ_IMG}</noscript></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="catBottom" colspan="3" style="height:28px;" align="right"> {S_HIDDEN_FIELDS}
+        <input type="submit" name="save" value="{L_SAVE_MSG}" class="liteoption" />
+        &nbsp;
+        <input type="submit" name="delete" value="{L_DELETE_MSG}" class="liteoption" />
+      </td>
+    </tr>
+</form>
+<!-- BEGIN quickreply -->
+<form action="{quickreply.POST_ACTION}" method="post" name="qreply" onsubmit="return checkForm(this)">
+    <tr>
+      <th colspan="3" style="height:25px;" style="padding: 0px"><b>{L_QUICK_REPLY}</b></th>
+    </tr><tr>
+      <td align="right" class="row1" valign="top"><span class="gen"><b>{L_SUBJECT}:</b></span></td>
+      <td class="row2" colspan="2" valign="top">
+        <input type="text" name="subject" size="45" maxlength="60" style="width:450px" tabindex="2" class="post" value="{quickreply.SUBJECT}" /><br /></td>
+    </tr><tr>
+      <td align="right" class="row1" valign="top"><span class="gen"><b>{L_MESSAGE}:</b></span></td>
+      <td class="row1" colspan="2" valign="top" style="padding-top: 0px; padding-bottom: 0px">
+      {quickreply.BBCODEBUTTONS}
+      <textarea name="message" style="width:450px; height:140px;" wrap="virtual" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);"></textarea><br />
+      {quickreply.SMILIES}
+      </td>
+    </tr><tr>
+      <td align="right" class="row1" valign="top"><span class="gen"><b>{L_OPTIONS}:</b></span></td>
+      <td class="row2" colspan="2" valign="top"><span class="gensmall">
+      <input type="checkbox" name="quick_quote" value="{quickreply.S_QREPLY_MSG}" />&nbsp;{L_QUOTE_LAST_MESSAGE}<br />
+      <!-- IF quickreply.S_HTMLCB -->
+      <input type="checkbox" name="disable_html"{quickreply.S_HTML_CHECKED} />&nbsp;{L_DISABLE_HTML}<br />
+      <!-- ENDIF -->
+      <!-- IF quickreply.S_BBCODECB -->
+      <input type="checkbox" name="disable_bbcode"{quickreply.S_BBCODE_CHECKED} />&nbsp;{L_DISABLE_BBCODE}<br />
+      <!-- ENDIF -->
+      <!-- IF quickreply.S_SMILIESCB -->
+      <input type="checkbox" name="disable_smilies"{quickreply.S_SMILIES_CHECKED} />&nbsp;{L_DISABLE_SMILIES}<br />
+      <!-- ENDIF -->
+      <input type="checkbox" name="attach_sig"{quickreply.S_SIG_CHECKED} />&nbsp;{L_ATTACH_SIGNATURE}<br /></span></td>
+    </tr><tr>
+      <td class="catbottom" colspan="3" align="center" style="padding:0px; height:28px;">
+      {quickreply.S_HIDDEN_FIELDS}
+      <input type="submit" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;<input type="submit" name="post" class="mainoption" value="{L_SUBMIT}" /></td>
+    </tr>
+</form>
+<!-- END quickreply -->
+</table>
+
+  <table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
+    <tr>
+      <td>{REPLY_PM_IMG}</td>
+    </tr>
+  </table>
+

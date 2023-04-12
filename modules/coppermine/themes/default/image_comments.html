@@ -1,0 +1,68 @@
+        <tr>
+                <td>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                         <tr>
+                                <td class="tableh2_compact" nowrap="nowrap">
+                                        <b>{MSG_AUTHOR}</b>
+<!-- BEGIN ipinfo -->
+                                ({HDR_IP} [{RAW_IP}])
+<!-- END ipinfo -->
+
+                                </td>
+                                <td class="tableh2_compact" align="right" width="100%">
+<!-- BEGIN buttons -->
+                                        <span style="float:right;"><a href="javascript:;" onclick="blocking('cbody{MSG_ID}','', 'block'); blocking('cedit{MSG_ID}','', 'block'); return false;" title="{EDIT_TITLE}"><img src="{THEMEDIR}/images/edit.gif" border="0" align="absmiddle" alt="" ></a></span>
+                                        
+                                        <span style="float:right;"><form method="post" action="{DELETE_LINK}">
+                                        <input type="hidden" name="what" value="comment" />
+                                        <input type="hidden" name="msg_id" value="{MSG_ID}" />
+                                        <input name="submit" title="{DELETE_TEXT}" type="image" src="{THEMEDIR}/images/delete.gif" />
+                                        </form>
+                                       
+<!-- END buttons -->
+                                </td>
+                                <td class="tableh2_compact" align="right" nowrap="nowrap">
+                                        <span class="comment_date">[{MSG_DATE}]</span>
+                                </td></tr>
+                        </table>
+                </td>
+        </tr>
+        <tr>
+                <td class="tableb_compact">
+                        <div id="cbody{MSG_ID}" style="display:block">
+                                {MSG_BODY}
+                        </div>
+                        <div id="cedit{MSG_ID}" style="display:none">
+                                <form name="f{MSG_ID}" method="post" {ACTION}>
+                                                <input type="hidden" name="event" value="comment_update" />
+                                                <input type="hidden" name="msg_id" value="{MSG_ID}" />
+                                                <table width="100%" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                <td>
+                                                   <input type="{MSG_TYPE}" name="msg_author" value="{MSG_AUTHOR}" class="textinput" size="10" />
+                                                </td>
+                                                </tr>
+                                                <tr>
+                                                <td width="80%">
+                                                        <textarea cols="40" rows="2" class="textinput" name="msg_body" onselect="storeCaret_f{MSG_ID}(this);" onclick="storeCaret_f{MSG_ID}(this);" onkeyup="storeCaret_f{MSG_ID}(this);" style="width: 100%;">{MSG_BODY_RAW}</textarea>
+                                                </td>
+                                                <td class="tableb_compact">
+                                                </td>
+                                                <td>
+                                                        <input type="submit" class="comment_button" name="submit" value="{OK}" />
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                                <td colspan="3"><img src="images/spacer.gif" alt="" width="1" height="2" /><br /></td>
+                                        </tr>
+                                </table>
+                                {SMILIES}
+                                </form>
+                               
+<!-- BEGIN edit_box_smilies -->
+<!-- END edit_box_smilies -->
+<!-- BEGIN edit_box_no_smilies -->
+<!-- END edit_box_no_smilies -->
+                        </div>
+                </td>
+        </tr>

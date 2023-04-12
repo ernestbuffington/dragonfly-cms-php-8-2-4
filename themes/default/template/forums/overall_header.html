@@ -1,0 +1,40 @@
+<!-- IF S_SIMPLE_HEADER -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="{S_CONTENT_DIRECTION}">
+<head>
+<base href="{S_CONTENT_BASE}">
+<meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}"  />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+{META}
+<title>{SITENAME} :: {PAGE_TITLE}</title>
+<link rel="stylesheet" href="{THEME_PATH}/style/style.css" type="text/css" />
+</head>
+<body bgcolor="{T_BODY_BGCOLOR}" text="{T_BODY_TEXT}" link="{T_BODY_LINK}" vlink="{T_BODY_VLINK}">
+<span class="gen"><a name="top"></a></span>
+
+<!-- ELSEIF S_PRINT_HEADER -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="{S_CONTENT_DIRECTION}">
+<head>
+<base href="{S_CONTENT_BASE}">
+<meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}"  />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+{META}
+<title>{SITENAME} :: {PAGE_TITLE}</title>
+<link rel="stylesheet" href="{THEME_PATH}/style/style.css" type="text/css" />
+</head>
+
+<body bgcolor="white" text="black" link="black" vlink="black">
+
+<!-- ELSE -->
+
+<div style="text-align:center" class="genmed">
+<a href="{U_FAQ}"><img src="{THEME_PATH}/images/forums/icon_mini_faq.gif" alt="{L_FAQ}" title="{L_FAQ}" style="border:0; padding-right:3px; vertical-align:top;" />{L_FAQ}</a>&nbsp;
+&nbsp;<a href="{U_SEARCH}"><img src="{THEME_PATH}/images/forums/icon_mini_search.gif" alt="{L_SEARCH}" title="{L_SEARCH}" style="border:0; padding-right:3px; vertical-align:top;" />{L_SEARCH}</a>&nbsp;
+&nbsp;<a href="{U_PRIVATEMSGS}"><img src="{THEME_PATH}/images/forums/icon_mini_message.gif" alt="{PRIVATE_MESSAGE_INFO}" title="{PRIVATE_MESSAGE_INFO}" style="border:0; padding-right:3px; vertical-align:top;" />{PRIVATE_MESSAGE_INFO}</a>&nbsp;
+&nbsp;<a href="{U_LOGIN_LOGOUT}"><img src="{THEME_PATH}/images/forums/icon_mini_login.gif" alt="{L_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" style="border:0; padding-right:3px; vertical-align:top;" />{L_LOGIN_LOGOUT}</a>
+</div>
+<!-- ENDIF -->

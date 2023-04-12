@@ -1,35 +1,47 @@
-<?php
-/***************************************************************************
-   Coppermine Photo Gallery for Dragonfly CMS™
+<?php 
+/***************************************************************************  
+   Coppermine 1.3.1 for CPG-Dragonfly™
   **************************************************************************
-   Port Copyright © 2004-2015 CPG Dev Team
-   https://dragonfly.coders.exchange/
+   Port Copyright (c) 2004-2005 CPG Dev Team
+   http://dragonflycms.com/
   **************************************************************************
-   v1.1 © by Grégory Demar http://coppermine.sf.net/
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+   v1.1 (c) by Grégory Demar http://coppermine.sf.net/
+   This program is free software; you can redistribute it and/or modify       
+   it under the terms of the GNU General Public License as published by       
+   the Free Software Foundation; either version 2 of the License, or          
+   (at your option) any later version.                                        
+  **************************************************************************  
+  Last modification notes:
+  $Source: /cvs/html/includes/coppermine/picmgmt.inc,v $
+  $Revision: 9.14 $
+  $Author: nanocaiordo $
+  $Date: 2007/12/12 12:54:18 $
 ****************************************************************************/
+if (!defined('CPG_NUKE')) { die("You can't access this file directly..."); }
+require_once(CORE_PATH.'imaging/imaging.inc');
 
 // Add a picture to an album
 function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $keywords = '', $user1 = '', $user2 = '', $user3 = '', $user4 = '', $category = 0, $watermark=false, $src_file=false)
 {
-	global $db, $module_name, $CONFIG, $USER_DATA, $PIC_NEED_APPROVAL, $username;
+	global $db, $CONFIG, $ERROR, $USER_DATA, $PIC_NEED_APPROVAL, $CPG_M_DIR;
+	global $username, $raw_ip, $hdr_ip;
 
 	$image = $filepath.$filename;
 	$normal = $filepath.$CONFIG['normal_pfx'].$filename;
 	$thumb = $filepath.$CONFIG['thumb_pfx'].$filename;
-	if (!$src_file) { $src_file = $image; }
+	// $image = $CPG_M_DIR."/albums/$image";
+	// $normal = $CPG_M_DIR."/albums/$normal";
+	// $thumb = $CPG_M_DIR."/albums/$thumb";
+	if (!$src_file) $src_file = $image;
 	if (!($imginfo = getimagesize($src_file))) { return false; }
 
 	if (!file_exists($thumb) &&
-	  !resize_image($src_file, $imginfo, $thumb, $CONFIG['thumb_width'], $CONFIG['thumb_use'])) {
+	  !resize_image($src_file, $imginfo, $thumb, $CONFIG['thumb_width'], $CONFIG['thumb_method'], $CONFIG['thumb_use'])) {
 		return false;
 	}
 
 	if (max($imginfo[0], $imginfo[1]) > $CONFIG['picture_width'] && $CONFIG['make_intermediate'] && !file_exists($normal) &&
-	  !resize_image($src_file, $imginfo, $normal, $CONFIG['picture_width'], $CONFIG['thumb_use'], $watermark)) {
+	  !resize_image($src_file, $imginfo, $normal, $CONFIG['picture_width'], $CONFIG['thumb_method'], $CONFIG['thumb_use'], $watermark)) {
 		unlink($thumb);
 		return false;
 	}
@@ -42,47 +54,37 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 	$image_filesize = filesize($image);
 	$total_filesize = $image_filesize + (file_exists($normal) ? filesize($normal) : 0) + filesize($thumb);
 	// Test if disk quota exceeded
-	if (!can_admin($module_name) && $USER_DATA['group_quota']) {
-		list($total_space_used) = $db->uFetchRow("SELECT SUM(total_filesize) FROM {$CONFIG['TABLE_PICTURES']} WHERE owner_id = " . USER_ID);
+	if (!GALLERY_ADMIN_MODE && $USER_DATA['group_quota']) {
+		$result = $db->sql_query("SELECT sum(total_filesize) FROM {$CONFIG['TABLE_PICTURES']}, {$CONFIG['TABLE_ALBUMS']} WHERE  {$CONFIG['TABLE_PICTURES']}.aid = {$CONFIG['TABLE_ALBUMS']}.aid AND category = '".(FIRST_USER_CAT + USER_ID)."'");
+		$record = $db->sql_fetchrow($result);
+		$total_space_used = $record[0];
+		$db->sql_freeresult($result);
+
 		if ($total_space_used + $total_filesize > $USER_DATA['group_quota'] << 10) {
 			unlink($normal);
 			unlink($thumb);
-			$msg = strtr(QUOTA_EXCEEDED, array(
-				'[quota]' => ($USER_DATA['group_quota']),
-				'[space]' => ($total_space_used >> 10)));
-			cpg_error($msg);
+			$msg = strtr(QUOTA_EXCEEDED, array('[quota]' => ($USER_DATA['group_quota']),
+                            '[space]' => ($total_space_used >> 10)));
+			cpg_die(_ERROR, $msg, __FILE__, __LINE__);
 		}
 	}
-	// Test if picture requires approval
-	$approved = intval(can_admin($module_name)
-	 || (!$USER_DATA['priv_upl_need_approval'] && (\Coppermine::USER_GAL_CAT == $category || \Coppermine::FIRST_USER_CAT + USER_ID == $category))
-	 || !$USER_DATA['pub_upl_need_approval']);
-	$PIC_NEED_APPROVAL = !$approved;
-
-	$pid = $CONFIG['TABLE_PICTURES']->insert(array(
-		'aid'        => $aid,
-		'filepath'   => $filepath,
-		'filename'   => $filename,
-		'filesize'   => $image_filesize,
-		'total_filesize' => $total_filesize,
-		'pwidth'     => $imginfo[0],
-		'pheight'    => $imginfo[1],
-		'ctime'      => time(),
-		'owner_id'   => USER_ID, // can_admin($module_name) ? 0 : USER_ID
-		'title'      => $title,
-		'caption'    => $caption,
-		'keywords'   => $keywords,
-		'approved'   => $approved,
-		'user1'      => (string)$user1,
-		'user2'      => (string)$user2,
-		'user3'      => (string)$user3,
-		'user4'      => (string)$user4,
-		'pic_raw_ip' => $_SERVER['REMOTE_ADDR'],
-	), 'pid');
+    // Test if picture requires approval
+    $approved = intval(GALLERY_ADMIN_MODE || defined('BATCH_MODE') ||
+	   (!$USER_DATA['priv_upl_need_approval'] && $category == FIRST_USER_CAT + USER_ID) ||
+	   (!$USER_DATA['pub_upl_need_approval']));
+	$PIC_NEED_APPROVAL = (!$approved);
+	// User ID is not recorded when in admin mode (ie. for batch uploads)
+	$user_id = GALLERY_ADMIN_MODE ? 0 : USER_ID;
+	$filepath = Fix_Quotes($filepath);
+	$filename = Fix_Quotes($filename);
+	$result = $db->sql_query("INSERT INTO {$CONFIG['TABLE_PICTURES']}
+		(pid, aid, filepath, filename, filesize, total_filesize, pwidth, pheight, ctime, owner_id, title, caption, keywords, approved, user1, user2, user3, user4, pic_raw_ip, pic_hdr_ip)
+		VALUES
+		(DEFAULT, '$aid', '".$filepath."', '".$filename."', '$image_filesize', '$total_filesize', '".$imginfo[0]."', '".$imginfo[1]."', '".time()."', '".USER_ID."', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4', '$raw_ip', $hdr_ip)", false, __FILE__, __LINE__);
 
 	speedup_pictures();
-
-	return $pid;
+    
+	return $result;
 }
 
 /**
@@ -93,99 +95,36 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
  * @param  $src_file the source file
  * @param  $dest_file the destination file
  * @param  $new_size the size of the square within which the new image must fit
+ * @param  $method the method used for image resizing
  * @return 'true' in case of success
 */
-function resize_image($src_file, $imginfo, &$dest_file, $new_size, $thumb_use, $watermark=false)
+function resize_image($src_file, $imginfo, &$dest_file, $new_size, $method, $thumb_use, $watermark=false)
 {
 	global $CONFIG, $ERROR;
 
-	$img = \Poodle\Image::open($src_file, $CONFIG['thumb_method']);
-
-	$exif = exif_read_data($src_file, 'IFD0', true);
-	if (!empty($exif['IFD0']['Orientation'])) {
-		switch ($exif['IFD0']['Orientation'])
-		{
-		case 2: // camera flipped horizontal
-			$img->flopImage();
-			break;
-		case 3: // camera upside down
-			$img->rotateImage('', 180);
-			break;
-		case 4: // camera upside down flipped horizontal
-			$img->flipImage();
-			break;
-		case 5: // camera left side up flipped vertical
-			$img->transposeImage();
-			break;
-		case 6: // camera left side up
-			$img->rotateImage('', 90);
-			break;
-		case 7: // camera left side down flipped vertical
-			$img->transverseImage();
-			break;
-		case 8: // camera left side down
-			$img->rotateImage('', 270);
-			break;
-		}
-	}
-
-	if ('ht' == $thumb_use) {
-		$img->thumbnailImage(0, $new_size);
-	} else if ('wd' == $thumb_use) {
-		$img->thumbnailImage($new_size, 0);
+	// height/width
+	if ($thumb_use == 'ht') {
+		$ratio = $imginfo[1] / $new_size;
+	} elseif ($thumb_use == 'wd') {
+		$ratio = $imginfo[0] / $new_size;
 	} else {
-		$img->thumbnailImage($new_size, $new_size, true);
+		$ratio = max($imginfo[0], $imginfo[1]) / $new_size;
 	}
-	$img->setImageCompressionQuality(intval($CONFIG['jpeg_qual']));
-
+	$ratio = max($ratio, 1.0);
+	$dest_info[0] = intval($imginfo[0] / $ratio);
+	$dest_info[1] = intval($imginfo[1] / $ratio);
+	$dest_info['quality'] = intval($CONFIG['jpeg_qual']);
+	$dest_info['im_options'] = $CONFIG['im_options'];
 	if ($watermark) {
-		$img->add_text(array(
-			'text'  => $watermark,
-//			'x'     => 10,
-//			'y'     => 20,
-//			'size'  => 12,
-//			'color' => '#000000',
-//			'font'  => 'includes/poodle/image/fonts/default.ttf',
-//			'angle' => 0,
-		));
+		$dest_info['watermark']['text'] = $watermark;
 	}
 
-	if (!$img->writeImage($dest_file)) {
+	$dest_file = Graphic::resize($src_file, $dest_info, $dest_file, $imginfo, defined('ADDPIC_PHP'));
+	if ($dest_file < 0) {
 		$ERROR = RESIZE_FAILED;
 		return false;
 	}
-
-	$dest_file = $img->getImageFilename();
 	// Set mode of uploaded picture
-	chmod($dest_file, 0666);
+	chmod($dest_file, (PHP_AS_NOBODY ? 0666 : 0644));
 	return true;
-}
-
-function getExifData($filename, $exiffile = null)
-{
-	$exiffile = preg_replace('/\\.[^.]+$/','.exif', $exiffile ?: $filename);
-	if (is_file($exiffile)) {
-		return json_decode(file_get_contents($exiffile), true);
-	}
-	if (function_exists('exif_read_data') && is_file($filename)) {
-		$size = getimagesize($filename);
-		if (IMAGETYPE_JPEG != $size[2]) return false; // Not a JPEG file
-		if ($exif = exif_read_data($filename, null, true)) {
-			if (!empty($exif['IFD0'])) {
-				$exif = array('IFD0' => $exif['IFD0'], 'EXIF' => $exif['EXIF']);
-				unset($exif['EXIF']['MakerNote']);
-				unset($exif['IFD0']['PrintIM']);unset($exif['IFD0']['UndefinedTag:0xC4A5']);
-				foreach ($exif as $section => $entries) {
-					foreach ($entries as $key => $value) {
-						if (is_string($value)) {
-							$exif[$section][$key] = trim($value);
-						}
-					}
-				}
-				file_put_contents($exiffile, json_encode($exif));
-				return $exif;
-			}
-		}
-	}
-	return false;
 }

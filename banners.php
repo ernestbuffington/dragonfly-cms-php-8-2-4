@@ -3,16 +3,23 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/banners.php,v $
+  $Revision: 9.6 $
+  $Author: nanocaiordo $
+  $Date: 2007/04/23 10:43:34 $
 **********************************************/
 if (!defined('CPG_NUKE')) {
 	define('XMLFEED', 1);
 	require_once('includes/cmsinit.inc');
-	$bid = $_GET->uint('bid');
-	$row = $db->uFetchRow("SELECT clickurl FROM {$db->TBL->banner} WHERE bid = {$bid}");
-	$db->query("UPDATE {$db->TBL->banner} SET clicks = clicks + 1 WHERE bid = {$bid}");
-	URL::redirect($row[0]);
+	$bid = intval($_GET['bid']);
+	$row = $db->sql_ufetchrow('SELECT clickurl FROM '.$prefix."_banner WHERE bid='$bid'");
+	$db->sql_query('UPDATE '.$prefix."_banner SET clicks=clicks+1 WHERE bid='$bid'");
+	url_redirect($row['clickurl']);
+} else {
+	echo viewbanner();
 }

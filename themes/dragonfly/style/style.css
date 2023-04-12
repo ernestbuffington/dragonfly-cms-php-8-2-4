@@ -1,0 +1,489 @@
+body {
+/*  background: #FFF url("../images/bg.png") no-repeat bottom right fixed; */
+/*  min-width: 610px; */
+  margin: 10px;
+  font-family: Verdana,Helvetica, sans-serif;
+  font-size: 10px;
+}
+img {
+  border: 0;
+}
+/* General links */
+a:link,a:active,a:visited {
+  color: #00F;
+  text-decoration: none;
+}
+a:hover {
+  color: #F60;
+  text-decoration: underline;
+}
+/* General text */
+.gen { font-size: 12px; }
+.genmed { font-size: 11px; }
+.gensmall { font-size: 10px; }
+.gen,.genmed,.gensmall { color: #000; }
+a.gen,a.genmed,a.gensmall { color: #069; text-decoration: none; }
+a.gen:hover,a.genmed:hover,a.gensmall:hover  { color: #AE0000; text-decoration: underline; }
+
+img.middle { vertical-align: middle; }
+
+#container {
+  margin: 0px;
+}
+/*accessibility tweaks*/
+    hr.hide {
+        display: none;
+    }
+
+/* Header */
+    #header { margin-bottom: 1em; }
+    #header ul {
+        margin: 0 0 1em 0;
+        padding: 0;
+    }
+
+    #header li {
+        display: inline;
+        padding: 0 20px 0 0;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    #header {
+        background: #09F url("../images/header_bl.png") bottom left repeat-x;
+        position: relative;
+        min-height: 84px;
+        height: 84px; /* Needed for IE*/
+        padding: 0;
+        margin: 0;
+    } #ignored {}
+    
+    #header h1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        font-size: 2px;
+        background: url("../images/header_tl.gif") no-repeat;
+        height: 8px;
+        z-index: 100; /* above the UL */
+    }
+    #header h1 a {
+        display: block;
+        width: 220px;
+        height: 84px;
+        background: transparent url("../images/logo.png") no-repeat;
+        text-indent: -700em;
+        text-decoration: none;
+    }
+    #header h2 {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        border: 0;
+        font-size: 2px;
+        padding: 21px 7px 0 0;
+        background: url("../images/header_tr.gif") no-repeat top right;
+        z-index: 100; /* above the UL */
+    }
+    #header h2 a {
+        display: block;
+        position: absolute;
+        top: 7px;
+        right: 15px;
+        width: 161px;
+        height: 45px;
+        background: transparent url("../images/dednow.gif") no-repeat;
+        text-indent: -700em;
+        text-decoration: none;
+    }
+    #header ul {
+        width: auto;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 0;
+        padding: 0 15px 0 0;
+        list-style: none;
+        background: url("../images/header_br.gif") no-repeat bottom right;
+        z-index: 90; /* below the H1 */
+    }
+    #header li {
+        float: right;
+        background: transparent url("../images/header_tab.png") 100% -600px no-repeat;
+        padding: 0 6px 0 0;
+        margin: 0 1px 0 0;
+    }
+    #header ul a {
+        float: left;
+        display: block;
+        padding: 4px 4px 4px 10px;
+        background: transparent url("../images/header_tab.png") 0% -600px no-repeat;
+        font-weight: bold;
+        color: #fff;
+        text-decoration: none;
+    }
+    #header ul li:hover a { background-position: 0% -400px; }
+    #header ul li:hover { background-position: 100% -400px; }
+    
+    #breadcrumb {
+        background: #09F url("../images/header_bl.png") bottom left repeat-x;
+        position: relative;
+        height: 18px;
+        margin: 0 16px 0 16px;
+        color: #fff;
+    }
+    #head_username {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 16px;
+        padding: 0 10px 0 0;
+        background: url("../images/header_br.gif") no-repeat bottom right;
+        margin: 0; /* need for IE Mac */
+        text-align: right; /* need for IE Mac */
+        white-space: nowrap; /* for Opera */
+    }
+
+#pic600, #pic601 {
+  position: relative;
+  top: 3px;
+/*  opacity: .8; */
+  cursor: pointer;
+}
+#pic600 { left: -12px; }
+#pic601 { right: -12px; }
+
+.admincrumb {
+  height: 1.6em;
+  padding: .2em .2em .2em .2em;
+  font-size: larger;
+  font-weight: bolder;
+  background-color: #6382DE;
+  color: #FFF;
+  -moz-border-radius: .6em .6em .6em .6em;
+  border-top: thin solid rgb(183,196,217);
+  border-right: thin solid rgb(66,97,132);
+  border-bottom: thin solid rgb(66,97,132);
+  border-left: thin solid rgb(183,196,217);
+}
+
+.table1,.table2 {
+  /* opacity: .9; way to much trouble on slow machines */
+  background-color: #FFF;
+  padding: 7px;
+}
+.table2 {
+  width: 50%;
+  text-align: center;
+}
+
+.maintable {
+  width: 100%;
+  border-width: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 0;
+  margin-top: 5px;
+}
+.main {
+  width: 100%;
+  padding: 1.3em 0 0 0;
+}
+
+/* Blocks */
+.mainside {
+  width: 164px;
+}
+.blockheadl,.blockheadr,.bbhead,.bbphphead,.bbchead {
+  display: inline;
+  position: relative;
+  padding: 0em .4em .0em .4em;
+  -moz-border-radius: .4em .4em 0em 0em;
+  border-left: thin solid rgb(223,220,217);
+  border-top: thin solid rgb(223,220,217);
+  border-right: thin solid rgb(178,176,174);
+  background-color: #07C;
+  color: #FFF;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: left;
+}
+.blockheadr { text-align: right; }
+.blockimg {
+  position: relative;
+  top: .1em;
+/*  opacity: .8;*/
+  cursor: pointer;
+}
+.blockcontent,.blockset,.fieldset,.legend,.msgtitle,.storyfoot,.newsarticle,
+.table1,.table2,.bbcontent,.bbphpcontent,.bbccontent {
+  background-color: #FFF;
+  border-top: thin solid rgb(223,220,217);
+  border-left: thin solid rgb(223,220,217);
+  border-right: thin solid rgb(178,176,174);
+  border-bottom: thin solid rgb(178,176,174);
+}
+.blockcontent {
+  position: relative;
+  width: 152px;
+  padding: .1em .2em .2em .2em;
+  margin: 0;
+  text-align: left;
+}
+.blockset,.fieldset,.newsarticle,.table1,.table2 {
+  padding: .1em .2em 0em .5em;
+}
+.blockset {
+  margin: 1.8em 0em 0.2em 0em;
+}
+.fieldset,.newsarticle,.table1,.table2 {
+  margin: 0 0 0.8em 0;
+}
+.msgtitle,.storyfoot {
+  display: inline;
+  position: relative;
+  padding: 0em .8em .2em .8em;
+  -moz-border-radius: .6em .6em .6em .6em;
+/*  opacity: .8;*/
+}
+.msgtitle {
+  top: -0.9em;
+  color: #FFF;
+  background-color: #06B;
+}
+.storyfoot {
+  top: 0.5em;
+  color: rgb(149, 83, 34);
+  background-color: #FFF;
+}
+.legend {
+  display: inline;
+  position: relative;
+  top: -1.0em;
+  padding: 0em .8em .2em .8em;
+  font-size: larger;
+  font-weight: bolder;
+  color: rgb(149, 83, 34);
+  background-color: #EFF;
+  -moz-border-radius: .6em .6em .2em .2em;
+/*  opacity: .9;*/
+}
+
+.newsindex {
+  border: 1px solid #069;
+  border-spacing: 0;
+  padding: 5px;
+  width: 100%;
+}
+
+/* Forums and other */
+.bodyline,.forumline { background-color: #EEE; border: 1px #98AAB1 solid; }
+
+/* Forum category titles */
+.cattitle { font-weight: bold; font-size: 12px ; letter-spacing: 1px; color: #069}
+a.cattitle { text-decoration: none; color: #069; }
+a.cattitle:hover { text-decoration: underline; color: #AE0000; }
+
+td.rowpic {
+  background-color: #FFF;
+  background-image: url(../images/cellpic2.jpg);
+  background-repeat: repeat-y;
+}
+
+td.row1,td.row2,td.row3 { background-color: #FFF; }
+
+/* Header cells - the blue and silver gradient backgrounds */
+th {
+  color: #FFF;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: #00A1FF;
+  height: 30px;
+  background-image: url(../images/cellpic3.gif);
+}
+td.cat,td.catHead,td.catSides,td.catleft,td.catright,td.catbottom,td.catBottom {
+  background-color: #C0C0C0;
+  background-image: url(../images/cellpic1.gif);
+  border: #FFF;
+  border-style: solid;
+  height: 26px;
+}
+/*
+  Setting additional nice inner borders for the main table cells.
+  The names indicate which sides the border will be on.
+  Don't worry if you don't understand this, just ignore it:-)
+*/
+th.thHead,th.thSides,th.thtop,th.thleft,th.thright,th.thbottom,th.thCornerL,th.thCornerR {
+  font-weight: bold; border: #FFF; border-style: solid; height: 28px; }
+td.row3right,td.spaceRow {
+  background-color: #D1D7DC; border: #FFF; border-style: solid; }
+th.thHead,td.catHead { font-size: 12px; }
+th.thHead,td.catHead,th.thSides,td.catSides,td.spaceRow,th.thright,td.catright,td.row3right,th.thleft,
+td.catleft,th.thbottom,td.catbottom,td.catBottom,th.thtop,th.thCornerL,th.thCornerR,
+td.cat,td.catHead,td.catbottom,td.catBottom {
+  border-width: 0;
+}
+td.attachrow {
+  font: normal 11px Verdana, Arial, Helvetica, sans-serif;
+  color : #000000;
+  border-color : #000000; 
+}
+td.attachheader {
+  font: normal 11px Verdana, Arial, Helvetica, sans-serif;
+  color : #000000;
+  border-color : #000000;
+  background-color: #D1D7DC;
+}
+table.attachtable {
+  font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+  color : #000000;
+  border-color : #000000;
+  border-collapse : collapse;
+}
+
+/* Form elements */
+input,textarea, select {
+  color: #000;
+  font-size: 11px;
+  font-weight: normal;
+  border-color: #000;
+  border-width: 1px;
+}
+
+/* The text input fields background colour */
+input.post, textarea.post, select {
+  background-color: #FFF;
+}
+
+input { text-indent: 2px; }
+
+/* The buttons used for bbCode styling in message post */
+input.button {
+  background-color: #EFEFEF;
+  color: #000;
+  font-size: 11px;
+}
+
+/* The main submit button option */
+input.mainoption {
+  background-color: #FAFAFA;
+  font-weight: bold;
+}
+
+/* None-bold submit button */
+input.liteoption {
+  background-color: #FAFAFA;
+  font-weight: normal;
+}
+
+/* This is the line in the posting page which shows the rollover
+  help line. This is actually a text box, but if set to be the same
+  colour as the background no one will know ;)
+*/
+.helpline { background-color: #DEE3E7; border-style: none; }
+
+/* Administration system */
+.adminitem {
+  border: 0;
+  padding: 0;
+  width: 130px;
+  display: table-cell;
+  vertical-align: bottom;
+  text-align: center;
+}
+.adminitem span{
+  display: block;
+  width: 120px;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  border: 1px solid #069;
+  background-color: #FAFAFA;
+  -moz-border-radius: .4em .4em .4em .4em;
+}
+
+/* BBCode */
+.bbchead {
+  color: #000;
+  background-color: #FAFAFA;
+}
+.bbphphead {
+  color: #F00;
+  background-color: #FAFAFA;
+}
+.code,.bbphpcontent,.bbccontent {
+  color: #060;
+  font: 11px Courier, 'Courier New', sans-serif;
+  white-space: nowrap;
+  overflow: auto;
+  width: 100%;
+/*  max-height: 250px;*/
+}
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+}
+.code,.quote {
+  border: #D1D7DC;
+  border-style: solid;
+  border-width: 1px;
+  background: #FAFAFA;
+}
+.quote {
+  color: #444;
+  font-size: 11px;
+  line-height: 125%;
+}
+.bbquote {
+  position: relative;
+  display: block;
+  left: 5%;
+  width: 90%;
+}
+
+radio.set {
+  vertical-align: text-bottom;
+}
+label.set {
+  text-align: left;
+  width: 40%;
+  padding-right: 10px;
+  margin-bottom: 5px;
+}
+br {
+  clear: left;
+}
+label.ulog, input.ulog, label.set,radio.set,input.set {
+  display: block;
+  float: left;
+}
+label.ulog {
+  text-align: left;
+  width: 125px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+}
+
+/* pagination */
+.pagact {
+	font-size: 10px;
+	width: 16px;
+	height: 20px;
+	text-align: center;
+	background: transparent url(../images/pagact.gif) no-repeat scroll 0 1px;
+}
+.paginact, .pagneutral {width: 17px; text-align: center; }
+.paginact a, .pagneutral a {
+	display: block;
+	font-size: 10px;
+	width: 17px;
+	height: 20px;
+	padding-top: 5px;
+	background: transparent url(../images/paginact.gif) no-repeat;
+}
+.pagneutral a {
+	background: transparent url(../images/pagneutral.gif) no-repeat;
+}

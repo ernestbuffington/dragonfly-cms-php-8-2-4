@@ -3,57 +3,38 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/includes/classes/sqlctrl.php,v $
+  $Revision: 9.18 $
+  $Author: nanocaiordo $
+  $Date: 2007/04/23 10:15:42 $
 **********************************************/
+if (!defined('CPG_NUKE')) { exit; }
 
-/* Applied rules:
- * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
- * CountOnNullRector (https://3v4l.org/Bndc9)
- */
- 
-if (!defined('DB_TYPE')) { exit; }
+class DBCtrl {
 
-abstract class DBCtrl {
-
-	protected static
-		$filename,
-		$stream;
-
-	public static function output($str, $compress, $end=false)
+	function output($str, $compress, $end=false)
 	{
 		static $buffer;
-
 		if ($compress) {
-			if (!self::$stream) {
-				self::$stream = new \Poodle\Stream\File('php://output','w');
-				self::$stream->useGzipCompression();
-			}
 			$buffer .= $str;
-			unset($str);
-			if ($end || strlen($buffer) > 65536) {
-				self::$stream->write($buffer);
+			if ($end || strlen($buffer) > 20480) {
+				echo gzencode($buffer);
 				$buffer = '';
 			}
-			if ($end) {
-				self::$stream->close();
-				self::$stream = null;
-			}
-		} else if (strlen($str)) {
+		} else {
 			echo $str;
-		}
-		if ($end) {
-//			trigger_error('SQL Backup memory: '.memory_get_peak_usage(true), E_USER_WARNING);
 		}
 	}
 
-	public static function query_file($file, &$error, $replace_prefix=false)
+
+	function query_file($file, &$error, $replace_prefix=false)
 	{
-		$tmp = [];
-  $filedata = null;
-  $error = false;
+		$error = false;
 		if (!is_array($file)) {
 			$tmp['name'] = $tmp['tmp_name'] = $file;
 			$tmp['type'] = preg_match("/\.gz$/is", $file) ? 'application/x-gzip' : 'text/plain';
@@ -90,15 +71,15 @@ abstract class DBCtrl {
 		if ($error) { return false; }
 		$filedata = DBCtrl::remove_remarks($filedata);
 		$queries = DBCtrl::split_sql_file($filedata, ";\n");
-		if ((is_countable($queries) ? count($queries) : 0) < 1) {
+		if (count($queries) < 1) {
 			$error = 'There are no queries in '.$file['name'];
 			return false;
 		}
-		$db = \Dragonfly::getKernel()->SQL;
+		global $db, $prefix;
 		set_time_limit(0);
-		foreach ($queries AS $query) {
+		foreach($queries AS $query) {
 			if (!$replace_prefix) {
-				$query = preg_replace('#(TABLE|INTO|EXISTS|ON) ([a-zA-Z]*?(_))#i', "\\1 {$db->TBL->prefix}".'_', $query);
+				$query = preg_replace('#(TABLE|INTO|EXISTS|ON) ([a-zA-Z]*?(_))#i', "\\1 $prefix".'_', $query);
 			} else {
 				foreach($replace_prefix AS $oldprefix => $newprefix) {
 					if ($oldprefix != $newprefix) {
@@ -106,16 +87,16 @@ abstract class DBCtrl {
 					}
 				}
 			}
-			if (SQL_LAYER == 'mysql' && preg_match('#^CREATE TABLE #', $query) && false === stripos($query, 'ENGINE=MyISAM')) {
+			if (SQL_LAYER == 'mysql' && ereg('^CREATE TABLE ', $query) && !eregi('ENGINE=MyISAM', $query)) {
 				$query .= ' ENGINE=MyISAM';
 			}
-			$db->query($query);
+			$db->sql_query($query);
 		}
 		return true;
 	}
 
 	// remove_remarks will strip the sql comment lines out of an uploaded sql file
-	private static function remove_remarks($lines)
+	function remove_remarks($lines)
 	{
 		$lines = explode("\n", $lines);
 		$linecount = count($lines);
@@ -133,7 +114,7 @@ abstract class DBCtrl {
 
 	// split_sql_file will split an uploaded sql file into single sql statements.
 	// Note: expects trim() to have already been run on $sql.
-	private static function split_sql_file(&$sql, $delimiter)
+	function split_sql_file(&$sql, $delimiter)
 	{
 		// Split up our string into "possible" SQL statements.
 		$tokens = explode($delimiter, $sql);
@@ -205,37 +186,5 @@ abstract class DBCtrl {
 		}
 		return $output;
 	}
-
-	public static function installer(array $tables, $filename=false, $structure=true, $data=false, $gzip=false, array $data_options=array())
-	{
-		$K = \Dragonfly::getKernel();
-		$SQL = $K->SQL;
-		if (!$filename) $filename = microtime(true).'.xml';
-		\Dragonfly\Output\Tools::attachFile($filename, 'xml', $gzip);
-		\Dragonfly\Output\Tools::sendFile($SQL->XML->getDocHead());
-		foreach ($tables as $table) {
-			try {
-				$prefix = $SQL->TBL->prefix . '_';
-				if (0 === strpos($table, $prefix)) {
-					$name = str_replace($prefix, '', $table);
-				} else {
-					$prefix = $K->db_user_prefix . '_';
-					$name = (0 === strpos($table, $prefix)) ? str_replace($prefix, '', $table) : $table;
-				}
-				if ($structure) {
-					\Dragonfly\Output\Tools::sendFile("\n\n".$SQL->XML->getTableXML($name, $table));
-				}
-				if ($data && $SQL->count($name)) {
-					\Dragonfly\Output\Tools::sendFile($SQL->XML->getTableDataXML($name, $table, $data_options));
-				}
-			} catch (Exception $e) {
-				\Dragonfly\Output\Tools::sendFile("\n\n".'<!-- '.$e->getMessage().'-->');
-			}
-		}
-		\Dragonfly\Output\Tools::sendFile($SQL->XML->getDocFoot(), true);
-		exit;
-	}
-
 }
-
 require(CORE_PATH.'classes/sqlctrl/'.DB_TYPE.'.php');

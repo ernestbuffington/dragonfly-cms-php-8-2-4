@@ -1,52 +1,57 @@
-<?php
-/***************************************************************************
-   Coppermine Photo Gallery for Dragonfly CMS™
-  **************************************************************************
-   Port Copyright © 2004-2015 CPG Dev Team
-   https://dragonfly.coders.exchange/
-  **************************************************************************
-   v1.1 © by Grégory Demar http://coppermine.sf.net/
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+<?php 
+/***************************************************************************  
+   Coppermine Photo Gallery 1.3.1 for CPG-Nuke                                
+  **************************************************************************  
+   Port Copyright (C) 2004 Coppermine/CPG-Nuke Dev Team                        
+   http://cpgnuke.com/                                               
+  **************************************************************************  
+
+   http://coppermine.sf.net/team/                                        
+   This program is free software; you can redistribute it and/or modify       
+   it under the terms of the GNU General Public License as published by       
+   the Free Software Foundation; either version 2 of the License, or          
+   (at your option) any later version.                                        
+  **************************************************************************  
+  Last modification notes:
+  $Source: /cvs/html/modules/coppermine/addpic.php,v $
+  $Revision: 9.2 $
+  $Author: djmaze $
+  $Date: 2005/02/17 08:22:57 $
 ****************************************************************************/
+if (!defined('CPG_NUKE')) { die("You can't access this file directly..."); }
 
+define('ADDPIC_PHP', true);
 define('NO_HEADER', true);
-require(__DIR__ . '/include/load.inc');
+require("modules/" . $module_name . "/include/load.inc");
+require('includes/coppermine/picmgmt.inc');
+global $THEME_DIR;
+// if (!GALLERY_ADMIN_MODE) die('Access denied');
+$aid = intval($_GET['aid']);
+$pic_file = $CONFIG['fullpath'] . base64_decode($_GET['pic_file']);
+$dir_name = dirname($pic_file) . "/";
+$file_name = basename($pic_file);
 
-$up = 'pb';
-
-if (can_admin($module_name) && !Dragonfly::isDemo()) {
-	$aid = $_GET->uint('aid');
-	$pic_file = $CONFIG['fullpath'] . \Poodle\Base64::urlDecode($_GET['pic_file']);
-	$dir_name = dirname($pic_file) . '/';
-	$file_name = basename($pic_file);
-	// check if image has the correct extension else try to change the filename
-	$imagesize = getimagesize($pic_file);
-	if ($imagesize) {
-		$file = explode('.', $pic_file);
-		array_pop($file);
-		$tmpname = implode('.', $file).image_type_to_extension($imagesize[2]);
-		if ($pic_file != $tmpname && rename($pic_file, $tmpname)) {
-			$file_name = basename($tmpname);
-		}
-		// check if image already exists in the database
-		if ($CONFIG['TABLE_PICTURES']->count("filepath={$db->quote($dir_name)} AND filename={$db->quote($file_name)}")) {
-			// Duplicate
-			$up = 'dup';
-		} else {
-			require('includes/coppermine/picmgmt.inc');
-			if (add_picture($aid, $dir_name, $file_name)) {
-				$up = 'ok';
-			}
-		}
-	}
+// check if image has the correct extension else try to change the filename
+$imagesize = getimagesize($pic_file);
+$tmpname = image_file_to_extension($pic_file, $imagesize[2]);
+if ($pic_file != $tmpname && rename($pic_file, $tmpname)) {
+    $file_name = basename($tmpname);
 }
 
-$file_name = "themes/default/images/coppermine/up_{$up}.gif";
-\Dragonfly::ob_clean();
+// check if image already exists in the database
+$result = $db->sql_count($CONFIG['TABLE_PICTURES'], "filepath='".Fix_Quotes($dir_name)."' AND filename='".Fix_Quotes($file_name)."' LIMIT 0,1");
+
+define('BATCH_MODE', true);
+if ($result) {
+    $up = 'dup';
+} elseif (add_picture($aid, $dir_name, $file_name)) {
+    $up = 'ok';
+} else {
+    $up = 'pb';
+    echo $ERROR;
+}
+$file_name = (file_exists($THEME_DIR."/images/up_$up.gif")?$THEME_DIR:$CPG_M_DIR)."/images/up_$up.gif";
+
+if (ob_get_length()) { exit; }
 header('Content-type: image/gif');
-header('Connection: Close');
-echo fpassthru(fopen($file_name, 'rb'));
-exit;
+echo fread(fopen($file_name, 'rb'), filesize($file_name));

@@ -1,0 +1,49 @@
+
+<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+  <!-- BEGIN switch_groups_joined -->
+  <tr>
+    <th colspan="2" class="thHead" style="text-align:center; height:25px;">{L_GROUP_MEMBERSHIP_DETAILS}</th>
+  </tr>
+  <!-- BEGIN switch_groups_member -->
+  <tr>
+    <td class="row1" valign="top" align="right"><span class="gen">{L_YOU_BELONG_GROUPS}</span></td>
+    <td class="row2" valign="top" align="left">
+      <form method="post" action="{S_USERGROUP_ACTION}" {I18N}>
+            <span class="gensmall">{GROUP_MEMBER_SELECT}</span>
+            <input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+              </form>            
+    </td>
+  </tr>
+  <!-- END switch_groups_member -->
+  <!-- BEGIN switch_groups_pending -->
+  <tr>
+    <td class="row1" valign="top" align="right"><span class="gen">{L_PENDING_GROUPS}</span></td>
+    <td class="row2" align="left">
+      <form method="post" action="{S_USERGROUP_ACTION}">
+            <span class="gensmall">{GROUP_PENDING_SELECT}</span>
+            <input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+      </form>
+    </td>
+  </tr>
+  <!-- END switch_groups_pending -->
+  <!-- END switch_groups_joined -->
+  <!-- BEGIN switch_groups_remaining -->
+  <tr>
+    <th colspan="2" align="center" class="thHead" style="height:25px;">{L_JOIN_A_GROUP}</th>
+  </tr>
+  <tr>
+    <td class="row1" valign="top" align="right">
+    <span class="gen">{L_SELECT_A_GROUP}</span></td>
+    <td class="row2" align="left">
+      <form method="post" action="{S_USERGROUP_ACTION}">
+      <span class="gensmall">{GROUP_LIST_SELECT}</span>
+              <input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+            
+        </form>
+    </td>
+  </tr>
+  <!-- END switch_groups_remaining -->
+</table>
+
+<br clear="all" />
+

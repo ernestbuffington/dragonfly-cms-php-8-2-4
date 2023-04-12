@@ -1,0 +1,39 @@
+        <tr>
+                <td class="tableh2_compact"><b>{ADD_YOUR_COMMENT}</b></td>
+        </tr>
+        <tr>
+                <form method="post" name="post" {ACTION}>
+                <td colspan="3">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                                <input type="hidden" name="event" value="comment" />
+                                <input type="hidden" name="pid" value="{PIC_ID}" />
+<!-- BEGIN username_input -->
+                                <td class="tableb_compact">
+                                        {NAME}
+                                </td>
+                                <td class="tableb_compact">
+                                        <input type="text" class="textinput" name="msg_author" size="10" maxlength="20" value="{username}" />
+                                </td>
+<!-- END username_input -->
+<!-- BEGIN input_box_smilies -->
+                                <td class="tableb_compact">
+                                {COMMENT} </td>
+                                <td class="tableb_compact">
+                                <input type="text" class="textinput" id="message" name="msg_body" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" maxlength="{MAX_COM_LENGTH}" size="80" />                                        
+<!-- END input_box_smilies -->
+<!-- BEGIN input_box_no_smilies -->
+                                <input type="text" class="textinput" id="message" name="msg_body"  maxlength="{MAX_COM_LENGTH}" size="80" />
+<!-- END input_box_no_smilies -->
+                                <input type="submit" class="comment_button" name="submit" value="{OK}" />
+                                </td>
+                        </table>
+                </td>
+                </form>
+        </tr>
+<!-- BEGIN smilies -->
+        <tr>
+                <td width="100%" class="tableb_compact">
+                        {SMILIES}
+                </td>
+        </tr>
+<!-- END smilies -->

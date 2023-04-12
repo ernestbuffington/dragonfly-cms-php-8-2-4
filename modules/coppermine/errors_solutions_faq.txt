@@ -1,0 +1,25 @@
+Safe mode issues
+A significant number of webhosts on the Internet run PHP in safe mode. 
+Coppermine runs without any problem in safe mode and with the "open basedir restriction" active, 
+provided safe mode is properly configured. 
+Unfortunately on many hosts, safe mode is not configured properly.
+					
+If your webhost is running PHP in safe mode but is misconfigured, you may need to do the following 
+Open modules/coppermine(installed folder)/include/load.inc.php find the line with : 
+//define('SILLY_SAFE_MODE',1) and change to define('SILLY_SAFE_MODE',1) 
+that is uncomment it and upload the file
+With a FTP program or cpanel, change the mode(chmod) of Coppermine's include directory on your server to 777
+Do the same for the albums and userpics directories. 
+
+Prompt for download issues
+This is caused when running an Apache 2.x server with PHP 4.3.3 or less.
+Upgrade to PHP 4.3.4 if you use Apache 2 webserver.
+
+This is caused by ob_flush() a command which is not properly translated to plain text in PHP to Apache 2.
+So you get binary data instead of text output.
+IE and Opera recognize the file as "binary" while it's actualy a text file.
+
+If you don't believe us here is the bug post on php site:
+http://bugs.php.net/bug.php?id=25701
+
+NOTE: This bug isn't noticed in Mozilla and Netscape browsers.

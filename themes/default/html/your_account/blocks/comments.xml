@@ -1,7 +1,0 @@
-<br />
-<div class="border">
-	<strong tal:content="COMMENTS_TITLE">COMMENTS_TITLE</strong>
-	<ul>
-		<li tal:repeat="comment comment"><a tal:attributes="href comment/URL" tal:content="comment/SUBJECT">comment/SUBJECT</a></li>
-	</ul>
-</div>

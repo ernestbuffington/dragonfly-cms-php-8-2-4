@@ -1,0 +1,222 @@
+<!-- Add New Block Start -->
+<br />
+<div class="newblock">
+<fieldset>
+<legend>{L_ADDNEWBLOCK}</legend>
+<div style="text-align:center;">
+<input type="button" value="RSS" onmouseup="new_block('new_rss');" />
+<input type="button" value="From File" onmouseup="new_block('new_fromfile');" />
+<input type="button" value="Custom" onmouseup="new_block('new_custom');" />
+</div>
+<div id="add_new_block" style="display:none;"><hr />
+<form method="post" action="{U_BLOCKS}" id="addblock" enctype="multipart/form-data" accept-charset="utf-8">
+<div>{L_TITLE}:<br /><input id="new_title" type="text" name="title" size="30" maxlength="60" /><hr /></div>
+
+<div id="new_rss" style="display:none;">
+{L_RSSFILE}:<br /><input id="rssfile" type="text" name="url" size="30" maxlength="200" />
+{SEL_HEADLINES} [ <a href="{U_HEADLINES}">Setup</a> ]<br /><em>{L_SETUPHEADLINES}</em><hr />
+{L_REFRESHTIME}:<br />
+	<select class="set" name="refresh" id="refresh">
+		<option value="1800">1/2 {L_HOUR}</option>
+		<option value="3600" selected="selected">1 {L_HOUR}</option>
+		<option value="18000">5 {L_HOURS}</option>
+		<option value="36000">10 {L_HOURS}</option>
+		<option value="86400">24 {L_HOURS}</option>
+	</select>
+		<!-- <font class="tiny">{L_ONLYHEADLINES}</font><hr /> -->
+</div>
+
+<div id="new_fromfile" style="display:none;">
+{L_FILENAME}:<p>
+{SEL_BLOCKS} <br /><em>{L_FILEINCLUDE}</em></p><hr />
+</div>
+
+<div id="new_custom" style="display:none;">
+{L_CONTENT}:<br />
+	{S_BB}<textarea id="new_content" name="content" cols="63" rows="15" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onchange="storeCaret(this);"></textarea>
+	<!-- <br /><em>{L_IFRSSWARNING}</em> --><hr />
+</div>
+<div>
+{L_POSITION}:<br />
+	<select class="set" name="bposition" id="bposition">
+		<option value="l" selected="selected">{L_LEFT}</option>
+		<option value="c">{L_CENTERUP}</option>
+		<option value="d">{L_CENTERDOWN}</option>
+		<option value="r">{L_RIGHT}</option>
+	</select><hr />
+<!-- IF B_MULTILINGUAL -->
+{L_LANGUAGE}:<br />{SEL_LANG}<hr />
+<!-- ELSE -->
+<input type="hidden" name="blanguage" value="" />
+<!-- ENDIF -->
+{L_ACTIVATE2}:<br /><select class="set" name="active" id="active">
+		<option value="0">{L_NO}</option>
+		<option value="1" selected="selected">{L_YES}</option>
+		</select><hr />
+{L_VIEWPRIV}:<br />{SEL_GROUP}<hr />
+{L_VISIBLEINMODULES}:
+<!-- <br /><em>{L_VIEW_COMMENT}</em> -->
+	<br /><select id="inmodule" name="in_module[]" multiple="multiple" size="9">
+		<optgroup label="{L_AUTHORSADMIN}">
+			<option value="-1">{S_ADMIN}</option>
+		</optgroup>
+		<optgroup label="{L_ACTIVE}">
+<!-- BEGIN active -->
+			<option value="{active.S_MOD_VALUE}" selected="selected">{active.S_MOD_TITLE}</option>
+<!-- END active -->
+		</optgroup>
+		<optgroup label="{L_INACTIVE}">
+<!-- BEGIN inactive -->
+			<option value="{inactive.S_MOD_VALUE}" selected="selected">{inactive.S_MOD_TITLE}</option>
+<!-- END inactive -->
+		</optgroup>
+	</select>
+	<hr />
+	<input type="submit" name="add" value="{L_CREATEBLOCK}" />
+	</div>
+	</form>
+	</div>
+</fieldset>
+</div>
+<!-- Add New Block End -->
+<div id="tack_home"><span id="tack" class="grab" onmouseover="Tack.hover(this)"></span></div>
+<div>
+<!-- Blocks List Table Start -->
+<div id="blist" class="divlist">
+<table id="ciao">
+<tr style="background-color:{S_BGCOLOR2};">
+<td align="center"><b>Move</b></td>
+<td align="center"><b>{L_TITLE}</b></td>
+<td align="center"><b>{L_TYPE}</b></td>
+<td align="center"><b>{L_ACTIVE}</b></td>
+<td><b>{L_VIEW}</b></td>
+<!-- IF B_MULTILINGUAL -->
+<td><b>{L_LANGUAGE}</b></td>
+<!-- ENDIF -->
+<td><b>{L_FUNCTIONS}</b></td>
+</tr>
+<!-- BEGIN list -->
+<tr class="first">
+<td title="{list.S_TITLE}.{list.S_BID}" onmouseover="Block.hover(this)" class="drag_img"></td>
+<td><a href="{U_BLOCKS}&amp;show={list.S_BID}" title="{L_SHOW}">{list.S_TITLE}</a></td>
+<td align="center">{list.S_TYPE}</td>
+<td align="center"><a href="{U_BLOCKS}&amp;change={list.S_BID}"><img src="images/{list.S_IMG_ACTIVE}" alt="{list.L_CHANGE} {list.S_TITLE}" title="{list.L_CHANGE} {list.S_TITLE}" style="border:0;" /></a></td>
+<td>{list.L_WHO_VIEW}</td>
+<!-- IF B_MULTILINGUAL -->
+<td>{list.L_BLANGUAGE}</td>
+<!-- ENDIF -->
+<td><a href="{U_BLOCKS}&amp;edit={list.S_BID}" title="{L_EDIT} {list.S_TITLE}">{L_EDIT}</a><!-- IF list.S_BKEY --> / <a href="{U_BLOCKS}&amp;del={list.S_BID}" title="{L_DELETE} {list.S_TITLE}">{L_DELETE}</a><!-- ENDIF --></td>
+</tr>
+<!-- END list -->
+</table>
+</div>
+<!-- Block List Table End -->
+
+<!-- Module List Table Start -->
+<div id="mlist" class="divlist">
+ <form action="{U_BLOCKS}" method="post" id="bform">
+<!-- BEGIN modules -->
+  <div class="mgroup"><span class="bcode" onclick="Block.activate('bform', '{modules.S_MODULE_OTITLE}.{modules.S_MODULE_ID}', 'div')">{modules.S_MODULE_TITLE}</span>
+  <div id="{modules.S_MODULE_OTITLE}.{modules.S_MODULE_ID}" style="display:none;">
+  <table>
+   <tr>
+    <td><div><ul>
+       <li class="parent" onmouseup="Block.setparent(this)">{L_LEFT}
+        <input type="hidden" name="id[]" value="-1" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="l" />
+        <input type="hidden" name="weight[]" value="-1" />
+       </li>
+<!-- BEGIN loop_l -->
+       <li title="{modules.loop_l.S_TITLE}">{modules.loop_l.S_TITLE}
+        <input type="hidden" name="id[]" value="{modules.loop_l.BID}" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="l" />
+        <input type="hidden" name="weight[]" value="{modules.loop_l.S_WEIGHT}" />
+       </li>
+<!-- END loop_l -->
+    </ul></div></td>
+    <td><div><ul>
+       <li class="parent" onmouseup="Block.setparent(this)">{L_CENTERUP}
+        <input type="hidden" name="id[]" value="-1" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="c" />
+        <input type="hidden" name="weight[]" value="-1" />
+       </li>
+<!-- BEGIN loop_c -->
+       <li title="{modules.loop_c.S_TITLE}">{modules.loop_c.S_TITLE}
+        <input type="hidden" name="id[]" value="{modules.loop_c.BID}" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="c" />
+        <input type="hidden" name="weight[]" value="{modules.loop_c.S_WEIGHT}" />
+       </li>
+<!-- END loop_c -->
+     </ul></div>
+     <div class="spacer_div"></div>
+     <div><ul>
+       <li class="parent" onmouseup="Block.setparent(this)">{L_CENTERDOWN}
+        <input type="hidden" name="id[]" value="-1" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="d" />
+        <input type="hidden" name="weight[]" value="-1" />
+       </li>
+<!-- BEGIN loop_d -->
+       <li title="{modules.loop_d.S_TITLE}">{modules.loop_d.S_TITLE}
+        <input type="hidden" name="id[]" value="{modules.loop_d.BID}" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="d" />
+        <input type="hidden" name="weight[]" value="{modules.loop_d.S_WEIGHT}" />
+       </li>
+<!-- END loop_d -->
+     </ul></div>
+    </td>
+    <td><div><ul>
+       <li class="parent" onmouseup="Block.setparent(this)">{L_RIGHT}
+        <input type="hidden" name="id[]" value="-1" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="r" />
+        <input type="hidden" name="weight[]" value="-1" />
+       </li>
+<!-- BEGIN loop_r -->
+       <li title="{modules.loop_r.S_TITLE}">{modules.loop_r.S_TITLE}
+        <input type="hidden" name="id[]" value="{modules.loop_r.BID}" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="r" />
+        <input type="hidden" name="weight[]" value="{modules.loop_r.S_WEIGHT}" />
+       </li>
+<!-- END loop_r -->
+    </ul></div></td>
+   </tr>
+   <tr>
+    <td colspan="2">
+     <br />{L_ACTIVE}: {modules.L_MODULE_ACTIVE}
+     <br />{modules.L_MODULE_SIDE}
+    </td>
+    <td>
+     <p id="{modules.S_MODULE_OTITLE}.{modules.S_MODULE_ID}_recycle" class="rec_bin">
+        <input type="hidden" name="id[]" value="-1" />
+        <input type="hidden" name="mid[]" value="{modules.S_MODULE_ID}" />
+        <input type="hidden" name="module[]" value="{modules.S_MODULE_OTITLE}" />
+        <input type="hidden" name="side[]" value="n" />
+        <input type="hidden" name="weight[]" value="-1" />
+     </p>
+				<div style="display:none"><ul id="{modules.S_MODULE_OTITLE}.{modules.S_MODULE_ID}_recycled"><li>Validator</li></ul></div>
+    </td>
+   </tr>
+  </table>
+  </div>
+  </div>
+<!-- END modules -->
+  <div style="border-top:1px solid #069;"><input type="submit" class="button" name="updateblocks" value="Update Changes" style="float:right;width:130px;"/></div>
+ </form>
+</div>
+<!-- Module List Table End -->
+</div>

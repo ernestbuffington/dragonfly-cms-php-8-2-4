@@ -1,364 +1,356 @@
 <?php
-/*
-	Dragonfly™ CMS, Copyright © since 2012
-	https://dragonfly.coders.exchange
+/*********************************************
+	MOO CMS, Copyright (c) 2007 The MOO Dev. Group. All rights reserved.
 
-	Dragonfly CMS is released under the terms and conditions
-	of the GNU GPL version 2 or any later version
+	This source file is free software; you can redistribute it and/or
+	modify it under the terms of the MOO Public License as published
+	by the MOO Development Group; either version 1 of the License, or
+	(at your option) any later version.
+
+  $Source: /cvs/html/includes/classes/security.php,v $
+  $Revision: 9.56 $
+  $Author: djmaze $
+  $Date: 2007/12/16 22:16:14 $
+**********************************************/
+/*
+ban_type: 0 = just ban a ip
+                  1 = it's a bot
+                  2 = email
+                  3 = referer
+                  4 = email and referer
+                  5 = disallowed usernames
+                  6 = MAC address
+                  7 = flood ban
+                  8 = protected ip
 */
 
-/*
-0:200 = ip:shield
-0:203 = ip
-0:204 = unknown user-agent
-0:800 = ip:bad
-0:802 = not compilant user-agent
-0:803 = ip:flood
-1:200 = bot:verified
-1:203 = bot:
-1:800 = bot:bad
-1:802 = bot:empty
-1:803 = bot:flood
-3:801 = referer:bad
-4:801 = email, referer:bad (deprecated)
-6:200 = mac:verified-
-6:800 = mac:bad-
-9:200 = hostname:verified
-9:800 = hostname:bad
-10:800 = in_dns_bl
-
-Tables:
-	security_agents
-	security_cache
-	security_domains
-	security_flood
-	security_ips
-*/
-
-/* Applied rules:
- * PublicConstantVisibilityRector (https://wiki.php.net/rfc/class_const_visibility)
- * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
- */
- 
 class Security
 {
-	public const
-		TYPE_DOMAIN_BLOCKED          = 2,
-		TYPE_DOMAIN_REFERER_BLOCKED  = 3,
-		TYPE_DOMAIN_PROTECTED        = 8,
-		TYPE_DOMAIN_HOSTNAME_BLOCKED = 9,
 
-		TYPE_IP_BLOCKED   = 0,
-		TYPE_IP_PROTECTED = 8;
-
-	public static function isTorExitNode($ip /*=$_SERVER['REMOTE_ADDR']*/)
+	function init()
 	{
-		// https://www.torproject.org/projects/tordnsel.html.en
-		$rev_ip = implode('.',array_reverse(explode('.',$ip)));
-		$s_addr = implode('.',array_reverse(explode('.',$_SERVER['SERVER_ADDR'])));
-		return ('127.0.0.2' == Poodle\INET::getHostIP("{$rev_ip}.{$_SERVER['SERVER_PORT']}.{$s_addr}.ip-port.exitlist.torproject.org"));
-	}
-
-	public static function banIP($ip, $details)
-	{
-		if ($ip = \Dragonfly\Net::filterIP($ip)) {
-			$SQL = \Dragonfly::getKernel()->SQL;
-			$ip = $SQL->escapeBinary($ip['ipn']);
-			try {
-				$SQL->exec("INSERT INTO {$SQL->TBL->security_ips} (ipn_s, type, details) VALUES ({$ip}, 0, {$SQL->quote($details)})");
-			} catch (\Exception $e) {}
-			$SQL->query("DELETE FROM {$SQL->TBL->security_cache} WHERE ipn={$ip}");
-		}
-	}
-
-	public static function init()
-	{
-		if (false !== stripos($_SERVER['REQUEST_URI'], 'modules.php?name=Your_Account&op=new_user')
-		 || preg_match('#/((administrator|bitrix|editor|fck|ckeditor|tiny_?mce|trackback|phpmyadmin|phpthumb|wp-admin)/|wp-login\\.php)#i',$_SERVER['PATH_INFO']))
-		{
-			if (!is_user()) {
-				static::banIP($_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
-			}
-			exit('Yoda: bad bot, you are!');
-		}
-
 		# Show error page if the http server sends an error
-		if (isset($_SERVER['REDIRECT_STATUS']) && between($_SERVER['REDIRECT_STATUS'], 400, 503)) {
+		if (isset($_SERVER['REDIRECT_STATUS']) && $_SERVER['REDIRECT_STATUS'] >= 400 && $_SERVER['REDIRECT_STATUS'] <= 503) {
 			cpg_error('', $_SERVER['REDIRECT_STATUS']);
 		}
-		if (isset($_SESSION['SECURITY']['status']) && 300 < $_SESSION['SECURITY']['status']) {
-			cpg_error('', $_SESSION['SECURITY']['status']);
-		}
-
-		$ua = \Poodle\UserAgent::getInfo();
-		$MAIN_CFG = \Dragonfly::getKernel()->CFG;
-		if (\Dragonfly::getKernel()->SESSION->is_new()) {
-			$db = \Dragonfly::getKernel()->SQL;
-			$time = time();
-			$expire = $time + $MAIN_CFG->_security->cachettl;
-			$ipn = \Dragonfly\Net::ipn();
-			$data = array(
-				'ipn' => $ipn,
-				'status' => 203,
-				'type' => 0,
-				'ttl' => $expire,
-				'log' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT']
-			);
-
-			$tmp = $db->uFetchAssoc('SELECT status, name, hostname, type, ttl FROM '.$db->TBL->security_cache.' WHERE ipn='.$db->escapeBinary($ipn));
-			if ($cached = !!$tmp) {
-				if (intval($tmp['ttl']) < $time) {
-					$cached = 0;
-					$db->query("DELETE FROM {$db->TBL->security_cache} WHERE ttl < {$time}");
-//					$db->optimize($db->TBL->security_cache);
-					$data = array_merge($data, static::exec());
+		if (!empty($_SESSION['SECURITY']['banned'])) { cpg_error('', $_SESSION['SECURITY']['banned']); }
+		global $MAIN_CFG, $SESS, $db, $prefix;
+		# get the visitor IP
+		$ip = Security::get_ip();
+		# If not a member check for bot or ban
+		if ($SESS->new) {
+			$_SESSION['SECURITY']['banned'] = false;
+			# is it a bot or a ban?
+			if (strlen($ip) == 4) {
+				list(,$ip4) = unpack('N',$ip);
+				if ($result = $db->query('SELECT * FROM '.$prefix."_security WHERE ban_ipv4_s = $ip4 OR (ban_ipv4_s < $ip4 AND ban_ipv4_e >= $ip4) LIMIT 0,1", TRUE, TRUE)) {
+					$row = $db->fetch_array($result, SQL_ASSOC);
+					$db->free_result($result);
+				}
+			}
+			if (empty($row)) {
+				$mac = (strlen($ip) == 16) ? ' OR ban_ipn='.$db->binary_safe(substr($ip,-8)) : '';
+				$ipn = $db->binary_safe($ip);
+				if ($result = $db->query('SELECT * FROM '.$prefix."_security WHERE ban_ipn=$ipn$mac LIMIT 0,1", TRUE, TRUE)) {
+					$row = $db->fetch_array($result, SQL_ASSOC);
+					$db->free_result($result);
+				}
+			}
+			if (!empty($row)) {
+				if ($row['ban_type'] == 1) {
+					$agent = Security::_detectBot($row['ban_string']);
+				} else if ($row['ban_type'] == 7 && $row['ban_time'] < gmtime() && $MAIN_CFG['_security']['unban']) {
+						$db->sql_query('DELETE FROM '.$prefix."_security WHERE ban_ipn=$ipn$mac");
+				} else if ($row['ban_type'] == 8) {
+						$_SESSION['SECURITY']['shield'] = strlen($ip);
 				} else {
-					$data = array_merge($data, $tmp);
-					if (200 == $data['status']) {
-						$db->query("UPDATE {$db->TBL->security_cache} SET ttl={$expire} WHERE ipn=".$db->escapeBinary($ipn));
-					}
+					$_SESSION['SECURITY']['banned'] = 800;
 				}
-				$tmp = null;
-			} else {
-				$data = array_merge($data, static::exec());
 			}
-			if (1 == $data['type'] && !$ua->bot) {
-				$ua->bot = true;
-				$ua->name = $data['name'];
-			}
-//			$ua->verified = (200 == $data['status']);
-
-			if (!$cached) {
-				if (!empty($data['name']))     { $data['name'] = $db->quote($data['name']); }
-				if (!empty($data['hostname'])) { $data['hostname'] = $db->quote($data['hostname']); }
-				$data['ipn'] = $db->escapeBinary($data['ipn']);
-				$data['log'] = $db->quote($data['log']);
-				$db->TBL->security_cache->insertPrepared($data);
-			}
-			$_SESSION['SECURITY']['status'] = $data['status'];
-
-			if (!$ua->bot && $MAIN_CFG->_security->deny_tor && static::isTorExitNode($_SERVER['REMOTE_ADDR'])) {
-				$SESS = \Dragonfly::getKernel()->SESSION;
-				if (is_object($SESS)) { $SESS->delete(); }
-				cpg_error('Tor is banned, sorry someone abused the network for you', 'Tor is banned, sorry someone abused the network for you');
+			# is it a referer spam?
+			if ($MAIN_CFG['_security']['referers'] && !$_SESSION['SECURITY']['banned'] &&
+			    !empty($_SERVER['HTTP_REFERER']) &&
+			    strpos($_SERVER['HTTP_REFERER'], $MAIN_CFG['server']['domain']) === false &&
+			    !Security::check_domain($_SERVER['HTTP_REFERER']))
+			{
+				$_SESSION['SECURITY']['banned'] = 801;
 			}
 		}
-		define('SEARCHBOT', $ua->bot ? $ua->name : false);
-
-		if (!empty($_SESSION['SECURITY']['status']) && 300 < $_SESSION['SECURITY']['status']) {
-			cpg_error('', $_SESSION['SECURITY']['status']);
+		# Detect User-Agent and Operating System
+		if (empty($_SESSION['SECURITY']['UA'])) {
+			if (empty($agent) && !$_SESSION['SECURITY']['banned']) {
+			 include(CORE_PATH.'data/ua.inc');
+			}
+			if (!empty($agent['bot'])) {
+				$_SESSION['SECURITY']['nick'] = $agent['bot'];
+				$_SESSION['SECURITY']['banned'] = $agent['banned'];
+			}
+			$_SESSION['SECURITY']['UA'] = empty($agent['ua']) ? 'N/A' : $agent['ua'];
+			$_SESSION['SECURITY']['OS'] = empty($agent['os']) ? 'N/A' : $agent['os'];
+			$_SESSION['SECURITY']['UA_ENGINE'] = empty($agent['engine']) ? 'N/A' : $agent['engine'];
+			if (empty($agent) && !$_SESSION['SECURITY']['banned'] && $MAIN_CFG['_security']['uas']) {
+				$_SESSION['SECURITY']['banned'] = 802;
+			}
 		}
+
+		define('SEARCHBOT', ($_SESSION['SECURITY']['UA'] == 'bot') ? $_SESSION['SECURITY']['nick'] : false);
+
+		if (!empty($_SESSION['SECURITY']['banned'])) { cpg_error('', $_SESSION['SECURITY']['banned']); }
 	}
 
-	private static function exec()
+	function check()
 	{
-		$db = \Dragonfly::getKernel()->SQL;
-		$MAIN_CFG = \Dragonfly::getKernel()->CFG;
-		$ip = \Dragonfly\Net::ip();
-		$ipn = $db->escapeBinary(inet_pton($ip));
-
-		if ($MAIN_CFG->_security->ips) {
-			if ($row = $db->uFetchAssoc("SELECT type, details FROM {$db->TBL->security_ips} WHERE ipn_s={$ipn} OR (ipn_s < {$ipn} AND ipn_e >= {$ipn})")) {
-				if (0 == $row['type']) return array('status' => 800, 'log' => $row['details']);
-				if (8 == $row['type']) return array('status' => 200, 'log' => $row['details']);
-			}
-		}
-
-		$data = array();
-		$bot = $reverse = false;
-		if ($MAIN_CFG->_security->hostnames || $MAIN_CFG->_security->bots) {
-			if (empty($_SERVER['REMOTE_HOST'])) {
-				$reverse = \Dragonfly\Net\Dns::reverse($ip);
-				if (is_array($reverse) && !empty($reverse['hostname'])) {
-					$data['hostname'] = $reverse['hostname'];
-				}
-			} else {
-				$data['hostname'] = $_SERVER['REMOTE_HOST'];
-			}
-		}
-		if (!empty($data['hostname']) && $MAIN_CFG->_security->hostnames && $domain = static::detectDomain(substr($data['hostname'], 0, -1))) {
-			$data['type'] = 9;
-			if (!empty($domain['ban_string'])) {
-				$data['log'] = $domain['ban_string'];
-			}
-			if (9 == $domain['ban_type']) {
-				$data['status'] = 800;
-				return $data;
-			} else if (8 == $domain['ban_type'] && $reverse['verified']) {
-				$data['status'] = 200;
-				return $data;
-			}
-		}
-		if ($bot = static::detectBot()) {
-			$data['type'] = 1;
-			$data['name'] = $bot['agent_name'];
-			if ($MAIN_CFG->_security->bots) {
-				if (-1 == $bot['agent_ban']) {
-					$data['status'] = 802;
-					return $data;
-				} else if (!empty($data['hostname']) && !empty($bot['agent_hostname']) && $reverse['verified']) {
-					if (false === strpos($bot['agent_hostname'], '\\')) $bot['agent_hostname'] = preg_quote($bot['agent_hostname'],'#');
-					if (preg_match('#'.$bot['agent_hostname'].'\.$#i', $data['hostname'])) {
-						$data['status'] = 200;
-						return $data;
-					}
-				}
-			}
-		} else if ('SERVFAIL' === $reverse) {
-			$data['ttl'] = time() + ($MAIN_CFG->_security->cachettl - 60);
-		} else if ('NXDOMAIN' === $reverse /* && $MAIN_CFG->_security->emptyhost*/) {
-			$data['log'] = 'Empty domain';
-			//$data['status'] = 802;
-		}
-
-		if (!$bot && !\Poodle\UserAgent::getInfo()->name) {
-			$data['status'] = 204;
-			if ($MAIN_CFG->_security->uas && (empty($_SERVER['HTTP_USER_AGENT']) || !preg_match('#^[a-zA-Z]#', $_SERVER['HTTP_USER_AGENT']))) {
-				$data['status'] = 802;
-				$data['ttl'] = time() + $MAIN_CFG->_security->bantime;
-				return $data;
-			}
-		}
-
-		# Check for dns blacklisted IPs
-		if ($MAIN_CFG->_security->dns_bl_active && $bl = static::dns_blocklist($ip)) {
-			$data['type'] = 10;
-			$data['status'] = 800;
-			$data['ttl'] = time() + $MAIN_CFG->_security->bantime;
-			$data['log'] = $bl;
-			return $data;
-		}
-
-		# Referer spam?
-		if ($MAIN_CFG->_security->referers
-		    && !empty($_SERVER['HTTP_REFERER'])
-		    && false === strpos($_SERVER['HTTP_REFERER'], (string) $MAIN_CFG->server->domain)
-		    && !static::check_domain($_SERVER['HTTP_REFERER']))
-		{
-			$data['status'] = 801;
-			$data['type'] = 3;
-			$data['ttl'] = time() + $MAIN_CFG->_security->bantime;
-		}
-		return $data;
-	}
-
-	public static function check()
-	{
+		if ($_SESSION['SECURITY']['banned']) { return; }
+		global $MAIN_CFG;
 		# anti-flood protection
-		if (\Dragonfly::getKernel()->CFG->_security->flooding && 200 != $_SESSION['SECURITY']['status']) {
-			\Dragonfly\Security\Flooding::detect();
+		if ($MAIN_CFG['_security']['flooding'] && SEARCHBOT != 'Google') {
+			Security::_flood();
 		}
 	}
 
-	public static function check_post()
+	function check_post()
 	{
-		if ('POST' !== $_SERVER['REQUEST_METHOD']) { return false; }
-		global $Module;
-		if (defined('ADMIN_PAGES')) {
-			if (empty($_SESSION['SECURITY']['page']) || $Module->name != $_SESSION['SECURITY']['page']) {
-				cpg_error(_ERROR_BAD_LINK, _SEC_ERROR, URL::admin());
-			}
-		} else {
-			if (empty($_SESSION['CPG_SESS']['user']['page']) || $Module->name != $_SESSION['CPG_SESS']['user']['page']) {
-				cpg_error(_ERROR_BAD_LINK, _SEC_ERROR, URL::index());
-			}
-		}
+		if ($_SERVER['REQUEST_METHOD'] != 'POST') { return false; }
+		global $module_name;
+		if ($_SESSION['SECURITY']['page'] != $module_name) { cpg_error(_SEC_ERROR, _ERROR_BAD_LINK); }
 		return true;
 	}
 
-	public static function check_domain($domain)
+	function check_domain($domain)
 	{
 		if (!preg_match('#[^\./]+\.[\w]+($|/)#', $domain)) { return false; }
 		$domains = '';
-		$db = \Dragonfly::getKernel()->SQL;
-		if ($result = $db->query("SELECT ban_string FROM {$db->TBL->security_domains} WHERE ban_type IN (3,4)", TRUE, TRUE)) {
-			while ($e = $result->fetch_row()) { $domains .= "|{$e[0]}"; }
+		global $db, $prefix;
+		if ($result = $db->query('SELECT ban_string FROM '.$prefix."_security WHERE ban_type IN (3,4)", TRUE, TRUE)) {
+			while ($e = $db->fetch_array($result, SQL_NUM)) { $domains .= "|$e[0]"; }
 		}
 		if (empty($domains)) { return true; }
 		return (preg_match('#('.str_replace('.', '\.', substr($domains,1).')#i'), $domain) < 1);
 	}
 
-	public static function get_ip()
+	function check_email(&$email)
 	{
-		trigger_deprecated('Use \\Dragonfly\\Net::ipn() instead.');
-		return \Dragonfly\Net::ipn();
+		static $domains;
+		if (strlen($email) < 6) return 0;
+		$email = strtolower($email);
+		# Although RFC 1035 doesn't allow 1 char subdomains we
+		# allow it due to bug report 641
+		if (!preg_match('#^[\w\.\+\-]+@(([\w]{1,25}\.)?[0-9a-z\-]{2,63}\.[a-z]{2,6}(\.[a-z]{2,6})?)$#', $email, $domain)) {
+			return -1;
+		}
+		if (empty($domains)) {
+			$domains = 'domain.tld';
+			global $db, $prefix;
+			if ($result = $db->query('SELECT ban_string FROM '.$prefix."_security WHERE ban_type IN (2,4)", TRUE, TRUE)) {
+				while ($e = $db->fetch_array($result, SQL_NUM)) { $domains .= "|$e[0]"; }
+			}
+			$domains = '#('.str_replace('.', '\.', $domains).')#i';
+		}
+		if (preg_match($domains, $domain[1], $match)) {
+			$email = array($email, $match[1]);
+			return -2;
+		}
+		return 1;
 	}
 
-	public static function dns_blocklist($ip)
+	function get_ip()
 	{
-		$MAIN_CFG = \Dragonfly::getKernel()->CFG;
-		if (!$MAIN_CFG->_security->dns_bl_active || !$ip = \Dragonfly\Net::filterIP($ip, false)) return false;
-		if ($ip['v4']) {
-			$ip = implode('.', array_reverse(explode('.', $ip['ip']))).'.';
+		static $visitor_ip;
+		if (!empty($visitor_ip)) { return $visitor_ip; }
+		$visitor_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : $_ENV['REMOTE_ADDR'];
+		$ips = array();
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != 'unknown') {
+			$ips = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
+		}
+		if (!empty($_SERVER['HTTP_CLIENT_IP']) && $_SERVER['HTTP_CLIENT_IP'] != 'unknown') {
+			$ips[] = $_SERVER['HTTP_CLIENT_IP'];
+		}
+		for ($i = 0; $i < count($ips); $i++) {
+			$ips[$i] = trim($ips[$i]);
+			# IPv4
+			if (strpos($ips[$i], '.') !== FALSE) {
+				# check for a hybrid IPv4-compatible address
+				$pos = strrpos($ips[$i], ':');
+				if ($pos !== FALSE) { $ips[$i] = substr($ips[$i], $pos+1); }
+				# Don't assign local network ip's
+				if (preg_match('#^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$#', $ips[$i]) &&
+						!preg_match('#^(10|127.0.0|172.(1[6-9]|2\d|3[0-1])|192\.168)\.#', $ips[$i]))
+			{
+					$visitor_ip = $ips[$i];
+					break;
+				}
+			}
+			# IPv6
+			else if (strpos($ips[$i], ':') !== FALSE) {
+				# fix shortened ip's
+				$c = substr_count($ips[$i], ':');
+				if ($c < 7) { $ips[$i] = str_replace('::', str_pad('::', 9-$c, ':'), $ips[$i]); }
+				if (preg_match('#^([0-9A-F]{0,4}:){7}[0-9A-F]{0,4}$#i', $ips[$i])) {
+					$visitor_ip = $ips[$i];
+					break;
+				}
+			}
+		}
+		if (!function_exists('inet_pton')) { require(CORE_PATH.'functions/inet.php'); }
+		$visitor_ip = inet_pton($visitor_ip);
+		return $visitor_ip;
+	}
+
+	function _flood()
+	{
+		global $db, $prefix, $MAIN_CFG;
+		$ip = Security::get_ip();
+		$ipn = $db->binary_safe($ip);
+		$delay = $MAIN_CFG['_security']['delay'];
+		$flood_time = $flood_count = 0;
+		$log = null;
+		$gmtime = gmtime();
+		if (!isset($_SESSION['SECURITY']['flood_start'])) {
+			$db->query('DELETE FROM '.$prefix.'_security_flood WHERE flood_time <= '.$gmtime);
 		} else {
-			$ip = unpack('H*', $ip['ipn']);
-			$ip = implode('.', array_reverse(str_split($ip[1]))).'.';
+			$_SESSION['SECURITY']['flood_start'] = false;
 		}
-		for ($i=1; $i<=3; ++$i) {
-			$whitelist = array();
-			if (!$bl = $MAIN_CFG->_security->{"dns_bl_srv_{$i}"}) continue;
-			$response = \Dragonfly\Net\Dns::resolve($ip.$bl);
-			if (is_array($response) && isset($response['A'][$ip.$bl.'.'][0])) {
-				$response = $response['A'][$ip.$bl.'.'][0];
-			} else {
-				continue;
+
+		if ($MAIN_CFG['_security']['debug'] || empty($_SESSION['SECURITY']['flood_time'])) {
+			# try to load time from log
+			if ($row = $db->sql_ufetchrow('SELECT * FROM '.$prefix.'_security_flood WHERE flood_ip='.$ipn, SQL_ASSOC)) {
+				if (!empty($row)) {
+					$flood_time = $row['flood_time'];
+					$flood_count = $row['flood_count'];
+					if (!empty($row['log']) && $MAIN_CFG['_security']['debug']) {
+						$log = unserialize($row['log']);
+					}
+				}
 			}
-			if (!$exclude = $MAIN_CFG->_security->{"dns_bl_exc_{$i}"}) return "{$bl} ({$response})";
-			if (0 === strpos($exclude, 'b:')) {
-				$exclude = intval(substr($exclude, 2));
-				$ret = explode('.', $response);
-				if ((255 - $exclude) & intval($ret[3])) return "{$bl} ({$response})";
-			} else {
-				$ret = array_map('trim', explode(',', $exclude));
-				if ($ret && !in_array($response, $ret)) return "{$bl} ({$response})";
-			}
+		} else {
+			$flood_time = $_SESSION['SECURITY']['flood_time'];
+			$flood_count = $_SESSION['SECURITY']['flood_count'];
 		}
-		return false;
+		if ($flood_time >= $gmtime) {
+			# die with message and report
+			++$flood_count;
+			if ($flood_count <= 5) {
+				if (empty($_SESSION['SECURITY']['shield']) && $flood_count > 2 && $flood_count <= 5) {
+					Security::_flood_log($ipn, !empty($row), $delay, $gmtime, $log, $flood_count);
+					global $LNG;
+					get_lang('errors');
+					$flood_time = (($flood_count+1)*2)/$delay;
+					header($_SERVER['SERVER_PROTOCOL'].' 503 Service Unavailable');
+					header('Retry-After: '.$flood_time);
+					$msg = sprintf($LNG['_SECURITY_MSG']['_FLOOD'], $flood_time);
+					if ($flood_count == 5) { $msg .= $LNG['_SECURITY_MSG']['Last_warning']; }
+					cpg_error($msg, 'Flood Protection');
+				}
+			} else {
+				if ($MAIN_CFG['_security']['debug']) {
+					if (!empty($log)) { $log = Security::_log_serializer($log); }
+					else if (!empty($_SESSION['FLOODING'])) { $log = Security::_log_serializer($_SESSION['FLOODING']); }
+					$log = "'".$log."'";
+					if (!empty($_SESSION['SECURITY']['shield'])) {
+						if ($_SESSION['SECURITY']['shield'] == 4) {
+							list(,$ip4) = unpack('N',$ip);
+							$db->sql_query('UPDATE '.$prefix."_security SET log='$log' WHERE ban_type=8 AND (ban_ipv4_s = $ip4 OR (ban_ipv4_s < $ip4 AND ban_ipv4_e >= $ip4))");
+						} else {
+							$mac = (strlen($ip) == 16) ? ' OR ban_ipn='.$db->binary_safe(substr($ip,-8)) : '';
+							$db->sql_query('UPDATE '.$prefix."_security SET log='$log' WHERE ban_type=8 AND (ban_ipn=$ipn$mac)");
+						}
+						$flood_time = $_SESSION['SECURITY']['flood_time'] = 0;
+						$flood_count = $_SESSION['SECURITY']['flood_count'] = 0;
+						return;
+					}
+				} else {
+					$log = 'DEFAULT';
+				}
+				$db->query('INSERT INTO '.$prefix."_security (ban_ipn, ban_type, ban_time, ban_details, log) VALUES ($ipn, '7', '".($gmtime+$MAIN_CFG['_security']['bantime'])."', 'Flooding detected by User-Agent:\n{$_SERVER['HTTP_USER_AGENT']}', '$log')", TRUE, TRUE);
+				global $SESS;
+				if (is_object($SESS)) $SESS->destroy();
+				cpg_error('', 803);
+			}
+		} else {
+			$log = null;
+			$flood_count = 0;
+			$_SESSION['FLOODING'] = array();
+		}
+		Security::_flood_log($ipn, !empty($row), $delay, $gmtime, $log, $flood_count);
 	}
 
-	private static function detectBot()
+	function _detectBot($where=false)
 	{
-		if (empty($_SERVER['HTTP_USER_AGENT'])) return;
-		$db = \Dragonfly::getKernel()->SQL;
+		global $db, $prefix;
 		$bot = false;
 		# Identify bot by UA
-		$result = $db->query('SELECT agent_name, agent_fullname, agent_ban, agent_hostname FROM '.$db->TBL->security_agents);
-		while ($row = $result->fetch_assoc()) {
-			if ($row['agent_fullname'] && preg_match('#'.preg_quote($row['agent_fullname'],'#').'#i', $_SERVER['HTTP_USER_AGENT'])) {
+		$where = ($where ? " WHERE agent_name LIKE '$where%'" : '');
+		$result = $db->query('SELECT agent_name, agent_fullname, agent_ban FROM '.$prefix."_security_agents$where ORDER BY agent_name", TRUE, TRUE);
+		while ($row = $db->fetch_array($result, SQL_NUM)) {
+			if (empty($row[1])) { continue; }
+			if ($bot && empty($where)) {
+				break;
+			} else if (eregi(preg_quote($row[1]), $_SERVER['HTTP_USER_AGENT'])) {
 				$bot = $row;
-				break;
 			}
 		}
-		$ua = \Poodle\UserAgent::getInfo();
-		if ($ua->bot) {
-			if (!$bot) { $bot = array('agent_ban' => 0); }
-			$bot['agent_name'] = $ua->name;
-		}
-		return $bot;
+		$db->free_result($result);
+		return ($bot === false) ? false : array('ua' => 'bot', 'bot' => $bot[0], 'engine' => 'bot', 'banned' => (($bot[2] == -1) ? 410 : null));
 	}
 
-	public static function detectDomain($hostname)
+	function _flood_log($ip, $update=false, $delay, $gmtime, $log, $times)
 	{
-		if (!\Dragonfly\Net::validHostname($hostname)) {
-			return false;
-		}
-		$db = \Dragonfly::getKernel()->SQL;
-		$domain = false;
-		$result = $db->query("SELECT ban_string, ban_type FROM {$db->TBL->security_domains} WHERE ban_type IN (8,9)");
-		while ($row = $result->fetch_assoc()) {
-			if (!$row['ban_string']) {
-				continue;
+		global $MAIN_CFG;
+		$timeout = ((($times+1)*2)/$delay)+$gmtime;
+		# maybe the UA doesn't accept cookies so we use another session log as well
+		if ($MAIN_CFG['_security']['debug'] || empty($_SESSION['SECURITY']['flood_time'])) {
+			global $db, $prefix;
+			if ($MAIN_CFG['_security']['debug'] && $log) { $log = "'".Security::_log_serializer(Security::_data_log($times, $log))."'"; }
+			else { $log = 'DEFAULT'; }
+			if ($update) {
+				$db->query('UPDATE '.$prefix."_security_flood SET flood_time='$timeout', flood_count='$times', log='$log' WHERE flood_ip=$ip");
+			} else {
+				$db->query('INSERT INTO '.$prefix."_security_flood (flood_ip,flood_time,flood_count,log) VALUES ($ip, '$timeout', '$times', $log)");
 			}
-			if (false === strpos($row['ban_string'], '\\')) {
-				$row['ban_string'] = preg_quote($row['ban_string'],'#');
-			}
-			if (preg_match('#'.$row['ban_string'].'$#i', $hostname)) {
-				$row['ban_string'] = str_replace('\\', '', $row['ban_string']);
-				$domain = $row;
-				break;
-			}
-		}
-		return $domain;
+			$_SESSION['SECURITY']['flood_start'] = true;
+		} 
+		$_SESSION['SECURITY']['flood_time'] = $timeout;
+		$_SESSION['SECURITY']['flood_count'] = $times;
 	}
 
+	function _detectProxy()
+	{
+		if (SEARCHBOT) { return $_SESSION['SECURITY']['nick']; }
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+		if (!empty($_SERVER['VIA'])) return $_SERVER['VIA'];
+		$rating = 0;
+		if ($_SERVER['SERVER_PROTOCOL'] == 'HTTP/1.0') $rating += 1;
+		if ($_SERVER['HTTP_ACCEPT'] == '*/*') $rating += 3;
+		if (intval($_SERVER['REMOTE_PORT']) > 5000) $rating += 5;
+		if (!$rating || $rating == 1) return 'None';
+		if ($rating <= 4) $rating = 'Probably anonymous';
+		else $rating = 'Yes, anonymous';
+		return $rating;
+	}
+
+	function _data_log($c, $l)
+	{
+		$l[$c]['S_TIME'] = gmtime();
+		$l[$c]['S_USER'] = !empty($_SESSION['CPG_USER']) ? $_SESSION['CPG_USER']['username'] : '';
+		$l[$c]['S_UA'] = $_SERVER['HTTP_USER_AGENT'];
+		$l[$c]['S_ADDRESS'] = $_SERVER['REMOTE_ADDR'];
+		$l[$c]['S_METHOD'] = $_SERVER['REQUEST_METHOD'];
+		$l[$c]['S_URI'] = $_SERVER['REQUEST_URI'];
+		$l[$c]['S_REFERER'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		# if proxy is behind a firewall then bypass-client will contain the firewall ip 
+		$l[$c]['S_CACHE_CONTROL'] = !empty($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : '';
+		$l[$c]['S_PROXY'] = Security::_detectProxy();
+		$_SESSION['FLOODING'][$c] = $l[$c];
+		return $l;
+	}
+
+	function _log_serializer($log)
+	{
+		for($i=0; $i<count($log); ++$i) {
+			foreach ($log[$i] as $key => $val) {
+				$log[$i][$key] = Fix_Quotes($val, true);
+			}
+		}
+		return serialize($log);
+	}
 }

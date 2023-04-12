@@ -3,100 +3,119 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/modules/News/submit.php,v $
+  $Revision: 1.10 $
+  $Author: phoenix $
+  $Date: 2007/09/11 11:25:51 $
 **********************************************/
+if (!defined('CPG_NUKE')) { exit; }
+get_lang('Submit_News');
+require_once('includes/nbbcode.php');
+$pagetitle .= _Submit_NewsLANG;
+global $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $CPG_SESS;
 
-/* Applied rules:
- * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
- */
- 
-if (!class_exists('Dragonfly', false)) { exit; }
-$K = Dragonfly::getKernel();
-$K->L10N->load('Submit_News');
-\Dragonfly\Page::title(_Submit_NewsLANG, false);
-
-class QueueStory extends \Dragonfly\Modules\News\Story
-{
-	function __construct()
-	{
-		$CFG = \Dragonfly::getKernel()->CFG;
-		if (!$CFG->global->anonpost && !is_user()) {
-			cpg_error(_MODULEUSERS . ($CFG->member->allowuserreg ? _MODULEUSERS2 : ''), 401);
-		}
-	}
-
-	function __set($k, $v)
-	{
-		if (property_exists($this, $k)) {
-			if (is_int($this->$k)) {
-				$this->$k = (int)$v;
-			} else if (is_bool($this->$k)) {
-				$this->$k = !!$v;
-			} else {
-				$this->$k = trim($v);
-			}
-		} else {
-			trigger_error("Property '{$k}' does not exist");
-		}
-	}
-
-	function save()
-	{
-		$mailer_message = null;
-  $K = \Dragonfly::getKernel();
-		$story = array(
-			'topic'     => $this->topic,
-			'subject'   => check_words($this->title),
-			'story'     => check_words($this->hometext),
-			'storyext'  => check_words($this->bodytext),
-			'alanguage' => $this->language,
-			'uid'       => $K->IDENTITY->id,
-			'uname'     => $K->IDENTITY->nickname,
-			'timestamp' => time(),
-		);
-		$K->SQL->TBL->queue->insert($story);
-
-		$cfg = $K->CFG->global;
-		if ($cfg->notify) {
-			$notify_message = "{$cfg->notify_message}\n\n\n========================================================\n{$story['subject']}\n\n\n"
-				.strip_tags($story['story'])."\n\n"
-				.strip_tags($story['storyext'])."\n\n{$story['uname']}";
-			if (!\Dragonfly\Email::send($mailer_message, $cfg->notify_subject, $notify_message,
-				$cfg->notify_email, $cfg->notify_email, $cfg->notify_from, $story['uname']))
-			{
-				echo $mailer_message;
-			}
-		}
-	}
+if (!$MAIN_CFG['global']['anonpost'] && !is_user()) {
+	cpg_error('<p>'._MODULEUSERS.($MAIN_CFG['member']['allowuserreg'] ? _MODULEUSERS2 : '').'</p>', 401);
 }
-
-$story = new QueueStory();
-if (isset($_POST)) {
-	$story->topic     = $_POST->uint('topic');
-	$story->title     = $_POST['title'];
-	$story->hometext  = $_POST->html('hometext');
-	$story->bodytext  = $_POST->html('bodytext');
-	if ($K->L10N->multilingual) {
-		$story->language  = $_POST['language'];
-	}
-	if (isset($_POST['save'])) {
-		if (!\Dragonfly\Output\Captcha::validate($_POST)) {
-			\Poodle\Notify::error(_SPAMGUARDPROTECTED);
-		} else {
-			$story->save();
-			cpg_error(_SUBTEXT, _Submit_NewsLANG, URL::index('&file=submit'));
+else if (isset($_POST['submit'])) {
+	if (!isset($CPG_SESS['submit_story']) && !$CPG_SESS['submit_story']) { cpg_error(_SPAMGUARDPROTECTED); }
+	$uid = is_user() ? $userinfo['user_id'] : 1;
+	$name = is_user() ? $userinfo['username'] : _ANONYMOUS;
+	$subject = isset($_POST['subject']) ? Fix_Quotes($_POST['subject']) : '';
+	$story = isset($_POST['story']) ? Fix_Quotes(html2bb($_POST['story'])) : '';
+	$storyext = isset($_POST['storyext']) ? Fix_Quotes(html2bb($_POST['storyext'])) : '';
+	$topic = isset($_POST['topic']) ? intval($_POST['topic']) : 1;
+	$alanguage = isset($_POST['alanguage']) ? Fix_Quotes($_POST['alanguage']) : '';
+	$subject = check_words($subject);
+	$story = encode_bbcode(check_words($story));
+	$storyext = encode_bbcode(check_words($storyext));
+	$db->sql_query('INSERT INTO '.$prefix.'_queue (qid, uid, uname, subject, story, storyext, timestamp, topic, alanguage) '.
+								"VALUES (DEFAULT, '$uid', '$name', '$subject', '$story', '$storyext', ".gmtime().", $topic, '$alanguage')");
+	if ($notify) {
+		$notify_message = "$notify_message\n\n\n========================================================\n$subject\n\n\n".decode_bbcode($story, 1, true)."\n\n".decode_bbcode($storyext, 1, true)."\n\n$name";
+		if (!send_mail($mailer_message,$notify_message,0,$notify_subject,$notify_email,$notify_email,$notify_from,$name)) {
+			echo $mailer_message;
 		}
 	}
+	$CPG_SESS['submit_story'] = false;
+	unset($CPG_SESS['submit_story']);
+	list($waiting) = $db->sql_ufetchrow("SELECT COUNT(*) FROM {$prefix}_queue", SQL_NUM);
+	cpg_error(_SUBTEXT.'<br />'._WEHAVESUB.' <strong>'.$waiting.'</strong> '._WAITING, _Submit_NewsLANG, getlink('&file=submit'));
 }
-list($story->topicimage) = $db->uFetchRow("SELECT topicimage FROM {$db->TBL->topics} WHERE topicid={$story->topic}");
+else {
+	$CPG_SESS['submit_story'] = true;
+	$story = isset($_POST['story']) ? $_POST['story'] : false;
+	$storyext = isset($_POST['storyext']) ? $_POST['storyext'] : false;
+	$subject = isset($_POST['subject']) ? htmlprepare($_POST['subject']) : false;
+	$topic = isset($_POST['topic']) ? intval($_POST['topic']) : 0;
+	$alanguage = isset($_POST['alanguage']) ? $_POST['alanguage'] : '';
 
-\Dragonfly\Output\Js::add('includes/poodle/javascript/wysiwyg.js');
-\Dragonfly\Output\Css::add('wysiwyg');
+	require_once(BASEDIR.'includes/wysiwyg/wysiwyg.inc');
+	$story_editor = new Wysiwyg('submitnews', 'story', '100%', '200px', $story);
+	$storyext_editor = new Wysiwyg('submitnews', 'storyext', '100%', '300px', $storyext);
 
-$K->OUT->story = $story;
-$K->OUT->view_story = isset($_POST['hometext']);
-$K->OUT->topics = $db->query("SELECT topicid id, topictext label FROM {$db->TBL->topics} ORDER BY topictext");
-$K->OUT->display('News/add');
+	$story_editor->setHeader();
+	require_once('header.php');
+
+	OpenTable();
+	if ($story) {
+		$f_story = decode_bb_all(encode_bbcode($story), 1, true);
+		$f_storyext = decode_bb_all(encode_bbcode($storyext), 1, true);
+		if ($topic < 1) {
+			$topicimage = 'AllTopics.gif';
+			$warning = '<div style="text-align:center;" class="option">'._SELECTTOPIC.'</div>';
+		} else {
+			$warning = '';
+			$result = $db->sql_query('SELECT topicimage, topictext FROM '.$prefix."_topics WHERE topicid='$topic'");
+			list($topicimage, $topictext) = $db->sql_fetchrow($result);
+		}
+		echo '<div style="text-align:center;" class="gen"><b>'._NEWSUBPREVIEW.'</b></div><br />
+		<div style="text-align:center;">'._CHECKSTORY.'</div><br />
+		<table class="newsarticle" style="width:70%; margin:auto;"><tr><td>
+		<img src="images/topics/'.$topicimage.'" style="border:0; float:right;" alt="'.(isset($topictext) ? $topictext : '').'" title="'.(isset($topictext) ? $topictext : '').'" />
+		<span class="gen"><b>'.$subject.'</b></span><br /><br />
+		<span style="font-size:10px;">'.$f_story;
+		if ($f_storyext != '') {
+			echo '<br /><br />'.$f_storyext;
+		}
+		echo '</span></tr></td></table>'.(($warning != '') ? '<br />'.$warning : '');
+	} else {
+		echo '<div style="text-align:center;" class="genmed">'._SUBMITADVICE.'</div>';
+	}
+	CloseTable();
+	OpenTable();
+	echo open_form(getlink('&amp;file=submit'), 'submitnews', _Submit_NewsLANG).'
+	<label class="ulog" for="subject">'._SUBTITLE.'</label>
+	  <input type="text" name="subject" id="subject" size="65" maxlength="80" value="'.$subject.'" /><br /><br />
+	<label class="ulog" for="topic">'._TOPIC.'</label>
+	  <select name="topic" id="topic">';
+	$result = $db->sql_query('SELECT topicid, topictext FROM '.$prefix.'_topics ORDER BY topictext');
+	echo '<option value="">'._SELECTTOPIC."</option>\n";
+	while ($row = $db->sql_fetchrow($result)) {
+		$sel = ($row['topicid'] == $topic) ? 'selected="selected" ' : '';
+		echo "<option $sel value=\"$row[topicid]\">$row[topictext]</option>\n";
+	}
+	echo '</select><br /><br />';
+	if ($multilingual) {
+		echo '
+		<label class="ulog" for="alanguage">'._LANGUAGE.'</label>
+		  '.lang_selectbox($alanguage).'<br /><br />';
+	}
+	echo '
+	<label class="ulog">Editor style</label>
+		'.$story_editor->getSelect().'<br /><br />
+	'._STORYTEXT.'<br />
+		'.$story_editor->getHTML().'<br />
+	'._EXTENDEDTEXT.'<br />
+		'.$storyext_editor->getHTML().'<br /><br />
+	<div style="text-align:center;"><input type="submit" value="'._PREVIEW.'" />';
+	if ($story != '') { echo '&nbsp;&nbsp;<input type="submit" name="submit" value="'._OK.'" />'; }
+	echo '</div>'.
+	close_form();
+	CloseTable();
+}

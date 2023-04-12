@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" 
+          "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd" >
+<html dir="{S_TEXTDIR}" xml:lang="{S_LANGCODE}">
+<head>
+{S_HEADER_TAGS}
+<link rel="alternate stylesheet" type="text/css" href="{THEME_PATH}/style/bg1.css" title="Meadow 1" />
+<link rel="stylesheet" type="text/css" href="{THEME_PATH}/style/style.css" media="screen" />
+<!-- IF S_MAIN_MENU or S_ADMIN_CSSMENU -->
+<link rel="stylesheet" type="text/css" href="{THEME_PATH}/style/cpgmm.css" />
+<!-- ENDIF -->
+{CSS_IE}
+</head>
+<body>
+<div><img id="backPic" src="{THEME_PATH}/images/meadow2.jpg" style="width:0; height:0;" alt="" /></div>
+<div id="container">
+<!-- IF S_ADMIN_CSSMENU -->
+<div class="admincrumb">{PAGE_TITLE}</div>
+<div id="breadcrumb">{G_LEFTIMAGE}{G_RIGHTIMAGE}
+  <div id="menu">{S_MAIN_MENU}</div>
+  <div id="head_username"></div>
+</div>
+<!-- ELSEIF S_ADMIN_MENU -->
+<div class="admincrumb">{PAGE_TITLE}</div>
+<div id="breadcrumb">{G_LEFTIMAGE}{G_RIGHTIMAGE}
+  <div id="adminmenu"></div>
+  <div id="head_username"></div>
+</div>
+<script type="text/javascript">/*<![CDATA[*/
+{S_ADMIN_MENU}
+cmDraw ('adminmenu', adminMenu, 'hbr', cmThemeOffice, 'ThemeOffice');
+/*]]>*/</script>
+<!-- ELSE -->
+<!-- IF S_MAIN_MENU -->
+<div id="header">
+  <h1><a href="{U_MAININDEX}" title="Return to home page" accesskey="1">{S_SITENAME}</a></h1>
+  <h2><a href="http://www.dedicatednow.com/" title="Our server sponsor" accesskey="0">DedicatedNow</a></h2>
+  <img src="{THEME_PATH}/images/header_br.gif" class="hdrbr" alt="" />
+</div>
+<div id="menu">{S_MAIN_MENU}</div>
+<!-- ELSE -->
+<div id="header">
+  <h1><a href="{U_MAININDEX}" title="Return to home page" accesskey="1">{S_SITENAME}</a></h1>
+  <h2><a href="http://www.dedicatednow.com/" title="Our server sponsor" accesskey="0">DedicatedNow</a></h2>
+  <ul>
+  <!-- IF S_IS_ADMIN --><li id="administration"><a href="{U_ADMININDEX}">{S_ADMIN}</a></li><!-- ENDIF -->
+  <li id="my_account"><a href="{U_MY_ACCOUNT}">{S_MY_ACCOUNT}</a></li>
+  <li id="forums"><a href="{U_FORUMS}">{S_FORUMS}</a></li>
+  <!-- IF S_DOWNLOADS --><li id="downloads"><a href="{U_DOWNLOADS}">{S_DOWNLOADS}</a></li><!-- ENDIF -->
+  </ul>
+</div>
+<!-- ENDIF -->
+<div id="breadcrumb">{G_LEFTIMAGE}{G_RIGHTIMAGE}
+  <!-- IF PAGE_TITLE --><div id="pagetitle">{PAGE_TITLE}</div><!-- ENDIF -->
+  <div id="head_username">{S_USER_INFO}</div>
+</div>
+<hr class="hide" />
+<!-- ENDIF -->
+
+<table class="maintable"><tr>
+<!-- IF S_LEFTBLOCKS -->
+ <td valign="top" class="mainside" id="pe600" {B_L_VISIBLE}>
+ <!-- BEGIN leftblock -->
+  <div class="blockheadl"><img class="blockimg" alt="[x]" title="Show/hide content" id="pic{leftblock.S_BID}" src="{leftblock.S_IMAGE}.png" onclick="blockswitch('{leftblock.S_BID}');" /> {leftblock.S_TITLE}</div>
+  <div class="blockcontent" id="pe{leftblock.S_BID}" {leftblock.S_VISIBLE}>{leftblock.S_CONTENT}</div><br />
+ <!-- END leftblock -->
+ <div class="mainside"></div>
+ </td>
+<!-- ENDIF -->
+<td valign="top" class="main">
+<!-- IF IMPORTANT_MESSAGE -->
+<div style="font-size: 12px; color: #FF0000; text-align: center;">{IMPORTANT_MESSAGE}</div><br />
+<!-- ENDIF -->
+<!-- BEGIN messageblock -->
+<div class="fieldset">
+  <div class="msgtitle" style="text-align: center;">{messageblock.S_TITLE}</div>
+  <div class="content" >{messageblock.S_CONTENT}</div>
+  <div style="text-align:right;"><span class="storyfoot">
+  <!-- IF S_IS_ADMIN -->
+  {messageblock.S_OUTPUT} - {messageblock.S_REMAIN} - <a href="{messageblock.U_EDITMSG}">{messageblock.S_EDIT}</a>
+  <!-- ELSE -->
+  {messageblock.S_DATE}
+  <!-- ENDIF -->
+  </span></div>
+</div><br/>
+<!-- END messageblock -->
+<!-- BEGIN centerblock -->
+<div class="table1">
+  <div class="option" style="text-align:center;"><strong>{centerblock.S_TITLE}</strong></div>
+  {centerblock.S_CONTENT}
+</div><br />
+<!-- END centerblock -->

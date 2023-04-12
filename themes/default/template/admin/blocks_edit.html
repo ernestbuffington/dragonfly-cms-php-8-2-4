@@ -1,0 +1,42 @@
+<!-- BLOCK EDIT -->
+<div class="table1"><fieldset ><legend>{S_NAME_DEF}</legend>
+<form method="post" action="{U_BLOCKS}&amp;save={S_BID}" name="blocksedit" id="blocksedit" enctype="multipart/form-data" accept-charset="utf-8">
+<table border="0" width="100%">
+	<tr><td>{S_TITLE}:</td><td><input type="text" name="title" size="30" maxlength="60" value="{S_NAME}" /></td></tr>
+<!-- IF TYPEFILE -->
+	<tr><td>{S_BLOCK_TYPE}:</td><td>{S_BLOCK_OP}<font class="tiny">{S_BLOCK_INFO}</font></td></tr>
+<!-- ELSEIF TYPERSS -->
+	<tr><td>{S_BLOCK_TYPE}:</td><td><input type="text" name="url" size="30" maxlength="200" value="{S_BLOCK_OP}" /> <font class="tiny">{S_BLOCK_INFO}</font></td></tr>
+<!-- ELSEIF TYPEBB -->
+	<tr><td>{S_BLOCK_TYPE}:</td><td>{S_BLOCK_OP}<textarea name="content" cols="63" rows="15" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onchange="storeCaret(this);">{S_BLOCK_INFO}</textarea></td></tr>
+<!-- ENDIF -->	
+	<input type="hidden" name="oldposition" value="{BPOSITION}" /><tr><td>{S_POSITION}</td><td>{SEL_POSITION}</td></tr>
+<!-- IF MULTILANG -->
+	<tr><td>{S_LANGUAGE}:</td><td colspan="3">{SEL_LANG}</td></tr>
+<!-- ELSE -->
+		<input type="hidden" name="blanguage" value="" />
+<!-- ENDIF -->
+	<tr><td>{S_ACTIVATE2}</td><td>{SEL_ACTIVATE}</td></tr>
+<!-- IF TYPERSS -->
+	<tr><td>{S_REFRESHTIME}:</td><td>{SEL_REFRESH} <font class="tiny">{S_BLOCK_INFO}</font></tr></td>
+<!-- ENDIF -->
+	<tr><td>{S_VIEWPRIV}</td><td>{SEL_GROUP}</td></tr>
+	<tr><td>{S_VISIBLEINMODULES}:</td><td><select name="in_module[]" multiple="multiple" size=9>
+		<optgroup label="{S_AUTHORSADMIN}">
+<!-- BEGIN admin -->
+			<option value="-1"{admin.S_MOD_SELECTED}>{S_ADMIN}</option>
+<!-- END admin -->
+		</optgroup>
+		<optgroup label="{S_ACTIVE}">
+<!-- BEGIN active -->
+			<option value="{active.S_MOD_VALUE}"{active.S_MOD_SELECTED}>{active.S_MOD_TITLE}</option>
+<!-- END active -->
+		</optgroup>
+		<optgroup label="{S_INACTIVE}">
+<!-- BEGIN inactive -->
+			<option value="{inactive.S_MOD_VALUE}"{inactive.S_MOD_SELECTED}>{inactive.S_MOD_TITLE}</option>
+<!-- END inactive -->
+		</optgroup>
+	</select></td></tr>
+</table><br /><br /><input type="hidden" name="weight" value="{S_WEIGHT}" /><input type="submit" value="{S_SAVECHANGES}" />
+</form></fieldset></div>

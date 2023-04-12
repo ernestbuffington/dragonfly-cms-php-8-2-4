@@ -1,5 +1,0 @@
-<h1 tal:content="msg_box/title">msg_box/title</h1>
-<div class="border">
-	<p><b tal:content="msg_box/message">msg_box/message</b></p>
-	<a tal:condition="msg_box/btn_text" tal:attributes="href msg_box/btn_link" tal:content="msg_box/btn_text">msg_box/btn_text</a>
-</div>

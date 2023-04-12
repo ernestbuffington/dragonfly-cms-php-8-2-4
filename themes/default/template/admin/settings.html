@@ -1,0 +1,32 @@
+<div class="table1">
+<!-- IF B_ADMIN_HELP -->
+<script language="JavaScript" type="text/javascript">
+<!-- 
+maketip('update_monitor','<div align="center">{L_UM_TOGGLE}</div>','{L_UM_EXPLAIN}');
+// -->
+</script>
+<!-- ENDIF -->
+<span class="genmed"><strong>Dragonfly {S_CPG_NUKE} {L_SITECONFIG}</strong></span><br />
+<!-- BEGIN menu -->
+  <!-- IF menu.B_URL --><a href="{menu.S_URL}">{menu.S_VALUE}</a>
+  <!-- ELSE --><strong>{menu.S_VALUE}</strong>
+  <!-- ENDIF -->
+  <!-- IF menu.B_NEXT --> | <!-- ENDIF -->
+<!-- END menu -->
+<br /><br />
+<form action="{S_ACTION}" method="post" name="settings" enctype="multipart/form-data" accept-charset="utf-8">
+<table border="0" width="80%" cellpadding="3" cellspacing="1" class="forumline">
+<!-- BEGIN settings -->
+<tr>
+  <td class="row1"><span class="genmed"{settings.L_TOOLTIP}>{settings.L_TITLE}</span></td>
+  <td class="row2">
+	<!-- IF settings.B_INPUT --><input type="{settings.S_TYPE}" name="{settings.S_NAME}" value="{settings.S_VALUE}" size="{settings.S_SIZE}" maxlength="{settings.S_MAXLENGTH}" />
+	<!-- ELSE -->{settings.S_TYPE}
+	<!-- ENDIF --></td>
+</tr>
+<!-- END settings -->
+<tr>
+<td class="catbottom" colspan="2" align="center"><input type="hidden" name="save" value="settings" /><input class="mainoption" type="submit" value="{L_SAVECHANGES}" />&nbsp;&nbsp;<input class="liteoption" type="reset" value="{L_RESET}" /></td>
+</tr>
+</table></form>
+<div>

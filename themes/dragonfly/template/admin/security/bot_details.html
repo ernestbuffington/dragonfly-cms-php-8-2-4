@@ -1,0 +1,24 @@
+<!-- INCLUDE admin/security/menu.html -->
+<fieldset style="border:1px solid #069;width:75%;">
+<legend>Bot details: {S_BOT_NAME}</legend>
+<dl>
+<dt>User-Agent:</dt><dd>{S_BOT_UA}</dd>
+<dt>Servers:</dt><dd>{S_BOT_DNS}</dd>
+<dt>{L_TB_INFO}:</dt><dd><a href="{U_BOT_HOME}">{U_BOT_HOME}</a></dd>
+<dt>{L_DESCRIPTION}:</dt><dd>{S_BOT_DESC}</dd>
+<!-- IF B_LOG -->
+<!-- BEGIN log -->
+<dt>Requests:</dt><dd>
+Time: {log.S_TIME}<br />
+User Agent: {log.S_UA}<br />
+Username: {log.S_USER}<br />
+Method: {log.S_METHOD}<br />
+Requested URI: {log.S_URI}<br />
+IP: {log.S_ADDRESS}<br />
+Cache Control: {log.S_CACHE_CONTROL}<br />
+Referer: {log.S_REFERER}<br />
+Proxy: {log.S_PROXY}</dd>
+<!-- END log -->
+<!-- ENDIF -->
+</dl>
+</fieldset>

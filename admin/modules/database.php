@@ -3,254 +3,203 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/admin/modules/database.php,v $
+  $Revision: 9.25 $
+  $Author: nanocaiordo $
+  $Date: 2007/08/25 17:11:22 $
 **********************************************/
-
-/* Applied rules:
- * TernaryToNullCoalescingRector
- * CountOnNullRector (https://3v4l.org/Bndc9)
- */
- 
 if (!defined('ADMIN_PAGES')) { exit; }
-if (!can_admin('database')) { die('Access Denied'); }
-
+if (!can_admin()) { die('Access Denied'); }
+// SHOW FIELDS FROM `cms_stories`
+// SHOW KEYS FROM `cms_stories`
 $crlf = "\n";
-$mode = (isset($_POST['mode']) && !Dragonfly::isDemo()) ? $_POST['mode'] : '';
-if (isset($_POST['tablelist'])) {
+if (isset($_POST['database'])) {
+		$database = $schema = $_POST['database'];
+} else {
+	if (DB_TYPE == 'postgresql') {
+		$schema = $db->sql_ufetchrowset('SELECT current_schema()');
+		$database = $schema = $schema[0][0];
+	} else {
+		$database = $dbname;
+	}
+}
+$filename = $database.'_'.formatDateTime(gmtime(), _DATESTRING3).'.sql';
+$mode = (isset($_POST['mode']) && !$CLASS['member']->demo) ? $_POST['mode'] : '';
+$type = strtoupper(substr($mode,0,-2));
+if (isset($_POST['switchdb'])) $mode = '';
+if (isset($_POST['tablelist']) && !isset($_POST['switchdb'])) {
 	$tablelist = $_POST['tablelist'];
 	$full = false;
 } else {
-	$tablelist = $db->listTables();
+	$tablelist = $db->list_tables($database);
 	$full = true;
 }
 
-\Dragonfly\Page::title(_DATABASE);
+$pagetitle .= ' '._BC_DELIM.' '._DATABASE;
 
 set_time_limit(0);
 
-function show_db_result($mode, $tablelist, $query)
-{
-	global $db;
-	$OUT = \Dragonfly::getKernel()->OUT;
-	$OUT->db_mode = $mode;
-	$OUT->db_action = strtolower(substr($mode,0,-2));
-	if ($query && (is_countable($tablelist) ? count($tablelist) : 0)) {
-		$OUT->query_result = $db->query($query);
-	}
-	$OUT->display('admin/database/result');
-}
-
-function run_sql_in_background($mode, $db, $query)
-{
-	$result = $db->query($query);
-	$numfields = $result->field_count;
-	$txt = 'Here are the results of your '.strtolower(strtolower(substr($mode,0,-2))).' request on '.$db->dbname()."\n\n";
-	$txt .= str_pad($result->fetch_field_direct(0)->name, 50);
-	for ($j=1; $j<$numfields; $j++) {
-		$txt .= str_pad($result->fetch_field_direct($j)->name, 30);
-	}
-	$txt .= "\n".str_pad('', (40*$numfields), '=')."\n";
-	while ($row = $result->fetch_row()) {
-		$txt .= str_pad($row[0], 50);
-		for ($j=1; $j<$numfields; $j++) {
-			$txt .= str_pad($row[$j], 30);
+function show($mode, $database, $tablelist, $query) {
+	global $db, $bgcolor2, $bgcolor3, $type;
+		require_once('header.php');
+		GraphicAdmin('System');
+		OpenTable();
+		if ($query === null) {
+			echo 'Mode: <b>'.$mode.'</b> not available yet';
+			return;
+		} 
+		if (count($tablelist)) {
+			$result = $db->sql_query($query);
+			$numfields = $db->sql_numfields($result);
+			echo '<span class="genmed"><strong>'._DATABASE.':</strong> '.$database.'</span><br /><br />Here are the results of your '.strtolower($type).'<br /><br />
+			<table border="0" cellpadding="2"><tr bgcolor="'.$bgcolor2.'">';
+			for ($j=0; $j<$numfields; $j++) {
+				echo '<td><strong>'.$db->sql_fieldname($j, $result).'</strong></td>';
+			}
+			echo '</tr>';
+			$bgcolor = $bgcolor3;
+			while ($row = $db->sql_fetchrow($result)) {
+				$bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
+				echo '<tr'.$bgcolor.'>';
+				for($j=0; $j<$numfields; $j++) {
+					echo '<td>'.$row[$j].'</td>';
+				}
+				echo '</tr>';
+			}
+			echo '</table>';
 		}
-		$txt .= "\n";
-	}
-	file_put_contents(BASEDIR.'cache/sql_result.txt', $txt);
-}
-
-function clear_cache_in_background()
-{
-	Dragonfly::getKernel()->CACHE->clear();
-}
-
-class OutputDragonflyDB extends \Poodle\Stream\File
-{
-	function __construct($filename, $compress)
-	{
-		\Dragonfly::ob_clean();
-		header('Cache-Control: no-store, no-cache, must-revalidate');
-		header('Pragma: no-cache');
-		header('Content-Transfer-Encoding: binary');
-		parent::__construct('php://output','w');
-		if ($compress) {
-			\Poodle\HTTP\Headers::setContentDisposition('attachment', array('filename'=>"{$filename}.gz"));
-			\Poodle\HTTP\Headers::setContentType('application/x-gzip', array('name'=>"{$filename}.gz"));
-			$this->useGzipCompression();
-		} else {
-			\Poodle\HTTP\Headers::setContentDisposition('attachment', array('filename'=>$filename));
-			\Poodle\HTTP\Headers::setContentType('application/xml', array('name'=>$filename));
-		}
-	}
+		CloseTable();
 }
 
 switch ($mode) {
-
+	
 	case 'BackupDB':
 		if (empty($tablelist)) { cpg_error('No tables found'); }
-		$filename = $db->database.'_'.date('Y-m-d_H:i:s').'.sql';
-		SQLCtrl::backup($db->database, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']), $full);
+		require_once(CORE_PATH.'classes/sqlctrl.php');
+		SQLCtrl::backup($database, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']), $full);
 		break;
 
-	case 'BackupSchema':
-		$output = new OutputDragonflyDB('schema.xml', isset($_POST['gzip']));
-		$db->XML->exportSchema($output->stream);
-		$output->close();
-		exit;
-
-	case 'BackupData':
-		$name = isset($_POST['filename']) ? "{$_POST['filename']}-" : '';
-		$output = new OutputDragonflyDB("{$name}data.xml", isset($_POST['gzip']));
-		$config = array(
-			'stream' => $output->stream,
-			'onduplicate' => 'IGNORE'
-		);
-		$re = "#^{$db->prefix}(.+)\$#D";
-		fwrite($output->stream, $db->XML->getDocHead());
-		foreach ($tablelist as $table) {
-			if (preg_match($re, $table, $t)) {
-				$data = $db->XML->getTableDataXML($t[1], $table, $config);
-				if ($data) {
-					fwrite($output->stream, $data);
-					$data = '';
-				}
-			}
-		}
-		fwrite($output->stream, $db->XML->getDocFoot());
-		$output->close();
-		exit;
-
 	case 'OptimizeDB':
-		if ('PostgreSQL' == $db->engine) {
+		if (DB_TYPE == 'postgresql') {
 			$db->query('VACUUM ANALYZE');
 			$query = 'SELECT cl.relname as tablename, st.* FROM pg_class AS cl, pg_statistic AS st WHERE st.starelid=cl.relfilenode AND cl.relkind IN(\'r\') AND cl.relname NOT LIKE \'pg_%\' AND cl.relname NOT LIKE \'sql_%\' ORDER by cl.relname';
-		} else if ('MySQL' == $db->engine) {
-			$query = 'OPTIMIZE TABLE '.implode(', ', $tablelist);
+		} else {
+			$query = "$type TABLE $database.".implode(", $database.", $tablelist);
 		}
-//		register_shutdown_function('run_sql_in_background', $mode, $db, $query);
-		show_db_result($mode, $tablelist, $query);
+		show($mode, $database, $tablelist, $query);
 		break;
 
 	case 'CheckDB':
-		if ('PostgreSQL' == $db->engine) {
-			show_db_result($mode, $tablelist, null);
-		} else if ('MySQL' == $db->engine) {
-			show_db_result($mode, $tablelist, 'CHECK TABLE '.implode(', ', $tablelist).' EXTENDED');
+		if (DB_TYPE == 'postgresql') {
+			show($mode, $database, $tablelist, null);
+			break;
+		} else {
+		 	$query = "$type TABLE $database.".implode(", $database.", $tablelist).' EXTENDED';
 		}
+		show($mode, $database, $tablelist, $query);
 		break;
-
 	case 'AnalyzeDB':
-		if ('PostgreSQL' == $db->engine) {
-			$Module->sides = 0;
-			$MAIN_CFG['global']['admingraphic'] =~ 1; /* \Dragonfly\Page\Menu\Admin::BLOCK */
+		if (DB_TYPE == 'postgresql') {
+			$showblocks = 0;
+			$MAIN_CFG['global']['admingraphic'] =~ 2;
 			if ($MAIN_CFG['global']['admingraphic'] == 0)  $MAIN_CFG['global']['admingraphic'] = 4;
-			if ($MAIN_CFG['global']['admingraphic'] < 1)  $MAIN_CFG['global']['admingraphic'] = 4; /* \Dragonfly\Page\Menu\Admin::CSS */
 			$db->query = 'ANALYZE';
 			$query = 'SELECT tablename, attname, null_frac, avg_width, n_distinct, most_common_vals, most_common_freqs, correlation FROM pg_stats WHERE schemaname=\''.$schema.'\' ORDER BY tablename';
 			//$query = 'SELECT * FROM pg_statistic';
-		} else if ('MySQL' == $db->engine) {
-			$query = 'ANALYZE TABLE '.implode(', ', $tablelist);
+		} else {
+			$query = "$type TABLE $database.".implode(", $database.", $tablelist);
 		}
-		show_db_result($mode, $tablelist, $query);
+		show($mode, $database, $tablelist, $query);
 		break;
 
 	case 'RepairDB':
-		if ('PostgreSQL' == $db->engine) {
-			$query = 'REINDEX '.$db->database;
-		} else if ('MySQL' == $db->engine) {
-			$query = 'REPAIR TABLE '.implode(', ', $tablelist);
+		if (DB_TYPE == 'postgresql') {
+			$query = 'REINDEX '.$database;
+		} else {
+			$query = "$type TABLE $database.".implode(", $database.", $tablelist);
 		}
-		show_db_result($mode, $tablelist, $query);
+		show($mode, $database, $tablelist, $query);
 		break;
 
 	case 'StatusDB':
-		$Module->sides = 0;
-		if ('PostgreSQL' == $db->engine) {
-			$schema = $db->uFetchRow('SELECT current_schema()');
-			$query = 'SELECT relname, seq_scan, seq_tup_read, idx_scan, idx_tup_fetch, n_tup_upd, n_tup_del FROM pg_stat_user_tables WHERE schemaname = \''.$schema[0].'\' ORDER BY relname';
-		} else if ('MySQL' == $db->engine) {
-			$query = 'SHOW TABLE STATUS';
-		}
-		show_db_result($mode, $tablelist, $query);
-		break;
-
-	case 'ImportSQL':
-		require_once('header.php');
-		if (!\Dragonfly::isDemo() && !SQLCtrl::query_file($_FILES['sqlfile'], $error)) {
-			cpg_error($error);
-		}
-		echo '<div class="success">Import of "'.$_FILES['sqlfile']['name'].'" was successful</div>';
-		break;
-
-	case 'ImportXML':
-		require_once('header.php');
-		if (\Dragonfly::isDemo() || $db->XML->syncSchemaFromFile($_FILES['xmlfile']['tmp_name'])) {
-			echo '<div class="success">Import of "'.$_FILES['xmlfile']['name'].'" was successful</div>';
-		}
-		break;
-
-	case 'Installer':
-		SQLCtrl::installer($tablelist, false, isset($_POST['inst_structure']), isset($_POST['inst_data']), isset($_POST['gzip']),
-			array(
-				'onduplicate' => $_POST['inst_onduplicate'] ?? null,
-				'datamode'    => $_POST['inst_datamode'] ?? null
-			)
-		);
-		break;
-
-	case 'Synch':
-		require_once('header.php');
-		define('INSTALL', 1);
-		require(BASEDIR."install/language/en.php");
-		OpenTable();
-		echo "<h3>{$instlang['s3_sync_data']}:</h3>";
-		$XML = $db->XML->getImporter();
-		$XML->addEventListener('afterquery', function(){echo ' .';flush();});
-		if (!$XML->syncSchemaFromFile(BASEDIR."includes/dragonfly/setup/db/schemas/core.xml")) {
-			print_r($XML->errors);
+		$showblocks = 0;
+		if (DB_TYPE == 'postgresql') {
+			$schema = $db->sql_ufetchrowset('SELECT current_schema()');
+			$query = 'SELECT relname, seq_scan, seq_tup_read, idx_scan, idx_tup_fetch, n_tup_upd, n_tup_del FROM pg_stat_user_tables WHERE schemaname = \''.$schema[0][0].'\' ORDER BY relname';
 		} else {
-			echo "<br/><strong>{$instlang['s3_sync_done']}</strong>";
+			$query = "SHOW TABLE STATUS FROM $database";
 		}
+		show($mode, $database, $tablelist, $query);
+		break;
+			
+	case 'RestoreDB':
+		require_once('header.php');
+		GraphicAdmin('System');
+		require_once(CORE_PATH.'classes/sqlctrl.php');
+		if (!SQLCtrl::query_file($_FILES['sqlfile'], $error)) { cpg_error($error); }
+		OpenTable();
+		echo '<span class="genmed"><strong>'._DATABASE.': '.$database.'</strong></span><br /><br />Importation of <em>'.$_FILES['sqlfile']['name'].'</em> was successful';
 		CloseTable();
-		register_shutdown_function('clear_cache_in_background');
 		break;
-/*
-	case 'FixCharset':
-		if ('MySQL' == $db->engine) {
-			$fp  = fopen(CACHE_PATH.'db-schema.xml','w');
-			$XML = $db->XML;
-			$XML->exportSchema($fp);
-			fclose($fp);
 
-			$fp  = fopen(CACHE_PATH.'db-data.xml','w');
-			$XML = $db->XML;
-			$XML->exportData($fp);
-			fclose($fp);
-
-//			SHOW CHARACTER SET FOR DATABASE()
-//			SELECT DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = DATABASE()
-//			SELECT TABLE_NAME, CHARACTER_SET_NAME, TABLE_COLLATION FROM information_schema.TABLES T, information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA WHERE CCSA.collation_name = T.table_collation AND T.table_schema = DATABASE()
-//			SHOW TABLE STATUS
-
-			$charset = $db->get_charset();
-			$collate = "{$charset}_bin"; // _general_ci or _unicode_ci
-			$db->exec("ALTER DATABASE DEFAULT CHARACTER SET {$charset} DEFAULT COLLATE {$collate}");
-			foreach ($db->listTables() as $table) {
-//				$db->exec("ALTER TABLE {$table} DEFAULT CHARACTER SET {$charset} COLLATE {$collate}");
-				$db->exec("ALTER TABLE {$table} CONVERT TO CHARACTER SET {$charset} COLLATE {$collate}");
-//				ALTER TABLE cms_bbposts_text MODIFY COLUMN post_text longtext CHARACTER SET utf8 COLLATE utf8_bin NULL
-			}
-		}
-		break;
-*/
 	default:
-		$OUT = \Dragonfly::getKernel()->OUT;
-		$OUT->ZLIB = extension_loaded('zlib');
-		$OUT->db_tables = $tablelist;
-		$OUT->display('admin/database/index');
+		require_once('header.php');
+		GraphicAdmin('System');
+		OpenTable();
+		echo '<form method="post" name="backup" action="'.adminlink().'" enctype="multipart/form-data" accept-charset="utf-8">
+		<span class="genmed"><strong>'.((DB_TYPE == 'postgresql') ? 'Schema' : _DATABASE).': <select name="database">';
+		// database listing
+		$data = (DB_TYPE == 'postgresql') ? $db->list_schemas() : $db->list_databases();
+		foreach ($data as $db_name) {
+			$sel = ($database == $db_name)?' selected="selected"':'';
+			echo "<option$sel>$db_name</option>";
+		}
+		echo '</select> <input type="submit" name="switchdb" value="Change" /></strong></span><br /><br />
+		<table><tr><td>
+		<select name="tablelist[]" size="20" multiple="multiple">';
+		foreach ($tablelist as $table) {
+			echo '<option value="'.$table.'">'.$table.'</option>';
+		}
+		echo '</select></td><td valign="middle">
+		<label class="ulog" for="mode"><span class="genmed">Action</span></label><select name="mode" id="mode"
+		onchange="dbback=document.getElementById(\'backuptasks\');dbback.style.display=(this.options[this.selectedIndex].value==\'BackupDB\') ? \'\' : \'none\';">
+		<option value="AnalyzeDB">Analyze</option>
+		<option value="BackupDB" selected="selected">'._SAVEDATABASE.'</option>
+		<option value="CheckDB">Check</option>
+		<option value="OptimizeDB">Optimize</option>
+		<option value="RepairDB">Repair</option>
+		<option value="StatusDB">Status</option>
+		</select> <input type="submit" value="Go" /><br /><br /><div id="backuptasks" style="float: center;">Backup Tasks:<br />
+		<input type="checkbox" value="1" name="dbdata" checked="checked" style="margin-left: 10px;" />Save Data<br />
+		<input type="checkbox" value="1" name="dbstruct" checked="checked" style="margin-left: 10px;" />Include CREATE statement<br />
+		<input type="checkbox" value="1" name="drop" checked="checked" style="margin-left: 10px;" />Include DROP statement<br />';
+		if (extension_loaded('zlib')) {
+			echo '<input type="checkbox" value="1" name="gzip" checked="checked" style="margin-left: 10px;" />Use GZIP compression';
+		} else {
+			echo 'GZIP Compression not supported';
+		}
+		echo '</div></td><td valign="top" width="50%">';
+
+		OpenTable();
+		echo '<div align="center" class="genmed"><strong>OPTIMIZE</strong></div><br /><div align="justify">Should be used if you have deleted a large part of a table or if you have made many changes to a table with variable-length rows (tables that have VARCHAR, BLOB, or TEXT columns). Deleted records are maintained in a linked list and subsequent INSERT operations reuse old record positions. You can use OPTIMIZE to reclaim the unused space and to defragment the datafile.<br />
+In most setups you don\'t have to run OPTIMIZE at all. Even if you do a lot of updates to variable length rows it\'s not likely that you need to do this more than once a month/week and only on certain tables.</div><br />
+OPTIMIZE works in the following way:<ul>
+<li>If the table has deleted or split rows, repair the table.</li>
+<li>If the index pages are not sorted, sort them.</li>
+<li>If the statistics are not up to date (and the repair couldn\'t be done by sorting the index), update them.</li>
+</ul><strong>Note:</strong> the table is locked during the time in which OPTIMIZE is running!';
+		CloseTable();
+		echo '</td></tr></table></form><br /><br />
+		<span class="genmed"><strong>Import SQL File</strong></span><br /><br />
+		<form method="post" action="'.adminlink().'" name="restore" enctype="multipart/form-data" accept-charset="utf-8">
+		<input type="file" name="sqlfile" size="100" /> <input type="hidden" name="mode" value="RestoreDB" /><input type="submit" value="Import" />
+		</form>';
+		CloseTable();
+
 		break;
 }

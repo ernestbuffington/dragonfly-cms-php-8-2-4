@@ -1,0 +1,22 @@
+<div class="newsarticle">
+  <a href="{U_NEWTOPIC}"><img src="{IMG_TOPIC}" alt="{S_TOPIC}" style="float:right;" /></a>
+  <div style="font-size:10px; color:{S_TEXTCOLOR2};">{S_STORY}
+  <!-- IF S_STORYEXT -->
+  <br /><br />{S_STORYEXT}
+  <!-- ENDIF -->
+  <!-- IF S_NOTES -->
+  <br /><br /><b>{S_NOTE}</b> <i>{S_NOTES}</i>
+  <!-- ENDIF -->
+  </div>
+  <br /><br />
+  <span style="font-size:10px; color:{S_TEXTCOLOR1};">{S_POSTEDBY} {S_INFORMANT}  {S_ON} {S_TIME} {S_READS}</span>
+  <!-- IF S_ADMIN -->
+  <span style="text-align:right;">[ {S_ADMIN} ]</span>
+  <!-- ENDIF -->
+<br style="clear:both;" /></div><br />
+<!-- IF S_ASSOTOPICS -->
+<div class="table1" style="text-align:center;">
+  <b>{S_ASSOTOPIC}</b><br /><br />{S_ASSOTOPICS}
+</div><br />
+<!-- ENDIF -->
+

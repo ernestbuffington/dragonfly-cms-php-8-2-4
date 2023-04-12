@@ -1,81 +1,92 @@
 <?php
-/*
-	Dragonfly™ CMS, Copyright ©  2004 - 2023
-	https://dragonfly.coders.exchange
+/*********************************************
+  CPG Dragonfly™ CMS
+  ********************************************
+  Copyright © 2004 - 2005 by CPG-Nuke Dev Team
+  http://www.dragonflycms.com
 
-	Dragonfly CMS is released under the terms and conditions
-	of the GNU GPL version 2 or any later version
-*/
-if (class_exists('Dragonfly', false)) {
-	contact_index();
+  Module © 2004 by Akamu
+
+  Dragonfly is released under the terms and conditions
+  of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/modules/Contact/index.php,v $
+  $Revision: 9.13 $
+  $Author: nanocaiordo $
+  $Date: 2008/01/13 11:13:59 $
+**********************************************/
+if (!defined('CPG_NUKE')) { exit; }
+$pagetitle .= _ContactLANG;
+require_once('includes/nbbcode.php');
+
+$subject = $MAIN_CFG['global']['sitename'] .' '._FEEDBACK;
+$recip = '';
+
+$sender_name = isset($_POST['sender_name']) ? $_POST['sender_name'] : '';
+$sender_email = isset($_POST['sender_email']) ? $_POST['sender_email'] : '';
+$send_to = (is_admin() && isset($_POST['send_to'])) ? $_POST['send_to'] : '';
+$message = isset($_POST['message']) ? $_POST['message'] : '';
+$bb = ($MAIN_CFG['email']['allow_html_email'] || is_admin()) ? bbcode_table('message', 'email_mod', 0) : '';
+$html = ($MAIN_CFG['email']['allow_html_email'] || is_admin()) ? 1 : 0;
+if (is_admin()) {
+	$sender_email = $MAIN_CFG['global']['adminmail'];
+	$sender_name = $MAIN_CFG['global']['sitename'];
+	$recip = '<label for="send_to"><strong>'._SEND_TO.'</strong></label><br /><input type="text" name="send_to" id="send_to" size="30" maxlength="255" /><br />';
 }
-
-function contact_index()
-{
-	$K = \Dragonfly::getKernel();
-	$OUT = $K->OUT;
-	\Dragonfly\Page::title(_ContactLANG, false);
-
-	$sender_name  = $sender_email = $message = '';
+if (!isset($_POST['opi'])) {
 	if (is_user()) {
-		$userinfo     = $K->IDENTITY;
-		$sender_name  = $userinfo->name ?: $userinfo->nickname;
-		$sender_email = $userinfo->email;
-	} else if (is_admin()) {
-		$sender_email = $K->CFG->global->adminmail;
-		$sender_name  = $K->CFG->global->sitename;
+		$sender_name = (!empty($userinfo['name'])) ? $userinfo['name'] : $userinfo['username'];
+		$sender_email = $userinfo['user_email'];
 	}
-
-	if ('POST' === $_SERVER['REQUEST_METHOD']) {
-		$sender_name  = $_POST['sender_name'];
-		$sender_email = $_POST['sender_email'];
-		$message      = $_POST['message'];
-		$error = false;
-		if (empty($sender_name)) {
-			$error = true;
-			\Poodle\Notify::error($OUT->L10N['_ENT_NAME_LABEL']);
-		}
-		if (empty($message)) {
-			$error = true;
-			\Poodle\Notify::error($OUT->L10N['_ENT_MESSAGE_LABEL']);
-		}
-		if (!is_email($sender_email)) {
-			$error = true;
-			\Poodle\Notify::error('ERROR: Invalid email address');
-		}
-		if (!\Dragonfly\Output\Captcha::validate($_POST)) {
-			$error = true;
-			\Poodle\Notify::error('ERROR: Invalid form submission');
-		}
-		if (!$error) {
-			$subject = $K->CFG->global->sitename .' '.$OUT->L10N['_FEEDBACK'];
-			$msg = $K->CFG->global->sitename ." {$OUT->L10N['_FEEDBACK']}\n\n";
-			$msg .= _SENDERNAME.": {$sender_name}\n";
-			$msg .= _SENDEREMAIL.": {$sender_email}\n";
-			$msg .= _MESSAGE.": {$message}\n\n--\n";
-			if (is_admin() && !empty($_POST['send_to'])) {
-				$recip_email = $recip_name = $_POST['send_to'];
-				$msg .= _POSTEDBY." IP: {$_SERVER['SERVER_ADDR']}";
-			} else {
-				$recip_email = $K->CFG->global->adminmail;
-				$recip_name = $K->CFG->global->sitename;
-				$msg .= _POSTEDBY." IP: {$_SERVER['REMOTE_ADDR']}";
-			}
-			if (\Dragonfly\Email::send($error, $subject, $msg, $recip_email, $recip_name, $sender_email, $sender_name)) {
-				cpg_error($OUT->L10N['_SUCCESS_MESSAGE_SENT'].'<br /><br />'.\Dragonfly\BBCode::decode("[quote=\"{$sender_name}\"]{$msg}[/quote]", 1).'<br />'.$OUT->L10N['_MAHALO'], _ContactLANG, \Dragonfly::$URI_INDEX);
-			}
-			\Poodle\Notify::error($error);
-		}
-	}
-
-	$OUT->allow_bbcode = ($K->CFG->email->allow_html_email || is_admin());
-	if ($OUT->allow_bbcode) {
-		\Dragonfly\BBCode::pushHeaders();
-	}
-	$OUT->assign_vars(array(
+	require_once('header.php');
+	generate_secimg();
+	$cpgtpl->set_handle('body', 'contact/index.html');
+	$cpgtpl->assign_vars(array(
+		'S_SITENAME' => $MAIN_CFG['global']['sitename'],
 		'S_SENDER' => $sender_name,
 		'S_SENDER_MAIL' => $sender_email,
 		'S_MESSAGE' => $message,
+		'S_BB' => $bb,
+		'S_RECIP' => $recip,
+		'S_GFX_IMG' => generate_secimg(),
+		'U_ACTION' => getlink($module_name)
 	));
-	$OUT->display('Contact/index');
+	$cpgtpl->display('body');
+	
+} elseif ($_POST['opi'] == 'ds') {
+	if (!Security::check_post()) { cpg_error(_SEC_ERROR); }
+	if (empty($sender_name)) { $error = _ENT_NAME_LABEL; }
+	if (empty($message)) { $error = _ENT_MESSAGE_LABEL; }
+	if (!is_email($sender_email)) { $error = $PHPMAILER_LANG['from_failed'].' '.$sender_email; }
+	if (!isset($error)) {
+		$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+		$code = $CPG_SESS['gfx'][$gfxid];
+		$gfx_check  = isset($_POST['gfx_contact_check']) ? $_POST['gfx_contact_check'] : '';
+		if (strlen($gfx_check) < 2 || $code != $gfx_check) {
+			$error = _SECURITYCODE.' incorrect';
+		}
+	}
+	if (!isset($error)) {
+		if (isset($_SESSION[$module_name])) unset($_SESSION[$module_name]);
+		$msg = $MAIN_CFG['global']['sitename'] ." "._FEEDBACK."\n\n";
+		$msg .= _SENDERNAME.": $sender_name\n";
+		$msg .= _SENDEREMAIL.": $sender_email\n";
+		$msg .= _MESSAGE.": ".$message."\n\n--\n";
+		if (is_admin() && !empty($send_to)) {
+			$recip_email = $send_to;
+			$recip_name = $send_to;
+			$msg .= _POSTEDBY." IP: ".$_SERVER['SERVER_ADDR'];
+		} else {
+			$recip_email = $MAIN_CFG['global']['adminmail'];
+			$recip_name = $MAIN_CFG['global']['sitename'];
+			$msg .= _POSTEDBY." IP: ".decode_ip($userinfo['user_ip']);
+		}
+		if (send_mail($error, $msg, $html, $subject, $recip_email, $recip_name, $sender_email, $sender_name)) {
+			cpg_error(_SUCCESS_MESSAGE_SENT.'<br /><br />'.decode_bbcode("[quote=\"".$sender_name."\"]".$msg."[/quote]", 1).'<br />'._MAHALO, _ContactLANG, $mainindex);
+		}
+	}
+	if (isset($error) && !empty($message)) {
+		$_SESSION[$module_name]['message'] = $message;
+	}
+	cpg_error($error);
 }

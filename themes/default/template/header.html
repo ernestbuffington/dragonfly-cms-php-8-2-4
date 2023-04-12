@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" 
+          "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd" >
+<html dir="{S_TEXTDIR}" xml:lang="{S_LANGCODE}">
+<head>
+{S_HEADER_TAGS}
+<link rel="stylesheet" type="text/css" href="{THEME_PATH}/style/style.css" />
+<!-- IF S_MAIN_MENU or S_ADMIN_CSSMENU -->
+<link rel="stylesheet" type="text/css" href="{THEME_PATH}/style/cpgmm.css" />
+<!-- ENDIF -->
+{CSS_IE}
+</head>
+<body>
+<!-- IF S_ADMIN_CSSMENU -->
+	{G_LEFTIMAGE}<img src="images/spacer.gif" style="height:20px; float:left;" alt="Admin Menu Spacer" />
+	<div id="menu" style="float:left;">{S_MAIN_MENU}</div><br />
+<!-- ELSEIF S_ADMIN_MENU -->
+	<div id="adminmenu"></div>
+	<script type="text/javascript">/*<![CDATA[*/
+	{S_ADMIN_MENU}
+	cmDraw ('adminmenu', adminMenu, 'hbr', cmThemeOffice, 'ThemeOffice');
+	/*]]>*/</script>
+<!-- ELSE -->
+<table class="headtable">
+<!-- IF PUBLIC_HEADER -->
+  <tr><td>
+    <table class="head">
+    <tr>
+      <td style="width:212px;" align="left"><a href="{U_MAININDEX}"><img src="images/{S_LOGO}" style="border:0;" alt="{S_SITENAME}" title="{S_SITENAME}" /></a></td>
+      <td style="width:100%;" align="center">{S_BANNER}</td>
+      <td style="width:33px;">&nbsp;</td>
+    </tr>
+    </table>
+  </td></tr>
+<!-- ENDIF -->
+<!-- IF S_MAIN_MENU -->
+  <tr><td>{G_LEFTIMAGE}{G_RIGHTIMAGE}
+	<div id="menu" style="float:left;">{S_MAIN_MENU}</div>
+  </td></tr>
+<!-- ELSE -->
+  <tr><td class="headmenu">{G_LEFTIMAGE}{G_RIGHTIMAGE}
+   .:: <a href="{U_MAININDEX}">{S_HOME}</a>
+    <!-- IF S_DOWNLOADS -->
+    :: <a href="{U_DOWNLOADS}">{S_DOWNLOADS}</a>
+    <!-- ENDIF -->
+    :: <a href="{U_FORUMS}">{S_FORUMS}</a> :: <a href="{U_MY_ACCOUNT}">{S_MY_ACCOUNT}</a>
+    <!-- IF S_IS_ADMIN -->
+    :: <a href="{U_ADMININDEX}">{S_ADMIN}</a>
+    <!-- ENDIF -->
+    ::.
+  </td></tr>
+<!-- ENDIF -->
+</table>
+<!-- ENDIF -->
+<table class="maintable"><tr>
+<!-- IF S_LEFTBLOCKS -->
+  <td class="mainside" id="pe600" {B_L_VISIBLE}>
+  <!-- BEGIN leftblock -->
+  <div class="blockhead">
+    <img alt="{S_TOGGLE}" title="{S_TOGGLE}" id="pic{leftblock.S_BID}" src="{leftblock.S_IMAGE}.gif" onclick="blockswitch('{leftblock.S_BID}');" style="cursor:pointer; float:right;" />
+    {leftblock.S_TITLE}
+  </div>
+  <div class="blockcontent" id="pe{leftblock.S_BID}" {leftblock.S_VISIBLE}>
+      {leftblock.S_CONTENT}
+  </div>
+  <br/>
+  <!-- END leftblock -->
+  </td>
+<!-- ENDIF -->
+<td class="main">
+<!-- IF IMPORTANT_MESSAGE -->
+<div style="font-size:12px; color:#FF0000; text-align:center;">{IMPORTANT_MESSAGE}</div><br />
+<!-- ENDIF -->
+<!-- IF PAGE_TITLE -->
+<div class="pagetitle">{PAGE_TITLE}</div>
+<!-- ENDIF -->
+<!-- BEGIN messageblock -->
+<div class="table1">
+  <div class="option" style="text-align:center;">{messageblock.S_TITLE}</div><br />
+  <div class="content" >{messageblock.S_CONTENT}</div><br /><div style="text-align:center;">
+  <!-- IF S_CAN_ADMIN -->
+  [ {messageblock.S_OUTPUT} - {messageblock.S_REMAIN} - <a href="{messageblock.U_EDITMSG}">{messageblock.S_EDIT}</a> ]
+  <!-- ELSE -->
+  {messageblock.S_DATE}
+  <!-- ENDIF -->
+  </div>
+</div><br/>
+<!-- END messageblock -->
+<!-- BEGIN centerblock -->
+<div class="table1">
+	<div style="text-align:center;" id="pic{centerblock.S_BID}" onclick="blockslide('{centerblock.S_BID}');">
+		<b>{centerblock.S_TITLE}</b>
+	</div>
+	<div class="option" id="pe{centerblock.S_BID}" {centerblock.S_VISIBLE}>
+		{centerblock.S_CONTENT}
+	</div>
+</div>
+<br />
+<!-- END centerblock -->

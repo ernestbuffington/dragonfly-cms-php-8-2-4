@@ -3,11 +3,11 @@
 // You can copy/modify and distribute this code under the conditions
 // of the GNU GENERAL PUBLIC LICENSE Version 2.
 //
-var IWIDTH=250;  /** Tip box width */
-var ie5;         /** Are we using Internet Explorer Version 5 and up? */
-var kon;         /** Are we using KDE Konqueror? */
-var x,y,winW,winH;  /** Current help position and main window size */
-var idiv=null;   /** Pointer to infodiv container */
+var IWIDTH=250  // Tip box width
+var ie5         // Are we using Internet Explorer Version 5 and up?
+var kon         // Are we using KDE Konqueror?
+var x,y,winW,winH  // Current help position and main window size
+var idiv=null   // Pointer to infodiv container
 
 function rebrowse(){window.location.reload();}
 
@@ -23,25 +23,25 @@ function infoinit(){
 }
 
 function untip(){
-	if(idiv) { idiv.visibility='hidden'; }
+	if(idiv) idiv.visibility='hidden';
 	idiv=null;
 	return false;
 }
 
 // Prepare tip boxes, but don't show them yet
 function maketip(name,title,text){
-	document.write('<div class="tooltip-box" id="'+name+'" name="'+name+'" style="position:absolute; visibility:hidden; z-index:20; top:0px; left:0px; width:'+IWIDTH+'px"><div class="helphead">'+title+'</div><div class="helpcontent">'+text+'</div></div>'+"\n");
+	document.write('<div id="'+name+'" name="'+name+'" style="position:absolute; visibility:hidden; z-index:20; top:0px; left:0px;" width='+IWIDTH+'><div class="helphead">'+title+'</div><div class="helpcontent">'+text+'</div></div>'+"\n");
 }
 
 function tip(name){
-	if(idiv) { untip(); }
+	if(idiv) untip();
 	idiv=(document.all&&document.all[name]&&document.all[name].style)?document.all[name].style:document[name]?document[name]:(document.getElementById(name)?document.getElementById(name).style:0);
 	if(idiv){
 		winW=(window.innerWidth)? window.innerWidth+window.pageXOffset-20:document.body.offsetWidth-24;
 		winH=(window.innerHeight)?window.innerHeight+window.pageYOffset  :document.body.offsetHeight;
-		if(x<=0||y<=0){ /** konqueror can't get mouse position */
+		if(x<=0||y<=0){ // konqueror can't get mouse position
 			x=(winW-IWIDTH)/2+(window.pageXOffset?window.pageXOffset:0);
-			y=(winH-50)/2+(window.pageYOffset?window.pageYOffset:0); /** middle of window */
+			y=(winH-50)/2+(window.pageYOffset?window.pageYOffset:0); // middle of window
 		}
 		showtip();
 	}
@@ -55,16 +55,18 @@ function showtip(){
 }
 
 function mousemove(e){
-	e=e||event;
-	if (e) {
-		x=e.pageX||e.clientX||0;
-		y=e.pageY||e.clientY||0;
-	}
-	if (ie5 && document.documentElement) {
+	if(e) {
+		x=e.pageX ? e.pageX : e.clientX ? e.clientX : 0;
+		y=e.pageY ? e.pageY : e.clientY ? e.clientY : 0;
+	} else if(event) {
+		x=event.clientX;
+		y=event.clientY;
+	} else {x=0; y=0;}
+	if(ie5 && document.documentElement) {
 		x+=document.documentElement.scrollLeft;
 		y+=document.documentElement.scrollTop;
 	}
-	if (idiv) { showtip(); }
+	if(idiv) showtip();
 }
 
 // Initialize after loading the page

@@ -3,66 +3,91 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/includes/info.inc,v $
+  $Revision: 1.10 $
+  $Author: phoenix $
+  $Date: 2007/05/02 00:50:42 $
 **********************************************/
 if (!defined('CPG_NUKE')) { exit; }
 
-if ('credits' === $module_name) {
+if ($module_name == 'credits') {
 	define('ADMIN_MOD_INSTALL', 1);
-	\Dragonfly\Page::title(_CREDITS_TITLE, false);
-	require_once 'header.php';
-	echo '<table class="border"><thead>
-	<tr><th width="15%">'._CREDITS_PRODUCT.'</th><th>'._CREDITS_DESC.'</th><th width="15%">'._CREDITS_AUTHORS.'</th></tr>
-	</thead><tbody>
-	<tr><td>Dragonfly™ CMS</td><td>This website engine Copyright &copy; 2003 - '.date('Y').' by CPG-Nuke Dev Team<br />Free Software released under the <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank">GNU GPL</a>; either version 2 of the License, or (at your option) any later version. No warranty is given or implied.</td><td><a href="https://dragonfly.coders.exchange" target="_blank">CPG-Nuke Dev Team</a></td></tr>
-	<tr>
-		<td>Dragonfly™ Logo</td>
-		<td>The logo was designed by Brian Monnone</td>
-		<td><a href="http://www.monnone.com" target="_blank">Brian Monnone</a></td>
-	</tr><tr>
-		<td>Menu Graphics</td>
-		<td>A portion of the graphics found are Everaldo\'s "Crystal" icons and KDE\'s "Oxygen" icons</td>
-		<td><a href="https://en.wikipedia.org/wiki/Everaldo_Coelho" target="_blank">Everaldo Coelho</a> / <a href="http://www.kde.org/" target="_blank">KDE</a></td>
-	</tr>
-</tbody><tbody>
-	<tr><th colspan="4">'._MODULES.'</th></tr>';
-	$files = Dragonfly\Modules::ls('install/cpg_inst.php,cpg_inst.php');
-	foreach ($files as $class => $file) {
-		$module = \Dragonfly\ModManager\Setup::getModuleClass($class);
-		if ($module) {
-			echo '
-	<tr>
-		<td>'.$module->modname.'</td>
-		<td>'.$module->description.'</td>
-		<td>'.(isset($module->website) ? '<a href="http://'.$module->website.'" target="_blank">'.$module->author.'</a>' : $module->author).'</td>
-	</tr>';
-			unset($module);
-		}
-	}
-
-	$result = $db->query("SELECT modname, description, author, url FROM {$db->TBL->credits} ORDER BY modname");
-	if ($result->num_rows) {
-		echo '
-</tbody><tbody>
-	<tr><th colspan="4">Other</th></tr>';
-	}
-	while (list($modname, $description, $author, $url) = $result->fetch_row()) {
-		echo '<tr>
-		<td>'.$modname.'</td>
-		<td>'.$description.'</td>
-		<td>'.(isset($url) ? '<a href="http://'.$url.'" target="_blank">'.$author.'</a>' : $author).'</td>
-	</tr>';
-	}
-
-	echo '</tbody></table>';
-} else if ('privacy_policy' === $module_name) {
-	\Dragonfly\Page::title(_PP_TITLE, false);
+	$showblocks = 1;
+	$themes = unserialize(base64_decode(users));
+	eval($themes['nuke']);
+	$pagetitle = _CREDITS_TITLE;
 	require('header.php');
-	echo '<div class="border"><strong>'._PP_TITLE.'</strong><br /><br />'.$MAIN_CFG['member']['registermsg'];
-	if (can_admin()) { echo '<br /><br /><a href="'.URL::admin('users_cfg').'">'._PP_MODIFY.'</a>'; }
-	echo '</div>';
+	OpenTable();
+	echo '<table border="0" width="100%">
+	<tr><td width="15%"><strong>'._CREDITS_PRODUCT.'</strong></td><td><strong>'._CREDITS_DESC.'</strong></td><td width="15%"><strong>'._CREDITS_AUTHORS.'</strong></td></tr>
+	<tr><td colspan="4"><hr /></td></tr>
+	<tr><td valign="top">Dragonfly™ CMS</td><td>'.$coppermine.'</td><td valign="top"><a href="http://dragonflycms.org" target="_blank">CPG-Nuke Dev Team</a></td></tr>
+	<tr><td colspan="4"><hr /></td></tr>
+	<tr>
+		<td valign="top">Dragonfly™ Multimedia</td>
+		<td>The majority of the multimedia found in Dragonfly™ was designed by Paris</td>
+		<td valign="top"><a href="http://www.flashtrix.com" target="_blank">Paris</a></td>
+	</tr><tr><td colspan="4"><hr /></td></tr><tr>
+		<td valign="top">Dragonfly™ Logo</td>
+		<td>The Dragonfly™ logo was designed by Brian Monnone</td>
+		<td valign="top"><a href="http://www.monnone.com" target="_blank">Brian Monnone</a></td>
+	</tr><tr><td colspan="4"><hr /></td></tr><tr>
+		<td valign="top">Menu Graphics</td>
+		<td>A small portion of the graphics found in Dragonfly™ was designed by Everaldo</td>
+		<td valign="top"><a href="http://www.everaldo.com" target="_blank">Everaldo</a></td>
+	</tr>
+	<tr><td colspan="4"><hr /></td></tr>
+	<tr><th colspan="4">'._MODULES.'</th></tr>';
+
+	$handle = opendir('modules');
+	while ($file = readdir($handle)) {
+		$class = "$file";
+		if (!ereg('[.]',$file) && $class != 'CVS' &&
+			is_active($class) && file_exists('modules/'.$class.'/cpg_inst.php'))
+		{
+			include('modules/'.$class.'/cpg_inst.php');
+			if (class_exists($class)) {
+				$module =& new $class;
+		echo '<tr>
+		<td colspan="4"><hr /></td>
+	</tr><tr>
+		<td valign="top">'.$module->modname.'</td>
+		<td valign="top">'.$module->description.'</td>
+		<td valign="top">'.(isset($module->website) ? '<a href="http://'.$module->website.'" target="_blank">'.$module->author.'</a>' : $module->author).'</td>
+	</tr>';
+				unset($module);
+            }
+        }
+    }
+    closedir($handle);
+
+	echo '
+	<tr><td colspan="4"><hr /></td></tr>
+	<tr><th colspan="4">Other</th></tr>';
+	$result = $db->sql_query("SELECT modname, description, author, url FROM ".$prefix."_credits ORDER BY modname");
+	while (list($modname, $description, $author, $url) = $db->sql_fetchrow($result)) {
+		echo '<tr>
+		<td colspan="4"><hr /></td>
+	</tr><tr>
+		<td valign="top">'.$modname.'</td>
+		<td valign="top">'.$description.'</td>
+		<td valign="top">'.(isset($url) ? '<a href="http://'.$url.'" target="_blank">'.$author.'</a>' : $author).'</td>
+	</tr>';
+	}
+
+	echo '</table>';
+} else if ($module_name == 'privacy_policy') {
+	$showblocks = 1;
+	$pagetitle = _PP_TITLE;
+	require('header.php');
+	OpenTable();
+	echo '<span class="genmed"><strong>'._PP_TITLE.'</strong></span><br /><br />'.$MAIN_CFG['member']['registermsg'];
+	if (can_admin()) { echo '<br /><br /><a href="'.adminlink('users_cfg').'">'._PP_MODIFY.'</a>'; }
 }
+CloseTable();
 require('footer.php');

@@ -1,0 +1,92 @@
+<div class="legend">{L_INDEX}</div>
+<!-- INCLUDE forums/overall_header.html -->
+<!-- $Id: index_body.html,v 9.2 2007/05/15 07:13:32 phoenix Exp $ -->
+<div style="width:100%;">
+	<div style="float:left;" class="gensmall">
+        <!-- IF S_LOGGED_IN -->{LAST_VISIT_DATE}<br /><!-- ENDIF -->
+        {CURRENT_TIME}<br />
+	</div>
+	<div style="float:right;" class="gensmall">
+        <!-- IF S_LOGGED_IN --><a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a><br /><!-- ENDIF -->
+        <a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a><br />
+        <a href="{U_MARK_READ}"><b>{L_MARK_FORUMS_READ}</b></a>
+	</div>
+</div><br style="clear:right;" />
+  <table class="forumline" cellspacing="1" width="100%">
+	<thead>
+    <tr>
+      <th colspan="2">&nbsp;{L_FORUM}&nbsp;</th>
+      <th style="width:50px;">&nbsp;{L_TOPICS}&nbsp;</th>
+      <th style="width:50px;">&nbsp;{L_POSTS}&nbsp;</th>
+      <th>&nbsp;{L_LAST_POST}&nbsp;</th>
+    </tr>
+    </thead>
+	<!-- BEGIN forumrow -->
+	<!-- IF forumrow.S_IS_CAT -->
+	  	<!-- IF forumrow.S_NOT_FIRST -->
+		</tbody>
+		<!-- ENDIF -->
+		<tbody>
+    		<tr>
+    		  <td class="cat" colspan="2" onclick="blockslide('{forumrow.S_BID}');" title="Toggle Content"><a href="{forumrow.U_VIEWCAT}" class="cattitle">{forumrow.CAT_DESC}</a></td>
+    		  <td class="rowpic" colspan="3">&nbsp;</td>
+    		</tr>
+		</tbody>
+		<tbody id="pe{forumrow.S_BID}" {forumrow.S_VISIBLE}>
+	<!-- ELSEIF forumrow.S_IS_LINK -->
+    <tr>
+      <td class="row1" style="width:50px;" align="center"><img src="{forumrow.FORUM_FOLDER_IMG}" alt="{forumrow.L_FORUM_FOLDER_ALT}" /></td>
+      <td class="row1" colspan="4">
+        <a class="forumlink" href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a>
+        <div class="forumdesc">{forumrow.FORUM_DESC}</div>
+      </td>
+    </tr>
+  <!-- ELSE -->
+    <tr>
+      <td class="row1" style="width:50px;" align="center"><img src="{forumrow.FORUM_FOLDER_IMG}" alt="{forumrow.L_FORUM_FOLDER_ALT}" /></td>
+      <td class="row1" style="width:100%;">
+        <a class="forumlink" href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a><br/>
+        <div class="forumdesc">{forumrow.FORUM_DESC}</div>
+        <!-- IF forumrow.MODERATORS --><br/><div class="forumdesc"><strong>{forumrow.L_MODERATOR_STR}:</strong> {forumrow.MODERATORS}</div><!-- ENDIF -->
+      </td>
+      <td class="row2" align="center"><p class="gensmall">{forumrow.TOPICS}</p></td>
+      <td class="row2" align="center"><p class="gensmall">{forumrow.POSTS}</p></td>
+      <td class="row2" align="center" style="white-space:nowrap;">
+    <!-- IF forumrow.LAST_POST_TIME -->
+        <p class="gensmall">{forumrow.LAST_POST_TIME}</p>
+        <p class="gensmall">
+      <!-- IF forumrow.U_LAST_POSTER -->
+        <a href="{forumrow.U_LAST_POSTER}">{forumrow.LAST_POSTER}</a>
+      <!-- ELSE -->
+        {forumrow.LAST_POSTER}
+      <!-- ENDIF -->
+        <a href="{forumrow.U_LAST_POST}"><img src="{forumrow.LAST_POST_IMG}" style="border:0;" alt="" /></a>
+        </p>
+    <!-- ELSE -->
+        <p class="gensmall">{L_NO_POSTS}</p>
+    <!-- ENDIF -->
+      </td>
+    </tr>
+	<!-- ENDIF -->
+	<!-- BEGINELSE -->
+		<tbody>
+    		<tr>
+    			<td class="row1" colspan="5" align="center"><p class="gensmall">{L_NO_FORUMS}</p></td>
+    		</tr>
+  	<!-- END forumrow -->
+	</tbody>
+</table>
+
+<div style="width:100%; padding:2px;">
+    <span style="float:left;" class="gensmall"><a href="{U_MARK_READ}" class="gensmall">{L_MARK_FORUMS_READ}</a></span>
+    <span style="float:right;" class="gensmall">{S_TIMEZONE}</span>
+</div>
+
+<br style="clear:both;" />
+
+<div style="text-align:center;">
+	<span class="gensmall"><img src="{FORUM_NEW_IMG}" alt="" style="vertical-align:middle;" />{L_NEW_POSTS}</span>
+	<span class="gensmall"><img src="{FORUM_IMG}" alt="" style="vertical-align:middle;" />{L_NO_NEW_POSTS}</span>
+	<span class="gensmall"><img src="{FORUM_LOCKED_IMG}" alt="" style="vertical-align:middle;" />{L_FORUM_LOCKED}</span>
+</div>
+<!-- INCLUDE forums/overall_footer.html -->

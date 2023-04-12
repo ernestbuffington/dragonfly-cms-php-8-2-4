@@ -1,9 +1,0 @@
-
-<form tal:attributes="action S_CONFIRM_ACTION; data-df-challenge php:Dragonfly\Output\Captcha::generateHidden()" method="post" class="border">
-<div style="text-align:center">
-	<h1 tal:content="structure MESSAGE_TEXT"></h1>
-	<p tal:content="structure S_HIDDEN_FIELDS"></p>
-	<button name="confirm" i18n:translate="_YES">Yes</button>
-	<button name="cancel" i18n:translate="_NO">No</button>
-</div>
-</form>

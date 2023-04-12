@@ -1,0 +1,30 @@
+<!-- INCLUDE admin/security/menu.html -->
+<form method="post" name="menuion" action="{REQUEST_URI}">
+<table class="forumline" border="0" cellpadding="4" cellspacing="1" width="50%">
+<tbody><tr> 
+	  <th>{L_TYPE}</th>
+	  <th>{L_PROTECTION}</th>
+	</tr>
+<!-- BEGIN menu -->
+	<tr>
+		<td class="row1"><span class="genmed">{menu.L_NAME}</span></td>
+		<td class="row2"><select class="set" name="_security[{menu.L_ID}]" id="_security[{menu.L_ID}]">
+		<!-- IF menu.B_ACTIVE -->
+		<option value="1" selected="selected">{L_ACTIVE}</option><option value="0">{L_INACTIVE}</option>
+		<!-- ELSE -->
+		<option value="1">{L_ACTIVE}</option><option value="0" selected="selected">{L_INACTIVE}</option>
+		<!-- ENDIF -->
+		</select></td>
+	</tr>
+<!-- END menu -->
+<tr><td colspan="2"><hr /></td></tr>
+<!-- BEGIN settings -->
+	<tr>
+		<td class="row1"><span class="genmed">{settings.L_NAME}</span></td>
+		<td class="row2">{settings.S_VALUES}</td>
+	</tr>
+<!-- END menu -->
+	<tr>
+		<td class="catBottom" colspan="3" height="28" align="center"><input type="submit" name="save" value="{L_SAVECHANGES}" class="mainoption" /></td>
+	</tr>
+</tbody></table></form>

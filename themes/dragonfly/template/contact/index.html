@@ -1,0 +1,17 @@
+<div class="table1">
+<form method="post" action="index.php?name=Contact" id="email_mod" enctype="multipart/form-data" accept-charset="utf-8">
+<fieldset><legend>_(FEEDBACKTITLE)</legend>
+	<div class="content">_(FEEDBACKNOTE)</div><br />
+	<label for="sender_name"><strong>_(YOURNAME):</strong></label><br />
+	<input type="text" name="sender_name" id="sender_name" value="{S_SENDER}" size="30" maxlength="255" /><br />
+	<label for="sender_email"><strong>_(YOUREMAIL):</strong></label><br />
+	<input type="text" name="sender_email" id="sender_email" value="{S_SENDER_MAIL}" size="30" maxlength="255" /><br />
+	{S_RECIP}<strong>_(MESSAGE):</strong><br />
+	{S_BB}
+	<textarea name="message" cols="63" rows="15" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onchange="storeCaret(this);">{S_MESSAGE}</textarea><br /><br />
+	<label class="set" for="gfx_contact_check">_(SECURITYCODE)</label>{S_GFX_IMG}<input type="text" name="gfx_contact_check" size="10" maxlength="8" /><br />
+	<input type="hidden" name="opi" value="ds" />
+	<input type="submit" name="submit" value="_(SEND)" />
+</fieldset>
+</form>
+</div>

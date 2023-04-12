@@ -3,20 +3,27 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/install/step4.php,v $
+  $Revision: 9.7 $
+  $Author: nanocaiordo $
+  $Date: 2007/04/23 10:43:37 $
+
+  Setup important settings like emailaddress and cookies
 **********************************************/
 if (!defined('INSTALL')) { exit; }
-//global $db, $prefix;
-
+global $db, $prefix;
 unset($error);
+
 $session = '';
 $cookie_path = dirname(getenv('SCRIPT_NAME'));
-$cookie_path = str_replace('\\', '/', $cookie_path);
+$cookie_path = str_replace('\\', '/', $cookie_path); //Damn' windows
 if (substr($cookie_path,-1) != '/') $cookie_path .= '/';
-$domain = str_replace('www.', '', getenv('HTTP_HOST'));
+$domain = ereg_replace('www.', '', getenv('HTTP_HOST'));
 $setup = array(
 	'siten'		   => 'My Dragonfly Site',
 	'domain'	   => getenv('HTTP_HOST'),
@@ -26,16 +33,15 @@ $setup = array(
 	'cookiepath'   => $cookie_path,
 	'admincookie'  => $prefix.'_admin',
 	'membercookie' => 'my_login',
+	'cpgcookie'	   => 'cpg',
 	'updatemon'	   => 1
 );
-
-\Dragonfly::getKernel()->L10N->load('main');
 
 function session_test($setup) {
 	if (isset($setup['sessionpath'])) session_save_path($setup['sessionpath']);
 	session_set_cookie_params(0, $setup['cookiepath'], $setup['cookiedom']); // [, bool secure]
 	session_start();
-	$_SESSION['installtest'] = $setup;
+	session_register('installtest');
 }
 
 if (isset($_POST['domain'])) {
@@ -43,18 +49,19 @@ if (isset($_POST['domain'])) {
 		$setup[$key] = trim($_POST[$key]);
 	}
 	if ($setup['cookiedom'] == '127.0.0.1' || $setup['cookiedom'] == 'localhost') { $setup['cookiedom'] = NULL; }
-
+	
 	if (empty($_POST['siten'])
 		|| empty($_POST['path'])
 		|| empty($_POST['domain'])
 		|| empty($_POST['adminm'])
 		|| empty($_POST['admincookie'])
-		|| empty($_POST['membercookie'])) {
+		|| empty($_POST['membercookie'])
+		|| empty($_POST['cpgcookie'])) {
 		$error = $instlang['s2_error_empty'];
 	} elseif (!preg_match('#^[_\.\+0-9a-z-]+@(([a-z]{1,25}\.)?[0-9a-z-]{2,63}\.[a-z]{2,6}(\.[a-z]{2,6})?)$#', $setup['adminm'])) {
 		$error = $instlang['s2_error_email'];
-	} elseif (!preg_match('#^([a-zA-Z0-9_\-]+)$#', $_POST['admincookie']) ||
-			  !preg_match('#^([a-zA-Z0-9_\-]+)$#', $_POST['membercookie'])) {
+	} elseif (!ereg('^([a-zA-Z0-9_\-]+)$', $_POST['admincookie']) ||
+			  !ereg('^([a-zA-Z0-9_\-]+)$', $_POST['membercookie'])) {
 		$error = $instlang['s2_error_cookiename'];
 	}
 	if (!isset($error)) {
@@ -62,6 +69,7 @@ if (isset($_POST['domain'])) {
 		$cookie = base64_encode(serialize($setup));
 		setcookie('installtest',$cookie,0,$setup['cookiepath'],$setup['cookiedom']); //, int secure
 		session_test($setup);
+		$_SESSION['installtest'] = $setup;
 		inst_header();
 		echo $instlang['s2_cookietest'].'<p>
 		<input type="hidden" name="testcookie" value="1" /><input type="hidden" name="step" value="4" />
@@ -78,8 +86,7 @@ if (isset($_POST['domain'])) {
 			$error = $instlang['s2_error_sessionsettings'];
 			$session = '
 	  <td><b>'.$instlang['s2_session_path'].'</b></td>
-	  <td><input type="text" name="sessionpath" size="30" maxlength="255" value="'.session_save_path().'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_session_path2'].'</span></i></td>
+	  <td><input type="text" name="sessionpath" size="30" maxlength="255" value="'.session_save_path().'" class="formfield" /> '.inst_help('sessionpath').'</td>
 	</tr><tr>';
 		}
 	}
@@ -92,26 +99,29 @@ if (!isset($_POST['domain']) && isset($_COOKIE['installtest']) && isset($_POST['
 	$siten = Fix_Quotes($cookie['siten']);
 	$adminm = Fix_Quotes($cookie['adminm']);
 	$cookie_dom = trim($cookie['cookiedom']);
-	$cookie_path = trim($cookie['cookiepath']);
-	$admin_cookie = trim($cookie['admincookie']);
-	$member_cookie = trim($cookie['membercookie']);
 	$updatemon = $cookie['updatemon'];
 	if ($cookie_dom == '127.0.0.1' || $cookie_dom == 'localhost') { $cookie_dom = ''; }
 
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$siten}' WHERE cfg_name='global' AND cfg_field='sitename'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$siten}' WHERE cfg_name='global' AND cfg_field='backend_title'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$adminm}' WHERE cfg_name='global' AND cfg_field='adminmail'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$domain}' WHERE cfg_name='server' AND cfg_field='domain'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$path}' WHERE cfg_name='server' AND cfg_field='path'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$cookie_dom}' WHERE cfg_name='cookie' AND cfg_field='domain'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$cookie_path}' WHERE cfg_name='cookie' AND cfg_field='path'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$admin_cookie}' WHERE cfg_name='admin_cookie' AND cfg_field='name'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$member_cookie}' WHERE cfg_name='auth_cookie' AND cfg_field='name'");
-	$db->exec("UPDATE {$prefix}_config_custom SET cfg_value='{$updatemon}' WHERE cfg_name='global' AND cfg_field='update_monitor'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$siten."' WHERE cfg_name='global' AND cfg_field='sitename'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$siten."' WHERE cfg_name='global' AND cfg_field='backend_title'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$adminm."' WHERE cfg_name='global' AND cfg_field='adminmail'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$domain."' WHERE cfg_name='server' AND cfg_field='domain'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$path."' WHERE cfg_name='server' AND cfg_field='path'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".$cookie_dom."' WHERE cfg_name='cookie' AND cfg_field='domain'");
+	$db->sql_query("UPDATE ".$prefix."_config_custom SET cfg_value='".trim($cookie['cookiepath'])."' WHERE cfg_name='cookie' AND cfg_field='path'");
+	$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='".trim($cookie['admincookie'])."' WHERE cfg_field='admin' AND cfg_name='cookie'");
+	$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='".trim($cookie['membercookie'])."' WHERE cfg_field='member' AND cfg_name='cookie'");
+	$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='".$updatemon."' WHERE cfg_name='global' AND cfg_field='update_monitor'");
 
-	Dragonfly::getKernel()->CACHE->clear();
+	$db->sql_query("UPDATE ".$prefix."_cpg_config SET value='".$domain.$path."' WHERE name='ecards_more_pic_target'");
+	$db->sql_query("UPDATE ".$prefix."_cpg_config SET value='".$adminm."' WHERE name='gallery_admin_email'");
+	$db->sql_query("UPDATE ".$prefix."_cpg_config SET value='".trim($cookie['cpgcookie'])."' WHERE name='cookie_name'");
+	$db->sql_query("UPDATE ".$prefix."_cpg_config SET value='".trim($cookie['cookiepath'])."' WHERE name='cookie_path'");
 
-	if (!$db->count('admins')) {
+	Cache::array_delete('MAIN_CFG');
+
+	$images[2] = 'checked';
+	if ($db->sql_count($prefix.'_admins') < 1) {
 		inst_header();
 		echo $instlang['s2_account'].'<p><input type="hidden" name="step" value="5" /><input type="submit" value="'.$instlang['s2_create'].'" class="formfield" />';
 	} else {
@@ -124,44 +134,51 @@ if (!isset($_POST['domain']) && isset($_COOKIE['installtest']) && isset($_POST['
 } else {
 	inst_header();
 	if (isset($error)) { echo '<h2 style="color: #FF0000;">'._ERROR.': '.$error.'</h2>'; }
-	echo $instlang['s2_info'].'<br /><br />
-	<table align="center">
+	echo $instlang['s2_info'].'<script language="JavaScript" type="text/javascript">
+<!--'."
+maketip('domainname','".$instlang['s2_domain']."','".$instlang['s2_domain2']."');
+maketip('path','".$instlang['s2_path']."','".$instlang['s2_path2']."');
+maketip('adminemail','"._ADMINEMAIL."','".$instlang['s2_email2']."');
+maketip('sessionpath','".$instlang['s2_session_path']."','".$instlang['s2_session_path2']."');
+maketip('cookiedom','".$instlang['s2_cookie_domain']."','".$instlang['s2_cookie_domain2']."');
+maketip('cookiepath','".$instlang['s2_cookie_path']."','".$instlang['s2_cookie_path2']."');
+maketip('admincookie','".$instlang['s2_cookie_admin']."','".$instlang['s2_cookie_admin2']."');
+maketip('membercookie','".$instlang['s2_cookie_member']."','".$instlang['s2_cookie_member2']."');
+maketip('cookiecpg','".$instlang['s2_cookie_cpg']."','".$instlang['s2_cookie_cpg2']."');
+maketip('updatemon','"._UM_TOGGLE."','"._UM_EXPLAIN."');
+".'// -->
+</script><br /><br />
+	<table border="0" align="center">
 	<tr>'.$session.'
 	  <td>'._SITENAME.'</td>
 	  <td><input type="text" name="siten" size="30" maxlength="255" value="'.$setup['siten'].'" class="formfield" /></td>
-	  <td></td>
 	</tr><tr>
 	  <td>'.$instlang['s2_domain'].'</td>
-	  <td><input type="text" name="domain" size="30" maxlength="255" value="'.$setup['domain'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_domain2'].'</span></i></td>
+	  <td><input type="text" name="domain" size="30" maxlength="255" value="'.$setup['domain'].'" class="formfield" /> '.inst_help('domainname').'</td>
 	</tr><tr>
 	  <td>'.$instlang['s2_path'].'</td>
-	  <td><input type="text" name="path" size="30" maxlength="255" value="'.$setup['path'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_path2'].'</span></i></td>
+	  <td><input type="text" name="path" size="30" maxlength="255" value="'.$setup['path'].'" class="formfield" /> '.inst_help('path').'</td>
 	</tr><tr>
 	  <td>'._ADMINEMAIL.'</td>
-	  <td><input type="email" name="adminm" size="30" maxlength="255" value="'.$setup['adminm'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_email2'].'</span></i></td>
+	  <td><input type="text" name="adminm" size="30" maxlength="255" value="'.$setup['adminm'].'" class="formfield" /> '.inst_help('adminemail').'</td>
 	</tr><tr>
 	  <td>'.$instlang['s2_cookie_domain'].'</td>
-	  <td><input type="text" name="cookiedom" size="30" maxlength="255" value="'.$setup['cookiedom'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_cookie_domain2'].'</span></i></td>
+	  <td><input type="text" name="cookiedom" size="30" maxlength="255" value="'.$setup['cookiedom'].'" class="formfield" /> '.inst_help('cookiedom').'</td>
 	</tr><tr>
 	  <td>'.$instlang['s2_cookie_path'].'</td>
-	  <td><input type="text" name="cookiepath" size="30" maxlength="255" value="'.$setup['cookiepath'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_cookie_path2'].'</span></i></td>
+	  <td><input type="text" name="cookiepath" size="30" maxlength="255" value="'.$setup['cookiepath'].'" class="formfield" /> '.inst_help('cookiepath').'</td>
 	</tr><tr>
 	  <td>'.$instlang['s2_cookie_admin'].'</td>
-	  <td><input type="text" name="admincookie" size="30" maxlength="25" value="'.$setup['admincookie'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_cookie_admin2'].'</span></i></td>
+	  <td><input type="text" name="admincookie" size="30" maxlength="25" value="'.$setup['admincookie'].'" class="formfield" /> '.inst_help('admincookie').'</td>
 	</tr><tr>
 	  <td>'.$instlang['s2_cookie_member'].'</td>
-	  <td><input type="text" name="membercookie" size="30" maxlength="25" value="'.$setup['membercookie'].'" class="formfield" /></td>
-	  <td><i class="infobox"><span>'.$instlang['s2_cookie_member2'].'</span></i></td>
+	  <td><input type="text" name="membercookie" size="30" maxlength="25" value="'.$setup['membercookie'].'" class="formfield" /> '.inst_help('membercookie').'</td>
+	</tr><tr>
+	  <td>'.$instlang['s2_cookie_cpg'].'</td>
+	  <td><input type="text" name="cpgcookie" size="30" maxlength="25" value="'.$setup['cpgcookie'].'" class="formfield" /> '.inst_help('cookiecpg').'</td>
 	</tr><tr>
 	  <td>'._UM_TOGGLE.'</td>
-	  <td><input type="radio" name="updatemon" value="1"'.(($setup['updatemon'] == 1) ? ' checked="checked"' : '').' />'._YES.'&nbsp;&nbsp;<input type="radio" name="updatemon" value="0"'.(($setup['updatemon'] == 0) ? ' checked="checked"' : '').' />'._NO.'</td>
-	  <td><i class="infobox"><span>'._UM_EXPLAIN.'</span></i></td>
+	  <td><input type="radio" name="updatemon" value="1"'.(($setup['updatemon'] == 1) ? ' checked="checked"' : '').' />'._YES.'&nbsp;&nbsp;<input type="radio" name="updatemon" value="0"'.(($setup['updatemon'] == 0) ? ' checked="checked"' : '').' />'._NO.' '.inst_help('updatemon').'</td>
 	</tr><tr>
 	  <td colspan="2" align="center">
 		<input type="hidden" name="step" value="4" /><br />

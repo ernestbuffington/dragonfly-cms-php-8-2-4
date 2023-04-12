@@ -1,760 +1,701 @@
 <?php
-/*
-	Dragonfly™ CMS, Copyright ©  2004 - 2023
-	https://dragonfly.coders.exchange
+/*********************************************
+  CPG Dragonfly™ CMS
+  ********************************************
+  Copyright © 2004 - 2007 by CPG-Nuke Dev Team
+  http://dragonflycms.org
 
-	Dragonfly CMS is released under the terms and conditions
-	of the GNU GPL version 2 or any later version
-*/
+  Dragonfly is released under the terms and conditions
+  of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/admin/modules/settings.php,v $
+  $Revision: 9.38 $
+  $Author: nanocaiordo $
+  $Date: 2008/01/27 12:12:04 $
+**********************************************/
 if (!defined('ADMIN_PAGES')) { exit; }
-if (!can_admin('settings')) { die('Access Denied'); }
+if (!can_admin()) { die('Access Denied'); }
+$section = isset($_GET['s']) ? intval($_GET['s']) : 0;
+$section_t = array('System', _MAINTENANCE, 'Cookies', _FOOTER, _BACKENDCONF, _COMMENTSOPT, _CENSOROPTIONS, _EMAILOPTIONS, _DEBUG, _MISCOPT);
+if (extension_loaded('gd')) { $section_t[] = 'Security Code'; }
+if (is_writeable(CORE_PATH.'config.php')) { $section_t[11] = 'config.php'; }
+$section_t[12] = 'P3P';
+# check for valid section
+if (!isset($section_t[$section])) { url_redirect(adminlink()); }
+if ($section == 12) require(BASEDIR.'includes/data/P3P.inc');
+if (isset($_POST['save'])) {
+	if ($_POST['save'] != $CPG_SESS['admin']['page']) { cpg_error(_ERROR_BAD_LINK, _SEC_ERROR); }
 
-abstract class Dragonfly_Admin_Settings
-{
-	protected static
-		$sections = array(_SYSTEM, _MAINTENANCE, _BROWSER_COOKIES, _FOOTER, _BACKENDCONF, _COMMENTSOPT, _CENSOROPTIONS, _EMAILOPTIONS, _DEBUG, _MISCOPT);
+	if ($section == 11) {
+		$fp = fopen(CORE_PATH.'config.php', 'rb');
+		$config = fread($fp, filesize(CORE_PATH.'config.php'));
+		fclose($fp);
+		$config = preg_replace('#\$adminindex[\s]+=[\s]+\'.*?\'#s', '$adminindex = \''.$_POST['config_admin'].'\'', $config);
+		$config = preg_replace('#\$mainindex[\s]+=[\s]+\'.*?\'#s', '$mainindex = \''.(($_POST['config_index']=='[none]')?'':$_POST['config_index']).'\'', $config);
+		$config = preg_replace('#define\(\'CPG_DEBUG\', [a-z]+\)#s', 'define(\'CPG_DEBUG\', '.($_POST['config_debug'] ? 'true' : 'false').')', $config);
+		$config = preg_replace('#\$sitekey = \'.*?\';#s', '', $config);
+		$written = false;
+		if ($fp = fopen(CORE_PATH.'config.php', 'wb')) {
+			$written = fwrite($fp, $config);
+			fclose($fp);
+		}
+		if (!$written) { cpg_error('Failed modifying file.'); }
+		url_redirect(adminlink('&s='.$section));
+	}
 
-	public static function GET()
-	{
-		$section = isset($_GET['s']) ? intval($_GET['s']) : 0;
-		if (is_writeable(CORE_PATH.'config.php')) { self::$sections[11] = 'config.php'; }
+	if ($section == 2 && (empty($_POST['cookie']['admin']) || empty($_POST['cookie']['member']))) {
+		cpg_error(sprintf(_ERROR_NOT_SET, 'Cookie name'));
+	}
 
-		# check for valid section
-		if (!isset(self::$sections[$section])) { URL::redirect(URL::admin()); }
+	$sections = array(
+		array('global' => array('sitename', 'site_logo', 'slogan', 'startdate', 'adminmail', 'crumb', 'admin_help', 'update_monitor', 'GoogleTap', 'block_frames', 'Default_Theme'),
+		      'server' => array('domain', 'path')),
+		array('global' => array('maintenance', 'maintenance_text')),
+		array('cookie' => array('server', 'domain', 'path', 'admin', 'member')),
+		array('global' => array('foot1', 'foot2', 'foot3')),
+		array('global' => array('backend_title', 'backend_language')),
+		array('global' => array('commentlimit', 'pollcomm', 'moderate')),
+		array('global' => array('CensorMode', 'CensorReplace')),
+		array('email'  => array('allow_html_email', 'smtp_on', 'smtphost', 'smtp_auth', 'smtp_uname', 'smtp_pass')),
+		array('debug'  => array('database', 'session')),
+		array('global' => array('banners', 'httpref', 'httprefmax', 'top'))
+	);
+	if (extension_loaded('gd')) { $sections[] = array('sec_code' => array('back_img', 'font', 'font_size')); }
 
-		$OUT = \Dragonfly::getKernel()->OUT;
-		$MAIN_CFG = \Dragonfly::getKernel()->CFG;
+	if (isset($sections[$section])) {
+		foreach ($sections[$section] AS $area => $keys) {
+		foreach ($keys AS $key) {
+			if (isset($_POST[$area][$key])) {
+				$value = Fix_Quotes(trim($_POST[$area][$key]));
+				if ($key == 'path') {
+					if (substr($value, -1) != '/') $value .= '/';
+					if ($value[0] != '/') $value = '/'.$value;
+				}
+				elseif ($key == 'Default_Theme') { $CPG_SESS['theme'] = $value; }
+				if ($value != $MAIN_CFG[$area][$key]) {
+					$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='".$value."' WHERE cfg_name='$area' AND cfg_field='$key'");
+				}
+			}
+		}
+		}
+	}
+	if ($section == 8) {
+		$error_level = 0;
+		if (isset($_POST['error_level'])) {
+			foreach ($_POST['error_level'] AS $val) { $error_level |= intval($val); }
+		}
+		$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='$error_level' WHERE cfg_name='debug' AND cfg_field='error_level'");
+	} elseif ($section == 9) {
+		$admingraphic = 0;
+		if (isset($_POST['admingraphic'])) {
+			foreach ($_POST['admingraphic'] AS $val) { $admingraphic |= intval($val); }
+		}
+		if ($admingraphic == 0) $admingraphic = 2;
+		$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='$admingraphic' WHERE cfg_name='global' AND cfg_field='admingraphic'");
+	} elseif ($section == 10) {
+		$sec_code = 0;
+		if (isset($_POST['code_show'])) {
+			foreach ($_POST['code_show'] AS $val) { $sec_code |= intval($val); }
+		}
+		$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='$sec_code' WHERE cfg_name='global' AND cfg_field='sec_code'");
+	} elseif ($section == 12) {
+		if (isset($_POST['P3P'])) {
+			$cp = array();
+			foreach ($_POST['P3P'] AS $key => $val) {
+				if (!isset($P3P_CP[$key])) continue;
+				if ($val == 1) { $cp[] = $key; }
+				else if (!empty($val) && (strlen($val) == 3 || strlen($val) == 4)) { $cp[] = $val; }
+			}
+			if (empty($cp)) {
+				$cp = $MAIN_CFG['header']['P3P_default'];
+			} else {
+				$cp = implode(' ', $cp);
+			}
+			$db->sql_query('UPDATE '.$prefix."_config_custom SET cfg_value='$cp' WHERE cfg_name='header' AND cfg_field='P3P'");
+		}
+	}
 
-		$OUT->assign_vars(array(
-			'S_SECTION' => $section
+	Cache::array_delete('MAIN_CFG');
+	url_redirect(adminlink('&s='.$section));
+}
+else {
+	$pagetitle .= ' '._BC_DELIM.' '._SITECONFIG.' '._BC_DELIM.' '.$section_t[$section];
+	require('header.php');
+	GraphicAdmin('System');
+	$cpgtpl->assign_vars(array(
+		'B_ADMIN_HELP' => $MAIN_CFG['global']['admin_help'],
+		'L_UM_TOGGLE' => _UM_TOGGLE,
+		'L_UM_EXPLAIN' => _UM_EXPLAIN,
+		'S_CPG_NUKE' => CPG_NUKE,
+		'L_SITECONFIG' => _SITECONFIG,
+		'S_SECTION' => $section,
+		'L_SAVECHANGES' => _SAVECHANGES,
+		'L_RESET' => _RESET,
+		'S_ACTION' => adminlink('&amp;s='.$section)
+	));
+
+	foreach ($section_t as $key => $value) {
+		$cpgtpl->assign_block_vars('menu', array(
+			'B_URL' => $section != $key,
+			'S_URL' => adminlink('&amp;s='.$key),
+			'S_VALUE' => $value,
+			'S_KEY' => $key,
+			'B_NEXT' => next($section_t)
 		));
-
-		if ($section == 0) {
-			$timezones = timezone_identifiers_list();
-			array_unshift($timezones, 'UTC');
-			$themes = \Poodle\TPL::getThemes();
-			//if (strpos($_SERVER['SERVER_SOFTWARE'], 'IIS')) $MAIN_CFG->seo->leo = 0;
-			$avail_settings = array(
-				array(
-					'label' => _SITENAME,
-					'name'  => 'global[sitename]',
-					'value' => $MAIN_CFG->global->sitename,
-					'input' => array(
-						'type'  => 'text',
-						'maxlength' => 255
-					)
-				),
-				array(
-					'label' => _SITE_DOMAIN,
-					'name'  => 'server[domain]',
-					'value' => $MAIN_CFG->server->domain,
-					'input' => array(
-						'type'  => 'text',
-						'maxlength' => 50
-					)
-				),
-				array(
-					'label' => _SITE_PATH,
-					'name'  => 'server[path]',
-					'value' => $MAIN_CFG->server->path,
-					'input' => array(
-						'type'  => 'text',
-						'maxlength' => 100
-					)
-				),
-				array(
-					'label' => _SITE_TIMEZONE,
-					'tooltip' => _SITE_TIMEZONE_EXPLAIN,
-					'name'  => 'global[timezone]',
-					'value' => $MAIN_CFG->global->timezone,
-					'select' => array(
-						'options' => array_combine($timezones, $timezones)
-					)
-				),
-				array(
-					'label' => _SITELOGO,
-					'name'  => 'global[site_logo]',
-					'value' => $MAIN_CFG->global->site_logo,
-					'input' => array(
-						'type'  => 'text',
-						'maxlength' => 255
-					)
-				),
-				array(
-					'label' => _SITESLOGAN,
-					'name' => 'global[slogan]',
-					'value' => $MAIN_CFG->global->slogan,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 255
-					)
-				),
-				array(
-					'label' => _STARTDATE,
-					'name' => 'global[startdate]',
-					'value' => $MAIN_CFG->global->startdate,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 50
-					)
-				),
-				array(
-					'label' => _ADMINEMAIL,
-					'name' => 'global[adminmail]',
-					'value' => $MAIN_CFG->global->adminmail,
-					'input' => array(
-						'type' => 'email',
-						'maxlength' => 255
-					)
-				),
-				array(
-					'label' => _BREADCRUMB,
-					'name' => 'global[crumb]',
-					'value' => $MAIN_CFG->global->crumb ?: _BC_DELIM,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 8
-					)
-				),
-				array(
-					'label' => _TOOLTIPS,
-					'name' => 'global[admin_help]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->admin_help
-					)
-				),
-				array(
-					'label' => _UM_TOGGLE,
-					'tooltip' => _UM_EXPLAIN,
-					'name' => 'global[update_monitor]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->update_monitor
-					)
-				),
-				array(
-					'label' => 'Update database automaticly',
-					'tooltip' => 'Try to update database automatically',
-					'name' => 'global[db_auto_upgrade]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->db_auto_upgrade
-					)
-				),
-				array(
-					'label' => _BLOCK_FRAMES,
-					'name' => 'global[block_frames]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->block_frames
-					)
-				),
-				array(
-					'label' => _DEFAULTTHEME,
-					'name'  => 'global[Default_Theme]',
-					'value' => $MAIN_CFG->global->Default_Theme,
-					'select' => array(
-						'options' => array_combine($themes, $themes)
-					)
-				),
-				array(
-					'label' => _ACTIVATE_LEO,
-					'name' => 'seo[leo]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->seo->leo
-					)
-				),
-				array(
-					'label' => 'LEO url ending',
-					'name'  => 'seo[leoend]',
-					'value' => $MAIN_CFG->seo->leoend,
-					'select' => array(
-						'options' => array('.html'=>'.html', '/'=>'/', ''=>'')
-					)
-				),
-				array(
-					'label' => 'PHAR '._MODULES,
-					'name' => 'global[phar_modules]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->phar_modules
-					)
-				),
-				//array(
-				//	'label' => 'Use canonical tag in header',
-				//	'name' => 'seo[canonical]',
-				//	'value' => 1,
-				//	'checkbox' => array(
-				//		'checked' => $MAIN_CFG->seo->canonical
-				//	)
-				//)
-			);
-		}
-
-		else if ($section == 1) {
-			$avail_settings = array(
-				array(
-					'label' => _ACTIVE,
-					'name' => 'global[maintenance]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->maintenance
-					)
-				),
-				array(
-					'label' => _MESSAGE,
-					'name' => 'global[maintenance_text]',
-					'value' => $MAIN_CFG->global->maintenance_text,
-					'textarea' => array('class'=>null)
-				)
-			);
-		}
-
-		else if ($section == 2) {
-			$avail_settings = array(
-				array(
-					'label' => _SNAME_AS_COOKIE,
-					'name' => 'cookie[server]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->cookie->server
-					)
-				),
-				array(
-					'label' => _COOKIE_DOMAIN,
-					'name' => 'cookie[domain]',
-					'value' => $MAIN_CFG->cookie->domain,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 255
-					)
-				),
-				array(
-					'label' => _COOKIE_PATH,
-					'name' => 'cookie[path]',
-					'value' => $MAIN_CFG->cookie->path,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 255
-					)
-				),
-			);
-		}
-
-		else if ($section == 3) {
-			\Dragonfly\Output\Js::add('includes/poodle/javascript/wysiwyg.js');
-			\Dragonfly\Output\Css::add('wysiwyg');
-			$avail_settings = array(
-				array(
-					'label' => _FOOTERMSG,
-					'name' => 'global[foot1]',
-					'value' => $MAIN_CFG->global->foot1,
-					'textarea' => array('class'=>'wysiwyg')
-				),
-				array(
-					'label' => _FOOTERLINE2,
-					'name' => 'global[foot2]',
-					'value' => $MAIN_CFG->global->foot2,
-					'textarea' => array('class'=>'wysiwyg')
-				),
-				array(
-					'label' => _FOOTERLINE3,
-					'name' => 'global[foot3]',
-					'value' => $MAIN_CFG->global->foot3,
-					'textarea' => array('class'=>'wysiwyg')
-				)
-			);
-		}
-
-		else if ($section == 4) {
-			$avail_settings = array(
-				array(
-					'label' => _BACKENDTITLE,
-					'name' => 'global[backend_title]',
-					'value' => $MAIN_CFG->global->backend_title,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 100
-					)
-				),
-				array(
-					'label' => _BACKENDLANG,
-					'name' => 'global[backend_language]',
-					'value' => $MAIN_CFG->global->backend_language,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 10
-					)
-				)
-			);
-		}
-
-		else if ($section == 5) {
-			$avail_settings = array(
-				array(
-					'label' => _COMMENTSLIMIT,
-					'name' => 'global[commentlimit]',
-					'value' => $MAIN_CFG->global->commentlimit,
-					'input' => array(
-						'type' => 'number',
-						'maxlength' => 5,
-						'min' => 128,
-						'max' => PHP_INT_MAX
-					)
-				),
-				array(
-					'label' => _COMMENTSPOLLS,
-					'name' => 'global[pollcomm]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->pollcomm
-					)
-				),
-				array(
-					'label' => _COMMENTSMOD,
-					'name'  => 'global[moderate]',
-					'value' => $MAIN_CFG->global->moderate,
-					'select' => array(
-						'options' => array(_NOMOD,_MODADMIN,_MODUSERS)
-					)
-				)
-			);
-		}
-
-		else if ($section == 6) {
-			$avail_settings = array(
-				array(
-					'label' => _CENSORMODE,
-					'name'  => 'global[CensorMode]',
-					'value' => $MAIN_CFG->global->CensorMode,
-					'select' => array(
-						'options' => array(_NOFILTERING,_EXACTMATCH,_MATCHBEG,_MATCHANY)
-					)
-				),
-				array(
-					'label' => _CENSORREPLACE,
-					'name' => 'global[CensorReplace]',
-					'value' => $MAIN_CFG->global->CensorReplace,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 10
-					)
-				)
-			);
-			$CensorList = explode('|',$MAIN_CFG->global->CensorList);
-			sort($CensorList);
-			$OUT->censorlist = $CensorList;
-		}
-
-		else if ($section == 7) {
-			$OUT->L10N->load('poodle/mail');
-			$avail_settings = array(
-				array(
-					'label' => _ALLOW_HTML_EMAIL,
-					'name' => 'email[allow_html_email]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->email->allow_html_email
-					)
-				),
-				array(
-					'label' => $OUT->L10N['Default bounce email address'],
-					'name'  => 'mail[return_path]',
-					'value' => $MAIN_CFG->mail->return_path,
-					'input' => array(
-						'type' => 'email',
-						'maxlength' => 254
-					),
-					'tooltip' => $OUT->L10N['Email_bounce_info']
-				),
-				array(
-					'label' => $OUT->L10N['Default sender email address'],
-					'name'  => 'mail[from]',
-					'value' => $MAIN_CFG->mail->from,
-					'input' => array(
-						'type' => 'email',
-						'maxlength' => 254
-					),
-				),
-				array(
-					'label' => 'Backend mailer',
-					'name'  => 'email[backend]',
-					'value' => $MAIN_CFG->email->backend,
-					'select' => array(
-						'options' => array(
-							'php' => 'PHP',
-							'smtp' => 'SMTP',
-							'sendmail' => 'Sendmail',
-							'sendmail_bs' => 'Sendmail Server',
-							'qmail' => 'Qmail')
-					)
-				),
-				array(
-					'label' => _SMTP_HOST,
-					'name' => 'email[smtphost]',
-					'value' => $MAIN_CFG->email->smtphost,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 100
-					)
-				),
-				array(
-					'label' => "SMTP {$OUT->L10N['Port']}",
-					'name' => 'email[smtp_port]',
-					'value' => $MAIN_CFG->email->smtp_port,
-					'input' => array(
-						'type' => 'number',
-						'maxlength' => 5,
-						'min' => 0,
-						'max' => 65535
-					)
-				),
-				array(
-					'label' => 'SMTP Protocol',
-					'name'  => 'email[smtp_protocol]',
-					'value' => $MAIN_CFG->email->smtp_protocol,
-					'select' => array(
-						'options' => array('tls' => 'TLS', 'ssl' => 'SSL', '' => 'Normal')
-					)
-				),
-				array(
-					'label' => 'SMTP Login Type',
-					'name'  => 'email[smtp_auth]',
-					'value' => $MAIN_CFG->email->smtp_auth,
-					'select' => array(
-						'options' => array('' => 'auto-detect', 'PLAIN'=>'PLAIN', 'LOGIN'=>'LOGIN', 'CRAM-MD5'=>'CRAM-MD5')
-					)
-				),
-				array(
-					'label' => "SMTP {$OUT->L10N['Username']}",
-					'name' => 'email[smtp_uname]',
-					'value' => $MAIN_CFG->email->smtp_uname,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 100
-					)
-				),
-				array(
-					'label' => "SMTP {$OUT->L10N['Password']}",
-					'name' => 'email[smtp_pass]',
-					'value' => $MAIN_CFG->email->smtp_pass,
-					'input' => array(
-						'type' => 'password',
-						'maxlength' => 100
-					)
-				),
-			);
-		}
-
-		else if ($section == 8) {
-			$error_level = $MAIN_CFG->debug->error_level;
-			$log_level = $MAIN_CFG->debug->log_level;
-			$avail_settings = array(
-				array(
-					'label' => 'PHP Notices',
-					'debug' => static::debugOptions(E_NOTICE)
-				),
-				array(
-					'label' => 'PHP Warnings',
-					'debug' => static::debugOptions(E_WARNING)
-				),
-				array(
-					'label' => 'PHP Strict',
-					'debug' => static::debugOptions(E_STRICT)
-				),
-				array(
-					'label' => 'PHP Recoverable Error',
-					'debug' => static::debugOptions(E_RECOVERABLE_ERROR)
-				),
-				array(
-					'label' => 'PHP Deprecated',
-					'debug' => static::debugOptions(E_DEPRECATED)
-				),
-				array(
-					'label' => 'CMS Notices',
-					'debug' => static::debugOptions(E_USER_NOTICE)
-				),
-				array(
-					'label' => 'CMS Warnings',
-					'debug' => static::debugOptions(E_USER_WARNING)
-				),
-				array(
-					'label' => 'CMS Deprecated',
-					'debug' => static::debugOptions(E_USER_DEPRECATED)
-				),
-				array(
-					'label' => 'CMS Errors',
-					'debug' => static::debugOptions(E_USER_ERROR)
-				),
-				array(
-					'label' => 'Database Queries Display',
-					'name' => 'debug[database]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->debug->database
-					)
-				),
-				array(
-					'label' => "Show session data on error pages",
-					'name' => 'debug[session]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->debug->session
-					)
-				)
-			);
-		}
-
-		else if ($section == 9) {
-			\Dragonfly\Output\Js::inline('
-			function adminGraphSettings(e) {
-				var el, i=-1, elements=Poodle.$("settings").$T("input");
-				while (el=elements[++i]) {
-					if ("admingraphic[]" == el.name) {
-						if (1 == el.value) continue;
-						if (!e) {
-							el.bind("click", adminGraphSettings);
-						} else if ("click" == e.type) {
-							el.initValue(e.target.value == el.value);
-						}
-					}
-				}
-			}
-			Poodle.onDOMReady(function(event){adminGraphSettings(event);});
-			');
-			$img_options = array(''=>'[Auto select]');
-			foreach (\Poodle\Image::getHandlers() as $name => $info) {
-				$img_options[$name] = $info['name'];
-			}
-
-			$avail_settings = array(
-				array(
-					'label' => _ACTBANNERS,
-					'name' => 'global[banners]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->banners
-					)
-				),
-				array(
-					'label' => _ACTIVATEHTTPREF,
-					'name' => 'global[httpref]',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => $MAIN_CFG->global->httpref
-					)
-				),
-				array(
-					'label' => _MAXREF,
-					'name' => 'global[httprefmax]',
-					'value' => $MAIN_CFG->global->httprefmax,
-					'input' => array(
-						'type' => 'number',
-						'maxlength' => 5,
-						'min' => 0,
-						'max' => PHP_INT_MAX
-					)
-				),
-				array(
-					'label' => _ITEMSTOP,
-					'name' => 'global[top]',
-					'value' => $MAIN_CFG->global->top,
-					'input' => array(
-						'type' => 'number',
-						'maxlength' => 5,
-						'min' => 5,
-						'max' => 30
-					)
-				),
-				array(
-					'label' => _GRAPHICOPT,
-					'S_TYPE' => '
-						<input type="radio" name="admingraphic[]" value="'.\Dragonfly\Page\Menu\Admin::CSS.'"
-							'.(($MAIN_CFG->global->admingraphic & \Dragonfly\Page\Menu\Admin::CSS) ? 'checked="checked"' : '').'/>
-							CSS menu<br />
-						<input type="radio" name="admingraphic[]" value="'.\Dragonfly\Page\Menu\Admin::TABS.'"
-							'.(($MAIN_CFG->global->admingraphic & \Dragonfly\Page\Menu\Admin::TABS) ? 'checked="checked"' : '').'/>
-							Tabbed menu<br />
-						<input type="checkbox" name="admingraphic[]" value="'.\Dragonfly\Page\Menu\Admin::BLOCK.'"
-							'.(($MAIN_CFG->global->admingraphic & \Dragonfly\Page\Menu\Admin::BLOCK) ? 'checked="checked"' : '').'/>
-							'._SIDEBLOCK.'<br />
-						<input type="checkbox" name="admingraphic[]" value="'.\Dragonfly\Page\Menu\Admin::GRAPH.'"
-							'.(($MAIN_CFG->global->admingraphic & \Dragonfly\Page\Menu\Admin::GRAPH) ? 'checked="checked"' : '').'/>
-							'._GRAPHICAL.'<br />
-							'
-				),
-				array(
-					'label' => 'Image Processing and Generation',
-					'name'  => 'image[handler]',
-					'value' => $MAIN_CFG->image->handler,
-					'select' => array(
-						'options' => $img_options
-					)
-				)
-			);
-		}
-
-		else if ($section == 11) {
-			$avail_settings = array(
-				array(
-					'label' => 'Debugging mode',
-					'name' => 'config_debug',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => CPG_DEBUG
-					)
-				),
-				array(
-					'label' => 'Activate installer mode',
-					'name' => 'config_mode_install',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => DF_MODE_INSTALL
-					)
-				),
-				array(
-					'label' => 'Require HTTP SSL',
-					'name' => 'config_ssl_required',
-					'value' => 1,
-					'checkbox' => array(
-						'checked' => DF_HTTP_SSL_REQUIRED
-					)
-				),
-				array(
-					'label' => 'Static images domain',
-					'name' => 'config_static_domain',
-					'value' => DF_STATIC_DOMAIN,
-					'input' => array(
-						'type' => 'text',
-						'maxlength' => 255
-					)
-				)
-			);
-		}
-
-		$sc = count(self::$sections);
-		foreach (self::$sections as $key => $value) {
-			$OUT->assign_block_vars('menu', array(
-				'uri' => ($section != $key) ? URL::admin('&s='.$key) : null,
-				'label' => $value,
-			));
-			if ($key == $section) {
-				foreach ($avail_settings as $settings) {
-					$OUT->assign_block_vars('settings', $settings);
-				}
-			}
-		}
-
-		\Dragonfly\Page::title(_SITECONFIG, false);
-		\Dragonfly\Page::title(self::$sections[$section]);
-		$OUT->display('admin/settings');
 	}
 
-	public static function POST()
-	{
-		$section = isset($_GET['s']) ? intval($_GET['s']) : 0;
-		if (extension_loaded('gd')) { self::$sections[] = _SECURITYCODE; }
-		if (is_writeable(CORE_PATH.'config.php')) { self::$sections[11] = 'config.php'; }
-
-		# check for valid section
-		if (!isset(self::$sections[$section])) { URL::redirect(URL::admin()); }
-
-		if (\Dragonfly\Output\Captcha::validate($_POST)) {
-			$MAIN_CFG = \Dragonfly::getKernel()->CFG;
-
-			if (11 == $section) {
-				$fp = fopen(CORE_PATH.'config.php', 'rb');
-				$config = fread($fp, filesize(CORE_PATH.'config.php'));
-				fclose($fp);
-				$config = preg_replace('#define\(\'DF_MODE_INSTALL\', [a-z]+\)#s', 'define(\'DF_MODE_INSTALL\', '.($_POST['config_mode_install'] ? 'true' : 'false').')', $config);
-				$config = preg_replace('#define\(\'DF_STATIC_DOMAIN\', \'.*?\'\)#s', 'define(\'DF_STATIC_DOMAIN\', \''.Fix_Quotes($_POST['config_static_domain']).'\')', $config);
-				$config = preg_replace('#define\(\'DF_HTTP_SSL_REQUIRED\', [a-z]+\)#s', 'define(\'DF_HTTP_SSL_REQUIRED\', '.($_POST['config_ssl_required'] ? 'true' : 'false').')', $config);
-				$config = preg_replace('#define\(\'CPG_DEBUG\', [a-z]+\)#s', 'define(\'CPG_DEBUG\', '.($_POST['config_debug'] ? 'true' : 'false').')', $config);
-				$config = preg_replace('#\$sitekey = \'.*?\';#s', '', $config);
-				$written = false;
-				if ($fp = fopen(CORE_PATH.'config.php', 'wb')) {
-					$written = fwrite($fp, $config);
-					fclose($fp);
-				}
-				if (!$written) { cpg_error('Failed modifying file.'); }
-				URL::redirect(URL::admin('&s='.$section));
+	foreach ($MAIN_CFG['global'] as $var => $value) {
+		$$var = $value;
+	}
+	if ($section == 0) {
+		$handle=opendir('themes');
+		while ($file = readdir($handle)) {
+			if (!ereg('[.]',$file) && $file != 'CVS') { $themelist[] = $file; }
+		}
+		closedir($handle);
+		natcasesort($themelist);
+		$LEO = !ereg('IIS', $_SERVER['SERVER_SOFTWARE']);
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _SITENAME,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[sitename]',
+				'S_VALUE' => htmlprepare($sitename),
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' => 'Site Domain',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'server[domain]',
+				'S_VALUE' => $MAIN_CFG['server']['domain'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 50
+			),
+			array(
+				'L_TITLE' => 'Site Path',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'server[path]',
+				'S_VALUE' => $MAIN_CFG['server']['path'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 100
+			),
+			array(
+				'L_TITLE' => _SITELOGO,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[site_logo]',
+				'S_VALUE' => $site_logo,
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' => _SITESLOGAN,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[slogan]',
+				'S_VALUE' => htmlprepare($slogan),
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' => _STARTDATE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[startdate]',
+				'S_VALUE' => htmlprepare($startdate),
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 50
+			),
+			array(
+				'L_TITLE' => _ADMINEMAIL,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[adminmail]',
+				'S_VALUE' => $adminmail,
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' => _BREADCRUMB,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[crumb]',
+				'S_VALUE' => isset($MAIN_CFG['global']['crumb']) ? htmlprepare($MAIN_CFG['global']['crumb']) : _BC_DELIM,
+				'S_SIZE' => 8,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' => _TOOLTIPS,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[admin_help]', $admin_help)
+			),
+			array(
+				'L_TITLE' => $LEO ? 'Activate Link Engine Optimization (LEO)' : '',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => $LEO ? yesno_option('global[GoogleTap]', $GoogleTap) : '<input name="global[GoogleTap]" value="0" type="hidden" />'
+			),
+			array(
+				'L_TITLE' => _UM_TOGGLE,
+				'L_TOOLTIP' => show_tooltip('update_monitor'),
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[update_monitor]', $MAIN_CFG['global']['update_monitor'])
+			),
+			array(
+				'L_TITLE' => 'Block frames',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[block_frames]', $MAIN_CFG['global']['block_frames'])
+			),
+			array(
+				'L_TITLE' => _DEFAULTTHEME,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_option('global[Default_Theme]', $Default_Theme, $themelist)
+			)
+		);
+	} elseif ($section == 1) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _ACTIVE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[maintenance]', $maintenance)
+			),
+			array(
+				'L_TITLE' => _MESSAGE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => '<textarea name="global[maintenance_text]" cols="42" rows="5">'.htmlprepare($maintenance_text).'</textarea>'
+			)
+		);
+	} elseif ($section == 2) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => 'SERVER_NAME as Cookie Domain',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('cookie[server]', intval($MAIN_CFG['cookie']['server'])).' current: '.ereg_replace('www.', '', $_SERVER['SERVER_NAME'])
+			),
+			array(
+				'L_TITLE' => 'else Cookie domain',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'cookie[domain]',
+				'S_VALUE' => $MAIN_CFG['cookie']['domain'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 255
+			),
+			array(
+				'L_TITLE' =>'Cookie Path',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'cookie[path]',
+				'S_VALUE' => $MAIN_CFG['cookie']['path'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 100
+			),
+			array(
+				'L_TITLE' => 'Admin cookie name',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'cookie[admin]',
+				'S_VALUE' => $MAIN_CFG['cookie']['admin'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 25
+			),
+			array(
+				'L_TITLE' => 'Member cookie name',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'cookie[member]',
+				'S_VALUE' => $MAIN_CFG['cookie']['member'],
+				'S_SIZE' => 45,
+				'S_MAXLENGTH' => 25
+			)
+		);
+	} elseif ($section == 3) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _FOOTERMSG,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => '<textarea name="global[foot1]" cols="50" rows="7">'.htmlprepare($foot1).'</textarea>'
+			),
+			array(
+				'L_TITLE' => _FOOTERLINE2,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => '<textarea name="global[foot2]" cols="50" rows="7">'.htmlprepare($foot2).'</textarea>'
+			),
+			array(
+				'L_TITLE' => _FOOTERLINE3,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => '<textarea name="global[foot3]" cols="50" rows="7">'.htmlprepare($foot3).'</textarea>'
+			)
+		);
+	} elseif ($section == 4) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _BACKENDTITLE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[backend_title]',
+				'S_VALUE' => htmlprepare($backend_title),
+				'S_SIZE' => 40,
+				'S_MAXLENGTH' => 100
+			),
+			array(
+				'L_TITLE' => _BACKENDLANG,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[backend_language]',
+				'S_VALUE' => $backend_language,
+				'S_SIZE' => 10,
+				'S_MAXLENGTH' => 10
+			)
+		);
+	} elseif ($section == 5) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _COMMENTSLIMIT,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[commentlimit]',
+				'S_VALUE' => $commentlimit,
+				'S_SIZE' => 11,
+				'S_MAXLENGTH' => 10
+			),
+			array(
+				'L_TITLE' => _COMMENTSPOLLS,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[pollcomm]', $pollcomm)
+			),
+			array(
+				'L_TITLE' => _COMMENTSMOD,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('global[moderate]', $moderate, array(_NOMOD,_MODADMIN,_MODUSERS))
+			)
+		);
+	} elseif ($section == 6) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _CENSORMODE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('global[CensorMode]', $CensorMode, array(_NOFILTERING,_EXACTMATCH,_MATCHBEG,_MATCHANY))
+			),
+			array(
+				'L_TITLE' => _CENSORREPLACE,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'global[CensorReplace]',
+				'S_VALUE' => $CensorReplace,
+				'S_SIZE' => 10,
+				'S_MAXLENGTH' => 10
+			)
+		);
+	} elseif ($section == 7) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _ALLOW_HTML_EMAIL,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('email[allow_html_email]', $MAIN_CFG['email']['allow_html_email'])
+			),
+			array(
+				'L_TITLE' => _USE_SMTP,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('email[smtp_on]', $MAIN_CFG['email']['smtp_on'])
+			),
+			array(
+				'L_TITLE' => _SMTP_HOST,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'email[smtphost]',
+				'S_VALUE' => $MAIN_CFG['email']['smtphost'],
+				'S_SIZE' => 25,
+				'S_MAXLENGTH' => 100
+			),
+			array(
+				'L_TITLE' => _USE_SMTP_AUTH,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('email[smtp_auth]', $MAIN_CFG['email']['smtp_auth'])
+			),
+			array(
+				'L_TITLE' => _SMTP_USER_NAME,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'email[smtp_uname]',
+				'S_VALUE' => $MAIN_CFG['email']['smtp_uname'],
+				'S_SIZE' => 25,
+				'S_MAXLENGTH' => 50
+			),
+			array(
+				'L_TITLE' => _SMTP_USER_PASS,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => true,
+				'S_TYPE' => 'text',
+				'S_NAME' => 'email[smtp_pass]',
+				'S_VALUE' => $MAIN_CFG['email']['smtp_pass'],
+				'S_SIZE' => 25,
+				'S_MAXLENGTH' => 50
+			),
+		);
+	} elseif ($section == 8) {
+		$error_level = $MAIN_CFG['debug']['error_level'];
+		$avail_settings = array(
+			array(
+				'L_TITLE' => 'Show PHP Warnings',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('error_level[]', (($error_level & E_WARNING) ? E_WARNING : 0), array(E_WARNING=>_YES, '0'=>_NO))
+			),
+			array(
+				'L_TITLE' => 'Show PHP Notices',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('error_level[]', (($error_level & E_NOTICE) ? E_NOTICE : 0), array(E_NOTICE=>_YES, '0'=>_NO))
+			),
+			array(
+				'L_TITLE' => 'Show CMS Warnings',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('error_level[]', (($error_level & E_USER_WARNING) ? E_USER_WARNING : 0), array(E_USER_WARNING=>_YES, '0'=>_NO))
+			),
+			array(
+				'L_TITLE' => 'Show CMS Notices',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('error_level[]', (($error_level & E_USER_NOTICE) ? E_USER_NOTICE : 0), array(E_USER_NOTICE=>_YES, '0'=>_NO))
+			),
+			array(
+				'L_TITLE' => 'Show database queries',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('debug[database]', $MAIN_CFG['debug']['database'])
+			),
+			array(
+				'L_TITLE' => "Show session data on error pages",
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('debug[session]', $MAIN_CFG['debug']['session'])
+			)
+		);
+	} elseif ($section == 9) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _ACTBANNERS,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[banners]', $banners)
+			),
+			array(
+				'L_TITLE' => _ACTIVATEHTTPREF,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('global[httpref]', $httpref)
+			),
+			array(
+				'L_TITLE' => _MAXREF,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_option('global[httprefmax]', $httprefmax, array('100', '250', '500', '1000', '2000'))
+			),
+			array(
+				'L_TITLE' => _ITEMSTOP,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_option('global[top]', $top, array('5', '10', '15', '20', '25', '30'))
+			),
+			array(
+				'L_TITLE' => _GRAPHICOPT,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' =>	'
+					<input type="checkbox" name="admingraphic[]" value="1" '.(($admingraphic & 1) ? 'checked="checked"' : '').' />'._GRAPHICAL.'<br />
+					<input type="checkbox" name="admingraphic[]" value="2" '.(($admingraphic & 2) ? 'checked="checked"' : '').' />'._SIDEBLOCK.'<br />
+					<input type="checkbox" name="admingraphic[]" value="4" '.(($admingraphic & 4) ? 'checked="checked"' : '').' />CSS Top Menu<br />'
+				//<input type="checkbox" name="admingraphic[]" value="8" '.(($admingraphic & 8) ? 'checked="checked"' : '').' />DHTML Top Menu<br />
+			)
+		);
+	} elseif ($section == 10) {
+		$avail_settings = array(
+			array(
+				'L_TITLE' => _SHOWSEC,
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => '
+					<input type="checkbox" name="code_show[]" value="1" '.(($sec_code & 1) ? 'checked="checked"' : '').' />Administrator login<br />
+					<input type="checkbox" name="code_show[]" value="2" '.(($sec_code & 2) ? 'checked="checked"' : '').' />Member login<br />
+					<input type="checkbox" name="code_show[]" value="4" '.(($sec_code & 4) ? 'checked="checked"' : '').' />Member registration<br />'
+			),
+			array(
+				'L_TITLE' => 'Use background image',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('sec_code[back_img]', $MAIN_CFG['sec_code']['back_img'])
+			)
+		);
+		if (function_exists('imagettftext')) {
+			$fontlist = array();
+			$handle=opendir(CORE_PATH.'fonts');
+			while ($file = readdir($handle)) {
+				if (ereg('\.ttf$',$file)) { $fontlist[$file] = substr($file,0 , -4); }
 			}
-
-			$sections = array(
-				array('global' => array('sitename', 'timezone', 'dateformat', 'site_logo', 'slogan', 'startdate', 'adminmail', 'crumb', 'admin_help', 'update_monitor', 'db_auto_upgrade', 'GoogleTap', 'block_frames', 'Default_Theme', 'phar_modules'),
-					  'server' => array('timezone', 'domain', 'path'),
-						 'seo' => array('leo', 'leoend')),
-				array('global' => array('maintenance', 'maintenance_text')),
-				array('cookie' => array('server', 'domain', 'path')),
-				array('global' => array('foot1', 'foot2', 'foot3')),
-				array('global' => array('backend_title', 'backend_language')),
-				array('global' => array('commentlimit', 'pollcomm', 'moderate')),
-				array('global' => array('CensorMode', 'CensorReplace')),
-				array('email'  => array('allow_html_email', 'backend', 'smtphost', 'smtp_auth', 'smtp_uname', 'smtp_pass', 'smtp_port', 'smtp_protocol'),
-					   'mail'  => array('return_path', 'from')),
-				array('debug'  => array('database', 'session')),
-				array('global' => array('banners', 'httpref', 'httprefmax', 'top'),
-					  'image'  => array('handler'))
+			closedir($handle);
+			natcasesort($fontlist);
+			array_unshift($fontlist, '[system]');
+			$avail_settings[] = array(
+				'L_TITLE' => 'Font face',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_box('sec_code[font]', $MAIN_CFG['sec_code']['font'], $fontlist).' '
+					.select_option('sec_code[font_size]', $MAIN_CFG['sec_code']['font_size'], array(8,10,12,14,16)).' px.'
 			);
-
-			if (isset($sections[$section])) {
-				foreach ($sections[$section] as $area => $keys) {
-					foreach ($keys as $key) {
-						if (isset($_POST[$area][$key])) {
-							$value = trim($_POST[$area][$key]);
-							if ($key == 'path') {
-								if (substr($value, -1) != '/') $value .= '/';
-								if ($value[0] != '/') $value = '/'.$value;
-							}
-							else if ($key == 'Default_Theme') { $_SESSION['CPG_SESS']['theme'] = $value; }
-							$MAIN_CFG->set($area, $key, $value);
-						} else {
-							// Handle checkbox
-							$MAIN_CFG->set($area, $key, $_POST->bool($area, $key));
-						}
-					}
-				}
-			}
-
-			if (6 == $section) {
-				$list = array();
-				foreach ($_POST['global']['CensorList'] as $word) {
-					$word = mb_strtolower(trim($word));
-					if ($word) { $list[$word] = $word; }
-				}
-				natcasesort($list);
-				$MAIN_CFG->set('global', 'CensorList', implode('|',$list));
-			}
-
-			else if (8 == $section) {
-				$MAIN_CFG->set('debug', 'error_level', isset($_POST['error_level']) ? array_sum($_POST['error_level']) : 0);
-				$MAIN_CFG->set('debug', 'log_level', isset($_POST['log_level']) ? array_sum($_POST['log_level']) : 0);
-			}
-
-			else if (9 == $section) {
-				$admingraphic = 0;
-				if (isset($_POST['admingraphic'])) {
-					foreach ($_POST['admingraphic'] as $val) { $admingraphic |= intval($val); }
-				}
-				if ($admingraphic < 1) { $admingraphic = \Dragonfly\Page\Menu\Admin::GRAPH & \Dragonfly\Page\Menu\Admin::BLOCK; }
-				$MAIN_CFG->set('global', 'admingraphic', $admingraphic);
+		}
+		$avail_settings[] = array(
+			'L_TITLE' => _PREVIEW,
+			'L_TOOLTIP' => '',
+			'B_INPUT' => false,
+			'S_TYPE' => generate_secimg()
+		);
+	} elseif ($section == 11) {
+		if (!is_readable(BASEDIR)) {
+			trigger_error('Permission denied while reading '.BASEDIR, E_USER_ERROR);
+		}
+		global $adminindex, $mainindex;
+		$ignore = array('banners.php', 'error.php', 'header.php', 'footer.php', 'install.php');
+		$filesa = $filesi = array();
+		$dir = dir(BASEDIR);
+		while ($file = $dir->read()) {
+			if (is_file(BASEDIR.$file) && ereg('\.php$', $file) &&!in_array($file, $ignore)) {
+				if ($file != 'index.php') { $filesa[] = $file; }
+				$filesi[] = $file;
 			}
 		}
-		URL::redirect(URL::admin('&s='.$section));
-	}
+		$dir->close();
+		natcasesort($filesa);
+		natcasesort($filesi);
+		array_unshift($filesi, '[none]');
 
-	private static function debugOptions($value)
-	{
-		$CFG = \Dragonfly::getKernel()->CFG->debug;
-		return array(
-			'value' => $value,
-			'display' => !!($CFG->error_level & $value),
-			'log' => !!($CFG->log_level & $value),
+		$avail_settings = array(
+			array(
+				'L_TITLE' => 'Full debugging',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => yesno_option('config_debug', CPG_DEBUG)
+			),
+			array(
+				'L_TITLE' => 'Index file</span><br /><i>If you change this into something else then index.php or [none]<br/>then you must modify LEO in .htaccess</i>',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_option('config_index', $mainindex, $filesi)
+			),
+			array(
+				'L_TITLE' => 'Admin file',
+				'L_TOOLTIP' => '',
+				'B_INPUT' => false,
+				'S_TYPE' => select_option('config_admin', $adminindex, $filesa)
+			)
+		);
+	} else if ($section == 12) {
+		$p3p_header = !empty($MAIN_CFG['header']['P3P']) ? $MAIN_CFG['header']['P3P'] : $MAIN_CFG['header']['P3P_default'];
+		foreach ($P3P_CP as $policy => $data) {
+			$bg = !empty($bg) ? '' : ' style="background-color: '.$bgcolor2.';"';
+		//	echo '<td colspan="2"><span class="genmed" style="background-color: '.$bgcolor4."; font-weight: bold;\">$data</span></td>\n";
+			//echo "<tr$bg>\n";
+			if (is_int($policy)) {
+				/*$pos = 0;*/
+				$p3p_sect = $policy;
+				$avail_settings[] = array(
+					'L_TITLE' => $data,
+					'L_TOOLTIP' => ' style="background-color: '.$bgcolor4.'; font-weight: bold;"',
+					'B_INPUT' => false,
+					'S_TYPE' => ''
+				);
+			} else {
+					$def_option = '';
+					if (preg_match('/('.$policy.'[aio|\s]{0,1})/', $p3p_header, $match)) {
+						$def_option = trim($match[1]);
+					}
+					$options = array();
+					$options[''] = 'No';
+					$options[$policy] = $policy;
+				if (($p3p_sect == 4 || $p3p_sect == 5)/*&& $pos > 1*/) {
+					$options[$policy.'a'] = $policy.'a';
+					$options[$policy.'i'] = $policy.'i';
+					$options[$policy.'o'] = $policy.'o';
+				}
+				if (0 == $p3p_sect || 6 == $p3p_sect) {
+					$checked =  (false !== strpos($p3p_header,$policy)) ? ' checked="checked"' : '';  
+					$avail_settings[] = array(
+						'L_TITLE' => '
+							<dl><dt><p'.$bg.'><b><input type="radio" name="P3P['.$p3p_sect.']" value="'.$policy.'"'.$checked.' /></b>
+							'.$data.'</p>
+							</dt></dl>',
+						'L_TOOLTIP' => '',
+						'B_INPUT' => false,
+						'S_TYPE' => ''
+					);
+				} else {
+					$avail_settings[] = array(
+						'L_TITLE' => '
+							<dl><dt><p'.$bg.'><b>'.select_box("P3P[$policy]", $def_option, $options).'</b>
+							'.$data.'</p>
+							</dt></dl>',
+						'L_TOOLTIP' => '',
+						'B_INPUT' => false,
+						'S_TYPE' => ''
+					);
+				}
+			}
+		/*++$pos*/;
+		}
+		$avail_settings[] = array(
+			'L_TITLE' => 'P3P CP Current &nbsp;Config: '.$MAIN_CFG['header']['P3P'],
+			'L_TOOLTIP' => ' style="background-color: '.$bgcolor4.';"',
+			'B_INPUT' => false,
+			'S_TYPE' => ''
+		);
+		$avail_settings[] = array(
+			'L_TITLE' => 'P3P CP System Default: '.$MAIN_CFG['header']['P3P_default'],
+			'L_TOOLTIP' => ' style="background-color: '.$bgcolor4.';"',
+			'B_INPUT' => false,
+			'S_TYPE' => ''
 		);
 	}
-
+	foreach ($avail_settings as $settings) {
+		$cpgtpl->assign_block_vars('settings', $settings);
+	}
+	$cpgtpl->set_handle('body', 'admin/settings.html');
+	$cpgtpl->display('body');
 }
-
-Dragonfly_Admin_Settings::{$_SERVER['REQUEST_METHOD']}();

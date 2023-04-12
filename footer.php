@@ -3,54 +3,107 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/footer.php,v $
+  $Revision: 9.23 $
+  $Author: nanocaiordo $
+  $Date: 2007/09/03 04:01:38 $
 **********************************************/
+if (!defined('CPG_NUKE')) { exit; }
 
-/* Applied rules:
- * TernaryToNullCoalescingRector
- */
- 
-if (!class_exists('Dragonfly', false)) { exit; }
-global $cpgtpl;
-
-function footmsg()
-{
-	$K = \Dragonfly::getKernel();
-	$CFG = $K->CFG;
-	$foot = array_filter(array($CFG->global->foot1, $CFG->global->foot2, $CFG->global->foot3));
-	if (CPG_DEBUG || is_admin()) {
-		$total_time = (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'] - $K->SQL->time);
-		$foot[] = sprintf(_PAGEFOOTER, round($total_time,4), $K->SQL->num_queries, round($K->SQL->time,4));
-		// only works if your PHP is compiled with the --enable-memory-limit configuration option
-		if (START_MEMORY_USAGE > 0) {
-			$total_mem = memory_get_usage()-START_MEMORY_USAGE;
-			$foot[] = 'Memory Usage: '.(($total_mem >= 1048576) ? round((round($total_mem / 1048576 * 100) / 100), 2).' MB' : (($total_mem >= 1024) ? round((round($total_mem / 1024 * 100) / 100), 2).' KB' : $total_mem.' Bytes'));
+function footmsg() {
+	if (CPG_DEBUG) {
+		if (function_exists('themesidebox')) {
+			depricated_warning('themesidebox', (PHPVERS >= 43) ? debug_backtrace() : false);
+		} else {
+			function themesidebox($title, $content, $bid=0) {
+				depricated_warning('themesidebox', (PHPVERS >= 43) ? debug_backtrace() : false);
+				return false;
+			}
 		}
-		$foot[] = '';
-		$DEBUGGER = Dragonfly::getKernel()->DEBUGGER;
-		$S_DEBUG_SQL = CPG_DEBUG || defined('INSTALL') || $CFG->debug->database ? \Dragonfly\Output\HTML::minify($DEBUGGER->get_report('sql')) : false;
-		$S_DEBUG_PHP = CPG_DEBUG || defined('INSTALL') || $CFG->debug->error_level ? \Dragonfly\Output\HTML::minify($DEBUGGER->get_report('php')) : false;
 	}
-	if ($GLOBALS['cpgtpl']) {
-		$GLOBALS['cpgtpl']->S_DEBUG_SQL = $S_DEBUG_SQL ?? false;
-		$GLOBALS['cpgtpl']->S_DEBUG_PHP = $S_DEBUG_PHP ?? false;
+	global $db, $foot1, $foot2, $foot3, $total_time, $start_mem;
+	if ($foot1 != '') { $foot1 .= '<br />'."\n"; }
+	if ($foot2 != '') { $foot1 .= $foot2.'<br />'."\n"; }
+	if ($foot3 != '') { $foot1 .= $foot3.'<br />'."\n"; }
+	if (is_admin()) {
+		$total_time = (get_microtime() - START_TIME - $db->time);
+		$foot1 .= sprintf(_PAGEFOOTER, round($total_time,4), $db->num_queries, round($db->time,4));
+		// only works if your PHP is compiled with the --enable-memory-limit configuration option
+		if (function_exists('memory_get_usage') && $start_mem > 0) {
+			$total_mem = memory_get_usage()-$start_mem;
+			$foot1 .= '<br />Memory Usage: '.(($total_mem >= 1048576) ? round((round($total_mem / 1048576 * 100) / 100), 2).' MB' : (($total_mem >= 1024) ? round((round($total_mem / 1024 * 100) / 100), 2).' KB' : $total_mem.' Bytes'));
+		}
+		$foot1 .= '<br />';
 	}
-	return \Dragonfly\Output\HTML::minify('<div class="core_footer">'.implode("<br />\n", $foot).'
-	<div>Interactive software released under <a href="https://dragonfly.coders.exchange/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,
-	<a href="'.URL::index('credits').'">Code Credits</a>,
-	<a href="'.URL::index('privacy_policy').'">Privacy Policy</a></div></div>');
-//	$GLOBALS['DF']->setState(DF::BOOT_DOWN);
+// MS-Analysis Entry
+//	  require( "modules/MS_Analysis/mstrack.php" );
+	$foot1 = '<div style="text-align:center;">'.$foot1.'
+	Interactive software released under <a href="http://dragonflycms.org/GNUGPL.html" target="_blank" title="GNU Public License Agreement">GNU GPL</a>,
+	<a href="'.getlink('credits').'">Code Credits</a>,
+	<a href="'.getlink('privacy_policy').'">Privacy Policy</a></div>';
+
+	global $MAIN_CFG, $cpgtpl, $cpgdebugger;
+	$debug_php = $debug_sql = false;
+	if (is_admin() || CPG_DEBUG) {
+		$strstart = strlen(BASEDIR);
+		if ($MAIN_CFG['debug']['database']) {
+			$debug_sql = '<span class="genmed"><strong>SQL Queries:</strong></span><br /><br />';
+			foreach ($db->querylist as $file => $queries) {
+				$file = substr($file, $strstart);
+				if (empty($file)) $file = 'unknown file';
+				$debug_sql .= '<b>'.$file.'</b><ul>';
+				foreach ($queries as $query) { $debug_sql .= "<li>$query</li>"; }
+				$debug_sql .= '</ul>';
+			}
+		}
+		$report = $cpgdebugger->stop();
+		if (is_array($report)) {
+			foreach ($report as $file => $errors) {
+				$debug_php .= '<b>'.substr($file, $strstart).'</b><ul>';
+				foreach ($errors as $error) { $debug_php .= "<li>$error</li>"; }
+				$debug_php .= '</ul>';
+			}
+		}
+	}
+	$cpgtpl->assign_vars(array(
+		'S_DEBUG_PHP' => $debug_php,
+		'S_DEBUG_SQL' => $debug_sql
+	));
+	unset($debug_php, $debug_sql);
+	return $foot1;
 }
 
-if (function_exists('themefooter')) {
+global $db, $SESS, $cpgtpl, $Blocks;
+$Blocks->display('d');
+if (!function_exists('themefooter')) {
+	global $sitename, $nukeurl;
+	echo '<div style="text-align:center;">Content received from: '.$sitename.', '.$nukeurl.'</div>';
+} else {
 	themefooter();
+//	$cpgtpl->assign_vars(array('S_FOOTER' => footmsg()));
+//	$cpgtpl->set_filenames(array('footer' => 'footer.html'));
+//	$cpgtpl->display('footer');
 }
 
-if ($cpgtpl) {
-	$cpgtpl->destroy();
+$cpgtpl->destroy();
+$SESS->write_close();
+$db->sql_close();
+if (GZIP_COMPRESS) {
+	// Copied from php.net!
+	$gzip_contents = ob_get_contents();
+	ob_end_clean();
+	$gzip_size = strlen($gzip_contents);
+	$gzip_crc = crc32($gzip_contents);
+	$gzip_contents = gzcompress($gzip_contents, 9);
+	$gzip_contents = substr($gzip_contents, 0, strlen($gzip_contents) - 4);
+	echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+	echo $gzip_contents;
+	echo pack('V', $gzip_crc);
+	echo pack('V', $gzip_size);
 }
-//Dragonfly::getKernel()->SESSION->write_close(); // not needed?
 exit;

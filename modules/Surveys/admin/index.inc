@@ -7,197 +7,119 @@
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/modules/Surveys/admin/index.inc,v $
+  $Revision: 9.12 $
+  $Author: nanocaiordo $
+  $Date: 2007/08/27 02:46:11 $
 **********************************************/
 if (!defined('ADMIN_PAGES')) { exit; }
 if (!can_admin('surveys')) { die('Access Denied'); }
-$OUT = Dragonfly::getKernel()->OUT;
-\Dragonfly\Page::title($OUT->L10N['_POLLSADMIN'], false);
-
-if ('POST'===$_SERVER['REQUEST_METHOD'])
-{
-	if (isset($_GET['edit']))
-	{
-		$id = $_GET->uint('edit');
-		$ptime = $_POST->datetime('ptime');
-		$db->TBL->poll_desc->update(array(
-			'poll_title' => $_POST->txt('title'),
-			'poll_ptime' => $ptime->getTimestamp(),
-			'planguage'  => $_POST->txt('language'),
-			'anonymous'  => $_POST->bool('anonymous'),
-			'comments'   => $_POST->bool('comments'),
-		), "poll_id={$id}");
-		for ($i = 0; $i < 12; $i++) {
-			$db->TBL->poll_data->update(array(
-				'option_text'=>$_POST->txt('opt',$i)
-			), "vote_id=".($i+1)." AND poll_id={$id}");
+$pagetitle .= ' '._BC_DELIM.' '._POLLSADMIN;
+global $language;
+$mode = (isset($_GET['mode'])) ? $_GET['mode'] : '';
+if ($mode == 'save') {
+	if (isset($_POST['id'])) {
+		$id = intval($_POST['id']);
+		$db->sql_query('UPDATE '.$prefix."_poll_desc SET poll_title='".Fix_Quotes($_POST['title'], true)."' WHERE poll_id=$id");
+		for($i = 1; $i <= 12; $i++) {
+			$db->sql_query('UPDATE '.$prefix."_poll_data set option_text='".Fix_Quotes($_POST['opt'][$i])."' WHERE vote_id=$i AND poll_id=$id");
 		}
-	}
-
-	else if (isset($_GET['add']))
-	{
-		$ptime = $_POST->datetime('ptime');
-		$id = $db->TBL->poll_desc->insert(array(
-			'poll_title' => $_POST->txt('title'),
-			'poll_ptime' => $ptime ? $_POST->datetime('ptime') : time(),
-			'planguage'  => $_POST->txt('language'),
-			'anonymous'  => $_POST->bool('anonymous'),
-			'comments'   => $_POST->bool('comments'),
-			'time_stamp' => time(),
-			'voters'     => 0,
-			'artid'      => 0,
-		),'poll_id');
-		for ($i = 0; $i <= sizeof($_POST['opt']); ++$i) {
-			if (strlen($_POST->txt('opt',$i))) {
-				$db->TBL->poll_data->insert(array(
-					'poll_id'      => $id,
-					'option_text'  => $_POST->txt('opt',$i),
-					'option_count' => 0,
-					'vote_id'      => $i+1
-				));
+	} else if (isset($_POST['opt'])) {
+		$db->sql_query("INSERT INTO ".$prefix."_poll_desc (poll_id, poll_title, time_stamp, voters, planguage, artid, comments, anonymous) VALUES (DEFAULT, '".Fix_Quotes($_POST['title'])."', ".gmtime().", 0, '".Fix_Quotes($_POST['language'])."', 0, 1, '".Fix_Quotes($_POST['anonymous'])."')");
+		$id = $db->sql_nextid('poll_id');
+		for ($i = 1; $i <= sizeof($_POST['opt']); $i++) {
+			if (!empty($_POST['opt'][$i])) {
+				$db->sql_query("INSERT INTO ".$prefix."_poll_data (poll_id, option_text, option_count, vote_id) VALUES ($id, '".Fix_Quotes($_POST['opt'][$i])."', 0, $i)");
 			}
 		}
 	}
-
-	else if (isset($_GET['del_comment']))
-	{
-		function removeSubComments($tid)
-		{
-			global $db;
-			$result = $db->query("SELECT tid FROM {$db->TBL->pollcomments} WHERE pid={$tid}");
-			if ($result->num_rows) {
-				while (list($ctid) = $result->fetch_row()) {
-					removeSubComments($ctid);
-				}
-				$db->query("DELETE FROM {$db->TBL->pollcomments} WHERE pid={$tid}");
-			}
-			$result->free();
-		}
-
-		$tid = $_GET->uint('del_comment');
-		list($poll_id) = $db->uFetchRow("SELECT poll_id FROM {$db->TBL->pollcomments} WHERE tid={$tid}");
-		if (isset($_POST['cancel'])) {
-			URL::redirect(URL::index("Surveys&pollid={$poll_id}&op=results"));
-		}
-		if (isset($_POST['confirm'])) {
-			removeSubComments($poll_id);
-			$db->query("DELETE FROM {$db->TBL->pollcomments} WHERE tid={$tid}");
-			URL::redirect(URL::index("Surveys&pollid={$poll_id}&op=results"));
-		}
+	url_redirect(adminlink('&mode=edit'));
+} else if ($_GET['mode'] == 'del' && isset($_POST['id'])) {
+	$id = intval($_POST['id']);
+	if(isset($_POST['cancel'])) {
+		url_redirect(adminlink('&mode=edit'));
 	}
-
-	else if (isset($_GET['delete']) && isset($_POST['confirm']))
-	{
-		$id = $_GET->uint('delete');
-		$db->exec("DELETE FROM {$db->TBL->poll_desc} WHERE poll_id={$id}");
-		$db->exec("DELETE FROM {$db->TBL->poll_data} WHERE poll_id={$id}");
-		$db->exec("DELETE FROM {$db->TBL->pollcomments} WHERE poll_id={$id}");
-		$db->exec("DELETE FROM {$db->TBL->poll_check} WHERE poll_id={$id}");
+	if (!isset($_POST['confirm'])) {
+		$msg = sprintf(_ERROR_DELETE_CONF,_POLLS);
+		cpg_delete_msg(adminlink("&amp;mode=del"),$msg,'<input type="hidden" name="id" value="'.$id.'" />');				
+	} else {
+		$db->sql_query("DELETE FROM ".$prefix."_poll_desc WHERE poll_id=$id");
+		$db->sql_query("DELETE FROM ".$prefix."_poll_data WHERE poll_id=$id");
+		$db->sql_query("DELETE FROM ".$prefix."_pollcomments WHERE poll_id=$id");
+		$db->sql_query("DELETE FROM ".$prefix."_poll_check WHERE poll_id=$id");
+		url_redirect(adminlink('&mode=edit'));
 	}
-
-	URL::redirect(URL::admin(''));
 }
-
 
 require_once('header.php');
+GraphicAdmin('_AMENU3');
+OpenTable();
+echo '<div align="center" class="title">'._POLLSADMIN.'</div>';
+CloseTable();
+OpenTable();
+echo '<center><font class="option">'
+	.(($_GET['mode'] == 'add') ? '<b>'._CREATEPOLL.'</b>' : '<a href="'.adminlink('&amp;mode=add').'">'._CREATEPOLL.'</a>').' | '
+	.(($_GET['mode'] == 'del') ? '<b>'._REMOVEEXISTING.'</b>' : '<a href="'.adminlink('&amp;mode=del').'">'._REMOVEEXISTING.'</a>').' | '
+	.(($_GET['mode'] == 'edit') ? '<b>'._EDITPOLL.'</b>' : '<a href="'.adminlink('&amp;mode=edit').'">'._EDITPOLL.'</a>')
+	.'</font></center><br /><br />';
 
-if (isset($_GET['delete']))
-{
-	\Dragonfly\Page::confirm('', sprintf(_ERROR_DELETE_CONF,_POLLS));
-}
-
-else if (isset($_GET['del_comment']) && can_admin('surveys'))
-{
-	\Dragonfly\Page::confirm(URL::admin("&del_comment={$tid}"), _SURETODELCOMMENTS);
-}
-
-else if (isset($_GET['edit']))
-{
-	$id = $_GET->uint('edit');
-	$OUT->poll = $db->uFetchAssoc("SELECT
-		poll_id id,
-		poll_title title,
-		poll_ptime ptime,
-		time_stamp,
-		voters,
-		planguage,
-		artid,
-		comments,
-		anonymous
-	FROM {$db->TBL->poll_desc}
-	WHERE poll_id={$id}");
-	$OUT->poll['options'] = $db->query("SELECT
-		vote_id id,
-		option_text label,
-		option_count votes
-	FROM {$db->TBL->poll_data}
-	WHERE poll_id={$id}
-	ORDER BY vote_id");
-	$OUT->display('Surveys/admin/edit');
-}
-
-else if (isset($_GET['add']))
-{
-	// _CREATEPOLL
-	$K = Dragonfly::getKernel();
-	$OUT->poll = array(
-		'id'        => 0,
-		'title'     => '',
-		'ptime'     => null,
-		'time_stamp'=> null,
-		'voters'    => 0,
-		'planguage' => '',
-		'artid'     => 0,
-		'comments'  => $K->CFG->global->pollcomm,
-		'anonymous' => 0,
-		'options'   => array()
-	);
-	for ($i=1; $i<13; ++$i) {
-		$OUT->poll['options'][] = array('id'=>$i, 'label'=>'', 'votes'=>0);
+if ($_GET['mode'] == 'del') {
+	//echo _POLLDELWARNING."</center><br /><br />"
+	echo open_form(adminlink('&amp;mode=del'), 'deletepoll', _CHOOSEPOLL);
+	$result = $db->sql_uquery("SELECT poll_id, poll_title, planguage FROM ".$prefix."_poll_desc ORDER BY time_stamp");
+	/* cycle through the descriptions until everyone has been fetched */
+	while ($row = $db->sql_fetchrow($result)) {
+		echo '<input type="radio" name="id" id="'.$row['poll_id'].'" title="'.$row['poll_title'].'" value="'.$row['poll_id'].'" />
+		<label for="'.$row['poll_id'].'">'.$row['poll_title'].' '.((!empty($row['planguage'])&& $multilingual) ?	' ('._LANGUAGE .' - '. $row['planguage'].')' : ' ('._LANGUAGE.' - '. _ALL).')</label><br/>';
 	}
-	$OUT->display('Surveys/admin/edit');
+	echo '<input type="submit" value="'._DELETE.'" />';
+	echo close_form();
 }
-
-else if (isset($_GET['comments']))
-{
-	$limit = 25;
-	$offset = $limit * (max(1, $_GET->uint('page')) - 1);
-	$tbl = $db->TBL->pollcomments;
-	$OUT->polls_comments = $db->query("SELECT
-		tid     id,
-		pid     parent_id,
-		poll_id,
-		date,
-		remote_ip,
-		comment,
-		score,
-		user_id,
-		username
-	FROM {$tbl}
-	LEFT JOIN {$db->TBL->users} USING (user_id)
-	ORDER BY date DESC
-	LIMIT {$limit} OFFSET {$offset}");
-	$OUT->polls_comments_pagination = new \Poodle\Pagination('?admin&op=Surveys&comments&page=${page}',
-		$tbl->count(),
-		$offset,
-		$limit
-	);
-
-	$OUT->display('Surveys/admin/comments');
+else if ($_GET['mode'] == 'edit') {
+	if (!isset($_POST['id'])) {
+		echo open_form(adminlink('&amp;mode=edit'), 'editpoll', _CHOOSEPOLLEDIT);
+		$result = $db->sql_query("SELECT poll_id, poll_title, time_stamp, planguage FROM ".$prefix."_poll_desc ORDER BY time_stamp");
+		/* cycle through the descriptions until everyone has been fetched */
+		while ($row = $db->sql_fetchrow($result)) {
+			echo '<input type="radio" name="id" value="'.$row['poll_id'].'" />
+			<label for="'.$row['poll_id'].'">'.$row['poll_title'].' '.((!empty($row['planguage'])&& $multilingual) ?	' ('._LANGUAGE .' - '. $row['planguage'].')' : ' ('._LANGUAGE.' - '. _ALL.')').'</label><br/>';
+		}
+		echo '<input type="submit" value="'._EDIT.'" />';
+		echo close_form();
+	} else {
+		$id = intval($_POST['id']);
+		list($poll_title) = $db->sql_ufetchrow("select poll_title from ".$prefix."_poll_desc where poll_id=$id", SQL_NUM);
+		echo open_form(adminlink('&amp;mode=save'), 'newpoll', _EDIT.' '._POLLS);
+		echo '<label for="title"><b>'._TITLE.':</b></label><input type="text" name="title" value="'.$poll_title.'" size="40" maxlength="100"><br /><br />';
+		$result = $db->sql_uquery("select option_text, option_count, vote_id from ".$prefix."_poll_data where poll_id=$id order by vote_id");
+		while (list($option_text, $option_count, $vote_id) = $db->sql_fetchrow($result)) {
+			echo '<label for="opt['.$vote_id.']"><b>'.$vote_id.'</b> <input type="text" name="opt['.$vote_id.']" value="'.htmlprepare($option_text).'" size="40" maxlength="50" />'.$option_count.' '._VOTES.'<br />';
+		 $nextvote = $vote_id+1;
+		 }		 
+		echo '<input type="hidden" name="id" value="'.$id.'" /><br /><br /><center><input type="submit" value="'._SAVECHANGES.'" /><br /><br />'._GOBACK.'</center>';
+		echo close_form();
+	}
 }
-
-else
-{
-	$OUT->polls = $db->query("SELECT
-		poll_id    id,
-		poll_title title,
-		poll_ptime ptime,
-		time_stamp,
-		voters,
-		planguage,
-		artid,
-		comments,
-		anonymous
-	FROM {$db->TBL->poll_desc}
-	ORDER BY poll_ptime DESC");
-	$OUT->display('Surveys/admin/list');
+else {
+	echo open_form(adminlink('&amp;mode=save'), 'newpoll', _CREATEPOLL);
+	echo '<label for="title">'._POLLTITLE.': </label><input type="text" name="title" size="50" maxlength="100" /><br /><br />';
+	if ($multilingual) {
+		echo '<br /><label for="language">'._LANGUAGE.': </label>'.lang_selectbox($language, 'language').'<br /><br />';
+	} else {
+		echo '<input type="hidden" name="language" value="'.$language.'" />';
+	}
+	echo '<font class="content">'._POLLEACHFIELD.'</font><br /><table border="0">';
+	for($i = 1; $i <= 12; $i++)	   {
+		echo '<tr><td><label for="opt[$i]">'._OPTION." $i:</label></td><td><input type=\"text\" name=\"opt[$i]\" size=\"50\" maxlength=\"50\" /></td></tr>";
+	}
+	echo '</table><br />'
+    .'<label for="anonymous">Allow Anonymous Voting:</label>'
+    .'<select name="anonymous">'
+    .'<option value="0">No</option>'
+    .'<option value="1">Yes</option>'
+    .'</select><br />'
+	.'<input type="submit" value="'._CREATEPOLLBUT.'" />';
+	echo close_form();
 }
+CloseTable();

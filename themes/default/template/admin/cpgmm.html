@@ -1,0 +1,35 @@
+<!-- cpgmm start -->
+<div style="text-align:center"><a href="{L_CPGMM}&amp;editlnk=new">{ADD_LINK}</a> | <a href="{L_CPGMM}&amp;editcat=new">{ADD_CAT}</a></div><br />
+<form action="{L_CPGMM}" method="post">
+<table cellspacing="0" cellpadding="2" border="0" id="groups">
+<!-- BEGIN cat -->
+<tbody>
+<tr class="first" bgcolor="{cat.BG}">
+	<td onmouseover="groupstree.hover(event)" class="tree">
+		<input type="hidden" name="id[]" value="{cat.CID}" />
+		<input type="hidden" name="parent[]" value="0" />
+		<input type="hidden" name="pos[]" value="{cat.POS}" />
+	</td>
+	<td colspan="2"><img src="{cat.IMAGE}" alt="" /> <b>{cat.NAME}</b></td>
+	<td><!-- IF cat.EDITABLE -->[ <a href="{L_CPGMM}&amp;cid={cat.CID}&amp;editcat=mod">{S_EDIT}</a> / <a href="{L_CPGMM}&amp;cid={cat.CID}&amp;mode=delcat">{S_DELETE}</a> ]<!-- ENDIF --></td>
+</tr>
+<!-- BEGIN item -->
+<tr <!-- IF cat.item.S_LAST -->class="last" <!-- ENDIF -->bgcolor="{cat.item.BG_ITEM}">
+	<td onmouseover="groupstree.hover(event)" class="tree">
+		<input type="hidden" name="id[]" value="<!-- IF cat.item.LINK_TYPE -->-<!-- ENDIF -->{cat.item.ITEM}" />
+		<input type="hidden" name="parent[]" value="{cat.CID}" />
+		<input type="hidden" name="pos[]" value="{cat.item.POS}" />
+	</td>
+
+	<td><img src="<!-- IF cat.item.LINK_TYPE --><!-- IF cat.item.ITEM_STATIC -->{ICON_SELECT}<!-- ELSE -->{ICON_FORBID}<!-- ENDIF --><!-- ELSE --><!-- IF cat.item.ITEM_ACTIVE -->{ICON_SELECT}<!-- ELSE -->{ICON_HIDDEN}<!-- ENDIF --><!-- ENDIF -->" alt="" style="margin-left: 8px;" /> {cat.item.TITLE}</td>
+	<td align="center">{cat.item.TYPE}</td>
+	<td>[ <a href="{L_CPGMM}&amp;id={cat.item.ITEM}&amp;editlnk=<!-- IF cat.item.LINK_TYPE -->mod<!-- ELSE -->link<!-- ENDIF -->">{S_EDIT}</a> <!-- IF cat.item.ITEM_VARIABLE -->| <a href="{L_CPGMM}&amp;id={cat.item.ITEM}&amp;mode=dellnk">{S_DELETE}</a><!-- ENDIF --> ]</td>
+</tr>
+<!-- END item -->
+</tbody>
+<!-- END cat -->
+</table><br />
+<input type="submit" class="button" name="updatecpgmm" value="Update" style="float: left"/>
+</form>
+<div style="text-align:center"><a href="{L_CPGMM}&amp;editlnk=new">{ADD_LINK}</a> | <a href="{L_CPGMM}&amp;editcat=new">{ADD_CAT}</a></div>
+<!-- cpgmm end -->

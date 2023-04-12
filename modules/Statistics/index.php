@@ -4,324 +4,153 @@
   ********************************************
   Copyright © 2004 - 2005 by CPG-Nuke Dev Team
   http://www.dragonflycms.com
+  
+  Enhanced with NukeStats Module Version 1.0
+   Sudirman <sudirman@akademika.net>
+   http://www.nuketest.com
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/modules/Statistics/index.php,v $
+  $Revision: 9.14 $
+  $Author: djmaze $
+  $Date: 2006/04/27 19:42:47 $
 **********************************************/
+if (!defined('CPG_NUKE')) { exit; }
+require("modules/$module_name/functions.inc");
 
-/* Applied rules:
- * TernaryToNullCoalescingRector
- */
-
-class Dragonfly_Module_Statistics
-{
-
-	public static
-		$misc,
-		$metered = array();
-
-	private static
-		$db,
-		$CFG,
-		$TPL;
-
-	public static function update()
-	{
-		$SQL = \Dragonfly::getKernel()->SQL;
-		if (isset($SQL->TBL->stats_counters)) {
-			$ua = \Poodle\UserAgent::getInfo();
-//			if ((SEARCHBOT && $ua->verified) || (!SEARCHBOT && $ua->name)) {
-			if (SEARCHBOT || $ua->name) {
-				$var = $SQL->escape_string(mb_strtolower($ua->name));
-			} else {
-				$var = 'other';
-			}
-			$type = SEARCHBOT ? 3 : 1;
-			if (!$SQL->exec("UPDATE {$SQL->TBL->stats_counters} SET sc_hits=sc_hits+1 WHERE sc_type={$type} AND sc_value='{$var}'")) {
-				$SQL->query("INSERT INTO {$SQL->TBL->stats_counters} (sc_type, sc_value, sc_hits) VALUES ({$type}, '{$var}', 1)");
-			}
-
-			if (!SEARCHBOT) {
-				$os = $SQL->quote($ua->OS->name ? mb_strtolower($ua->OS->name) : 'other');
-				if (!$SQL->exec("UPDATE {$SQL->TBL->stats_counters} SET sc_hits=sc_hits+1 WHERE sc_type=2 AND sc_value={$os}")) {
-					$SQL->query("INSERT INTO {$SQL->TBL->stats_counters} (sc_type, sc_value, sc_hits) VALUES (2, {$os}, 1)");
-				}
-			}
-		}
-
-		$now = explode('-', date('d-m-Y-H'));
-		if (!$SQL->exec("UPDATE {$SQL->TBL->stats_hour} SET hits=hits+1 WHERE (year={$now[2]}) AND (month={$now[1]}) AND (date={$now[0]}) AND (hour={$now[3]})")) {
-			$SQL->query("INSERT INTO {$SQL->TBL->stats_hour} (year, month, date, hour, hits) VALUES ({$now[2]}, {$now[1]}, {$now[0]}, {$now[3]}, 1)");
+function Stats_Main() {
+	global $prefix, $db, $cpgtpl, $startdate, $sitename, $user_prefix;
+	require_once('header.php');
+	$result  = $db->sql_query('SELECT type, var, count FROM '.$prefix.'_counter ORDER BY count DESC, var');
+	$browser = $os = array();
+	$totalos = $totalbr = 0;
+	while (list($type, $var, $count) = $db->sql_fetchrow($result)) {
+		if ($type == 'browser') {
+			$browser[$var] = $count;
+			$totalbr += $count;
+		} elseif ($type == 'os') {
+			if ($var == 'OS/2') { $var = 'OS2'; }
+			$os[$var] = $count;
+			$totalos += $count;
 		}
 	}
+	$db->sql_freeresult($result);
 
-	public static function run()
-	{
-		self::$db = Dragonfly::getKernel()->SQL;
-		self::$TPL = Dragonfly::getKernel()->OUT;
+	$cpgtpl->assign_vars(array(
+		'S_STATS_TITLE' => $sitename.' '._STATS,
+		'S_STATS_TOTAL' => _WERECEIVED.' <b>'.$totalbr.'</b> '._PAGESVIEWS.' '.$startdate,
+		'L_STATS_DETAIL' => _VIEWDETAILED,
+		'L_STATS_BROWSERS' => _BROWSERS,
+		'L_STATS_OS' => _OPERATINGSYS,
+		'L_STATS_MISC' => _MISCSTATS,
+		'U_STATS_DETAIL' => getlink("&amp;file=details")
+	));
 
-		self::$TPL->sitename = Dragonfly::getKernel()->CFG->global->sitename;
-		self::$TPL->startdate = Dragonfly::getKernel()->CFG->global->startdate;
-		self::$TPL->metered = array();
-		self::$TPL->misc = array();
-		list(self::$TPL->total) = self::$db->uFetchRow('SELECT SUM(sc_hits) FROM '.self::$db->TBL->stats_counters.' WHERE sc_type IN (1,3)');
-		self::$TPL->total++; # this page view
+// Browsers
+	$totalbr = 100 / $totalbr;
+	foreach ($browser AS $var => $count) {
+		$perc = round(($totalbr * $count), 2);
+		$cpgtpl->assign_block_vars('browsers', array(
+			'IMG' => strtolower($var),
+			'NAME' => $var,
+			'PERC' => "$perc %",
+			'COUNT' => $count,
+			'WIDTH' => $perc
+		));
+	}
+// Operating System
+	$totalos = 100 / $totalos;
+	foreach ($os AS $var => $count) {
+		$perc = round(($totalos * $count), 2);
+		$cpgtpl->assign_block_vars('os', array(
+			'IMG' => strtolower($var),
+			'NAME' => $var,
+			'PERC' => "$perc %",
+			'COUNT' => $count,
+			'WIDTH' => $perc
+		));
+	}
+// Miscellaneous Stats
+	list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$user_prefix.'_users WHERE user_id > 1',SQL_NUM);
+	$cpgtpl->assign_block_vars('misc', array('IMG' => 'users', 'NAME' => _REGUSERS, 'COUNT' => $count));
 
-		\Dragonfly\Page::title(_StatisticsLANG, false);
+	list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_stories',SQL_NUM);
+	$cpgtpl->assign_block_vars('misc', array('IMG' => 'news', 'NAME' => _STORIESPUBLISHED, 'COUNT' => $count));
 
-		$year = $_GET->int('year');
-		$month = $_GET->int('month');
-		$date = $_GET->int('date');
-
-		if ($year) {
-			self::$TPL->main_stats = false;
-			self::$TPL->details = false;
-			self::$TPL->stats   = true;
-			\Dragonfly\Output\Css::add('Statistics/statistics');
-			require_once('header.php');
-			self::$TPL->display('Statistics/stats');
-			if ($month) {
-				if ($date) {
-					self::hourlyStat($year, $month, $date);
-				} else {
-					self::yearlyStat($year);
-					self::monthlyStat($year, $month);
-					self::dailyStat($year, $month, $date);
-				}
-			} else {
-				self::yearlyStat($year);
-				self::monthlyStat($year, $month);
-			}
-			self::$TPL->display('Statistics/metered');
-		} else if (isset($_GET['details'])) {
-			self::details();
-		} else {
-			self::statsMain();
-		}
+	if (is_active('Topics')) {
+		list($count) = $db->sql_ufetchrow("SELECT COUNT(*) FROM ".$prefix."_topics",SQL_NUM);
+		$cpgtpl->assign_block_vars('misc', array('IMG' => 'topics', 'NAME' => _SACTIVETOPICS, 'COUNT' => $count));
 	}
 
-	protected static function details()
-	{
-		self::$TPL->main_stats = false;
-		self::$TPL->details = true;
-		self::$TPL->stats   = false;
+	list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_comments',SQL_NUM);
+	$cpgtpl->assign_block_vars('misc', array('IMG' => 'comments', 'NAME' => _COMMENTSPOSTED, 'COUNT' => $count));
 
-		$L10N = Dragonfly::getKernel()->L10N;
-		self::$TPL->today = $L10N->date('F d, Y', time());
-
-		\Dragonfly\Output\Css::add('Statistics/statistics');
-		require_once('header.php');
-
-		self::$TPL->topMonth = self::$db->uFetchRow("
-			SELECT year, month, SUM(hits) FROM ".self::$db->TBL->stats_hour."
-			GROUP BY month, year
-			ORDER BY hits DESC");
-		self::$TPL->topMonth = self::getmonth(self::$TPL->topMonth[1]).' '.self::$TPL->topMonth[0].' ('.self::$TPL->topMonth[2].' '._HITS.')';
-
-		self::$TPL->topDay = self::$db->uFetchRow("SELECT year, month, date, SUM(hits) FROM ".self::$db->TBL->stats_hour."
-			GROUP BY date, month, year
-			ORDER BY hits DESC");
-		self::$TPL->topDay = self::$TPL->topDay[2].' '.self::getmonth(self::$TPL->topDay[1]).' '.self::$TPL->topDay[0].' ('.self::$TPL->topDay[3].' '._HITS.')';
-
-		self::$TPL->topHour = self::$db->uFetchRow("SELECT year, month, date, hour, hits from ".self::$db->TBL->stats_hour." ORDER BY hits DESC");
-		self::$TPL->topHour[3] = str_pad(self::$TPL->topHour[3], 2, '0', STR_PAD_LEFT);
-		self::$TPL->topHour[3] = self::$TPL->topHour[3].':00 - '.self::$TPL->topHour[3].':59';
-		self::$TPL->topHour = self::$TPL->topHour[3].' '._ON.' '.self::getmonth(self::$TPL->topHour[1]).' '.self::$TPL->topHour[2].', '.self::$TPL->topHour[0].' ('.self::$TPL->topHour[4].' '._HITS.')';
-
-		$now = explode('-',  $L10N->date('d-m-Y', time()));
-		self::yearlyStat ($now[2]);
-		self::monthlyStat($now[2], $now[1]);
-		self::dailyStat  ($now[2], $now[1], $now[0]);
-		self::hourlyStat ($now[2], $now[1], $now[0]);
-
-		self::$TPL->display('Statistics/stats');
-		self::$TPL->display('Statistics/metered');
+	if (is_active('Sections')) {
+		list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_sections',SQL_NUM);
+		$cpgtpl->assign_block_vars('misc', array('IMG' => 'sections', 'NAME' => _SSPECIALSECT, 'COUNT' => $count));
+		list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_seccont',SQL_NUM);
+		$cpgtpl->assign_block_vars('misc', array('IMG' => 'articles', 'NAME' => _ARTICLESSEC, 'COUNT' => $count));
+	}
+	if (is_active('Web_Links')) {
+		list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_links_links',SQL_NUM);
+		$cpgtpl->assign_block_vars('misc', array('IMG' => 'topics', 'NAME' => _LINKSINLINKS, 'COUNT' => $count));
+		list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_links_categories',SQL_NUM);
+		$cpgtpl->assign_block_vars('misc', array('IMG' => 'sections', 'NAME' => _LINKSCAT, 'COUNT' => $count));
 	}
 
-	protected static function statsMain()
-	{
-		self::$TPL->main_stats = true;
-		self::$TPL->details = false;
-		self::$TPL->stats   = false;
-
-		\Dragonfly\Output\Css::add('Statistics/statistics');
-		require_once('header.php');
-
-		# Built-in metered stats
-		self::$TPL->metered = array(
-			'browser' => array(
-				'title' => _BROWSERS,
-				'most_hits' => 0,
-				'total_hits' => 0,
-				'rows' => array()
-			),
-			'os' => array(
-				'title' => _OPERATINGSYS,
-				'most_hits' => 0,
-				'total_hits' => 0,
-				'rows' => array()
-			),
-			'bot' => array(
-				'title' => _SEARCH_ENGINES,
-				'most_hits' => 0,
-				'total_hits' => 0,
-				'rows' => array()
-			)
-		);
-
-		$result = self::$db->query('SELECT sc_type, sc_value, SUM(sc_hits) FROM '.self::$db->TBL->stats_counters.' WHERE sc_hits > 0 GROUP BY 1, 2 ORDER BY 3 DESC, 2');
-		$types = array('','browser','os','bot');
-		while (list($type, $var, $count) = $result->fetch_row()) {
-			$type = $types[$type];
-			if (isset(self::$TPL->metered[$type])) {
-				self::$TPL->metered[$type]['most_hits'] = max(self::$TPL->metered[$type]['most_hits'], $count);
-				self::$TPL->metered[$type]['total_hits'] += $count;
-				self::$TPL->metered[$type]['rows'][] = array(
-					'name'  => $var,
-					'url'   => '',
-					'hits'  => $count,
-					'class' => strtolower(str_replace(array('/',' '),'',$var))
-				);
-			}
-		}
-		$result->free();
-
-		# Built-in miscellaneous Stats
-		$count = self::$db->TBL->users->count('user_level > 0') - 1;
-		self::$TPL->misc[] = array('name' => _REGUSERS, 'url' => '', 'hits' => $count, 'class' => 'users');
-
-		# Plugins
-		self::$metered = self::$misc = array();
-		$plugins = Dragonfly\Modules::ls('plugins/statistics.inc');
-		foreach ($plugins as $file) {
-			include_once($file);
-		}
-		self::$TPL->metered = array_merge(self::$TPL->metered, self::$metered);
-		self::$TPL->misc = array_merge(self::$TPL->misc, self::$misc);
-		self::$misc = self::$metered = array();
-
-		self::$TPL->display('Statistics/stats');
-		self::$TPL->display('Statistics/metered');
-		self::$TPL->display('Statistics/misc');
-	}
-
-	protected static function yearlyStat($nowyear)
-	{
-		self::$TPL->metered['yearly'] = array(
-			'title' => _YEARLYSTATS,
-			'most_hits' => 0,
-			'total_hits' => 0,
-			'rows' => array()
-		);
-		$total = 0;
-		$max = 0;
-		$result = self::$db->query('SELECT year, SUM(hits) FROM '.self::$db->TBL->stats_hour.' GROUP BY year ORDER BY year');
-		while (list($year,$hits) = $result->fetch_row()) {
-			$total += $hits;
-			$max = max($max, $hits);
-			self::$TPL->metered['yearly']['rows'][] = array(
-				'name' => $year,
-				'url' => $year != $nowyear && $hits ? "&year={$year}" : '',
-				'hits' => $hits,
-				'class' => ''
-			);
-		}
-		self::$TPL->metered['yearly']['most_hits'] = $max;
-		self::$TPL->metered['yearly']['total_hits'] = $total;
-	}
-
-	protected static function monthlyStat($nowyear, $nowmonth)
-	{
-		self::$TPL->metered['monthly'] = array(
-			'title' => _MONTLYSTATS.' '.$nowyear,
-			'most_hits' => 0,
-			'total_hits' => 0,
-			'rows' => array()
-		);
-		$total = 0;
-		$max = 0;
-		$result = self::$db->query('SELECT month, SUM(hits) as hits FROM '.self::$db->TBL->stats_hour." WHERE year={$nowyear} GROUP BY month ORDER BY month");
-		while ($row = $result->fetch_assoc()) {
-			$total += $row['hits'];
-			$max = max($max, $row['hits']);
-			self::$TPL->metered['monthly']['rows'][] = array(
-				'name' => self::getmonth($row['month']),
-				'url' => $row['month'] != $nowmonth && $row['hits'] ? "&year={$nowyear}&month={$row['month']}" : '',
-				'hits' => $row['hits'],
-				'class' => ''
-			);
-		}
-		self::$TPL->metered['monthly']['most_hits'] = $max;
-		self::$TPL->metered['monthly']['total_hits'] = $total;
-	}
-
-	protected static function dailyStat($year, $month, $nowdate=0)
-	{
-		self::$TPL->metered['daily'] = array(
-			'title' => _DAILYSTATS.' '.self::getmonth(intval($month)),
-			'most_hits' => 0,
-			'total_hits' => 0,
-			'rows' => array()
-		);
-		$total = 0;
-		$max = 0;
-		$result = self::$db->query('SELECT date, SUM(hits) as hits FROM '.self::$db->TBL->stats_hour." WHERE year={$year} AND month={$month} GROUP BY date ORDER BY date");
-		while ($row = $result->fetch_assoc()) {
-			$total += $row['hits'];
-			$max = max($max, $row['hits']);
-			self::$TPL->metered['daily']['rows'][] = array(
-				'name' => $row['date'],
-				'url' => $row['date'] != $nowdate && $row['hits']  ? "&year={$year}&month={$month}&date={$row['date']}" : '',
-				'hits' => $row['hits'],
-				'class' => ''
-			);
-		}
-		self::$TPL->metered['daily']['most_hits'] = $max;
-		self::$TPL->metered['daily']['total_hits'] = $total;
-	}
-
-	protected static function hourlyStat($year, $month, $date)
-	{
-		$max = 0;
-		$total = 0;
-		$data = array();
-		$hours = array_fill_keys(range(0,23), 0);
-
-		$result = self::$db->query('SELECT hour, hits FROM '.self::$db->TBL->stats_hour." WHERE year={$year} AND month={$month} AND date={$date} GROUP BY hour, hits ORDER BY hour");
-		while ($row = $result->fetch_assoc()) {
-			$total += $row['hits'];
-			$hours[$row['hour']] = $row['hits'];
-		}
-		self::$TPL->metered['hourly'] = array(
-			'title' => _HOURLYSTATS.' '.self::getmonth($month).' '.$date.', '.$year,
-			'most_hits' => 0,
-			'total_hits' => $total,
-			'rows' => array()
-		);
-
-		foreach ($hours as $hour => $hits) {
-			$max = max($max, $hits);
-			$hour = str_pad($hour, 2, '0', STR_PAD_LEFT);
-			self::$TPL->metered['hourly']['rows'][] = array(
-				'name'  => "{$hour}:00 - {$hour}:59",
-				'url'   => '',
-				'hits'  => $hits,
-				'class' => ''
-			);
-		}
-		self::$TPL->metered['hourly']['most_hits'] = $max;
-	}
-
-	protected static function getmonth($k)
-	{
-		static $months;
-		if (empty($months)) {
-			$months = Dragonfly::getKernel()->L10N->get('_time','F');
-		}
-		return $months[$k] ?? '';
-	}
+	list($count) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_queue',SQL_NUM);
+	$cpgtpl->assign_block_vars('misc', array('IMG' => 'waiting', 'NAME' => _NEWSWAITING, 'COUNT' => $count));
+	$cpgtpl->set_filenames(array('body' => 'statistics/index.html'));
+	$cpgtpl->display('body');
 }
 
-if ('Statistics' === $Module->name && 'GET' === $_SERVER['REQUEST_METHOD']) {
-	Dragonfly_Module_Statistics::run();
+function YearlyStats($year) {
+	global $nowmonth, $sitename;
+	require_once('header.php');
+	OpenTable();
+	showMonthStats($year,$nowmonth);
+	echo '<br />';
+	echo "<center>[ <a href=\"".getlink()."\">"._BACKTOMAIN."</a> | <a href=\"".getlink("&amp;file=details")."\">"._BACKTODETSTATS."</a> ]</center>";
+	CloseTable();
+}
+
+function MonthlyStats($year, $month) {
+	global $sitename, $nowdate;
+	require_once('header.php');
+	OpenTable();
+	showDailyStats($year,$month,$nowdate);
+	echo '<br />';
+	echo "<center>[ <a href=\"".getlink()."\">"._BACKTOMAIN."</a> | <a href=\"".getlink("&amp;file=details")."\">"._BACKTODETSTATS."</a> ]</center>";
+	CloseTable();
+}
+
+function DailyStats($year, $month, $date) {
+	global $sitename;
+	require_once('header.php');
+	OpenTable();
+	showHourlyStats($year,$month,$date);
+	echo '<br />';
+	echo "<center>[ <a href=\"".getlink()."\">"._BACKTOMAIN."</a> | <a href=\"".getlink("&amp;file=details")."\">"._BACKTODETSTATS."</a> ]</center>";
+	CloseTable();
+}
+
+$op = (isset($_GET['op']) && $_GET['op']!='') ? $_GET['op'] : ((isset($_POST['op']) && $_POST['op']!='') ? $_POST['op'] : '');
+$year = isset($_GET['year']) ? intval($_GET['year']) : 0;
+$month = isset($_GET['month']) ? intval($_GET['month']) : 0;
+$date = isset($_GET['date']) ? intval($_GET['date']) : 0;
+
+if ($year) {
+	if ($month) {
+		if ($date) {
+			DailyStats($year,$month,$date);
+		} else {
+			MonthlyStats($year,$month);
+		}
+	} else {
+		YearlyStats($year);
+	}
+} else {
+	Stats_Main();
 }

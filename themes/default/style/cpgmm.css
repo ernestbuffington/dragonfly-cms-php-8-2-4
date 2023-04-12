@@ -1,0 +1,237 @@
+/**
+* CPG Dragonfly CMS
+* Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: cpgmm.css,v 1.2 2007/03/26 23:59:27 phoenix Exp $
+*/
+/*		------	Basic style	------		*/
+#menu ul {
+margin: 0;
+margin-left: 5px;
+padding: 0;
+border: 0;
+list-style-type: none;
+}
+
+#menu li {
+margin: 0;
+padding: 0;
+border: 0;
+display: block;
+float: left;
+position: relative;
+white-space: nowrap;
+}
+
+#menu a {
+float: left;/* \*/float: none;/*  */
+display: block;
+}
+
+#menu li ul {
+visibility: hidden;
+position: absolute;
+z-index: 10;
+}
+
+#menu li ul li {
+width: 100%;
+display: block;
+float: left;
+position: static;
+}
+
+html>body #menu li ul li {
+float: none;
+position: relative;
+}
+
+#menu li ul li:hover {
+position: relative;
+}
+
+/* fix the position */
+#menu li ul li ul {
+top: 0;
+left: 100%;
+}
+
+/* simulate child selector for IE */
+div#menu li:hover ul, #menu li:hover li:hover ul, #menu li:hover li:hover li:hover ul {
+visibility: visible;
+}
+
+#menu li:hover li ul, #menu li:hover li:hover li ul, #menu li:hover li:hover li:hover li ul {
+visibility: hidden;
+}
+
+/* do the normal show, with increased specificity */
+#menu ul#menuList li:hover > ul {
+visibility: visible;
+}
+
+/*		------   Make-up	--------			*/
+#menu {
+font-family: Tahoma, sans-serif;
+font-size: 11px;
+color: #293894;
+height: 18px;
+/*max-height: 18px;
+height:expression(this.scrollHeight > 18? "18px" : "auto" );*/
+background-color: transparent;
+display: inline;
+/*	next 3 lines only needed if you want to display the menu over previous code*/
+/*clear: left;
+position: absolute;
+margin-top: 15px;*/
+margin-left: 5px;
+border-radius: .6em;
+-moz-border-radius: .6em;
+}
+
+#menu a {
+text-decoration: none;
+text-align: center;
+color: #293894;
+background-color: transparent;
+margin: 0;
+padding: 0;
+border: 0;
+}
+
+/*if transparent, IE6 shows a border, so comment out border,
+set margin to 0 in the class below*/
+#menu li {
+margin: 1px;
+padding: 0px 2px 0px 2px;
+width: auto;
+display: block;
+background-color: transparent;
+background-repeat: no-repeat;
+background-position: 3px 50%;
+/*border: 1px solid transparent;*/
+border-radius: .6em;
+-moz-border-radius: .6em;
+}
+
+/*in the previous class, if the border is re-activated to set an actual color,
+delete the next line with margin 0*/
+#menu ul li:hover {
+margin: 0px;
+border-radius: .6em .6em 0em 0em;
+-moz-border-radius: .6em .6em 0em 0em;
+}
+
+#menu ul li ul li:hover {
+margin: 1px;
+border-radius: .6em;
+-moz-border-radius: .6em;
+}
+
+#menu li:hover {
+background-color: #F7F7F7;
+margin: 1px;
+padding: 0px 2px 1px 2px;
+/*controls border of vertical list links, horizontal cats*/
+border: 1px solid #006600;
+}
+
+#menu li ul li:hover {
+padding: 0px;
+}
+
+#menu ul li ul {
+margin-top: 1px;
+}
+
+#menu ul li ul li ul{
+margin-top: -1px;
+}
+
+#menu li ul {
+background-color: #F7F7FF;
+background-image: url(../images/arrowbg.gif);
+background-repeat: repeat-y;
+margin-left: -3px;
+padding: 0;
+/*controls overall border of vertical lists*/
+border: 1px solid #006699;
+/*
+-moz-opacity:.9;
+filter:alpha(opacity=90);
+*/
+}
+
+/* border radius of the top level category row */
+#menu ul {
+border-radius: 0em .6em .6em .6em;
+-moz-border-radius: 0em .6em .6em .6em;
+}
+
+/* controls width of the background image on the left of each item link*/
+#menu li ul a {
+text-align: left;
+margin: 0 0 0 16px;
+}
+
+/* this is for the triangular arrow on the end of a category link*/
+#menu li ul a.submenu {
+background-image: url(../images/arrow.png);
+background-repeat: no-repeat;
+background-position: 100% 2px;
+}
+
+/* width of the dropdown lists*/
+#menu li ul {
+width: 130px;
+}
+
+/* width of a highlighted link in the list*/
+#menu li ul li {
+width: 126px;
+padding: 1px;
+border: 0;
+}
+
+/* next 3 classes control the small images/symbols for categories, list links*/
+#menu ul li span {
+float: left;
+margin-right: 3px;
+font-weight: bold;
+height: auto;
+}
+#menu ul li img {
+float: left;
+margin-right: 3px;
+height: 12px;
+}
+#menu ul li ul li img {
+float: left;
+margin-top: 2px;
+margin-right: 3px;
+height: auto;
+}
+.sred {
+color: #FF0000;
+font-weight: bolder;
+}
+.sgreen {
+color: #32CD32;
+font-weight: bolder;
+}
+.sgray {
+color: #C0C0C0;
+font-weight: bolder;
+}
+.sblack {
+color: #000000;
+font-weight: bolder;
+}
+
+
+/*		------   Fixes	for buggy browsers	--------			*/
+
+* html #menu li li a {
+width: 96px;
+w\idth: 86px;
+}

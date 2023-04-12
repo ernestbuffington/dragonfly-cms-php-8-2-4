@@ -1,5 +1,0 @@
-<div class="pagination" tal:condition="B_PAGINATION">
-	<a tal:condition="PAGINATION_PREV" class="prev" tal:attributes="href PAGINATION_PREV" i18n:attributes="title '_PREVIOUSPAGE'"><b>«</b></a>
-	<a tal:repeat="page pagination" tal:attributes="href page/URL; class php:${page/current}?'current':null" tal:content="page/PAGE">1</a>
-	<a tal:condition="PAGINATION_NEXT" class="next" tal:attributes="href PAGINATION_NEXT" i18n:attributes="title '_NEXTPAGE'"><b>»</b></a>
-</div>

@@ -1,0 +1,8 @@
+/**
+* CPG Dragonfly CMS
+* Copyright (c) 2004-2005 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: info.txt,v 9.2 2005/12/17 04:05:46 djmaze Exp $
+*/
+
+CHMOD this directory to 755 (777 if 755 fails) to activate caching

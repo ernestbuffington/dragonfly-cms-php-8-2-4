@@ -7,312 +7,310 @@
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/modules/Your_Account/register.php,v $
+  $Revision: 9.33 $
+  $Author: djmaze $
+  $Date: 2007/12/16 22:13:16 $
 **********************************************/
+if (!defined('CPG_NUKE')) { exit; }
+$pagetitle = _Your_AccountLANG;
+require_once("modules/$module_name/functions.php");
+require_once(CORE_PATH.'nbbcode.php');
+//OpenTable();
+if (is_user()) { cpg_error(_YOUAREREGISTERED); }
 
-/* Applied rules:
- * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
- */
- 
-if (!class_exists('Dragonfly', false)) { exit; }
-\Dragonfly\Page::title(_Your_AccountLANG, false);
+$user_cfg = $MAIN_CFG['member'];
 
-if (is_user()) { cpg_error(_YOUAREREGISTERED, 409); }
+if (!$user_cfg['allowuserreg']) { cpg_error(_ACTDISABLED); }
 
-if (!$MAIN_CFG['member']['allowuserreg']) { cpg_error(_ACTDISABLED, 403); }
-
-if ('POST' == $_SERVER['REQUEST_METHOD']) {
-	if (XMLHTTPRequest) {
-		if (!empty($_POST['validate_username'])) {
-			try {
-				\Dragonfly\Identity\Validate::nickname($_POST['validate_username']);
-			} catch (Exception $e) {
-				\Poodle\HTTP\Status::set(409);
-				echo $e->getMessage();
-			}
-		} else if (!empty($_POST['validate_email'])) {
-			try {
-				\Dragonfly\Identity\Validate::email($_POST['validate_email']);
-			} catch (Exception $e) {
-				\Poodle\HTTP\Status::set(409);
-				echo $e->getMessage();
-			}
-		} else {
-			\Poodle\HTTP\Status::set(412);
-			echo 'Field can not be empty.';
-		}
-		exit;
-	}
-
-	if (isset($_POST['op']) && 'finish' == $_POST['op']) {
-		// Step 4
+if (Security::check_post()) {
+	if (isset($_POST['op']) && $_POST['op'] == 'finish') {
+		$pagetitle = _ACCOUNTCREATED;
+		require_once('header.php');
 		register_finish();
-	} else if (isset($_POST['username'])) {
-		// Step 3
-		register_check();
 	} else {
-		// Step 2
-		register_form();
+		$pagetitle = _USERFINALSTEP;
+		require_once('header.php');
+		register_check();
 	}
-}
-
-// Step 5
-else if (isset($_GET['activate'])) {
-	activate($_GET['activate'] . (isset($_GET['check_num']) ? '-'.$_GET['check_num'] : ''));
-}
-
-// Step 1
-else if (!isset($_POST['terms_coppa']) && !isset($_POST['terms_agreed']) && $MAIN_CFG['member']['show_registermsg']) {
-	\Dragonfly\Page::title(_MA_REGISTRATION, false);
-	\Dragonfly::getKernel()->OUT->display('Your_Account/register/agree');
-}
-
-// Step 2
-else {
+} else if (isset($_GET['activate'])) {
+	activate(intval($_GET['activate']), Fix_Quotes($_GET['check_num']));
+} else if (!isset($_GET['agreed']) && !isset($_POST['agreed']) && $user_cfg['show_registermsg'] ) {
+	$pagetitle = _MA_REGISTRATION;
+	require_once('header.php');
+	OpenTable();
+	echo '<table width="80%" cellspacing="2" cellpadding="2" border="0" align="center">
+	  <tr>
+		<td><span class="genmed"><br />'.$user_cfg['registermsg'].'<br /><br />'._BOUNDREGISTRATION.'<br /><br /></span><div align="center">
+		  <a href="'.getlink("&amp;file=register&amp;agreed=1").'" class="genmed">'._MA_AGREE_OVER_13.'</a><br /><br />
+		  <a href="'.getlink("&amp;file=register&amp;agreed=1&amp;coppa=1").'" class="genmed">'._MA_AGREE_UNDER_13.'</a><br /><br />
+		  <a href="'.$mainindex.'" class="genmed">'._MA_DO_NOT_AGREE.'</a></div><br /></td>
+	  </tr>
+	</table>';
+	CloseTable();
+} else {
+	$pagetitle = _REGISTRATIONSUB;
+	require_once('header.php');
 	register_form();
 }
 
-function register_form()
-{
-	\Dragonfly\Page::title(_REGISTRATIONSUB, false);
-	\Dragonfly\Output\Js::add('modules/Your_Account/javascript/register.js');
-	\Dragonfly\Output\Js::add('modules/Your_Account/javascript/password.js');
-//	\Dragonfly\Output\Css::inline('input.error { border-color: #F00 } label.ok, label.error { margin:0 5px; width:auto }');
-	$K = \Dragonfly::getKernel();
-	$SQL = $K->SQL;
-	$K->OUT->registerinfo = array(
-		array(
-			'name'   => 'username',
-			'label'  => _USERNAME,
-			'type'   => 'text',
-			'length' => 25,
-			'note'   => null,
-			'required' => true,
-			'pattern' => null,
-			'info' => null,
-		),
-		array(
-			'name'   => 'email',
-			'label'  => _EMAILADDRESS,
-			'type'   => 'email',
-			'length' => 255,
-			'note'   => null,
-			'required' => true,
-			'pattern' => null,
-			'info' => null,
-		),
-		array(
-			'name'   => 'password',
-			'label'  => _PASSWORD,
-			'type'   => 'password',
-			'length' => 255,
-			'note'   => _BLANKFORAUTO,
-			'required' => false,
-			'pattern' => '.{'.$K->CFG->member->minpass.',}',
-			'info' => sprintf($K->OUT->L10N['The password must be at least %d characters'], $K->CFG->member->minpass),
-		),
-		array(
-			'name'   => 'password_confirm',
-			'label'  => _CONFIRMPASSWORD,
-			'type'   => 'password',
-			'length' => 255,
-			'note'   => null,
-			'required' => false,
-			'pattern' => '.{'.$K->CFG->member->minpass.',}',
-			'info' => null,
-		),
-	);
+// start register form
+function register_form() {
+	global $db, $user_prefix, $CPG_SESS, $user_cfg, $userinfo, $MAIN_CFG;
+	$coppa = (empty($_GET['coppa'])) ? 0 : true;
 
+	$registerinfo['username']['text'] = _USERNAME;
+	$registerinfo['username']['length'] = 25;
+	$registerinfo['username']['type'] = 'text';
+	$registerinfo['email']['text'] = _EMAILADDRESS;
+	$registerinfo['email']['length'] = 255;
+	$registerinfo['email']['type'] = 'text';
+	$registerinfo['password']['text'] = _PASSWORD;
+	$registerinfo['password']['msg'] = '<br />'._BLANKFORAUTO;
+	$registerinfo['password']['length'] = 20;
+	$registerinfo['password']['type'] = 'password';
+	$registerinfo['password_confirm']['text'] = _CONFIRMPASSWORD;
+	$registerinfo['password_confirm']['length'] = 20;
+	$registerinfo['password_confirm']['type'] = 'password';
+
+	echo '<form action="'.getlink("&amp;file=register").'" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+<table border="0" cellpadding="3" cellspacing="1" width="100%" class="forumline">
+  <tr>
+	<td class="row2" colspan="2"><span class="gensmall">'._MA_ITEMS_REQUIRED.'</span></td>
+  </tr>';
+	while (list($field, $info) = each($registerinfo)) {
+		echo '<tr>
+	<td class="row1" width="38%"><span class="gen">'.$info['text'].': *</span>'.(isset($info['msg']) ? $info['msg'] : '').'</td>
+	<td class="row2"><input type="'.$info['type'].'" class="post" style="width:200px" name="'.$field.'" size="25" maxlength="'.$info['length'].'" /></td>
+  </tr>';
+	}
 	// Add the additional fields to form if activated
-	$additional_fields = array();
-	$result = $SQL->query("SELECT * FROM {$SQL->TBL->users_fields} WHERE visible > 0 ORDER BY section");
-	if ($result->num_rows) {
+	$result = $db->sql_query("SELECT * FROM ".$user_prefix."_users_fields WHERE visible > 0 ORDER BY section");
+	if ($db->sql_numrows($result)) {
 		$settings = 0;
-		while ($row = $result->fetch_assoc()) {
-			$field = \Dragonfly\Identity\Fields::tpl_field($row);
-			if ($field) {
-				if ($row['section'] == 3 && !$settings) {
-					$settings = 3;
-					$additional_fields[$settings] = array(
-					'label' => _MA_PRIVATE,
-					'fields' => array(),
-					);
-				} else if ($row['section'] == 5 && $settings != 5) {
-					$settings = 5;
-					$additional_fields[$settings] = array(
-					'label' => _MA_PREFERENCES,
-					'fields' => array(),
-					);
-				}
-				if (!$settings && !isset($additional_fields[0])) {
-					$additional_fields[0] = array(
-					'label'  => null,
-					'fields' => array(),
-					);
-				}
-				$additional_fields[$settings]['fields'][] = $field;
+		while ($row = $db->sql_fetchrow($result)) {
+			if ($row['type'] == 7 && !$user_cfg['allowusertheme']) continue;
+			if ($row['field'] == 'user_lang' && !$MAIN_CFG['global']['multilingual']) continue;
+			if ($row['section'] == 3 && !$settings) {
+				$settings = 3;
+				echo '<tr><th class="thSides" colspan="2" height="25" valign="middle">'._MA_PRIVATE.'</th></tr>';
+			} else if ($row['section'] == 5 && $settings != 5) {
+				$settings = 5;
+				echo '<tr><th class="thSides" colspan="2" height="25" valign="middle">'._MA_PREFERENCES.'</th></tr>';
 			}
+			$info = $row['langdef'];
+			if (defined($info)) $info = constant($info);
+			$info .= ($row['visible'] == 2) ? ': *' : ':';
+			echo '<tr>
+	<td class="row1"><span class="gen">'.$info.'</span>';
+			if (defined($row['langdef'].'MSG') != '') echo "<br />".constant($row['langdef']."MSG");
+			if ($row['field'] == 'user_timezone') {
+				echo '<br /><br /><span class="gen">Daylight Saving Time</span> (<a href="http://webexhibits.org/daylightsaving/" target="_blank">'.strtolower(_TB_INFO).'</a>):';
+			}
+			echo '</td>
+	<td class="row2">'.ma_formfield($row['type'], $row['field'], $row['size'], $userinfo).'</td>
+  </tr>';
 		}
 	}
-	$K->OUT->register_sections = $additional_fields;
-	$K->OUT->display('Your_Account/register/form');
+	echo '<tr>
+	<td class="catBottom" colspan="2" align="center" height="28">
+	  <input type="hidden" name="agreed" value="1" />
+	  <input type="hidden" name="coppa" value="'.$coppa.'" />
+	  <input type="submit" name="submit" value="'._SUBMIT.'" class="mainoption" />&nbsp;&nbsp;
+	  <input type="reset" value="'._RESET.'" name="reset" class="liteoption" /></td>
+  </tr>
+</table>
+</form>
+';
+} // end register form
+
+function register_check() {
+	global $db, $user_cfg, $sec_code, $MAIN_CFG;
+	$username = Fix_Quotes($_POST['username'],1);
+	$email = strtolower(Fix_Quotes($_POST['email'],1));
+	$password = Fix_Quotes($_POST['password'],1);
+	if ($password != Fix_Quotes($_POST['password_confirm'],1)) {
+		cpg_error(_PASSDIFFERENT);
+	} else if (strlen($password) < $MAIN_CFG['member']['minpass'] && $password != '') {
+		cpg_error(_YOUPASSMUSTBE.' <b>'.$MAIN_CFG['member']['minpass'].'</b> '._CHARLONG);
+	}
+	$fields['username'] = $username;
+	$fields['email'] = $email;
+	$fields['password'] = $password;
+	$fields['coppa'] = $_POST['coppa'];
+
+	// Check the additional activated fields
+	$fieldlist = $valuelist = '';
+	$content = check_fields($fieldlist, $valuelist, $fields);
+
+	userCheck($username, $email);
+	echo '<form action="'.getlink('&amp;file=register').'" method="post">
+<table border="0" cellpadding="3" cellspacing="1" width="100%" class="forumline">
+  <tr>
+	<td class="row1" align="center">
+	  '.$username.', '._USERCHECKDATA.'<br /><br />
+	  <table border="0" cellpadding="1" cellspacing="4">
+	  <tr><td><b>'._USERNAME.':</b></td><td>'.$username.'</td></tr>
+	  <tr><td><b>'._EMAILADDRESS.':</b></td><td>'.$email.'</td></tr>
+	  <tr><td><b>'._PASSWORD.':</b></td><td><i>'._MA_HIDDEN.'</i></td></tr>'.$content;
+	if ($sec_code & 4) {
+		echo '<tr>
+	<td class="row1"><span class="gen">'._SECURITYCODE.':</span></td>
+	<td class="row2">'.generate_secimg().'</td></tr>
+  <tr>
+	<td class="row1"><span class="gen">'._TYPESECCODE.':</span></td>
+	<td class="row2"><input type="text" name="gfx_check" size="7" maxlength="6" /></td>
+  </tr>';
+	}
+	echo '</table><br />';
+	if (!$user_cfg['requireadmin']) {
+		echo $user_cfg['useactivate'] ? _YOUWILLRECEIVE : _YOUWILLRECEIVE2;
+	} else {
+		echo _WAITAPPROVAL;
+	}
+	$_SESSION['REGISTER'] = $fields;
+	echo '<input type="hidden" name="op" value="finish" /><br /><br />
+	<input type="submit" value="'._FINISH.'" /> <a href="javascript:history.go(-1);"><input type="button" value="Back" onclick="history.go(-1)" /></a>
+	</td>
+  </tr>
+</table>
+</form>';
 }
 
-function register_check()
-{
-	\Dragonfly\Page::title(_USERFINALSTEP, false);
-
-	if (!\Dragonfly\Output\Captcha::validate($_POST)) {
-		error_log('Register captcha failed for '.$_SERVER['REMOTE_ADDR']);
-		cpg_error('Form post failed', 409);
+function welcome_pm() {
+	global $db, $MAIN_CFG, $prefix, $sitename, $userinfo, $user_prefix;
+	$privmsgs_to_userid = $db->sql_nextid('user_id');
+	$welcome_msg = Fix_Quotes(encode_bbcode($MAIN_CFG['member']['welcomepm_msg']));
+	$welcome = Fix_Quotes(_WELCOMETO.' '.$sitename.'!');
+	$sql = "INSERT INTO ".$prefix."_bbprivmsgs (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES (1, '$welcome', 2, '$privmsgs_to_userid', ".gmtime().", ".$userinfo['user_ip'].", 0, 1, 1, 0)";
+	if (!$db->sql_query($sql)) {
+		cpg_error('Could not insert private message sent info.');
 	}
-
-	$username = $_POST['username'];
-	$email = strtolower($_POST['email']);
-	$password = $_POST['password'];
-	try {
-		\Dragonfly\Identity\Validate::password($password, (string)$_POST['password_confirm']);
-		\Dragonfly\Identity\Validate::nickname($username);
-		\Dragonfly\Identity\Validate::email($email);
-		// Check the additional activated fields
-		$fields = \Dragonfly\Identity\Fields::fetchFromPost();
-	} catch (Exception $e) {
-		cpg_error($e->getMessage(), 409);
+	$privmsg_text_id = $db->sql_nextid('privmsgs_id');
+	$sql = "INSERT INTO ".$prefix."_bbprivmsgs_text (privmsgs_text_id, privmsgs_text) VALUES ($privmsg_text_id, '$welcome_msg')";
+	if (!$db->sql_query($sql)) {
+		cpg_error('Could not insert private message sent text.');
 	}
-
-	$data = array(
-		'username'   => $username,
-		'user_email' => $email,
-		'password'   => $password,
-		'coppa'      => !empty($_POST['terms_coppa']),
-	);
-	foreach ($fields as $k => $v) {
-		$data[$k] = $v['value'];
-		if (1 == $v['type']) { $fields[$k]['value'] = $v['value'] ? _YES : _NO; }
-	}
-	$_SESSION['REGISTER'] = $data;
-
-	$OUT = \Dragonfly::getKernel()->OUT;
-	$OUT->register_data = array_merge(array(
-		array('label' => _USERNAME, 'value' => $username),
-		array('label' => _EMAILADDRESS, 'value' => $email),
-		array('label' => _PASSWORD, 'value' => _MA_HIDDEN),
-	), $fields);
-	$OUT->display('Your_Account/register/check');
+	$db->sql_query("UPDATE ".$user_prefix."_users SET user_new_privmsg=1 WHERE user_id=$privmsgs_to_userid");
 }
 
-function register_finish()
-{
-	$mailer_message = null;
- $K = \Dragonfly::getKernel();
-	$SQL = $K->SQL;
-	$CFG = $K->CFG;
+function register_finish() {
+	global $db, $user_cfg, $user_prefix, $sitename, $sec_code, $CPG_SESS, $userinfo, $MAIN_CFG;
+	if ($sec_code & 4) {
+		if (!validate_secimg()) { cpg_error(_SECCODEINCOR); }
+	}
 
 	$fields = $_SESSION['REGISTER'];
-	if (empty($fields['username'])) {
-		cpg_error('session gone...', 409);
-	}
+	if (empty($fields['username'])) { cpg_error('session gone...'); }
+	$random = empty($fields['password']);
+	if ($random) { $fields['password'] = make_pass(8, 5); }
+	$user_email = $fields['email'];
+	$fieldlist = $valuelist = '';
+	check_fields($fieldlist, $valuelist, $fields, false);
+	$username = $fields['username'];
+	$password = ($random ? "\n"._PASSWORD.': '.$fields['password'] : '');
 
-	\Dragonfly\Page::title(_ACCOUNTCREATED, false);
-
-	$requireadmin = ($fields['coppa'] || $CFG->member->requireadmin);
-
-	$password = '';
-	if (empty($fields['password'])) {
-		$fields['password'] = \Poodle\Auth::generatePassword(max(12, $CFG->member->minpass + 2));
-		$password = "\n"._PASSWORD.': '.$fields['password'];
-	}
-
-	$activation_key = null;
-	if ($CFG->member->useactivate || $requireadmin) {
-		$data = $fields;
-		unset($data['password']);
-		unset($data['username']);
-		unset($data['user_email']);
-		$activation_key = \Poodle\Identity\Request::newAccount(array(
-			'nickname'  => $fields['username'],
-			'password'  => \Poodle\Auth::hashPassword($fields['password']),
-			'email'     => $fields['user_email'],
-			'givenname' => '',
-			'surname'   => '',
-			'details'   => $data,
-		));
+	mt_srand ((double)microtime()*1000000);
+	$check_num = mt_rand(0, 1000000);
+	$check_num = md5($check_num);
+	$new_password = md5($fields['password']);
+	$user_regdate = gmtime();
+	if ($user_cfg['useactivate'] || $user_cfg['requireadmin']) {
+		$result = $db->sql_query("INSERT INTO ".$user_prefix."_users_temp (username, user_email, user_password, user_regdate, check_num, time".$fieldlist.") VALUES ('$username', '$user_email', '$new_password', '$user_regdate', '$check_num', $user_regdate $valuelist)");
 	} else {
-		$identity = $K->IDENTITY;
-		$identity->nickname   = $fields['username'];
-		$identity->email      = $fields['user_email'];
-		$result = $SQL->query("SELECT field FROM {$SQL->TBL->users_fields} WHERE visible > 0");
-		while (list($field) = $result->fetch_row()) {
-			$identity->$field = $fields[$field];
-		}
-		$identity->save();
-		$identity->updateAuth(1, $fields['username'], $fields['password']);
+		$result = $db->sql_query("INSERT INTO ".$user_prefix."_users (username, user_email, user_password, user_regdate, user_lastvisit, user_avatar $fieldlist) VALUES ('$username', '$user_email', '$new_password', '$user_regdate', $user_regdate, '{$MAIN_CFG['avatar']['default']}' $valuelist)");
+		if ($user_cfg['send_welcomepm']) { welcome_pm(); }
 	}
+	$uid = $db->sql_nextid('user_id');
+	$finishlink = getlink("&file=register&activate=$uid&check_num=$check_num", true, true);
 
-	$tpl = '';
-
-	// Prepare email
-	$subject = $message = '';
-	if ($requireadmin) {
+	$message = _WELCOMETO." $sitename!\n\n"._YOUUSEDEMAIL." ($user_email) ";
+	if ($fields['coppa']) {
 //		$message = $lang['COPPA'];
 //		$email_template = 'coppa_welcome_inactive';
-		$subject = $K->L10N->get('User Account Registration');
-		$message = _TOAPPLY." {$CFG->global->sitename}.\n\n"._WAITAPPROVAL."\n\n"._FOLLOWINGMEM."\n"._USERNAME.": {$fields['username']}{$password}";
-		$tpl = 'status-pending';
-		\Dragonfly\Identity\Create::notifyAdmin($fields['username']);
-	} else {
-		$message = _TOREGISTER." {$CFG->global->sitename}.\n\n";
-		if ($CFG->member->useactivate) {
+		$message .= _TOAPPLY." $sitename.\n\n"._WAITAPPROVAL."\n\n"._FOLLOWINGMEM."\n"._USERNAME.": $username$password";
+		$subject = _APPLICATIONSUB;
+		OpenTable();
+		echo "<center><b>"._ACCOUNTRESERVED."</b><br /><br />"._YOUAREPENDING."<br /><br />"._THANKSAPPL." $sitename!</center>";
+	} else if (!$user_cfg['requireadmin']) {
+		$message .= _TOREGISTER." $sitename.\n\n";
+		OpenTable();
+		echo "<center><b>"._ACCOUNTCREATED."</b><br /><br />"._YOUAREREGISTERED."<br /><br />";
+		if ($user_cfg['useactivate']) {
+			echo _FINISHUSERCONF;
+			$message .= _TOFINISHUSER."\n\n $finishlink\n\n"; //<- Is the activation link in email. DJMaze
 			$subject = _ACTIVATIONSUB;
-			$finishlink = URL::index("&file=register&activate={$activation_key}", true, true);
-			$message .= _TOFINISHUSER."\n\n {$finishlink}\n\n"; // Is the activation link in email.
-			$tpl = 'status-activate';
 		} else {
+			echo _FINISHUSERCONF2.'<a href="'.getlink().'">'._FINISHUSERCONF3.'</a>.';
 			$subject = _REGISTRATIONSUB;
-			$tpl = 'status-active';
 		}
-		$message .= _FOLLOWINGMEM."\n"._USERNAME.": {$fields['username']}{$password}";
+		echo '<br /><br />'._THANKSUSER." $sitename!</center>";
+		$message .= _FOLLOWINGMEM."\n"._USERNAME.": $username$password";
+	} else {
+		$message .= _TOAPPLY." $sitename.\n\n"._WAITAPPROVAL."\n\n"._FOLLOWINGMEM."\n"._USERNAME.": $username$password";
+		$subject = _APPLICATIONSUB;
+		OpenTable();
+		echo '<center><b>'._ACCOUNTRESERVED.'</b><br /><br />'._YOUAREPENDING.'<br /><br />'._THANKSAPPL." $sitename!</center>";
 	}
-
-	// Send email to user
-	$from = 'noreply@'.str_replace('www.', '', $CFG->server->domain);
-	$message = _WELCOMETO." {$CFG->global->sitename}!\n\n"._YOUUSEDEMAIL.' '.$message;
-	if (!\Dragonfly\Email::send($mailer_message, $subject, $message, $fields['user_email'], $fields['username'], $from)) {
-		\Poodle\LOG::error('mail',$mailer_message);
+	$from = 'noreply@'.ereg_replace('www.', '', $MAIN_CFG['server']['domain']);
+	if (!send_mail($mailer_message,$message,0,$subject,$user_email,$username,$from)) {
+		echo 'Member mail: '.$mailer_message;
 	}
-
+	if ($user_cfg['sendaddmail']) {
+		if ($user_cfg['requireadmin']) { $subject = "$sitename - "._MEMAPL; }
+		else { $subject = "$sitename - "._MEMADD; }
+		$message = "$username has been added to $sitename.\n\nUser IP: ".decode_ip($userinfo['user_ip'])."\n--------------------------------------------------------\nDo not reply to this message!!";
+		if(!send_mail($mailer_message,$message,0,$subject)) {
+			echo "Admin mail: ".$mailer_message;
+		}
+	}
+	CloseTable();
 	unset($_SESSION['REGISTER']);
-
-	$K->OUT->display('Your_Account/register/'.$tpl);
 }
 
-function activate($activation_key)
-{
-	$tpl = null;
- $K = \Dragonfly::getKernel();
-	$CFG = $K->CFG;
-	if (!$CFG->member->requireadmin) {
-		\Poodle\Identity\Request::cleanup(0);
+function activate($uid, $check_num) {
+	global $db, $user_prefix, $user_cfg, $MAIN_CFG;
+	if (!$user_cfg['requireadmin']) {
+		$db->sql_query('DELETE FROM '.$user_prefix.'_users_temp WHERE time < '.(gmtime()-86400));
 	}
-	$row = \Poodle\Identity\Request::getAccount($activation_key);
-	if (!$row) {
-		cpg_error(_ACTERROR2, _ACTIVATIONERROR);
-	}
-	$identity = $K->IDENTITY;
-	$identity->nickname = $row['nickname'];
-	$identity->email    = $row['email'];
-	$result = $K->SQL->query("SELECT field FROM {$K->SQL->TBL->users_fields} WHERE visible > 0");
-	while (list($field) = $result->fetch_row()) {
-		if (isset($row['details'][$field])) {
-			$identity->$field = $row['details'][$field];
+	$result = $db->sql_query('SELECT * FROM '.$user_prefix."_users_temp WHERE user_id=$uid");
+	if ($db->sql_numrows($result) == 1) {
+		$row = $db->sql_fetchrow($result);
+		if ($check_num == $row['check_num']) {
+			$fieldlist = $valuelist = '';
+			$result = $db->sql_uquery('SELECT field FROM '.$user_prefix.'_users_fields WHERE visible > 0');
+			while (list($field) = $db->sql_fetchrow($result)) {
+				$val = Fix_Quotes($row[$field]);
+				if (strlen($val) > 0) {
+					$fieldlist .= ", $field";
+					$valuelist .= ", '$val'";
+				} else {
+					$fieldlist .= ", $field";
+					$valuelist .= ", ''";
+				}
+				if ($field == 'user_timezone') {
+					$fieldlist .= ', user_dst';
+					$valuelist .= ', '.$row['user_dst'];
+				}
+			}
+			$db->sql_query('INSERT INTO '.$user_prefix."_users (username, user_email, user_password, user_avatar, user_regdate, user_lastvisit $fieldlist) VALUES ('$row[username]', '$row[user_email]', '$row[user_password]', '".$MAIN_CFG['avatar']['default']."', '$row[user_regdate]', '$row[time]' $valuelist)");
+			if ($user_cfg['send_welcomepm']) {
+				welcome_pm();
+			}
+			$db->sql_query('DELETE FROM '.$user_prefix."_users_temp WHERE user_id=$uid");
+			$pagetitle = _ACTIVATIONYES;
+			$msg = "<center><b>$row[username]:</b> "._ACTMSG.'</center>';
+		} else {
+			$pagetitle = _ACTIVATIONERROR;
+			$msg = '<center>'._ACTERROR1.'</center>';
 		}
+	} else {
+		$pagetitle = _ACTIVATIONERROR;
+		$msg = '<center>'._ACTERROR2.'</center>';
 	}
-	$identity->save();
-
-	$c = new \Poodle\Auth\Credentials($identity, $row['username'], $row['password']);
-	$c->hash_password = false;
-	\Poodle\Auth::update(1, $c);
-
-	\Poodle\Identity\Request::removeAccount($activation_key);
-	\Dragonfly\Page::title(_ACTIVATIONYES, false);
-	return $K->OUT->display('Your_Account/register/status-active'.$tpl);
+	require_once('header.php');
+	OpenTable();
+	echo $msg;;
+	CloseTable();
 }

@@ -1,0 +1,21 @@
+<!-- BEGIN bottomblock -->
+<div class="table1">
+  <div class="option" style="text-align:center;"><strong>{bottomblock.S_TITLE}</strong></div>
+  {bottomblock.S_CONTENT}
+</div><br />
+<!-- END bottomblock -->
+<div style="text-align:center;">{S_BANNER}</div>
+<!-- IF S_RIGHTBLOCKS -->
+</td><td valign="top" class="mainside" id="pe601" {B_R_VISIBLE} align="right">
+<!-- BEGIN rightblock -->
+  <div class="blockheadr">{rightblock.S_TITLE} <img class="blockimg" alt="[x]" title="Show/hide content" id="pic{rightblock.S_BID}" src="{rightblock.S_IMAGE}.png" onclick="blockswitch('{rightblock.S_BID}');" /></div>
+  <div class="blockcontent" id="pe{rightblock.S_BID}" {rightblock.S_VISIBLE}>{rightblock.S_CONTENT}</div><br />
+<!-- END rightblock -->
+ <div class="mainside"></div>
+<!-- ENDIF -->
+</td></tr></table>
+<br /><div style="text-align:center;">{S_FOOTER}</div>
+<!-- IF S_DEBUG_SQL --><div class="table1">{S_DEBUG_SQL}</div><!-- ENDIF -->
+<!-- IF S_DEBUG_PHP --><div class="table1">{S_DEBUG_PHP}</div><!-- ENDIF -->
+</div>
+</body></html>

@@ -1,0 +1,28 @@
+/* make it sticky in non MSIE 5/6 */
+html>body #backPic {
+ z-Index:0;
+ position:fixed;
+ display:block;
+ left:0%;
+ top:0%;
+ width:100%;
+ height:100%;
+ -moz-opacity: 75%;
+ -khtml-opacity: .75;
+ opacity: .7;
+}
+#container {
+ border:0px;
+ display:block;
+ z-index:2;
+ position:absolute;
+ left:0;
+ top:0;
+ min-width: 610px;
+ margin: 10px;
+}
+html>body #container {
+ -moz-opacity: 85%;
+ -khtml-opacity: .85;
+ opacity: .8;
+}

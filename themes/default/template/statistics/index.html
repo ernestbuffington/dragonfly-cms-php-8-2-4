@@ -1,0 +1,39 @@
+<div class="table1">
+<table class="forumline" cellspacing="1" width="100%">
+	<tr>
+		<td class="cat" colspan="3"><div class="cattitle" align="center">{S_STATS_TITLE}</div></td>
+	</tr><tr>
+		<td class="row1" colspan="3">
+			<div class="gen" align="center">{S_STATS_TOTAL}<br /><br />
+			[ <a href="{U_STATS_DETAIL}">{L_STATS_DETAIL}</a> ]</div><br />
+		</td>
+	</tr><tr>
+		<td colspan="3" class="cat"><div class="cattitle" align="center">{L_STATS_BROWSERS}</div></td>
+	</tr>
+<!-- BEGIN browsers -->
+	<tr align="left">
+		<td class="row1"><div class="gen"><img alt="" src="{THEME_PATH}/images/browser/{browsers.IMG}.png" />&nbsp;{browsers.NAME}</div></td>
+		<td class="row2"><img alt="" src="{THEME_PATH}/images/leftbar.gif" /><img alt="" src="{THEME_PATH}/images/mainbar.gif" height="14" width="{browsers.WIDTH}" /><img alt="" src="{THEME_PATH}/images/rightbar.gif" /></td>
+		<td class="row3"><div class="gen">{browsers.PERC} ({browsers.COUNT})</div></td>
+	</tr>
+<!-- END browsers -->
+	<tr>
+		<td colspan="3" class="cat"><div class="cattitle" align="center">{L_STATS_OS}</div></td>
+	</tr>
+<!-- BEGIN os -->
+	<tr align="left">
+		<td class="row1"><div class="gen"><img alt="" src="{THEME_PATH}/images/os/{os.IMG}.png" />&nbsp;{os.NAME}</div></td>
+		<td class="row2"><img alt="" src="{THEME_PATH}/images/leftbar.gif" /><img alt="" src="{THEME_PATH}/images/mainbar.gif" height="14" width="{os.WIDTH}" /><img alt="" src="{THEME_PATH}/images/rightbar.gif" /></td>
+		<td class="row3"><div class="gen">{os.PERC} ({os.COUNT})</div></td>
+	</tr>
+<!-- END os -->
+	<tr>
+		<td class="cat" colspan="3"><div class="cattitle" align="center">{L_STATS_MISC}</div></td>
+	</tr>
+<!-- BEGIN misc -->
+	<tr align="left">
+		<td colspan="2" class="row1"><span class="gen"><img alt="" src="{THEME_PATH}/images/stats/{misc.IMG}.gif" />&nbsp;{misc.NAME}</span></td><td class="row3"><span class="gen">{misc.COUNT}</span></td>
+	</tr>
+<!-- END misc -->
+</table>
+</div>

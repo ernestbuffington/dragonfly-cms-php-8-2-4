@@ -3,54 +3,130 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/includes/classes/cpg_member.php,v $
+  $Revision: 9.42 $
+  $Author: nanocaiordo $
+  $Date: 2007/12/12 12:54:17 $
 **********************************************/
 
-class cpg_member
-{
+class cpg_member {
 
-	private
-		$members = array(),
-		$user_id; // Member ID
+	var $members = array();
+	var $user_id; // Member ID
+	var $admin;
+	var $admin_id;
+	var $demo;
 
 	// Constructor
 	/***********************************************************************************
+	  Decodes and checks the member cookie from the *_users table.
 	  NOTE: The global $userinfo contains all of this user's information
 	************************************************************************************/
-	public function __construct()
-	{
+	function cpg_member() {
+		global $db, $user_prefix, $prefix, $MAIN_CFG, $SESS;
 		if ($this->user_id) return false;
-
-		$ID = Dragonfly::getKernel()->IDENTITY;
-
-		# Try v9 based login
-		if (!$ID->isMember())
-		{
-			if (isset($_POST['ulogin'])) {
-				\Dragonfly\Identity\Login::member();
-			}
-		}
+		$cookiename = $MAIN_CFG['cookie']['member'];
+		# MySQL has an SQL99 ISO incompatibility because it rtrim()s
+		# one specific binary data char (\x00 or \x20 version depended)
+		# Due to that we must pad our string with another character.
+		$visitor_ip = $db->binary_safe(Security::get_ip());
+		# Load Member cookie
+		$m_cookie   = isset($_COOKIE[$cookiename]) ? $_COOKIE[$cookiename] : false;
 		# Member Logout
-		else if (!defined('ADMIN_PAGES') && isset($_GET['op']) && $_GET['op'] == 'logout')
-		{
-			$ID->logout();
+		if ($m_cookie && !defined('ADMIN_PAGES') && isset($_GET['op']) && $_GET['op'] == 'logout') {
+			global $CPG_SESS;
+			unset($CPG_SESS['session_start']); # re-initialize session
+			$_SESSION['CPG_USER'] = false;
+			$m_cookie = explode(':', base64_decode($m_cookie));
+			$db->sql_query('DELETE FROM '.$prefix."_session WHERE host_addr=$visitor_ip AND guest<>1");
+			$db->sql_query('UPDATE '.$user_prefix.'_users SET user_session_time='.gmtime().' WHERE user_id='.intval($m_cookie[0]));
+			$this->setmemcookie();
+			$m_cookie = false;
 		}
-		# Member
-		else {
-			if ($ID->timezone && !date_default_timezone_set($ID->timezone)) {
-				$ID->timezone = date_default_timezone_get();
-//				$ID->save();
+		# Or Member Login
+		elseif (!$m_cookie && isset($_POST['ulogin'])) {
+			$m_cookie = $this->_loginmember($visitor_ip);
+		}
+		$uid = 1;
+		$pwd = '';
+		if ($m_cookie) {
+			$m_cookie = explode(':', base64_decode($m_cookie));
+			$uid = intval($m_cookie[0]);
+			$pwd = $m_cookie[2];
+		}
+		$uid = ($uid > 1) ? $uid : 1;
+		# If the current session already has the Member details
+		# load them else query the database
+		if (isset($_SESSION['CPG_USER']) && is_array($_SESSION['CPG_USER']) &&
+			$_SESSION['CPG_USER']['user_id'] == $uid && $_SESSION['CPG_USER']['user_password'] == $pwd)
+		{
+			$member = $_SESSION['CPG_USER'];
+		} else {
+			$result = $db->sql_query('SELECT * FROM '.$user_prefix.'_users WHERE user_id='.$uid);
+			if ($db->sql_numrows($result) < 1) {
+				$this->setmemcookie();
+				$db->sql_freeresult($result);
+				$result = $db->sql_query('SELECT * FROM '.$user_prefix.'_users WHERE user_id=1');
+			}
+			$member = $db->sql_fetchrow($result, SQL_ASSOC);
+			$db->sql_freeresult($result);
+			if ($member['user_id'] > 1 && ($member['user_password'] != $pwd || $member['user_password'] == '' || intval($member['user_level']) < 1)) {
+				$this->setmemcookie();
+				$member = $db->sql_ufetchrow('SELECT * FROM '.$user_prefix.'_users WHERE user_id=1', SQL_ASSOC);
+				$db->sql_freeresult($result);
 			}
 		}
+		$this->user_id = $member['user_id'];
+		if ($this->user_id > 1) {
+//		if ($this->user_id > 1 && !isset($member['_mem_of_groups'])) {
+			$member['_mem_of_groups'] = array();
+			$result = $db->sql_uquery('SELECT g.group_id, g.group_name, g.group_single_user FROM '.$prefix.'_bbgroups AS g INNER JOIN '.$prefix.'_bbuser_group AS ug ON (ug.group_id=g.group_id AND ug.user_id='.$this->user_id.' AND ug.user_pending=0)');
+			while (list($g_id, $g_name, $single) = $db->sql_fetchrow($result, SQL_NUM)) {
+				$member['_mem_of_groups'][$g_id] = ($single)?'':$g_name;
+			}
+		} else {
+			$member['user_dst'] = $member['user_timezone'] = 0;
+		}
+		$member['user_ip'] = $visitor_ip;
+		$_SESSION['CPG_USER'] = $member;
+		$this->members[$this->user_id] =& $_SESSION['CPG_USER'];
+//		$this->members[$this->user_id] = $member;
+		$this->admin_id = false;
+	}
 
-		$ID->user_ip   = Dragonfly::getKernel()->SQL->binary_safe(\Dragonfly\Net::ipn());
-		$this->user_id = $ID->id;
-		$this->members[$this->user_id] = $ID;
-
-		$_SESSION['CPG_USER'] = new CPG_User(); // Df < 10 legacy workaround
+	# Should be 'private' function in PHP 5
+	# or 'protected' so that a subclass can still use it
+	function _loginmember($visitor_ip) {
+		global $db, $prefix, $user_prefix, $sec_code, $CPG_SESS;
+		$username = Fix_Quotes($_POST['ulogin']);
+		$result = $db->sql_query('SELECT user_id, username, user_password, user_level, theme FROM '.$user_prefix."_users WHERE username='$username' AND user_id>1");
+		if ($db->sql_numrows($result) < 1) {
+			url_redirect(getlink('Your_Account&error=1&uname='.urlencode(base64_encode($username))), true);
+		}
+		$setinfo = $db->sql_fetchrow($result, SQL_ASSOC);
+		if ($setinfo['user_password'] != '' && $setinfo['user_level'] > 0) {
+			$pass = md5($_POST['user_password']);
+			if ($setinfo['user_password'] != $pass) { url_redirect(getlink('Your_Account&error=2'), true); }
+			if ($sec_code & 2) {
+				$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+				$code = $CPG_SESS['gfx'][$gfxid];
+				$gfx_check  = isset($_POST['gfx_check']) ? $_POST['gfx_check'] : '';
+				if (strlen($gfx_check) < 2 || $code != $gfx_check) { url_redirect(getlink('Your_Account&error=2'), true); }
+			}
+			$db->sql_query('DELETE FROM '.$prefix."_session WHERE host_addr=$visitor_ip AND guest=1");
+			unset($CPG_SESS['session_start']);
+			$CPG_SESS['theme'] = $setinfo['theme'];
+			return $this->setmemcookie($setinfo['user_id'], $pass, false);
+		} else {
+			if ($setinfo['user_level'] == 0) { url_redirect(getlink('Your_Account&profile='.$setinfo['user_id'])); }
+			else if ($setinfo['user_level'] == -1) { url_redirect(getlink('Your_Account&profile='.$setinfo['user_id'])); }
+			url_redirect(getlink('Your_Account&error=2'), true);
+		}
 	}
 
 	/***********************************************************************************
@@ -58,8 +134,7 @@ class cpg_member
 		$user: username or user_id
 		$data: the specific data you want from that user seperated by comma's, default = '*' (all fields)
 	************************************************************************************/
-	public function getmemdata($user, $data='*')
-	{
+	function getmemdata($user, $data='*') {
 		if (is_numeric($user)) {
 			if (isset($this->members[$user])) {
 				if ($data == '*') { return $this->members[$user]; }
@@ -87,73 +162,135 @@ class cpg_member
 				}
 			}
 		}
-		$SQL = Dragonfly::getKernel()->SQL;
-		$info = $SQL->uFetchAssoc("SELECT {$data} FROM {$SQL->TBL->users} WHERE ".(is_numeric($user) ? "user_id={$user}" : "username={$SQL->quote($user)}") . ' AND user_id > 1');
+		global $db, $user_prefix;
+		$info = $db->sql_ufetchrow("SELECT $data FROM ".$user_prefix.'_users WHERE '.(is_numeric($user) ? "user_id=$user" : "username='".Fix_Quotes($user)."'") . ' AND user_id > 1', SQL_ASSOC);
 		if ($data == '*' && $info) {
 			$this->members[$info['user_id']] = $info;
 		}
 		return $info;
 	}
 
-	/***********************************************************************************
-	  Returns the admin name or false
-	************************************************************************************/
-	public function loadadmin()
-	{
-		if (defined('ADMIN_PAGES')) {
-			if (isset($_GET['op']) && $_GET['op'] == 'logout') {
-				$_SESSION['DF_VISITOR']->admin->logout();
-			} else if (isset($_POST['alogin'])) {
-				\Dragonfly\Identity\Login::admin();
+	function setmemcookie($setuid=false, $setpass='', $secure=false) {
+		global $MAIN_CFG;
+		if (!$setuid) {
+			if (isset($_COOKIE[($MAIN_CFG['cookie']['member'])])) {
+//				if ($this->local) setcookie($MAIN_CFG['cookie']['member'],'',-1, $MAIN_CFG['cookie']['path']);
+				setcookie($MAIN_CFG['cookie']['member'],'',-1, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
 			}
+			return false;
+		} else {
+			$data = base64_encode("$setuid:$secure:$setpass");
+//			if ($this->local) setcookie($MAIN_CFG['cookie']['member'],$data,(gmtime()+15552000), $MAIN_CFG['cookie']['path']);
+			setcookie($MAIN_CFG['cookie']['member'],$data,(gmtime()+15552000), $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
+			return $data;
 		}
+	}
 
-		if (empty($_SESSION['DF_VISITOR']->admin)) {
-			unset($_SESSION['CPG_ADMIN']); // Df < 10 legacy workaround
+	/***********************************************************************************
+	  Decodes and checks the admin cookie from the *_admins table
+	  and returns the admin id.
+	************************************************************************************/
+	function loadadmin() {
+		if ($this->admin_id) return $this->admin_id;
+		global $MAIN_CFG, $SESS;
+		$cookiename = $MAIN_CFG['cookie']['admin'];
+		$admin = isset($_COOKIE[$cookiename]) ? $_COOKIE[$cookiename] : false;
+		if (!$admin) {
+			if (defined('ADMIN_PAGES') && isset($_POST['alogin'])) {
+				$result = $this->_loginadmin();
+				$_SESSION['CPG_ADMIN'] = $result;
+				return $result;
+			}
+			$_SESSION['CPG_ADMIN'] = false;
 			return false;
 		}
-		$_SESSION['CPG_ADMIN'] = new CPG_Admin(); // Df < 10 legacy workaround
-		return $_SESSION['DF_VISITOR']->admin->name;
-	}
-
-	function __get($key)
-	{
-		switch ($key)
-		{
-		case 'demo':
-			trigger_error('CLASS[member] use Dragonfly::isDemo()', E_USER_DEPRECATED);
-			return $this->demo;
-		case 'admin':
-			return empty($_SESSION['DF_VISITOR']->admin) ? null : $_SESSION['DF_VISITOR']->admin;
-		case 'admin_id':
-			trigger_error('CLASS[member][admin_id] use is_admin()', E_USER_DEPRECATED);
-			return $_SESSION['DF_VISITOR']->admin->name;
-		case 'members':
-			return $this->members;
-		case 'user_id':
-			trigger_error('CLASS[member][user_id] use Dragonfly::getKernel()->IDENTITY->id', E_USER_DEPRECATED);
-			return Dragonfly::getKernel()->IDENTITY->id;
+		if (defined('ADMIN_PAGES') && isset($_GET['op']) && $_GET['op'] == 'logout') {
+			$_SESSION['CPG_ADMIN'] = false;
+			$this->setadmcookie();
+			return false;
 		}
+		$admin = explode(':', base64_decode($admin));
+		$aid = intval($admin[0]);
+		$pwd = $admin[1];
+		$stay_alive = intval($admin[2]);
+		if (isset($_SESSION['CPG_ADMIN']) && is_array($_SESSION['CPG_ADMIN']) &&
+			$_SESSION['CPG_ADMIN']['admin_id'] == $aid && $_SESSION['CPG_ADMIN']['pwd'] == $pwd)
+		{
+			$row = $_SESSION['CPG_ADMIN'];
+		} else {
+			global $db, $prefix;
+			$_SESSION['CPG_ADMIN'] = false;
+			$result = $db->sql_query('SELECT * FROM '.$prefix.'_admins WHERE admin_id='.$aid);
+			$row = ($db->sql_numrows($result) > 0) ? $db->sql_fetchrow($result, SQL_ASSOC) : array('pwd'=>'');
+		}
+		if ($aid < 1 || $pwd == '' || $row['pwd'] != $pwd) {
+			$this->setadmcookie();
+			return false;
+		} else {
+			if (defined('ADMIN_PAGES') && $stay_alive) {
+				$this->setadmcookie(true, $aid, $pwd, true);
+			}
+			$_SESSION['CPG_ADMIN'] = $row;
+			unset($row['pwd']);
+			$this->admin = $row;
+			$this->admin_id = $row['aid'];
+			$this->demo = (CPGN_DEMO && eregi($this->admin_id, 'demo'));
+		}
+		return $this->admin_id;
 	}
 
-}
+	# Should be 'private' function in PHP 5
+	# or 'protected' so that a subclass can still use it
+	function _loginadmin() {
+		$aid = isset($_POST['alogin']) ? Fix_Quotes($_POST['alogin']) : NULL;
+		$pwd = isset($_POST['pwd']) ? $_POST['pwd'] : NULL;
+		if ($aid && $pwd) {
+			global $sec_code, $CPG_SESS;
+			if ($sec_code & 1) {
+				$gfxid = isset($_POST['gfxid']) ? $_POST['gfxid'] : 0;
+				$code = $CPG_SESS['gfx'][$gfxid];
+				$gfx_check  = isset($_POST['gfx_check']) ? $_POST['gfx_check'] : '';
+				if (strlen($gfx_check) < 2 || $code != $gfx_check) { return false; }
+			}
+			global $db, $prefix;
+			$pwd = md5($pwd);
+			$result = $db->sql_query('SELECT * FROM '.$prefix."_admins WHERE aid='$aid'");
+			$row = $db->sql_fetchrow($result, SQL_ASSOC);
+			if (isset($row['admin_id'])) {
+				if (!($login = Cache::array_load('login', 'a', false)) || !isset($login[$row['admin_id']])) {
+					$login[$row['admin_id']] = 1;
+				} else if ($login[$row['admin_id']] >= 5) {
+					cpg_error('Too many failed login attempts');
+				} else {
+					$login[$row['admin_id']]++;
+				}
+				if ($row['pwd'] == $pwd && $row['pwd'] != '') {
+					$this->setadmcookie(true, $row['admin_id'], $pwd, isset($_POST['persistent']));
+					unset($row['pwd']);
+					$this->admin = $row;
+					$this->admin_id = $row['aid'];
+					$this->demo = (CPGN_DEMO && eregi($this->admin_id, 'demo'));
+					unset($CPG_SESS['admin']);
+					$login[$row['admin_id']] = 1;
+				}
+				Cache::array_save('login', 'a', $login);
+			}
+		}
+		return $this->admin_id;
+	}
 
-/**
- * Df < 10 legacy workarounds
- */
+	function setadmcookie($setaid=false, $id=0, $pwd='', $persistent=false, $secure=false) {
+		global $MAIN_CFG;
+		if (!$setaid) {
+			if (!isset($_COOKIE[($MAIN_CFG['cookie']['admin'])])) { return; }
+			$data = '';
+			$time = -1;
+		} else {
+			$data = base64_encode("$id:$pwd:$persistent");
+			$time = ($persistent ? (gmtime()+(86400*30)) : 0);
+		}
+//		if ($this->local) setcookie($MAIN_CFG['cookie']['admin'], $data, $time, $MAIN_CFG['cookie']['path']);
+		setcookie($MAIN_CFG['cookie']['admin'], $data, $time, $MAIN_CFG['cookie']['path'], $MAIN_CFG['cookie']['domain']); //, int secure
+	}
 
-class CPG_Admin implements ArrayAccess
-{
-	public function offsetExists($k)  { return isset($_SESSION['DF_VISITOR']->admin[$k]); }
-	public function offsetGet($k)     { return $_SESSION['DF_VISITOR']->admin[$k]; }
-	public function offsetSet($k, $v) {}
-	public function offsetUnset($k)   {}
-}
-
-class CPG_User implements ArrayAccess
-{
-	public function offsetExists($k)  { return isset($_SESSION['DF_VISITOR']->identity[$k]); }
-	public function offsetGet($k)     { return $_SESSION['DF_VISITOR']->identity[$k]; }
-	public function offsetSet($k, $v) {}
-	public function offsetUnset($k)   {}
 }

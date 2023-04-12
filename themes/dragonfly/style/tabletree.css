@@ -1,0 +1,10 @@
+tbody tr td.tree {
+    padding-left: 20px;
+    background: url(../images/tabletree.png) no-repeat 50% -188px;
+}
+tbody tr.first td.tree {
+    background-position: 50% 0.6em;
+}
+tbody tr.last td.tree {
+    background-position: 50% -375px;
+}

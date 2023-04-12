@@ -1,36 +1,41 @@
-<?php
+<?php 
 /*********************************************
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
-  https://dragonfly.coders.exchange
+  http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
+
+  $Source: /cvs/html/includes/wysiwyg/wysiwyg.inc,v $
+  $Revision: 1.12 $
+  $Author: phoenix $
+  $Date: 2007/05/18 03:39:33 $
 **********************************************/
 
 class Wysiwyg
 {
-	public
-		$editor,
-		$type,
-		$form,
-		$field,
-		$width,
-		$height,
-		$value;
+	var $editor;
+	var $type;
+	var $form;
+	var $field;
+	var $width;
+	var $height;
+	var $value;
 
-	function __construct($form, $field, $width='100%', $height='300px', $value='')
+	function Wysiwyg($form, $field, $width='100%', $height='300px', $value='')
 	{
 		# Check for previously selected wysiwyg and use that else use none
 		if (isset($_POST['wysiwyg_editor'])) {
 			if (isset($_SESSION['WYSIWYG']) && $_SESSION['WYSIWYG'] == 'bbcode' && $_POST['wysiwyg_editor'] != 'bbcode') {
-				$value = \Dragonfly\BBCode::decode(\Dragonfly\BBCode::encode($value), 1, true);
+				require_once(CORE_PATH.'nbbcode.php');
+				$value = BBCode::decode(BBCode::encode($value), 1, true);
 			}
 			$_SESSION['WYSIWYG'] = $_POST['wysiwyg_editor'];
 		}
 		$type = isset($_SESSION['WYSIWYG']) ? $_SESSION['WYSIWYG'] : '';
-		if (!empty($type) && $type != 'bbcode' && $type != 'wysiwyg') {
+		if (!empty($type) && $type != 'bbcode') {
 			if (file_exists(BASEDIR."includes/wysiwyg/$type/$type.php")) {
 				include_once(BASEDIR."includes/wysiwyg/$type/$type.php");
 				$func = $type.'_getInstance';
@@ -50,15 +55,6 @@ class Wysiwyg
 		$this->width  = $width;
 		$this->height = $height;
 		$this->value  = $value;
-
-		if ('bbcode' == $type && defined('ADMIN_PAGES')) {
-			\Dragonfly\Output\Js::add('includes/poodle/javascript/bbcode.js');
-			\Dragonfly\Output\Css::add('bbcode');
-		}
-		if ('wysiwyg' == $type) {
-			\Dragonfly\Output\Js::add('includes/poodle/javascript/wysiwyg.js');
-			\Dragonfly\Output\Css::add('wysiwyg');
-		}
 	}
 
 	function setHeader()
@@ -70,7 +66,7 @@ class Wysiwyg
 
 	function getSelect()
 	{
-		return \Dragonfly\Output\HTML::select_box('wysiwyg_editor', $this->type, $this->getEditors())
+		return select_box('wysiwyg_editor', $this->type, $this->getEditors())
 			.' <input type="submit" name="wysiwyg" value="Change" />';
 	}
 
@@ -78,7 +74,6 @@ class Wysiwyg
 	{
 		$editors = array('' => 'none');
 		$editors['bbcode'] = 'BBCode';
-		$editors['wysiwyg'] = 'WYSIWYG';
 		$wysiwygs = dir(BASEDIR.'includes/wysiwyg');
 		while ($dir = $wysiwygs->read()) {
 			if ($dir[0] != '.' && file_exists(BASEDIR."includes/wysiwyg/$dir/$dir.php")) {
@@ -95,15 +90,10 @@ class Wysiwyg
 		if (!empty($this->editor)) {
 			return $this->editor->getHtml($this->field);
 		} elseif ($this->type == 'bbcode') {
-			if (!defined('ADMIN_PAGES')) {
-				$html = \Dragonfly\BBCode::getTable($this->field, $this->form, 1);
-				$html .= '<textarea id="'.$this->field.'" name="'.$this->field.'" style="width: '.$this->width.'; height: '.$this->height.';" onselect="storeCaret(this);">'.htmlspecialchars($this->value).'</textarea>';
-			} else {
-				$html = '<textarea class="bbcode" id="'.$this->field.'" name="'.$this->field.'" style="height:'.$this->height.';width:'.$this->width.'">'.htmlspecialchars($this->value).'</textarea>';
-			}
-			return $html;
-		} elseif ($this->type == 'wysiwyg') {
-			return '<textarea class="wysiwyg" id="'.$this->field.'" name="'.$this->field.'" style="height:'.$this->height.';width:'.$this->width.'">'.htmlspecialchars($this->value).'</textarea>';
+			require_once(CORE_PATH.'nbbcode.php');
+			$Html = bbcode_table($this->field, $this->form, 1);
+			$Html .= '<textarea id="'.$this->field.'" name="'.$this->field.'" style="width: '.$this->width.'; height: '.$this->height.';" onselect="storeCaret(this);">'.htmlspecialchars($this->value).'</textarea>';
+			return $Html;
 		} else {
 			return '<textarea id="'.$this->field.'" name="'.$this->field.'" style="width: '.$this->width.'; height: '.$this->height.';">'.htmlspecialchars($this->value).'</textarea>';
 		}

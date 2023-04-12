@@ -2,10 +2,21 @@
 # Copyright (c) 2004-2006 by CPG-Nuke Dev Team, dragonflycms.org
 # Released under the GNU GPL version 2 or any later version
 
+# $Source: /cvs/html/.htaccess,v $
+# $Revision: 9.19 $
+# $Author: nanocaiordo $
+# $Date: 2008/02/03 12:17:29 $
+
+# Remove the pound sign on these 3 for production sites
+# if your server doesn't allow it then a Error 500 is given
+# php_flag display_errors off
+# php_value error_reporting 0
+# php_flag register_globals 0
+
 # flood protection
 
 # deny most common except .php
-<FilesMatch "\.(inc|tpl|h|ihtml|sql|ini|conf|bin|spd|theme|module|xml)$">
+<FilesMatch "\.(inc|tpl|h|ihtml|sql|ini|conf|bin|spd|theme|module)$">
   deny from all
 </FilesMatch>
 
@@ -17,89 +28,45 @@
  allow from all
 </FilesMatch>
 
-<IfModule mod_setenvif.c>
-	# ban site rippers
-#	BrowserMatchNoCase "^Wget" banned
-#	BrowserMatchNoCase "; Win32\)" banned
-	# Block bad things
-#	BrowserMatchNoCase "Apache-HttpClient/" banned
-#	BrowserMatchNoCase "baidu" banned
-#	BrowserMatchNoCase "curl/" banned
-	BrowserMatchNoCase "Firefox/[0-9]\." banned
-#	BrowserMatchNoCase "HTTPClient/" banned
-#	BrowserMatchNoCase "Java/" banned
-#	BrowserMatchNoCase "libwww-perl/" banned
-	BrowserMatchNoCase "^Mozilla/[0-37-9a-z]" banned
-	BrowserMatchNoCase "MSIE ([02-7]|1[^0])" banned
-#	BrowserMatchNoCase "PEAR HTTP_Request" banned
-#	BrowserMatchNoCase "python-requests/" banned
-#	BrowserMatchNoCase "Python-urllib/" banned
-#	BrowserMatchNoCase "Synapse/" banned
-#	BrowserMatchNoCase "http.trovitutto.eu" banned
-#	BrowserMatchNoCase "user-agent" banned
-	BrowserMatchNoCase "webcollage" banned
-	BrowserMatchNoCase "WebWasher" banned
-	BrowserMatchNoCase "Win32" banned
-	BrowserMatchNoCase "Windows (2000|3|4|95|98|ce|me)" banned
-#	BrowserMatchNoCase "Zend_Http_Client" banned
-#	BrowserMatchNoCase "Zend\Http\Client" banned
-	BrowserMatchNoCase "ZmEu" banned
-
-	# deny security
-	deny from env=banned
-</IfModule>
-
-<IfModule mod_expires.c>
-	ExpiresActive On
-	<IfModule mod_headers.c>
-		Header set X-Content-Type-Options "nosniff"
-		Header set X-Frame-Options "SAMEORIGIN"
-		Header set X-XSS-Protection "1; mode=block"
-#		Header set Content-Security-Policy "default-src https: 'unsafe-inline'"
-		Header set imagetoolbar "no"
-		Header append X-UA-Compatible "IE=edge" env=gcf
-		<FilesMatch "\.ico$">
-			Header set Cache-Control "public"
-		</FilesMatch>
-	</IfModule>
-	ExpiresByType image/x-icon A1814400
-</IfModule>
-
 # if you use LEO, mod_rewrite is necessary
 <IfModule mod_rewrite.c>
-	RewriteEngine On
+  RewriteEngine On
 
-	# Old bots use HTTP/1.0, Current browsers and bots use HTTP/1.1
-	RewriteCond %{SERVER_PROTOCOL} ^HTTP/1\.0
-	RewriteCond %{REQUEST_METHOD} ^POST
-	RewriteRule .* - [L,R=406]
+  # Check for Santy Worms and redirect them to a fail page
+  #-------------------------------------------------------------------
+  # Variant -1
+  # uncomment if you dont use LWP
+  # RewriteCond %{HTTP_USER_AGENT} ^LWP    [NC,OR]
+  # Variant -2
+  RewriteCond %{REQUEST_URI} ^visualcoders [NC,OR]
+  # Variant -3
+  RewriteCond %{QUERY_STRING} rush=([^&]+) [NC,OR]
+  # Variant -4
+  RewriteCond %{HTTP:x-moz} ^prefetch [NC,OR]
+  RewriteCond %{X-moz} ^prefetch [NC,OR]
+  # block local file, sql and remote attacks
+  RewriteCond %{QUERY_STRING} \=../        [NC,OR]
+  RewriteCond %{QUERY_STRING} "%20UNION"   [NC,OR]
+  RewriteCond %{QUERY_STRING} \=http://    [NC]
+  # deny them
+  RewriteRule ^.*$ - [F]
+  #-------------------------------------------------------------------
 
-	# Check for Santy Worms and redirect them to a fail page
-	RewriteCond %{HTTP_USER_AGENT} ^LWP    [NC,OR]
-	RewriteCond %{REQUEST_URI} ^visualcoders [NC,OR]
-	RewriteCond %{QUERY_STRING} rush=([^&]+) [NC,OR]
-	RewriteCond %{HTTP:x-moz} ^prefetch [NC,OR]
-	RewriteCond %{X-moz} ^prefetch [NC]
-	RewriteRule ^.*$ - [F]
+  RewriteCond %{REQUEST_FILENAME} -f [NC,OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^(.*)$ - [L]
 
-	RewriteRule .* - [E=SERVER_MOD_REWRITE:1]
-
-	RewriteCond %{REQUEST_FILENAME} -f [OR]
-	RewriteCond %{REQUEST_FILENAME} -d
-	RewriteRule .* - [L]
-
-	# Google trying mobile websites
-	RewriteRule ^m(obile)?(/.*)$  $2 [R=302,L]
-
-	RewriteRule .* - [E=no-gzip:1]
-
-	<IfModule !mod_php5.c>
-		RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
-		RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
-		RewriteRule .* - [E=HTTP_IF_UNMODIFIED_SINCE:%{HTTP:If-Unmodified-Since}]
-#		RewriteRule .* - [E=PHP_AUTHORIZATION:%{HTTP:Authorization}]
-	</IfModule>
-	RewriteRule ^(.+)$ index.php [L,QSA,E=PATH_INFO:/$1]
+  # if you use LEO and CPG-Nuke is installed in a sub-directory like '/html',
+  # remove that # before RewriteBase and rename /html to the path of the sub-directory
+  # RewriteBase /html
+  # RewriteRule ^index\.html /index.php
+  RewriteRule ^([a-zA-Z0-9_=+-]+)(/|\.html)$ index=$1 [L,S=5]
+  RewriteRule ^([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)(/|\.html)$ index=$1&file=$2 [L,S=4]
+  RewriteRule ^([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)$ index=$1&file=$2 [L,S=3]
+  RewriteRule ^([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/(.*)(/|\.html)$ index=$1&file=$2&$3 [L,S=1]
+  RewriteRule ^([a-zA-Z0-9_]+)/(.*)(/|\.html)$ index=$1&file=index&$2  [L]
+  RewriteRule ^index=(.*[^/])/(.*) index=$1&$2 [N,L]
+  RewriteRule ^index=(.*) index.php?name=$1 [L]
 </IfModule>
 
 # use custom error pages if you wish
@@ -121,8 +88,8 @@ ErrorDocument 500 /error.php
 AddDefaultCharset utf-8
 
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php74” package as the default “PHP” programming language.
+# Set the “ea-php82” package as the default “PHP” programming language.
 <IfModule mime_module>
-  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit

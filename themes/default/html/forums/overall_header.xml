@@ -1,7 +1,0 @@
-<div style="text-align:center; line-height:18px;" id="top">
-	<a tal:attributes="href U_FAQ"><img tal:attributes="src '${THEME_PATH}/images/forums/icon_mini_faq.gif'" alt="" style="padding-right:3px; vertical-align:top;" /><span i18n:translate="">FAQ</span></a>
-	<a tal:attributes="href U_SEARCH"><img tal:attributes="src '${THEME_PATH}/images/forums/icon_mini_search.gif'" alt="" style="padding-right:3px; vertical-align:top;" /><span i18n:translate="">Search</span></a>
-	<a tal:condition="U_WATCH_FORUM" tal:attributes="href U_WATCH_FORUM"><img tal:attributes="src '${THEME_PATH}/images/forums/icon_mini_watch.gif'" alt="" style="padding-right:3px; vertical-align:top;" /><span i18n:translate="">Forum_watch</span></a>
-	<a tal:condition="U_WATCH_TOPIC" tal:attributes="href U_WATCH_TOPIC"><img tal:attributes="src '${THEME_PATH}/images/forums/icon_mini_watch.gif'" alt="" style="padding-right:3px; vertical-align:top;" /><span i18n:translate="">Topic_watch</span></a>
-	<a tal:attributes="href U_MODERATORS"><img tal:attributes="src '${THEME_PATH}/images/forums/icon_mini_login.gif'" alt="" style="padding-right:3px; vertical-align:top;" /><span i18n:translate="">Moderators</span></a>
-</div>

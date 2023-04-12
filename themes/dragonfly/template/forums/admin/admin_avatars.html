@@ -1,0 +1,31 @@
+<h1>Avatar Management</h1>
+The table below shows all currently stored uploaded avatars.  These are only the avatars which were selected to be
+uploaded by users, this will not show avatars currently in the gallery. If any of the listed avatars are no longer used
+by any user an option to delete it will appear.  This is a permanent delete, once you have selected to delete an
+avatar it will be removed from the server and no longer be available.  You will be prompted for confirmation (requires
+Javascript).<br /><br />
+
+<style>
+<!--
+td.avatar_listing { font-family: Verdana; font-size: xx-small; text-align: center; }
+th.avatar_listing { font-family: Verdana; font-size: x-small; text-align: center; font-weight: bold;
+                    background-color: #cccccc; }
+-->
+</style>
+
+<table cellpadding="4" cellspacing="1" border="0" class="forumline" align="center">
+  <tr>
+    <th class="avatar_listing" width="40%">{L_AVATAR}</th>
+    <th class="avatar_listing" width="20%">{L_FILESIZE}</th>
+    <th class="avatar_listing" width="20%">{L_USERNAME}</th>
+    <th class="avatar_listing" width="20%">{L_EDIT}</th>
+  </tr>
+  <!-- BEGIN avatarrow -->
+  <tr>
+    <td class="avatar_listing" bgcolor="$alter"><img src="{avatarrow.AVATAR_IMG}"><br />{avatarrow.FILENAME}</td>
+    <td class="avatar_listing" bgcolor="$alter">{avatarrow.STATS} {L_BYTES}</td>
+    <td class="avatar_listing" bgcolor="$alter">{avatarrow.USERNAME}</td>
+    <td class="avatar_listing" bgcolor="$alter">{avatarrow.EDIT}</td>
+  </tr>
+  <!-- END avatarrow -->
+</table>
