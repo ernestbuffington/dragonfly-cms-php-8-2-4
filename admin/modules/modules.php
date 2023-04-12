@@ -194,7 +194,7 @@ else if (isset($_GET['getcvs'])) {
 }
 else if (isset($_POST['cvsmodule'])) {
 	require_once(CORE_PATH.'classes/cvs.php');
-	if (!ereg('^([a-zA-Z0-9_\-]+)$', $_POST['cvsmodule'])) {
+	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['cvsmodule'])) {
 		cpg_error(sprintf(_ERROR_NO_EXIST,_FILENAME));
 	}
 	$path = 'modules/'.$_POST['cvsmodule'];
@@ -208,7 +208,7 @@ else if (isset($_POST['cvsmodule'])) {
 				if ($inst_file) {
 					$cpg_inst = implode('', file($inst_file));
 					if (preg_match('#class ([a-zA-Z0-9_\-]+)#si', $cpg_inst, $matches)) {
-						$cpg_inst = ereg_replace("(class|function) $matches[1]", "\\1 $_POST[cvsmodule]", $cpg_inst);
+						$cpg_inst = preg_replace("(class|function) $matches[1]", "\\1 $_POST[cvsmodule]", $cpg_inst);
 						if (!file_write($inst_file, $cpg_inst)) {
 							cpg_error('Module successfully recieved from CVS Repository.<br /><br /><b>NOTE</b><br />You must edit "'.$path.'/cpg_inst.php" to get the installer properly working', '', adminlink('modules'));
 						}
@@ -290,8 +290,8 @@ else {
 		$in_modules = array();
 		$l = $c = $r = $d = 1;
 		while ($row = $db->sql_fetchrow($result, SQL_NUM)) {
-			$in_modules[] = "($row[0], $insertmid, '$row[1]', ".$$row[1].")";
-			++$$row[1];
+			$in_modules[] = "($row[0], $insertmid, '$row[1]', ".${$row}[1].")";
+			++${$row}[1];
 		}
 		$db->sql_freeresult($result);
 		$db->sql_query('INSERT INTO '.$prefix.'_blocks_custom (bid, mid, side, weight) VALUES '.implode(',', $in_modules));
@@ -356,7 +356,7 @@ else {
 	}
 	$handle = opendir('modules');
 	while ($file = readdir($handle)) {
-		if (!ereg('[.]',$file) && $file != 'CVS') {
+		if (!preg_match('#[\.]#m',$file) && $file != 'CVS') {
 			$class = "$file";
 			if ($class != '' && !isset($mods[$class])) {
 				if (file_exists('modules/'.$class.'/index.php')) {
@@ -376,8 +376,8 @@ else {
 						$in_modules = array();
 						$l = $c = $r = $d = 1;
 						while ($row = $db->sql_fetchrow($result, SQL_NUM)) {
-							$in_modules[] = "($row[0], '{$mods[$class]['mid']}', '$row[1]', ".$$row[1].")";
-							++$$row[1];
+							$in_modules[] = "($row[0], '{$mods[$class]['mid']}', '$row[1]', ".${$row}[1].")";
+							++${$row}[1];
 						}
 						$db->sql_freeresult($result);
 						$db->sql_query('INSERT INTO '.$prefix.'_blocks_custom (bid, mid, side, weight) VALUES '.implode(',', $in_modules));
@@ -404,73 +404,73 @@ else {
 	<td align="center"><strong>'._BLOCKS.'</strong></td>
 	<td align="center"><strong>'._FUNCTIONS.'</strong></td></tr>';
 	foreach ($mods AS $title => $row) {
-		$title = (defined('_'.$row['title'].'LANG'))? (constant('_'.$row['title'].'LANG')) : ereg_replace('_', ' ', $row['title']);
+		$title = (defined('_'.$row['title'].'LANG'))? (constant('_'.$row['title'].'LANG')) : preg_replace('#_#m', ' ', $row['title']);
 		$allmods[$title] = $row;
 	}
 	uksort($allmods, 'strnatcasecmp');
 	$bgcolor = $bgcolor3;
-	while (list($title, $row) = each($allmods)) {
-		$bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
-		$mid = $row['mid'];
-		$moduledir = $row['title'];
-		if (($row['active'] != 1 || $row['view'] != 0) &&
-		    ($row['title'] == 'Your_Account' || $row['title'] == $MAIN_CFG['global']['main_module'])) {
-			$row['view'] = 0;
-			$db->sql_query("UPDATE ".$prefix."_modules SET active=1, view=0 WHERE mid='$mid'");
-		}
-		if ($row['title'] == $MAIN_CFG['global']['main_module']) {
-			$active = '<img src="images/home.gif" alt="'._INHOME.'" title="'._INHOME.'" />';
-		} else if ($row['title'] == 'Your_Account') {
-			$active = '<img src="images/checked.gif" alt="'._ACTIVE.'" title="'._ACTIVE.'" border="0" />';
-		} else if ($row['active']) {
-			$active = '<a href="'.adminlink('&amp;change='.$mid).'"><img src="images/checked.gif" alt="'._ACTIVE.'" title="'._DEACTIVATE.'" border="0" /></a>';
-		} else {
-			$active = '<a href="'.adminlink('&amp;change='.$mid).'"><img src="images/unchecked.gif" alt="'._INACTIVE.'" title="'._ACTIVATE.'" border="0" /></a>';
-		}
-		if ($row['view'] == 0) {
-			$who_view = _MVALL;
-		} elseif ($row['view'] == 1) {
-			$who_view = _MVUSERS;
-		} elseif ($row['view'] == 2) {
-			$who_view = _MVADMIN;
-		} elseif ($row['view'] > 3) {		// <= phpBB User Groups Integration
-			list($who_view) = $db->sql_ufetchrow("SELECT group_name FROM ".$prefix.'_bbgroups WHERE group_id='.($row['view']-3), SQL_NUM);
-		}
-		if ($row['title'] != $MAIN_CFG['global']['main_module'] && !$row['inmenu']) {
-			$title = "[ <big><strong>&middot;</strong></big> ] $title";
-		}
-		if ($row['title'] == $MAIN_CFG['global']['main_module']) {
-			$title = "<strong>$title</strong>";
-			$row['custom_title'] = "<strong>$row[custom_title]</strong>";
-			$who_view = "<strong>$who_view</strong>";
-			$change_status = '';
-			$bgcolor = ' bgcolor="'.$bgcolor4.'"';
-		} else {
-			$change_status = ' <strong>::</strong> <a href="'.adminlink('&amp;home='.$mid).'">'._PUTINHOME.'</a>';
-		}
-		if ($row['uninstall'] < 0) {
-			echo "<tr$bgcolor><td></td><td>$moduledir</td><td colspan=\"3\">".$row['custom_title'].'</td><td><a href="'.adminlink("modules&amp;install=$moduledir").'">Install</a></td></tr>';
-		} else {
-			if ($row['uninstall'] == 1) {
-				$change_status .= ' <strong>::</strong> <a href="'.adminlink('&amp;uninstall='.$moduledir).'">Uninstall</a>';
-			}
-			if (isset($row['blocks'])) {
-				if ($row['blocks'] == 0) $row['blocks'] = _NONE;
-				else if ($row['blocks'] == 1) $row['blocks'] = _LEFT;
-				else if ($row['blocks'] == 2) $row['blocks'] = _RIGHT;
-				else if ($row['blocks'] == 3) $row['blocks'] = _BOTH;
-			} else {
-				$row['blocks'] = '';
-			}
-		echo '<tr'.$bgcolor.'>
+	foreach ($allmods as $title => $row) {
+     $bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
+     $mid = $row['mid'];
+     $moduledir = $row['title'];
+     if (($row['active'] != 1 || $row['view'] != 0) &&
+   		    ($row['title'] == 'Your_Account' || $row['title'] == $MAIN_CFG['global']['main_module'])) {
+   			$row['view'] = 0;
+   			$db->sql_query("UPDATE ".$prefix."_modules SET active=1, view=0 WHERE mid='$mid'");
+   		}
+     if ($row['title'] == $MAIN_CFG['global']['main_module']) {
+   			$active = '<img src="images/home.gif" alt="'._INHOME.'" title="'._INHOME.'" />';
+   		} else if ($row['title'] == 'Your_Account') {
+   			$active = '<img src="images/checked.gif" alt="'._ACTIVE.'" title="'._ACTIVE.'" border="0" />';
+   		} else if ($row['active']) {
+   			$active = '<a href="'.adminlink('&amp;change='.$mid).'"><img src="images/checked.gif" alt="'._ACTIVE.'" title="'._DEACTIVATE.'" border="0" /></a>';
+   		} else {
+   			$active = '<a href="'.adminlink('&amp;change='.$mid).'"><img src="images/unchecked.gif" alt="'._INACTIVE.'" title="'._ACTIVATE.'" border="0" /></a>';
+   		}
+     if ($row['view'] == 0) {
+   			$who_view = _MVALL;
+   		} elseif ($row['view'] == 1) {
+   			$who_view = _MVUSERS;
+   		} elseif ($row['view'] == 2) {
+   			$who_view = _MVADMIN;
+   		} elseif ($row['view'] > 3) {		// <= phpBB User Groups Integration
+   			list($who_view) = $db->sql_ufetchrow("SELECT group_name FROM ".$prefix.'_bbgroups WHERE group_id='.($row['view']-3), SQL_NUM);
+   		}
+     if ($row['title'] != $MAIN_CFG['global']['main_module'] && !$row['inmenu']) {
+   			$title = "[ <big><strong>&middot;</strong></big> ] $title";
+   		}
+     if ($row['title'] == $MAIN_CFG['global']['main_module']) {
+   			$title = "<strong>$title</strong>";
+   			$row['custom_title'] = "<strong>$row[custom_title]</strong>";
+   			$who_view = "<strong>$who_view</strong>";
+   			$change_status = '';
+   			$bgcolor = ' bgcolor="'.$bgcolor4.'"';
+   		} else {
+   			$change_status = ' <strong>::</strong> <a href="'.adminlink('&amp;home='.$mid).'">'._PUTINHOME.'</a>';
+   		}
+     if ($row['uninstall'] < 0) {
+   			echo "<tr$bgcolor><td></td><td>$moduledir</td><td colspan=\"3\">".$row['custom_title'].'</td><td><a href="'.adminlink("modules&amp;install=$moduledir").'">Install</a></td></tr>';
+   		} else {
+   			if ($row['uninstall'] == 1) {
+   				$change_status .= ' <strong>::</strong> <a href="'.adminlink('&amp;uninstall='.$moduledir).'">Uninstall</a>';
+   			}
+   			if (isset($row['blocks'])) {
+   				if ($row['blocks'] == 0) $row['blocks'] = _NONE;
+   				else if ($row['blocks'] == 1) $row['blocks'] = _LEFT;
+   				else if ($row['blocks'] == 2) $row['blocks'] = _RIGHT;
+   				else if ($row['blocks'] == 3) $row['blocks'] = _BOTH;
+   			} else {
+   				$row['blocks'] = '';
+   			}
+   		echo '<tr'.$bgcolor.'>
 		<td align="center">'.$active.'</td>
 		<td><a href="'.getlink($row['title']).'" title="'._SHOW.'">'.$title.'</a></td>
 		<td>'.$row['custom_title'].'</td>
 		<td>'.$who_view.'</td>
 		<td>'.$row['blocks'].'</td>
 		<td><a href="'.adminlink('&amp;edit='.$mid).'">'._EDIT.'</a>'.$change_status.'</td></tr>';
-		}
-	}
+   		}
+ }
 	echo '</table></form>';
 	CloseTable();
 	if (is_writeable('modules')) {
