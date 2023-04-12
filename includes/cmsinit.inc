@@ -25,7 +25,7 @@ define('CPG_NUKE', '9.2.1');
 define('GZIPSUPPORT', extension_loaded('zlib'));
 define('WINDOWS', (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'));
 # Are we allowed to modify php.ini on the fly ?
-define('CAN_MOD_INI', !ereg('ini_set', ini_get('disable_functions')));
+define('CAN_MOD_INI', !preg_match('#ini_set#m', ini_get('disable_functions')));
 define('MAGICQUOTES', get_magic_quotes_gpc()||ini_get('magic_quotes_sybase'));
 # http://bugs.php.net/bug.php?id=31849
 if (WINDOWS || !function_exists('posix_getpwuid')) {
@@ -81,7 +81,7 @@ if (ini_get('output_buffering')) {
 	header('Content-Encoding: ');
 }
 if (!defined('INSTALL')) {
-	if (GZIPSUPPORT && !ini_get('zlib.output_compression') && isset($_SERVER['HTTP_ACCEPT_ENCODING']) && eregi('gzip', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
+	if (GZIPSUPPORT && !ini_get('zlib.output_compression') && isset($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('#gzip#mi', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
 		if (PHPVERS >= 43) { # PHP 4.2.x seems to give memleak
 			ob_start('ob_gzhandler');
 		} else {
@@ -107,7 +107,7 @@ if (!defined('GZIP_COMPRESS')) { define('GZIP_COMPRESS', false); }
 # Destroy GET/POST/Cookie variables from the global scope since IIS can't
 # turn off register_globals as Apache can thru .ht*
 if (intval(ini_get('register_globals')) != 0) {
-	foreach ($_REQUEST AS $key => $val) { if (isset($$key)) unset($$key); }
+	foreach ($_REQUEST AS $key => $val) { if (isset(${$key})) unset(${$key}); }
 }
 if (is_array($_POST)) { array_walk($_POST, 'Prepare_INPUT'); }
 if (is_array($_GET)) { array_walk($_GET, 'Prepare_INPUT'); }
@@ -149,7 +149,7 @@ if (version_compare($MAIN_CFG['global']['Version_Num'], CPG_NUKE, '<')) {
 $cpgdebugger->error_level = $MAIN_CFG['debug']['error_level'];
 if (CAN_MOD_INI) ini_set('sendmail_from', $MAIN_CFG['global']['adminmail']);
 if (CPG_DEBUG) { trigger_error('sendmail_from: '.ini_get('sendmail_from'),E_USER_NOTICE); }
-if (eregi('^(localhost|127.0.0.1|192.168|10.|172.(1[6-9]|2[0-9]|3[0-1]).)', $_SERVER['HTTP_HOST'])) $MAIN_CFG['cookie']['domain'] = NULL;
+if (preg_match('#^(localhost|127.0.0.1|192.168|10.|172.(1[6-9]|2[0-9]|3[0-1]).)#mi', $_SERVER['HTTP_HOST'])) $MAIN_CFG['cookie']['domain'] = NULL;
 else if ($MAIN_CFG['cookie']['server']) {
 	$MAIN_CFG['cookie']['domain'] = $MAIN_CFG['server']['domain'] = str_replace('www.', '', $_SERVER['SERVER_NAME']);
 }
@@ -161,7 +161,7 @@ if ($MAIN_CFG['global']['admingraphic'] < 1) $MAIN_CFG['global']['admingraphic']
 if (empty($MAIN_CFG['cookie']['member'])) $MAIN_CFG['cookie']['member'] = 'member';
 if (empty($MAIN_CFG['cookie']['admin'])) $MAIN_CFG['cookie']['admin'] = 'admin';
 $BASEHREF = ($_SERVER['SERVER_PORT'] != 443 ? 'http' : 'https') . '://';
-$BASEHREF .= (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $MAIN_CFG['server']['domain']);
+$BASEHREF .= ($_SERVER['HTTP_HOST'] ?? $MAIN_CFG['server']['domain']);
 $BASEHREF .= $MAIN_CFG['server']['path'];
 extract($MAIN_CFG['global'], ((PHPVERS >= 43) ? EXTR_OVERWRITE | EXTR_REFS : EXTR_OVERWRITE));
 
@@ -186,7 +186,7 @@ $METATAGS['MSSmartTagsPreventParsing'] = 'true';
   Start the session
 *******************************************************************************/
 $CPG_SESS = array();
-$SESS =& new cpg_session();
+$SESS = new cpg_session();
 
 /******************************************************************************
   Include language to detect languages from browser setting and user preferences
@@ -200,7 +200,7 @@ Security::init();
 /******************************************************************************
   Load member/visitor details
 *******************************************************************************/
-$CLASS['member'] =& new cpg_member();
+$CLASS['member'] = new cpg_member();
 $userinfo =& $_SESSION['CPG_USER'];
 
 /******************************************************************************
@@ -242,7 +242,7 @@ if ($MAIN_CFG['global']['maintenance'] && !is_admin() && !defined('ADMIN_PAGES')
 *******************************************************************************/
 $ThemeSel = get_theme();
 # Load template handler
-$cpgtpl =& new cpg_template();
+$cpgtpl = new cpg_template();
 $template =& $cpgtpl;
 
 $showblocks = 1;
@@ -358,7 +358,7 @@ function send_mail(&$mailer_message, $message, $html=0, $subject='', $to='', $to
 	$CLASS['mail']->Encoding = '8bit';
 	$CLASS['mail']->CharSet = 'utf-8';
 	$CLASS['mail']->Subject = ($subject!='') ? removecrlf($subject) : _FEEDBACK;
-	if (!eregi('<br',$message)) $message = nl2br($message);
+	if (!preg_match('#<br#mi',$message)) $message = nl2br($message);
 	if ($html && ($MAIN_CFG['email']['allow_html_email'] || is_admin())) {
 		if (function_exists('get_lang')) {
 			require_once(BASEDIR.'includes/nbbcode.php');
@@ -514,7 +514,8 @@ function Prepare_INPUT(&$value, $key, $set=true) {
 }
 
 function strip_javascript($text, $events=true) {
-	$patterns[] = '/<\s*script[^>]*?>.*?<\/\s*script\s*>/i';
+	$patterns = [];
+ $patterns[] = '/<\s*script[^>]*?>.*?<\/\s*script\s*>/i';
 	$patterns[] = '/href\s*=\s*\'\s*javascript.*\'/i';
 	$patterns[] = '/href\s*=\s*"\s*javascript.*"/i';
 	if ($events) {
@@ -543,10 +544,10 @@ function htmlunprepare($str, $nl2br=false) {
 	return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $str);
 }
 function html2bb($text) {
-	$text = ereg_replace('<', ' <', $text);
+	$text = preg_replace('#<#m', ' <', $text);
 	$text = preg_replace('/<ol type="([a1])">/si', '/\[list=\\1\]', $text);
-	$text = preg_replace('/<(b|u|i|hr)>/sie', "'['.strtolower(\\1).']'", $text);
-	$text = preg_replace('/<\/(b|u|i|hr)>/sie', "'[/'.strtolower(\\1).']'", $text);
+	$text = preg_replace_callback('/<(b|u|i|hr)>/si', fn($matches) => '[' . strtolower($matches[1]) . ']', $text);
+	$text = preg_replace_callback('/<\/(b|u|i|hr)>/si', fn($matches) => '[/' . strtolower($matches[1]) . ']', $text);
 	$text = preg_replace('#<img(.*?)src="(.*?)\.(gif|png|jpg|jpeg)"(.*?)>#si', '[img]\\2.\\3[/img]', $text);
 	$text = str_replace('<ul>', '[list]', $text);
 	$text = str_replace('<li>', '[*]', $text);
@@ -570,15 +571,15 @@ function check_words(&$Message) {
 		if (is_array($CensorList)) {
 			if ($CensorMode == 1) {
 				for ($i = 0; $i < count($CensorList); $i++) {
-					$Message = eregi_replace("$CensorList[$i]([^a-zA-Z0-9])","$CensorReplace\\1",$Message);
+					$Message = preg_replace("$CensorList[$i]([^a-zA-Z0-9])","$CensorReplace\\1",$Message);
 				}
 			} elseif ($CensorMode == 2) {
 				for ($i = 0; $i < count($CensorList); $i++) {
-					$Message = eregi_replace("(^|[^[:alnum:]])$CensorList[$i]","\\1$CensorReplace",$Message);
+					$Message = preg_replace("(^|[^[:alnum:]])$CensorList[$i]","\\1$CensorReplace",$Message);
 				}
 			} elseif ($CensorMode == 3) {
 				for ($i = 0; $i < count($CensorList); $i++) {
-					$Message = eregi_replace($CensorList[$i],$CensorReplace,$Message);
+					$Message = preg_replace($CensorList[$i],$CensorReplace,$Message);
 				}
 			}
 		}
@@ -602,7 +603,8 @@ function formatDateTime($time, $format) {
 
 # IP Handling
 function encode_ip($ip) {
-	if (PHPVERS >= 43) { $backtrace = debug_backtrace(); }
+	$function = null;
+ if (PHPVERS >= 43) { $backtrace = debug_backtrace(); }
 	$backtrace = empty($backtrace) ? array('file' => 'unknown', 'line' => 0) : $backtrace[0];
 	trigger_error("DEPRECATED call to <a href=\"http://dragonflycms.org/$function\">$function</a>() by {$backtrace['file']} on line {$backtrace['line']}.", E_USER_WARNING);
 	return inet_pton($ip);
