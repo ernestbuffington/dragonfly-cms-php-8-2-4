@@ -396,7 +396,9 @@ return static function (RectorConfig $rectorConfig): void {
 		//////__DIR__ . '/footer.php',
 		//////__DIR__ . '/header.php',
 		//////__DIR__ . '/index.php',
-		__DIR__ . '/includes/poodle/*/*/*',
+		//__DIR__ . '/includes/poodle/*/*/*',
+		  __DIR__ . '/includes/dragonfly/*/*/*',
+		//__DIR__ . '/includes/poodle/sql/xml/*',
     ]);
 
 };
