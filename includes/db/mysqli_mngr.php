@@ -205,7 +205,7 @@ class sql_mngr
 		return false;
 	}
 
-	function alter_field($mode, $table, $field, $type='', $null=TRUE, $default=NULL)
+	function alter_field($mode, $table, $field, $type='', $null = true, $default = NULL)
 	{
 		switch ($mode)
 		{

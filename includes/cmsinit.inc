@@ -518,7 +518,7 @@ function Prepare_INPUT(&$value, $key, $set=true) {
 
 function strip_javascript($text, $events=true) {
 	$patterns = [];
- $patterns[] = '/<\s*script[^>]*?>.*?<\/\s*script\s*>/i';
+    $patterns[] = '/<\s*script[^>]*?>.*?<\/\s*script\s*>/i';
 	$patterns[] = '/href\s*=\s*\'\s*javascript.*\'/i';
 	$patterns[] = '/href\s*=\s*"\s*javascript.*"/i';
 	if ($events) {

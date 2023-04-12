@@ -109,12 +109,16 @@ else {
 
 	# build the database
 	$version = isset($_POST['version']) ? $_POST['version'] : $current_version;
+	
 	set_time_limit(0);
+	
 	if (CAN_MOD_INI) ini_set('memory_limit', -1);
+	
 	echo '<p align="left">';
 
 	require_once(CORE_PATH.'classes/installer.php');
 	require_once(CORE_PATH.'classes/db_check.php');
+	
 	$tables = $indexes = $records = $table_ids = $optional = array();
 	
 	#create list of current tables
@@ -124,6 +128,7 @@ else {
 	$installer = new cpg_installer(true, true);
 	$table_files = array('core', 'coppermine', 'forums', 'news', 'surveys');
 	$data_files = array('core', 'coppermine', 'forums');
+	
 	if ($version == '0') {
 		require('install/sql/new.php');
 	} else {
@@ -131,6 +136,7 @@ else {
 		$installer->add_query('UPDATE', 'config_custom', "cfg_value='".CPG_NUKE."' WHERE cfg_name='global' AND cfg_field='Version_Num'");
 	}
 	echo '<b>Executing the queries: </b>';
+	
 	if (!$installer->install(false, '. ')) {
 		echo '</p>'.$installer->error.'<br /><br />'.$instlang['s1_fatalerror'];
 		exit;

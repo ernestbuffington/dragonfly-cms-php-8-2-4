@@ -29,7 +29,7 @@ define('DF_DATA_CHECK_ONLY_MULTIPLE', 4); # see DF_DATA_CHECK_ONLY
 class db_check
 {
 
-	function table_structure(&$table, &$columns, &$indexes)
+	public function table_structure(&$table, &$columns, &$indexes)
 	{
 		if (db_check::table_columns($table, $columns)) {
 			db_check::table_indexes($table, $indexes);
@@ -40,7 +40,7 @@ class db_check
 	}
 
 	# Function that compares the columns
-	function table_columns(&$table, &$columns)
+	public function table_columns(&$table, &$columns)
 	{
 		global $db, $installer, $tablelist, $optional, $table_ids;
 		$querytable = $tablelist[$table];
@@ -101,7 +101,7 @@ class db_check
 	}
 
 	# Function that compares the indexes
-	function table_indexes(&$table, &$indexes)
+	public function table_indexes(&$table, &$indexes)
 	{
 		global $db, $installer, $tablelist, $optional;
 		$querytable = $tablelist[$table];
@@ -163,7 +163,7 @@ class db_check
 	}
 
 	# Function that checks the data of a table
-	function table_data(&$table, &$content)
+	public function table_data(&$table, &$content)
 	{
 		global $db, $installer, $prefix, $user_prefix, $tablelist;
 		if (isset($tablelist[$table])) {
@@ -213,7 +213,7 @@ class db_check
 
 
 	# Function to convert ips to binary and add right padding to existing binary ips
-	function iptobin($querytable, $table, $table_id, $field, $col, $type) {
+	public function iptobin($querytable, $table, $table_id, $field, $col, $type) {
 		global $db, $installer;
 		if ($table == 'session') {
 			$db->query('DELETE FROM '.$querytable);
@@ -230,7 +230,7 @@ class db_check
 	}
 
 	# Function to convert DATETIME & TIMESTAMP fields in records to INT
-	function dttotime($querytable, $table, $id, $field, $column)
+	public function dttotime($querytable, $table, $id, $field, $column)
 	{
 		global $db, $installer;
 		$result = $db->query("SELECT $id, UNIX_TIMESTAMP($field) FROM $querytable");
@@ -243,7 +243,7 @@ class db_check
 	}
 
 	# Function to convert regdate (string) field in records to INT
-	function rdtotime($querytable, $table, $id, $field)
+	public function rdtotime($querytable, $table, $id, $field)
 	{
 		global $db, $installer;
 		$result = $db->query("SELECT $field FROM $querytable GROUP BY $field ORDER BY $id");
@@ -259,7 +259,7 @@ class db_check
 	}
 
 	# Function to convert ENUM field in records to INT
-	function enumtoint($querytable, $table, $id, $field)
+	public function enumtoint($querytable, $table, $id, $field)
 	{
 		global $db, $installer;
 		$no = array();
@@ -275,7 +275,7 @@ class db_check
 		}
 	}
 
-	function create_table(&$table, &$columns, &$indexes)
+	public static function create_table(&$table, &$columns, &$indexes)
 	{
 		global $installer;
 		$struct = array();
@@ -314,10 +314,10 @@ class db_check
 		$installer->add_query('CREATE', $table, "\n".implode(",\n", $struct)."\n", $table);
 	}
 
-	function insert_data(&$table, &$content)
+	public static function insert_data(&$table, &$content)
 	{
 		$increment = [];
-  global $installer;
+        global $installer;
 		$multiple = array();
 		foreach ($content['content'] as $main => $data) {
 			switch ($content['compare']) {

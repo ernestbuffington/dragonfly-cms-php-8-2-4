@@ -5,9 +5,13 @@ use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
+use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
+
 //use Rector\Php53\Rector\Variable\ReplaceHttpServerVarsByServerRector;
+use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 
 //use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector; # I ONLY DO THIS FOR CERTAIN FILES #
+use Rector\Php54\Rector\FuncCall\RemoveReferenceFromCallRector;
 
 use Rector\Php55\Rector\FuncCall\PregReplaceEModifierRector;
 
@@ -24,6 +28,7 @@ use Rector\Php70\Rector\FuncCall\RenameMktimeWithoutArgsToTimeRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
 use Rector\Php70\Rector\Ternary\TernaryToSpaceshipRector;
 use Rector\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector;
+use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 
 use Rector\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector;
 use Rector\Php71\Rector\FuncCall\CountOnNullRector;
@@ -84,12 +89,17 @@ return static function (RectorConfig $rectorConfig): void {
 
     // B. or single rule
     $rectorConfig->rule(TypedPropertyFromAssignsRector::class);
-
-    // 53
+	
+	//52 
+    $rectorConfig->rule(VarToPublicPropertyRector::class);
+    
+	// 53
 	//$rectorConfig->rule(ReplaceHttpServerVarsByServerRector::class);
+	$rectorConfig->rule(TernaryToElvisRector::class);
 	
 	//54
 	//$rectorConfig->rule(LongArrayToShortArrayRector::class); # I ONLY DO THIS FOR CERTAIN FILES #
+	$rectorConfig->rule(RemoveReferenceFromCallRector::class);
 
 	// 55
 	$rectorConfig->rule(PregReplaceEModifierRector::class);
@@ -109,6 +119,7 @@ return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->rule(TernaryToNullCoalescingRector::class);
 	$rectorConfig->rule(TernaryToSpaceshipRector::class);
 	$rectorConfig->rule(WrapVariableVariableNameInCurlyBracesRector::class);
+	$rectorConfig->rule(StaticCallOnNonStaticToInstanceCallRector::class);
 	
 	// 71
 	$rectorConfig->rule(BinaryOpBetweenNumberAndStringRector::class);
@@ -168,8 +179,17 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
 		  //////__DIR__ . '/includes/cmsinit.inc', // fuckover file extension renames
 		  
-		  __DIR__ . '/install.php',
-		  
+		  //////__DIR__ . '/install.php',
+		  //////__DIR__ . '/install/data/agents.php', 
+		  //////__DIR__ . '/install/data/coppermine.php',
+		  //////__DIR__ . '/install/data/core.php',  
+		  //////__DIR__ . '/install/data/forums.php',  
+		  //////__DIR__ . '/install/tables/coppermine.php',
+		  //////__DIR__ . '/install/tables/core.php',
+		  //////__DIR__ . '/install/tables/forums.php',
+		  //////__DIR__ . '/install/tables/news.php',
+		  //////__DIR__ . '/install/tables/surveys.php',
+		  		  
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',
 		  //////__DIR__ . '/admin/*',
@@ -179,6 +199,7 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/includes/*/*/*',
 		  //////__DIR__ . '/includes/*/*',
 		  //////__DIR__ . '/includes/*',
+		  __DIR__ . '/includes/classes/*',
 
 
 		  //////__DIR__ . '/install/*/*/*',

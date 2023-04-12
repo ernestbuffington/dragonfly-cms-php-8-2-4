@@ -19,10 +19,10 @@ define('_INST_ERROR_EXECUTE', '<strong>MySQL Error</strong> while executing:<br 
 
 class cpg_installer
 {
-	var $error;
-	var $tblexists; # bypass
-	var $duplicate; # bypass
-	var $queries = array();
+	public $error;
+	public $tblexists; # bypass
+	public $duplicate; # bypass
+	public $queries = array();
 
 	# Constructor
 	function __construct($tblexists=false, $duplicate=false)
@@ -50,7 +50,7 @@ class cpg_installer
 	function install($test=false, $echo=false)
 	{
 		$sql = null;
-  global $db, $prefix;
+        global $db, $prefix;
 		/**************************************
 		   Execute each query
 		**************************************/

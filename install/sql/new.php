@@ -17,20 +17,22 @@ if (!defined('INSTALL')) {
   exit; 
 }
 
+global $db, $installer, $tablelist, $optional, $table_ids;
+
+$table_files = array('core', 'coppermine', 'forums', 'news', 'surveys');
+
 # create the database tables
 foreach ($table_files as $file) 
 { 
   require(BASEDIR."install/sql/tables/$file.php"); 
 }
 
-global $tablelist;
-
 foreach ($tables AS $table => $columns) {
 	if (isset($tablelist[$table])) 
 	{ 
 	  $db->query('DROP TABLE '.$tablelist[$table]); 
 	}
-	$db->db_check->create_table($table, $columns, $indexes[$table]);
+	db_check::create_table($table, $columns, $indexes[$table]);
 }
 
 $tables = $indexes = $table_ids = array();
@@ -42,7 +44,7 @@ foreach ($data_files as $file) {
 
 foreach ($records AS $table => $data) 
 { 
-  $db->db_check->insert_data($table, $data); 
+  db_check::insert_data($table, $data); 
 }
 
 $records = array();
