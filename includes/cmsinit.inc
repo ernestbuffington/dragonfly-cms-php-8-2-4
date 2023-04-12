@@ -686,6 +686,8 @@ function define_nobody($file) {
 
 # stops the page creation and shows an error page
 function cpg_error($message, $title='ERROR', $redirect=false) {
+	
+	return;
 	global $userinfo, $cpgtpl, $SESS, $MAIN_CFG, $LNG, $currentlang, $db;
 	if ($redirect) { url_refresh($redirect); }
 	if ($title == 301 || ($title >= 400 && $title <= 503) || ($title >= 800 && $title <= 803)) {

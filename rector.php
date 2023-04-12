@@ -190,7 +190,9 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/install/tables/news.php',
 		  //////__DIR__ . '/install/tables/surveys.php',
 		  		  
-		  __DIR__ . '/includes/db/*',		  
+		  //__DIR__ . '/includes/db/*',
+		  
+		  __DIR__ . '/includes/classes/*',		  
 		  
 		  //////__DIR__ . '/admin/*/*/*',
 		  //////__DIR__ . '/admin/*/*',

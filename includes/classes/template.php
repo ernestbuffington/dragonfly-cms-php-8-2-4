@@ -39,15 +39,15 @@ class cpg_template
 	// --> $this->_tpldata[block.][iteration#][child.][iteration#][child2.][iteration#][variablename] == value
 	// if it's a root-level variable, it'll be like this:
 	// --> $this->_tpldata[.][0][varname] == value
-	var $_tpldata = array();
+	public $_tpldata = array();
 
 	// Root dir and hash of filenames for each template handle.
-	var $tpl = '';
-	var $root = '';
-	var $files = array();
+	public $tpl = '';
+	public $root = '';
+	public $files = array();
 
 	// this will hash handle names to the compiled/uncompiled code for that handle.
-	var $compiled_code = array();
+	public $compiled_code = array();
 
 	function __construct()
 	{

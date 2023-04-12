@@ -17,9 +17,9 @@
 class archive_zip
 {
 
-	var $toc;
-	var $filename;
-	var $type = 'zip';
+	public $toc;
+	public $filename;
+	public $type = 'zip';
 
 	function __construct($filename)
 	{

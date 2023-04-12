@@ -16,13 +16,13 @@
 
 class cpg_session {
 
-	var $sess_id;
-	var $sess_name;
-	var $sess_time;
-	var $start;
-	var $started;
-	var $old_handler;
-	var $dbupdate;
+	public $sess_id;
+	public $sess_name;
+	public $sess_time;
+	public $start;
+	public $started;
+	public $old_handler;
+	public $dbupdate;
 
 	//
 	// Constructor
@@ -90,6 +90,8 @@ class cpg_session {
 
 	function write_close() {
 		# No need to save data when it's a bot since they ignore cookies anyway
+		define('SEARCHBOT', ($_SESSION['SECURITY']['UA'] == 'bot') ? $_SESSION['SECURITY']['nick'] : false);
+		
 		if (SEARCHBOT && !(is_user() || is_admin())) {
 			return $this->destroy();
 		}

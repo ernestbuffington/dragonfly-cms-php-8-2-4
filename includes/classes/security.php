@@ -27,11 +27,11 @@ ban_type: 0 = just ban a ip
 class Security
 {
 
-	function init()
+	public static function init()
 	{
 		$ipn = null;
-  $mac = null;
-  # Show error page if the http server sends an error
+        $mac = null;
+        # Show error page if the http server sends an error
 		if (isset($_SERVER['REDIRECT_STATUS']) && $_SERVER['REDIRECT_STATUS'] >= 400 && $_SERVER['REDIRECT_STATUS'] <= 503) {
 			cpg_error('', $_SERVER['REDIRECT_STATUS']);
 		}
@@ -100,7 +100,7 @@ class Security
 		if (!empty($_SESSION['SECURITY']['banned'])) { cpg_error('', $_SESSION['SECURITY']['banned']); }
 	}
 
-	function check()
+	public static function check()
 	{
 		if ($_SESSION['SECURITY']['banned']) { return; }
 		global $MAIN_CFG;
@@ -110,7 +110,7 @@ class Security
 		}
 	}
 
-	function check_post()
+	public static function check_post()
 	{
 		if ($_SERVER['REQUEST_METHOD'] != 'POST') { return false; }
 		global $module_name;
@@ -118,7 +118,7 @@ class Security
 		return true;
 	}
 
-	function check_domain($domain)
+	public static function check_domain($domain)
 	{
 		if (!preg_match('#[^\./]+\.[\w]+($|/)#', $domain)) { return false; }
 		$domains = '';
@@ -130,7 +130,7 @@ class Security
 		return (preg_match('#('.str_replace('.', '\.', substr($domains,1).')#i'), $domain) < 1);
 	}
 
-	function check_email(&$email)
+	public static function check_email(&$email)
 	{
 		static $domains;
 		if (strlen($email) < 6) return 0;
@@ -155,7 +155,7 @@ class Security
 		return 1;
 	}
 
-	function get_ip()
+	public static function get_ip()
 	{
 		static $visitor_ip;
 		if (!empty($visitor_ip)) { return $visitor_ip; }
@@ -198,7 +198,7 @@ class Security
 		return $visitor_ip;
 	}
 
-	function _flood()
+	public static function _flood()
 	{
 		global $db, $prefix, $MAIN_CFG;
 		$ip = Security::get_ip();
@@ -276,7 +276,7 @@ class Security
 		Security::_flood_log($ipn, !empty($row), $delay, $gmtime, $log, $flood_count);
 	}
 
-	function _detectBot($where=false)
+	public static function _detectBot($where=false)
 	{
 		global $db, $prefix;
 		$bot = false;
@@ -295,7 +295,7 @@ class Security
 		return ($bot === false) ? false : array('ua' => 'bot', 'bot' => $bot[0], 'engine' => 'bot', 'banned' => (($bot[2] == -1) ? 410 : null));
 	}
 
-	function _flood_log($ip, $update=false, $delay, $gmtime, $log, $times)
+	public static function _flood_log($ip, $update=false, $delay, $gmtime, $log, $times)
 	{
 		global $MAIN_CFG;
 		$timeout = ((($times+1)*2)/$delay)+$gmtime;
@@ -315,7 +315,7 @@ class Security
 		$_SESSION['SECURITY']['flood_count'] = $times;
 	}
 
-	function _detectProxy()
+	public static function _detectProxy()
 	{
 		if (SEARCHBOT) { return $_SESSION['SECURITY']['nick']; }
 		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -330,7 +330,7 @@ class Security
 		return $rating;
 	}
 
-	function _data_log($c, $l)
+	public static function _data_log($c, $l)
 	{
 		$l[$c]['S_TIME'] = gmtime();
 		$l[$c]['S_USER'] = !empty($_SESSION['CPG_USER']) ? $_SESSION['CPG_USER']['username'] : '';
@@ -346,7 +346,7 @@ class Security
 		return $l;
 	}
 
-	function _log_serializer($log)
+	public static function _log_serializer($log)
 	{
 		for($i=0; $i<(is_countable($log) ? count($log) : 0); ++$i) {
 			foreach ($log[$i] as $key => $val) {

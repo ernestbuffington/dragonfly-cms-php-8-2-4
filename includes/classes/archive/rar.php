@@ -17,9 +17,9 @@
 class archive_rar
 {
 
-	var $toc;
-	var $filename;
-	var $type = 'rar';
+	public $toc;
+	public $filename;
+	public $type = 'rar';
 
 	function __construct($filename)
 	{

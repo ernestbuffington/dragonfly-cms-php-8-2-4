@@ -16,10 +16,10 @@
 class Blocks
 {
 
-	var $blocks, $custom = array();
-	var $l, $r, $c, $d = 0;
-	var $showblocks = 0;
-	var $preview, $start = false;
+	public $blocks, $custom = array();
+	public $l, $r, $c, $d = 0;
+	public $showblocks = 0;
+	public $preview, $start = false;
 
 	function init()
 	{
@@ -33,7 +33,7 @@ class Blocks
 		}
 		$module_block = defined('ADMIN_PAGES') ? 'Admin' : $module_name;
 		$this->blocks = blocks_list();
-		$this->blocks = isset($this->blocks[$module_block]) ? $this->blocks[$module_block] : array();
+		$this->blocks = $this->blocks[$module_block] ?? array();
 		if (!empty($this->blocks)) {
 			$this->showblocks = (int)$this->blocks['blocks'];
 			foreach($this->blocks as $key => $val) {
@@ -129,7 +129,8 @@ class Blocks
 
 	function blockfile($side, &$block)
 	{
-		Method::priv( __FILE__ , __CLASS__ , __FUNCTION__ );
+		$content = null;
+  Method::priv( __FILE__ , __CLASS__ , __FUNCTION__ );
 		if (is_file('blocks/'.$block['blockfile'])) {
 			include('blocks/'.$block['blockfile']);
 			if ($content == 'ERROR') return;

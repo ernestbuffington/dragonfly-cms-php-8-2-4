@@ -17,9 +17,9 @@
 class archive_tar
 {
 
-	var $toc;
-	var $filename;
-	var $type = 'tar';
+	public $toc;
+	public $filename;
+	public $type = 'tar';
 
 	function __construct($filename, $type='')
 	{

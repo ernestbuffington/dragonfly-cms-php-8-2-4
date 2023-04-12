@@ -30,26 +30,26 @@ class SMTP
 	 *  SMTP server port
 	 *  @var int
 	 */
-	var $SMTP_PORT = 25;
+	public $SMTP_PORT = 25;
 	
 	/**
 	 *  SMTP reply line ending
 	 *  @var string
 	 */
-	var $CRLF = "\r\n";
+	public $CRLF = "\r\n";
 	
 	/**
 	 *  Sets whether debugging is turned on
 	 *  @var bool
 	 */
-	var $do_debug;	   # the level of debug to perform
+	public $do_debug;	   # the level of debug to perform
 
 	/**#@+
 	 * @access private
 	 */
-	var $smtp_conn;	  # the socket to the server
-	var $error;		  # error if any on the last call
-	var $helo_rply;	  # the reply the server sent to us for HELO
+	public $smtp_conn;	  # the socket to the server
+	public $error;		  # error if any on the last call
+	public $helo_rply;	  # the reply the server sent to us for HELO
 	/**#@-*/
 
 	/**

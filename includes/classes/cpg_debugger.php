@@ -25,17 +25,17 @@ function cpg_error_handler($errno, $errmsg, $filename, $linenum, $vars='') {
 
 class cpg_debugger {
 	// Define variables that store the old error reporting and logging states
-	var $old_handler;
-	var $old_display_level;
-	var $old_error_logging;
-	var $old_error_log;
+	public $old_handler;
+	public $old_display_level;
+	public $old_error_logging;
+	public $old_error_log;
 
-	var $logfile;
-	var $report;
-	var $active = false;
-	var $error_level;
+	public $logfile;
+	public $report;
+	public $active = false;
+	public $error_level;
 
-	function cpg_debugger($log = 'debug.log') {
+	function __construct($log = 'debug.log') {
 		$this->logfile = $log;
 	}
 
@@ -102,7 +102,7 @@ class cpg_debugger {
 
 		// set of errors for which a trace will be saved
 		if ((CPG_DEBUG || is_admin()) && $errno & $this->error_level) {
-			if (ereg('mysql_', $errmsg)) {
+			if (preg_match('#mysql_#m', $errmsg)) {
 				global $db;
 				$filename = $db->file;
 				$linenum = $db->line;

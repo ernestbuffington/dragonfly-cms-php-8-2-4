@@ -16,11 +16,11 @@
 
 class cpg_member {
 
-	var $members = array();
-	var $user_id; // Member ID
-	var $admin;
-	var $admin_id;
-	var $demo;
+	public $members = array();
+	public $user_id; // Member ID
+	public $admin;
+	public $admin_id;
+	public $demo;
 
 	// Constructor
 	/***********************************************************************************

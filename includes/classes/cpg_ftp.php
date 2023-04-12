@@ -16,7 +16,7 @@
 
 class cpg_ftp {
 
-	var $connect_id;
+	public $connect_id;
 
 	// Constructor
 	function __construct($server, $user, $pass, $path, $passive=false) {

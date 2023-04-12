@@ -16,7 +16,7 @@
 
 class cpg_ftpfake {
 
-	var $path;
+	public $path;
 
 	// Constructor
 	function __construct($server, $user, $pass, $path, $passive=false) {
