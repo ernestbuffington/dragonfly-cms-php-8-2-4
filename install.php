@@ -20,7 +20,7 @@ require_once(CORE_PATH.'cpg_page.php');
 
 $go = 0;
 if (isset($_POST['step'])) {
-	if (!ereg('^[0-9]$', $_POST['step'])) exit;
+	if (!preg_match('#^[0-9]$#m', $_POST['step'])) exit;
 	$go = intval($_POST['step']);
 }
 $images = array();
@@ -28,7 +28,7 @@ for ($i=0; $i<6; ++$i) {
 	$images[$i] = (($go == $i) ? 'box_current' : (($go > $i) ? 'checked' : 'unchecked'));
 }
 
-if ($go < 4 && isset($_COOKIE['installtest'])) { setcookie('installtest','',-1); }
+if ($go < 4 && isset($_COOKIE['installtest'])) { setcookie('installtest','',['expires' => -1]); }
 
 $config_file = CORE_PATH.'config.php';
 if (file_exists($config_file)) {
@@ -83,7 +83,9 @@ function get_db_vars($db) {
 }
 
 function inst_header() {
-	global $images, $instlang, $go, $currentlang;
+	$matches = [];
+ $languageslist = [];
+ global $images, $instlang, $go, $currentlang;
 	echo cpg_header($instlang['installer']).'
 <script language="JavaScript" type="text/javascript" src="includes/javascript/infobox.js"></script>
 <div id="infodiv" style="position:absolute; visibility:hidden; z-index:20; top:0px; left:0px;"></div><br />
@@ -103,7 +105,7 @@ function inst_header() {
 		$content = '';
 		$handle = opendir(BASEDIR.'install/language');
 		while ($file = readdir($handle)) {
-			if (ereg('(.*).php', $file, $matches)) {
+			if (preg_match('#(.*).php#m', $file, $matches)) {
 				$languageslist[] = $matches[1];
 			}
 		}
@@ -149,7 +151,7 @@ if (!$go) {
 <input type="hidden" name="step" value="'.(!empty($current_version) ? '3' : '1').'" />
 <input type="submit" value="'.$instlang['agree'].'" class="formfield" /></p>';
 }
-elseif (isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 0 && !ereg('://'.$_SERVER['HTTP_HOST'], $_SERVER['HTTP_REFERER'])) {
+elseif (isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 0 && !preg_match('://'.$_SERVER['HTTP_HOST'], $_SERVER['HTTP_REFERER'])) {
 	echo 'Posting from another server is not allowed';
 }
 elseif (file_exists(BASEDIR."install/step$go.php")) {
