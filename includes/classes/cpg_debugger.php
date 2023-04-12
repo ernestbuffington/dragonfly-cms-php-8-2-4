@@ -102,12 +102,15 @@ class cpg_debugger {
 
 		// set of errors for which a trace will be saved
 		if ((CPG_DEBUG || is_admin()) && $errno & $this->error_level) {
+			
 			if (preg_match('#mysql_#m', $errmsg)) {
 				global $db;
 				$filename = $db->file;
 				$linenum = $db->line;
 			}
+			if ($errno & $this->error_level != null) {
 			$this->report[$filename][] = $errortype[$errno]." line $linenum: ".$errmsg;
+			}
 		}
 
 		// save to the error log
