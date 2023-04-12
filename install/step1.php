@@ -51,8 +51,8 @@ $gd = preg_replace('#bundled \((.*?) compatible\)#', '\\1', $gd);
 $ini['register_globals'] = ini_get('register_globals');
 $ini['magic_quotes'] = get_magic_quotes_gpc();
 $ini['magic_quotes_sybase'] = ini_get('magic_quotes_sybase');
-$ini['ini_set'] = !ereg('ini_set', ini_get('disable_functions'));
-$ini['LEO'] = ereg('Apache', $_SERVER['SERVER_SOFTWARE']);
+$ini['ini_set'] = !preg_match('#ini_set#m', ini_get('disable_functions'));
+$ini['LEO'] = preg_match('#Apache#m', $_SERVER['SERVER_SOFTWARE']);
 
 $checks = array(
 	'<img src="install/images/red.gif" alt="critical" title="critical" />',

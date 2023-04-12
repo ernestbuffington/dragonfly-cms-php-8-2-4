@@ -23,7 +23,7 @@ $session = '';
 $cookie_path = dirname(getenv('SCRIPT_NAME'));
 $cookie_path = str_replace('\\', '/', $cookie_path); //Damn' windows
 if (substr($cookie_path,-1) != '/') $cookie_path .= '/';
-$domain = ereg_replace('www.', '', getenv('HTTP_HOST'));
+$domain = preg_replace('#www.#m', '', getenv('HTTP_HOST'));
 $setup = array(
 	'siten'		   => 'My Dragonfly Site',
 	'domain'	   => getenv('HTTP_HOST'),
@@ -60,14 +60,14 @@ if (isset($_POST['domain'])) {
 		$error = $instlang['s2_error_empty'];
 	} elseif (!preg_match('#^[_\.\+0-9a-z-]+@(([a-z]{1,25}\.)?[0-9a-z-]{2,63}\.[a-z]{2,6}(\.[a-z]{2,6})?)$#', $setup['adminm'])) {
 		$error = $instlang['s2_error_email'];
-	} elseif (!ereg('^([a-zA-Z0-9_\-]+)$', $_POST['admincookie']) ||
-			  !ereg('^([a-zA-Z0-9_\-]+)$', $_POST['membercookie'])) {
+	} elseif (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['admincookie']) ||
+			  !preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $_POST['membercookie'])) {
 		$error = $instlang['s2_error_cookiename'];
 	}
 	if (!isset($error)) {
 		# start cookie test
 		$cookie = base64_encode(serialize($setup));
-		setcookie('installtest',$cookie,0,$setup['cookiepath'],$setup['cookiedom']); //, int secure
+		setcookie('installtest',$cookie, ['expires' => 0, 'path' => $setup['cookiepath'], 'domain' => $setup['cookiedom']]); //, int secure
 		session_test($setup);
 		$_SESSION['installtest'] = $setup;
 		inst_header();
@@ -125,7 +125,7 @@ if (!isset($_POST['domain']) && isset($_COOKIE['installtest']) && isset($_POST['
 		inst_header();
 		echo $instlang['s2_account'].'<p><input type="hidden" name="step" value="5" /><input type="submit" value="'.$instlang['s2_create'].'" class="formfield" />';
 	} else {
-		setcookie('installtest','',-1,trim($cookie['cookiepath']),$cookie_dom); //, int secure
+		setcookie('installtest','', ['expires' => -1, 'path' => trim($cookie['cookiepath']), 'domain' => $cookie_dom]); //, int secure
 		$_SESSION['installtest'] = null;
 		$images[3] = 'checked';
 		inst_header();

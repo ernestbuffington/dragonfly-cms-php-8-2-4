@@ -47,7 +47,7 @@ maketip('timezone','".$instlang['s3_timezone']."','".$instlang['s3_timezone2']."
 		.'<tr><td colspan="2">'._CREATEUSERDATA.' <input type="radio" name="user_new" value="1" checked="checked" />'._YES.'&nbsp;&nbsp;<input type="radio" name="user_new" value="0" />'._NO.'<br /><br />'
 		.'<input type="hidden" name="step" value="5" /><input type="submit" value="'._SUBMIT.'" class="formfield" />'
 		.'</td></tr></table>';
-	} else if (ereg('[0-9]', $_POST['pwd']) && ereg('[a-z]', $_POST['pwd']) && ereg('[A-Z]', $_POST['pwd'])) {
+	} else if (preg_match('#[0-9]#m', $_POST['pwd']) && preg_match('#[a-z]#m', $_POST['pwd']) && preg_match('#[A-Z]#m', $_POST['pwd'])) {
 		$cookie = unserialize(base64_decode($_COOKIE['installtest']));
 		$pwd = md5($_POST['pwd']);
 		$name = $_POST['name'];
@@ -57,10 +57,10 @@ maketip('timezone','".$instlang['s3_timezone']."','".$instlang['s3_timezone2']."
 		if ($_POST['user_new'] == 1) {
 			$user_regdate = gmtime();
 			$db->sql_query("INSERT INTO ".$user_prefix."_users (username, user_email, user_avatar, user_regdate, user_password, theme, commentmax, user_level, user_lang, user_dateformat, user_timezone) VALUES ('$name','$email','gallery/blank.gif','$user_regdate','$pwd','','4096', '2', 'english','D M d, Y g:i a', '$timezone')");
-			setcookie(trim($cookie['membercookie']), base64_encode("2:0:$pwd"), 0, trim($cookie['cookiepath']),trim($cookie['cookiedom'])); //, int secure
+			setcookie(trim($cookie['membercookie']), base64_encode("2:0:$pwd"), ['expires' => 0, 'path' => trim($cookie['cookiepath']), 'domain' => trim($cookie['cookiedom'])]); //, int secure
 		}
-		setcookie(trim($cookie['admincookie']), base64_encode("1:$pwd:0"), 0, trim($cookie['cookiepath']),trim($cookie['cookiedom'])); //, int secure
-		setcookie('installtest','',-1,trim($cookie['cookiepath']),trim($cookie['cookiedom'])); //, int secure
+		setcookie(trim($cookie['admincookie']), base64_encode("1:$pwd:0"), ['expires' => 0, 'path' => trim($cookie['cookiepath']), 'domain' => trim($cookie['cookiedom'])]); //, int secure
+		setcookie('installtest','', ['expires' => -1, 'path' => trim($cookie['cookiepath']), 'domain' => trim($cookie['cookiedom'])]); //, int secure
 		$images[3] = 'checked';
 		inst_header();
 		echo $instlang['s3_finnish'];
