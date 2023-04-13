@@ -35,9 +35,7 @@ class sql_mngr
 		$this->_owner = $owner;
 		$this->fields = array(
 		'SERIAL4' => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-		#####'SERIAL4' => 'INT NOT NULL AUTO_INCREMENT',
 		'SERIAL8' => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
-		######'SERIAL8' => 'BIGINT NOT NULL AUTO_INCREMENT',
 		'TEXT' => 'TEXT',
 		'BLOB' => 'BLOB',
 //		'BOOL' => 'BOOL',       # synonyms for TINYINT(1)
