@@ -168,7 +168,7 @@ if (isset($_POST['createTopic'])) {
 	$handle = opendir('images/topics');
 	$tlist = array();
 	while ($file = readdir($handle)) {
-		if (ereg("^([a-zA-Z0-9_\-]+)([.]{1})([a-zA-Z0-9_\-]{3})$",$file) && $file != 'AllTopics.gif') {
+		if (preg_match('#^([a-zA-Z0-9_\\\\\-]+)([\.]{1})([a-zA-Z0-9_\\\\\-]{3})$#m',$file) && $file != 'AllTopics.gif') {
 			$tlist[] = $file;
 		}
 	}

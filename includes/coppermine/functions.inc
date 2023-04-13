@@ -928,7 +928,11 @@ function display_thumbnails($meta, $album, $cat, $page, $thumbcols, $thumbrows, 
 	$pic_data = get_pic_data($meta, $album, $thumb_count, $album_name, $lower_limit, $thumb_per_page);
 	$total_pages = ceil($thumb_count / $thumb_per_page);
 	$i = 0;
-	if (count($pic_data) > 0) {
+	
+	if(!isset($pic_data))
+	$pic_data = 0;
+	
+	if ($pic_data > 0) {
 		$meta_link = ($meta != '') ? '&amp;meta='.$meta : '';
 		if (is_numeric($album)) {
 			$alb_link = '&amp;album='.$album;
