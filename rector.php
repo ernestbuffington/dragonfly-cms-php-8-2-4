@@ -240,7 +240,11 @@ return static function (RectorConfig $rectorConfig): void {
 
 
 		  //////__DIR__ . '/modules/Your_Account/blocks/*',
-		  __DIR__ . '/modules/Your_Account/*',
+		  //////__DIR__ . '/modules/Your_Account/*',
+
+		  //////__DIR__ . '/modules/Forums/admin/*',
+		  //////__DIR__ . '/modules/Forums/*',
+		  __DIR__ . '/modules/Forums/admin/index.php',
 		  
 		  //////__DIR__ . '/rss/*',
 
