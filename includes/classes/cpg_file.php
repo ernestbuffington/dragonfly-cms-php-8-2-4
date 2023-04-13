@@ -205,7 +205,7 @@ class CPG_File {
 
 	function analyze_system() {
 		$analized = [];
-  $disabled = ini_get('disable_functions'); // string
+        $disabled = ini_get('disable_functions'); // string
 		$analized['set_time_limit'] = !preg_match('#set_time_limit#mi', $disabled);
 		$analized['fsockopen']      = !preg_match('#fsockopen#mi', $disabled);
 		$analized['fopen']          = !preg_match('#fopen#mi', $disabled);
