@@ -729,24 +729,24 @@ if ($set_topic_icon)
 	//if new topic, or we are editing the first post of a topic
 	$icons_array = "var icons_array = new Array();icons_array[0]='images/spacer.gif';";
 	$topic_icon_post = isset($_POST['topic_icon']) ? intval($_POST['topic_icon']) : NULL;
-	while( list($key, $val) = each($topic_icons) ) {
-		$selected = '';
-		if (isset($topic_icon_post) && $val['icon_id'] == $topic_icon_post) {
-			//icon is set in post data EG preview. this must override all
-			//note: no icon is 0 in which case this will never pass
-			$selected = 'selected';
-		} else if (isset($post_data['icon_id']) && $val['icon_id'] == $post_data['icon_id']) {
-			//this is the current icon for this thread (stored)
-			$selected = 'selected';
-		}
-		$template->assign_block_vars('topic_icon_option', array(
-			'S_ICON_ID' => $val['icon_id'],
-			'S_ICON_NAME' => $val['icon_name'],
-			'S_SELECTED' => $selected)
-		);
-		//add this icons url to the javascript array
-		$icons_array .= "icons_array[".$val['icon_id']."] = '".$val['icon_url']."';";
-	}
+foreach ($topic_icons as $key => $val) {
+    $selected = '';
+    if (isset($topic_icon_post) && $val['icon_id'] == $topic_icon_post) {
+  			//icon is set in post data EG preview. this must override all
+  			//note: no icon is 0 in which case this will never pass
+  			$selected = 'selected';
+  		} else if (isset($post_data['icon_id']) && $val['icon_id'] == $post_data['icon_id']) {
+  			//this is the current icon for this thread (stored)
+  			$selected = 'selected';
+  		}
+    $template->assign_block_vars('topic_icon_option', array(
+  			'S_ICON_ID' => $val['icon_id'],
+  			'S_ICON_NAME' => $val['icon_name'],
+  			'S_SELECTED' => $selected)
+  		);
+    //add this icons url to the javascript array
+    $icons_array .= "icons_array[".$val['icon_id']."] = '".$val['icon_url']."';";
+}
 	$template->assign_vars(array(
 		'ICONS_ARRAY' => $icons_array)
 	);
