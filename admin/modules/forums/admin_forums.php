@@ -14,12 +14,12 @@
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
  *
- ***************************************************************************/
-/* Modifications made by CPG Dev Team http://cpgnuke.com        */
-/* Last modification notes:                         */
-/*                                      */
-/*   $Id: admin_forums.php,v 9.9 2007/04/16 08:56:45 nanocaiordo Exp $      */
-/*                                      */
+ ************************************************************************/
+/* Modifications made by CPG Dev Team http://cpgnuke.com                */
+/* Last modification notes:                                             */
+/*                                                                      */
+/*   $Id: admin_forums.php,v 9.9 2007/04/16 08:56:45 nanocaiordo Exp $  */
+/*                                                                      */
 /************************************************************************/
 if (!defined('ADMIN_PAGES')) { exit; }
 include("includes/phpBB/functions_admin.php");
@@ -189,18 +189,18 @@ function renumber_order($mode, $cat = 0)
 
 //
 // Begin program proper
-//
-if( isset($_POST['addforum']) || isset($_POST['addcategory']) ) {
-    $mode = ( isset($_POST['addforum']) ) ? 'addforum' : 'addcat';
-    if( $mode == 'addforum' ) {
-        (list($cat_id))[1] = current($_POST['addforum']);
-        (list($cat_id))['value'] = current($_POST['addforum']);
-        (list($cat_id))[0] = key($_POST['addforum']);
-        (list($cat_id))['key'] = key($_POST['addforum']);
-        next($_POST['addforum']);
-        $cat_id = intval($cat_id);
-        $forumname = $_POST['forumname'][$cat_id];
-    }
+if( isset($_POST['addforum']) || isset($_POST['addcategory']) )
+{
+        $mode = ( isset($_POST['addforum']) ) ? "addforum" : "addcat";
+
+        if( $mode == "addforum" )
+        {
+			 foreach (array_keys($_POST['addforum']) as $cat_id)
+             $cat_id = intval($cat_id);
+             // stripslashes needs to be run on this because slashes are added when the forum name is posted
+             $forumname = stripslashes($_POST['forumname'][$cat_id]);
+        }
+
 }
 
 if( !empty($mode) ) {
