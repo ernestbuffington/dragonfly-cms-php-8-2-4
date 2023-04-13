@@ -20,7 +20,7 @@ class SQLCtrl extends DBCtrl {
 	function backup($database, $tables, $filename, $structure=true, $data=true, $drop=true, $compress=true, $full=false)
 	{
 		$regs = [];
-  if (!is_array($tables) || empty($tables)) {
+        if (!is_array($tables) || empty($tables)) {
 			trigger_error('No tables to backup', E_USER_WARNING);
 			return false;
 		}
