@@ -396,10 +396,11 @@ function message_prepare($message, $html_on, $bbcode_on)
 	return $message;
 }
 
-class BBCode {
-
-	public static function encode_html($text) {
-		return (preg_match('#<#m', $text)) ? htmlprepare($text, false, ENT_NOQUOTES) : $text;
+class BBCode 
+{
+	public static function encode_html($text) 
+	{
+		return (preg_match('/</', $text)) ? stripslashes(check_html($text, '')) : $text;
 	}
 
 	public static function encode($text)
@@ -428,11 +429,17 @@ class BBCode {
 		global $bb_codes;
 		# First: If there isn't a "[" and a "]" in the message, don't bother.
 		if (!(strpos($text, '[') !== false && strpos($text, ']'))) {
-			return ($allow_html ? (preg_match('#<#m', $text) ? $text : nl2br($text)) : nl2br(strip_tags($text)));
+			return ($allow_html ? (preg_match('/</', $text) ? $text : nl2br($text)) : nl2br(strip_tags($text)));
 		}
 
-		// strip the obsolete bbcode_uid
-		$text = preg_replace("/:(([a-z0-9]+:)?)[a-z0-9]{10}(=|\])/si", '\\3', $text);
+		//$bb_codes['code_start'] 	= '<div class="codebox"><p>Code: [ <a href="#" class="code_selection">Select all</a> ]</p><pre style="white-space: pre-wrap"><code>';
+		//$bb_codes['code_end']   	= '</code></pre></div>';
+
+		//$bb_codes['php_start'] 		= '<div class="codebox phpcodebox"><p>PHP:&nbsp;&nbsp;[ <a href="#" class="code_selection code_select">Select all</a> ]</p><pre style="white-space: normal">';
+		//$bb_codes['php_end']   		= '</pre></div>';
+
+		//$bb_codes['quote'] 			= '<div class="notepaper"><figure class="quote"><blockquote class="curly-quotes"><figcaption class="quote-by">&mdash; Quote</figcaption>';
+		//$bb_codes['quote_close']	= '</blockquote></figure></div>';
 
 		# pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
 		$text = BBCode::split_on_bbcodes($text, $allowed, $allow_html);
@@ -440,94 +447,107 @@ class BBCode {
 		# Patterns and replacements for URL, email tags etc.
 		$patterns = $replacements = array();
 
-		# replace single & to &amp;
-		$text = preg_replace('/&(?![a-z]{2,6};|#[0-9]{1,4};)/is', '&amp;', $text);
-
-		# colours
-		$patterns[] = '#\[color=(\#[0-9A-F]{6}|[a-z]+)\](.*?)\[/color\]#si';
-		$replacements[] = '<span style="color: \\1">\\2</span>';
-
-		# size
-		$patterns[] = '#\[size=([1-2]?[0-9])\](.*?)\[/size\]#si';
-		$replacements[] = '<span style="font-size: \\1px; line-height: normal">\\2</span>';
-
 		# [b] and [/b] for bolding text.
-		$patterns[] = '#\[b\](.*?)\[/b\]#si';
-		$replacements[] = '<span style="font-weight: bold">\\1</span>';
-
-		# [u] and [/u] for underlining text.
-		$patterns[] = '#\[u\](.*?)\[/u\]#si';
-		$replacements[] = '<span style="text-decoration: underline">\\1</span>';
+		$text = preg_replace_callback("(\[b\](.*?)\[/b\])is", function($m) { return '<span style="font-weight: bold">'.$m[1].'</span>'; }, $text);
 
 		# [i] and [/i] for italicizing text.
-		$patterns[] = '#\[i\](.*?)\[/i\]#si';
-		$replacements[] = '<span style="font-style: italic">\\1</span>';
+		$text = preg_replace_callback("(\[i\](.*?)\[/i\])is", function($m) { return '<span style="font-style: italic;">'.$m[1].'</span>'; }, $text);
+
+		# [u] and [/u] for underlining text.
+		$text = preg_replace_callback("(\[u\](.*?)\[/u\])is", function($m) { return '<span style="text-decoration: underline">'.$m[1].'</span>'; }, $text);
+
+		# [s] and [/s] for striking through text.
+		$text = preg_replace_callback("(\[s\](.*?)\[/s\])is", function($m) { return '<span style="text-decoration: line-through;">'.$m[1].'</span>'; }, $text);
+
+		# colors
+		$text = preg_replace_callback("(\[color=(\#[0-9A-F]{6}|[a-z\-]+)\](.*?)\[/color\])is", function($m) { return '<span style="color:'.$m[1].'">'.$m[2].'</span>'; }, $text); 
 
 		# align
-		$patterns[] = '#\[align=(left|right|center|justify)\](.*?)\[/align\]#si';
-		$replacements[] = '<div style="text-align:\\1">\\2</div>';
+		$text = preg_replace_callback("(\[align=(left|right|center|justify)\](.*?)\[/align\])is", function($m) { return '<div style="text-align:'.$m[1].';">'.$m[2].'</div>'; }, $text);
 
-		# [google]search string[/google]
-		$patterns[] = "#\[search=google\](.*?)\[/search\]#ise";
-		$replacements[] = "'<form action=\"http://google.com/search\" method=\"get\"><input type=\"text\" name=\"q\" value=\"'.trim('\\1').'\" /><input type=\"submit\" value=\"Search Google\" /></form>'";
-		$patterns[] = "#\[search\](.*?)\[/search\]#ise";
-		$replacements[] = "'<form action=\"search.html\" method=\"post\"><input type=\"text\" name=\"search\" value=\"'.trim('\\1').'\" /><input type=\"submit\" value=\"Search\" /></form>'";
-//		$replacements[] = "'<a href=\"http://google.com/search?q='.urlencode(trim('\\1')).'\" target=\"_blank\" class=\"postlink\" rel=\"nofollow\">\\1</a>'";
+		# fonts
+		$text = preg_replace_callback("(\[font=(.*?)\](.*?)\[/font\])is", function($m) { return '<span style="font-family: '.$m[1].'">'.$m[2].'</span>'; }, $text);
+
+		# highlight
+		$text = preg_replace_callback("(\[highlight=(\#[0-9A-F]{6}|[a-z\-]+)\](.*?)\[/highlight\])is", function($m) { return '<span style="background-color: '.$m[1].'">'.$m[2].'</span>'; }, $text);
+
+		# font size
+		$text = preg_replace_callback("(\[size=([1-2]?[0-9])\](.*?)\[/size\])is", function($m) { return '<span style="font-size: '.$m[1].'px; line-height: normal;">'.$m[2].'</span>'; }, $text);
+
+		# marguee
+		$text = preg_replace_callback("(\[marq=(left|right|up|down)\](.*?)\[/marq\])is", function($m) { return '<marquee direction="'.$m[1].'" scrolldelay="60" 
+		scrollamount="1" onmouseover="this.stop()" onmouseout="this.start()">'.$m[2].'</marquee>'; }, $text);
+
+		# flash
+
+
+		# Horizontal Rule
+		$text = preg_replace_callback("(\[hr\])is", function($m) { return '<hr />'; }, $text);
 
 		# [url] local
-		$patterns[] = "#\[url\]([\w]+(\.html|\.php|/)[^ \[\"\n\r\t<]*?)\[/url\]#ise";
-		$replacements[] = "'<a href=\"\\1\" title=\"\\1\" class=\"postlink\">'.shrink_url('\\1').'</a>'";
-		$patterns[] = "#\[url=([\w]+(\.html|\.php|/)[^ \[\"\n\r\t<]*?)\](.*?)\[/url\]#is";
-		$replacements[] = "<a href=\"\\1\" title=\"\\1\" class=\"postlink\">\\3</a>";
+		$text = preg_replace_callback("(\[url\]([\w]+(\.html|\.php|/)[^ \[\"\n\r\t<]*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" title="'.$m[1].'">'.shrink_url($m[1]).'</a>'; }, $text);
+		$text = preg_replace_callback("(\[url=([\w]+(\.html|\.php|/)[^ \[\"\n\r\t<]*?)\](.*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" title="'.$m[1].'">'.$m[3].'</a>'; }, $text);
 
-		# [url]xxxx://www.cpgnuke.com[/url]
-		$patterns[] = "#\[url\]([\w]+?://[^ \[\"\n\r\t<]*?)\[/url\]#ise";
-		$replacements[] = "'<a href=\"\\1\" target=\"_blank\" title=\"\\1\" class=\"postlink\" rel=\"nofollow\">'.shrink_url('\\1').'</a>'";
-		# [url]www.cpgnuke.com[/url] (no xxxx:// prefix).
-		$patterns[] = "#\[url\]((www|ftp)\.[^ \[\"\n\r\t<]*?)\[/url\]#ise";
-		$replacements[] = "'<a href=\"http://\\1\" target=\"_blank\" title=\"\\1\" class=\"postlink\" rel=\"nofollow\">'.shrink_url('\\1').'</a>'";
-		# [url=www.cpgnuke.com]cpgnuke[/url] (no xxxx:// prefix).
-		$patterns[] = "#\[url=((www|ftp)\.[^ \"\n\r\t<]*?)\](.*?)\[/url\]#is";
-		$replacements[] = "<a href=\"http://\\1\" target=\"_blank\" title=\"\\1\" class=\"postlink\" rel=\"nofollow\">\\3</a>";
-		# [url=xxxx://www.cpgnuke.com]cpgnuke[/url]
-		$patterns[] = "#\[url=([\w]+://[^ (\"\n\r\t<]*?)\](.*?)\[/url\]#is";
-		$replacements[] = "<a href=\"\\1\" target=\"_blank\" title=\"\\1\" class=\"postlink\" rel=\"nofollow\">\\2</a>";
+        # [url]xxxx://www.cpgnuke.com[/url]
+		// $text = preg_replace_callback("(\[url\]([\w]+?://[^ \[\"\n\r\t<]*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" target="_blank" title="'.$m[1].'">'.shrink_url($m[1]).'</a>'; }, $text);
+		$text = preg_replace_callback("#\[url\]((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\[/url\]#si", function($m) { return '<a href="'. $m[1] . $m[2] .'" target="_blank" title="'.$m[1] . $m[2].'">'.$m[1] . $m[2].'</a>'; }, $text);
+		
+        # [url]www.cpgnuke.com[/url] (no xxxx:// prefix).
+		$text = preg_replace_callback("(\[url\]((www|ftp)\.[^ \[\"\n\r\t<]*?)\[/url\])is", function($m) { return '<a href="http://'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[1].'</a>'; }, $text);
+		
+        # [url=www.cpgnuke.com]cpgnuke[/url] (no xxxx:// prefix).
+		$text = preg_replace_callback("(\[url=((www|ftp)\.[^ \"\n\r\t<]*?)\](.*?)\[/url\])is", function($m) { return '<a href="http://'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[3].'</a>'; }, $text);
+	
+        # [url=xxxx://www.cpgnuke.com]cpgnuke[/url]	
+		$text = preg_replace_callback("(\[url=(.*?)\](.*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[2].'</a>'; }, $text);
 
-		# [email]user@domain.tld[/email] code..
-		$patterns[] = "#\[email\]([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)\[/email\]#si";
-		$replacements[] = "<a href=\"mailto:\\1\">\\1</a>";
+		# [spoil]Spoiler[/spoil] code..
+    	// $text = preg_replace_callback("(\[spoil\](.*?)\[/spoil\])is", function($m) { return '[spoil:'._BBCODE_UNIQUE_ID.']'.$m[1].'[/spoil:'._BBCODE_UNIQUE_ID.']'; }, $text);
 
-		if ($allowed) {
-			# [hr]
-			$patterns[] = "#\[hr\]#si";
-			$replacements[] = '<hr />';
+		# Images
+		$text = preg_replace_callback("(\[img\](.*?)\[/img\])is", function($m) { return '<img class="reimg" onload="reimg(this);" onerror="reimg(this);" src="'.$m[1].'" border="0" alt="" />'; }, $text);
 
-			# marquee
-			$patterns[] = "#\[marq=(left|right|up|down)\](.*?)\[/marq\]#si";
-			$replacements[] = '<marquee direction="\\1" scrolldelay="60" scrollamount="1" onmouseover="this.stop()" onmouseout="this.start()">\\2</marquee>';
+		# Parse YouTube videos
+		$text = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#is", 'BBCode::evo_parse_video_callback', $text);
 
-			# [img]image_url_here[/img] code..
-			$patterns[] = "#\[img\]([\w]+(://|\.|/)[^ \?&=(\"\n\r\t<]*?)\[/img\]#si";
-			$replacements[] = "<img src=\"\\1\" style=\"border:0;\" alt=\"\" />";
+		# tag/mention a member
+    	$text = preg_replace_callback("(\[tag\](.*?)\[/tag\])is", 'BBCode::evo_mention_callback', $text);
 
-			# [flash width= height= loop= ] and [/flash] code..
-			$patterns[] = "#\[flash width=([0-6]?[0-9]?[0-9]) height=([0-4]?[0-9]?[0-9])\]((ht|f)tp://)([^ \?&=\"\n\r\t<]*?(\.(swf|fla)))\[/flash\]#si";
-			$replacements[] = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="\\1" height="\\2">
-	<param name="movie" value="\\3\\5" />
-	<param name="quality" value="high" />
-	<param name="scale" value="noborder" />
-	<param name="wmode" value="transparent" />
-	<param name="bgcolor" value="#000000" />
+    	# Spoiler tag
+    	$text = preg_replace_callback("(\[spoil\](.*?)\[/spoil\])is", 'BBCode::evo_spoil_callback', $text);
+
+		/**
+		 *  The BBCODES below are for SCEditor support
+		 */
+		# SCeditor Center Alignment
+		$text = preg_replace_callback("(\[center\](.*?)\[/center\])is", function($m) { return '<div style="text-align:center;">'.$m[1].'</div>'; }, $text);
+		
+		# SCeditor Left Alignment
+		$text = preg_replace_callback("(\[left\](.*?)\[/left\])is", function($m) { return '<div style="text-align:left;">'.$m[1].'</div>'; }, $text);
+		
+		# SCeditor Right Alignment
+		$text = preg_replace_callback("(\[right\](.*?)\[/right\])is", function($m) { return '<div style="text-align:right;">'.$m[1].'</div>'; }, $text);
+		
+		# SCeditor Justify Alignment
+		$text = preg_replace_callback("(\[justify\](.*?)\[/justify\])is", function($m) { return '<div style="text-align:justify;">'.$m[1].'</div>'; }, $text);
+
+        # [flash width= height= loop= ] and [/flash] code..
+        $patterns[] = "#\[flash width=([0-6]?[0-9]?[0-9]) height=([0-4]?[0-9]?[0-9])\]((ht|f)tp://)([^ \?&=\"\n\r\t<]*?(\.(swf|fla)))\[/flash\]#si";
+        $replacements[] = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="\\1" height="\\2">
+    <param name="movie" value="\\3\\5">
+    <param name="quality" value="high">
+    <param name="scale" value="noborder">
+    <param name="wmode" value="transparent">
+    <param name="bgcolor" value="#000000">
   <embed src="\\3\\5" quality="high" scale="noborder" wmode="transparent" bgcolor="#000000" width="\\1" height="\\2" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">
 </embed></object>';
 
-			# [video width= height= loop= ] and [/video] code..
-			$patterns[] = "#\[video width=([0-6]?[0-9]?[0-9]) height=([0-4]?[0-9]?[0-9])\]([\w]+?://[^ \?&=\"\n\r\t<]*?(\.(avi|mpg|mpeg|wmv)))\[/video\]#si";
-			$replacements[] = '<embed src="\\3" width=\\1 height=\\2></embed>';
-		}
-
+        # [video width= height= loop= ] and [/video] code..
+        $patterns[] = "#\[video width=([0-6]?[0-9]?[0-9]) height=([0-4]?[0-9]?[0-9])\]([\w]+?://[^ \?&=\"\n\r\t<]*?(\.(avi|mpg|mpeg|wmv)))\[/video\]#si";
+        $replacements[] = '<embed src="\\3" width=\\1 height=\\2></embed>';
+        
 		$text = preg_replace($patterns, $replacements, $text);
-
+		
 		# Fix linebreaks on important items
 		$text = preg_replace("/<br>/si", "<br \/>", $text);
 		$text = preg_replace("/<ul><br \/>/si", "<ul>", $text);
@@ -539,6 +559,212 @@ class BBCode {
 
 		# Remove our padding from the string..
 		return trim($text);
+	}
+
+	public static function evo_spoil_callback( $matches )
+	{
+		return BBCode::evo_spoil( $matches[1] );
+	}
+
+	public static function evo_spoil( $hidden_content )
+	{
+		$template  = '
+		<style>
+		.spoiler-container {
+			display: block;
+		}
+
+		.btn {
+		    display: inline-block;
+		    font-weight: 400;
+		    color: #212529;
+		    text-align: center;
+		    vertical-align: middle;
+		    user-select: none;
+		    background-color: transparent;
+		    border: 1px solid transparent;
+		    padding: .375rem .75rem;
+		    font-size: 1rem;
+		    line-height: 1.5;
+		    border-radius: .25rem;
+		    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		    cursor: pointer;
+		    outline: none;
+		    margin-bottom: 10px;
+		}
+
+		.btn:focus {
+			outline: none !important;
+		}
+
+		.btn-mod.btn-border {
+		    color: #ccc;
+		    border: 1px solid #414141;
+		    background: #181818;
+		}
+
+		.btn-mod.btn-border:hover, .btn-mod.btn-border:focus {
+		    color: #fff;
+		    border-color: #ccc;
+		    background: #313131;
+		}
+
+		#spoiler-contents {
+			display: none;
+			margin: 0 20px 10px 20px;
+		}
+		</style>
+		';
+
+		// $template  = addCSStoHead( 'includes/css/bbcode.css' );
+		$template .= '<div class="spoiler-container">';
+		$template .= '	Spoiler: <button class="btn btn-mod btn-border" type="button" id="reveal-spoiler" name="spoiler">Show</button>';
+		$template .= '	<div id="spoiler-contents">Phones Broken</div>';
+		$template .= '</div>';
+		$template .= '<script>
+			var hidden_content = document.getElementById("spoiler-contents");
+			document.getElementById("reveal-spoiler").addEventListener("click", function (event) 
+			{
+				if (window.getComputedStyle(hidden_content).display === "none") 
+				{
+					hidden_content.style.display = "block";
+				}
+				else
+				{
+					hidden_content.style.display = "none";
+				}
+			});
+		</script>';
+		return $template;
+	}
+
+
+	
+	# Parse the YouTube video
+	public static function evo_parse_video_callback( $matches ) 
+	{
+		return BBCode::evo_parse_video( $matches[1], $matches[2] );
+	}
+
+	public static function evo_parse_video( $video, $url )
+	{
+		global $bbcode_tpl, $board_config, $nukeurl;
+
+		$stripped_url = preg_replace("(^https?://)", "", $nukeurl );
+
+		if(empty($video) || empty($url))
+		{
+			 return "[video={$video}]{$url}[/video]";
+		}
+
+		$parsed_url = parse_url(urldecode($url));
+
+		$winchester = '';
+		if($parsed_url == false)
+		{
+			return "[video={$video}]{$url}[/video]";
+		}
+
+		$fragments = array();
+		if($parsed_url['fragment'])
+		{
+			$fragments = explode("&", $parsed_url['fragment']);
+		}
+
+		$queries = explode("&", $parsed_url['query']);
+
+		$input = array();
+		foreach($queries as $query)
+		{
+			list($key, $value) = explode("=", $query);
+			$key = str_replace("amp;", "", $key);
+			$input[$key] = $value;
+		}
+
+		$path = explode('/', $parsed_url['path']);
+		switch($video):
+
+			/* ----- youtube video embed ----- */
+			case "youtube":
+				if($fragments[0])
+					# http://www.youtube.com/watch#!v=fds123
+					$id = str_replace('!v=', '', $fragments[0]); 
+				elseif($input['v'])
+					# http://www.youtube.com/watch?v=fds123
+					$id = $input['v']; 
+				else
+					# http://www.youtu.be/fds123
+					$id = $path[1];
+
+				$video_replace = '<iframe style="max-width: 100%" id="ytplayer-'.$id.'" width="'.$board_config['youtube_width'].'" height="'.$board_config['youtube_height'].'" src="//www.youtube.com/embed/'.$id.'?rel=0&amp;vq=hd1080" frameborder="0" allowfullscreen=""></iframe><br />[<a href="https://www.youtube.com/watch?v='.$id.'" target="_blank">'._WATCH_YOUTUBE.'</a>]';
+				break;
+
+			/* ----- twitch video embed ----- */
+			case "twitch":
+
+				// if(preg_match("/clip/", $url, $matches)):
+				if ( preg_match('/(clips?|clip)/', $url, $matches) ):
+
+					$clips = explode('/', $url);
+					// $id = 'embed?clip='.$clips[5].'';
+					if ( $matches[1] == 'clip' ):
+						$id = 'embed?clip='.$clips[5].'&parent='.$stripped_url.'&autoplay=false&tt_medium=clips_embed';
+					else:
+						$id = 'embed?clip='.$clips[3].'&parent='.$stripped_url.'&autoplay=false&tt_medium=clips_embed';
+					endif;
+					$player = 'clips';
+				
+				else:
+				
+					if(count($path) >= 3 && $path[1] == 'videos')
+					{
+						// Direct video embed with URL like: https://www.twitch.tv/videos/179723472
+						$id = '?video=v'.$path[2].'&parent='.$stripped_url;
+					}
+					elseif(count($path) >= 4 && $path[2] == 'v')
+					{
+						// Direct video embed with URL like: https://www.twitch.tv/waypoint/v/179723472
+						$id = '?video=v'.$path[3].'&parent='.$stripped_url;
+					}
+					elseif(count($path) >= 2)
+					{
+						// Channel (livestream) embed with URL like: https://twitch.tv/waypoint
+						$id = '?channel='.$path[1].'&parent='.$stripped_url;
+					}
+
+					$time = explode("?", $url);
+
+					$player = 'player';
+				
+				endif;
+				$video_replace = '<iframe style="max-width: 100%" src="https://'.$player.'.twitch.tv/'.$id.'&amp;autoplay=false" frameborder="0" scrolling="no" height="'.$board_config['twitch_height'].'" width="'.$board_config['twitch_width'].'" allowfullscreen=""></iframe>';                
+				// $video_replace = '<pre>'.var_export( $clips, true ).'</pre>'; 
+				break;
+
+			default:
+				return "[video={$video}]{$url}[/video]";
+		
+		endswitch;
+
+		if(empty($id))
+		{
+			return "[video={$video}]{$url}[/video]1";
+		}
+		return $video_replace;
+	}
+
+	public static function evo_mention_callback( $matches )
+	{
+		return BBCode::evo_mention( $matches[1] );
+	}
+
+	public static function evo_mention( $user )
+	{
+		global $db, $customlang;
+		
+		// modules.php?name=Private_Messages&mode=post&pm_uname=Lonestar
+		// $row = $db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$user."'");
+		return '<a href="modules.php?name=Private_Messages&mode=post&pm_uname='.$user.'" target="_blank" alt="'.$customlang['global']['send_pm'].'" title="'.$customlang['global']['send_pm'].'">'.$user.'</a>';
 	}
 
 	public static function split_bbcodes($text)
@@ -610,7 +836,7 @@ class BBCode {
 				$text .= ($allowed) ? BBCode::decode_php($part['text']) : nl2br(htmlspecialchars($part['text']));
 			} elseif ($part['code'] == 'code') {
 				# [CODE]
-				if (!$allowed && preg_match('#<#m', $part['text'])) {
+				if (!$allowed && preg_match('/</', $part['text'])) {
 					$part['text'] = nl2br(htmlspecialchars($part['text']));
 				}
 				$text .= $allowed ? BBCode::decode_code($part['text']) : $part['text'];
@@ -619,7 +845,7 @@ class BBCode {
 				if ($part['text'][6] == ']') {
 					$text .= $bb_codes['quote'].BBCode::split_on_bbcodes(substr($part['text'], 7, -8), $allowed, $allow_html).$bb_codes['quote_close'];
 				} else {
-					$part['text'] = preg_replace('/\[quote=["]*(.*?)["]*\]/si', $bb_codes['quote_name'], BBCode::split_on_bbcodes(substr($part['text'], 0, -8), $allowed, $allow_html), 1);
+					$part['text'] = preg_replace('/\[quote="(.*?)"\]/si', $bb_codes['quote_name'], BBCode::split_on_bbcodes(substr($part['text'], 0, -8), $allowed, $allow_html), 1);
 					$text .= $part['text'].$bb_codes['quote_close'];
 				}
 			} elseif ($part['subc']) {
@@ -628,7 +854,7 @@ class BBCode {
 				unset($tmptext);
 			} else {
 				if ($allow_html) {
-					$tmptext = (!preg_match('#<#m', $part['text']) ? nl2br($part['text']) : $part['text']);
+					$tmptext = (!preg_match('/</', $part['text']) ? nl2br($part['text']) : $part['text']);
 				} else {
 					$tmptext = nl2br(BBCode::encode_html($part['text']));
 				}
@@ -643,49 +869,57 @@ class BBCode {
 	{
 		global $bb_codes;
 		$text = substr($text, 6, -7);
-		$code_entities_match   = array('#<#',  '#>#',  '#"#',	'#:#',   '#\[#',  '#\]#',  '#\(#',  '#\)#',  '#\{#',   '#\}#');
+		$code_entities_match   = array('#<#',  '#>#',  '#"#',    '#:#',   '#\[#',  '#\]#',  '#\(#',  '#\)#',  '#\{#',   '#\}#');
 		$code_entities_replace = array('&lt;', '&gt;', '&quot;', '&#58;', '&#91;', '&#93;', '&#40;', '&#41;', '&#123;', '&#125;');
 		$text = preg_replace($code_entities_match, $code_entities_replace, $text);
-		return $bb_codes['code_start']."<pre>$text</pre>".$bb_codes['code_end'];
+		# Replace 2 spaces with "&nbsp; " so non-tabbed code indents without making huge long lines.
+		$text = str_replace('  ', '&nbsp; ', $text);
+		# now Replace 2 spaces with ' &nbsp;' to catch odd #s of spaces.
+		$text = str_replace('  ', ' &nbsp;', $text);
+		# Replace tabs with "&nbsp; &nbsp;" so tabbed code indents sorta right without making huge long lines.
+		$text = str_replace("\t", '&nbsp; &nbsp;', $text);
+		# now Replace space occurring at the beginning of a line
+		$text = preg_replace('/^ {1}/m', '&nbsp;', $text);
+		// return $bb_codes['code_start'].nl2br($text).$bb_codes['code_end'];
+		return $bb_codes['code_start'].$text.$bb_codes['code_end'];
 	}
 
 	public static function decode_php($text)
 	{
 		global $bb_codes;
-		$text = str_replace("\r\n", "\n", substr($text, 5, -6)); # Windows
-		$text = str_replace("\r", "\n", $text);   # Mac
-		$text = str_replace("\t", '/*t*/', $text); # Temporary tab fix
+		$text = substr($text, 5, -6);
+		$text = str_replace("\r\n", "\n", $text);
 		$text = htmlunprepare($text, true);
 		$added = FALSE;
 		if (preg_match('/^<\?.*/', $text) <= 0) {
-			$text = "<?php\n$text";
+			$text = "<?php\n$text\n";
 			$added = TRUE;
 		}
-		if (PHPVERS < 42) {
-			ob_start();
-			highlight_string($text);
-			$text = ob_get_contents();
-			ob_end_clean();
-		} else {
-			$text = highlight_string($text, TRUE);
-		}
-		if (PHPVERS < 50) {
+
+		// if (PHPVERS < '4.2') {
+		// 	ob_start();
+		// 	highlight_string($text);
+		// 	$text = ob_get_contents();
+		// 	ob_end_clean();
+		// } else {
+		// 	$text = highlight_string($text, TRUE);
+		// }
+
+		$text = highlight_string($text, TRUE);
+
+		if (PHPVERS < '5.0') {
 			$text = preg_replace('/<font color="(.*?)">/si', '<span style="color: \\1;">', $text);
 			$text = str_replace('</font>', '</span>', $text);
 		}
 		if ($added == TRUE) {
-			if (PHPVERS < 50) {
+			if (PHPVERS < '5.0') {
 				$text = preg_replace('/^(.*)\n.*?<\/span>(.*)php<br \/>/i', "\\1\n\\2?php<br />", $text, 1);
 			}
 			$text = preg_replace('/^(.*)\n.*php<br \/><\/span>/i', "\\1\n", $text, 1);
 			$text = preg_replace('/^(.*)\n(.*)>.*php<br \/>/i', "\\1\n\\2>", $text, 1);
 		}
 		$text = str_replace('[', '&#91;', $text);
-		$text = str_replace("\n", '', $text);
-		$text = str_replace('&nbsp;', ' ', $text);
-		$text = str_replace('/*t*/', "\t", $text);
-		$text = preg_replace('#<span style="color: \#[A-F0-9]{6}">([\t]+)</span>#', '\\1', $text);
-		return $bb_codes['php_start']."<pre>$text</pre>".$bb_codes['php_end'];
+		return $bb_codes['php_start'].trim($text).$bb_codes['php_end'];
 	}
 
 	public static function decode_list($text)
@@ -699,15 +933,14 @@ class BBCode {
 		unset($items);
 		# [list] and [list=x] for (un)ordered lists.
 		# unordered lists
-		$text = preg_replace('#\[list\]#i', '<ul>', $text);
+		$text = preg_replace('#\[list\]#i', '<ul class="mycode_list">', $text);
 		$text = preg_replace('#\[/list:u\]#i', '</ul>', $text);
 		$text = preg_replace('#\[/list\]#i', '</ul>', $text);
 		# Ordered lists
-		$text = preg_replace('#\[list=([ai1])\]#i', '<ol type="\\1">', $text);
+		$text = preg_replace('#\[list=([ai1])\]#i', '<ol class="mycode_list" type="\\1">', $text);
 		$text = preg_replace('#\[/list:o\]#i', '</ol>', $text);
 
 		$text = preg_replace('#(<[ou]l.*?>)<br />#s', '\\1', $text);
 		return $text;
 	}
-
 }
