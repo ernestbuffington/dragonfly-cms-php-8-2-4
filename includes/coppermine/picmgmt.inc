@@ -119,7 +119,7 @@ function resize_image($src_file, $imginfo, &$dest_file, $new_size, $method, $thu
 		$dest_info['watermark']['text'] = $watermark;
 	}
 
-	$dest_file = Graphic::resize($src_file, $dest_info, $dest_file, $imginfo, defined('ADDPIC_PHP'));
+	$dest_file = (new Graphic)->resize($src_file, $dest_info, $dest_file, $imginfo, defined('ADDPIC_PHP'));
 	if ($dest_file < 0) {
 		$ERROR = RESIZE_FAILED;
 		return false;

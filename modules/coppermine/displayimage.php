@@ -478,7 +478,7 @@ $pos = isset($_GET['pos']) ? intval($_GET['pos']) : 0;
 $pid = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
 $album = isset($_GET['album']) ? intval($_GET['album']) : '';
 $meta = $_GET['meta'] ?? '';
-$cat = isset($_GET['cat']) ? intval($_GET['cat']) : '';
+$cat = isset($_GET['cat']) ? intval($_GET['cat']) : 0;
 
 // $thisalbum is passed to get_pic_data as a varible used in queries 
 // to limit meta queries to the current album or category

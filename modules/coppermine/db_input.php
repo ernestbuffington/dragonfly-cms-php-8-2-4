@@ -419,7 +419,7 @@ switch ($event) {
 		// if (!ereg(dirname($_FILES['userpicture']['tmp_name']), ini_get('open_basedir')))
 		require_once('includes/classes/cpg_file.php');
 		$tmpfile = $CONFIG['userpics'].md5(microtime()).'.tmp';
-		if (!CPG_File::move_upload($_FILES['userpicture'], $tmpfile)) {
+		if (!(new CPG_File)->move_upload($_FILES['userpicture'], $tmpfile)) {
 			cpg_die(_ERROR, 'Couldn\'t create a copy of the uploaded image', __FILE__, __LINE__);
 		}
 		// Get picture information

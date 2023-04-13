@@ -354,7 +354,7 @@ class tpl_encode
 	// This is from Smarty
 	function _parse_is_expr($is_arg, $tokens) {
 		$expr = null;
-  $expr_end =	0;
+        $expr_end =	0;
 		$negate_expr = false;
 		if (($first_token = array_shift($tokens)) == 'not') {
 			$negate_expr = true;

@@ -98,7 +98,7 @@ if ($MAIN_CFG['global']['admingraphic'] >= '4' || strtolower($op) == 'forums') {
 <script type="text/javascript" src="themes/'.$theme.'/style/cookmenu.js"></script>
 <link rel="stylesheet" type="text/css" href="themes/'.$theme.'/style/cookmenu.css" />';
 }
-global $CPG_SESS;
+global $CPG_SESS, $mainindex;
 if ($op == 'logout') {
 	unset($CPG_SESS['admin']);
 	$redir = $_SERVER['HTTP_REFERER'] ?? $mainindex;
