@@ -766,7 +766,7 @@ class attach_parent
 			ftp_file($filename, $this->attach_filename, $this->type);
 		} else {
 			require_once('includes/classes/cpg_file.php');
-			if (!CPG_File::move_upload($file, $upload_dir.'/'.$this->attach_filename)) {
+			if (!(new CPG_File)->move_upload($file, $upload_dir.'/'.$this->attach_filename)) {
 				$error = TRUE;
 				if (!empty($error_msg)) { $error_msg .= '<br />'; }
 				$error_msg .= sprintf($lang['General_upload_error'], './'.$upload_dir.'/'.$this->attach_filename);
@@ -794,11 +794,11 @@ class attach_parent
 
 class attach_posting extends attach_parent
 {
-	function __construct()
-	{
-		$this->attach_parent();
-		$this->page = -1;
-	}
+	//function __construct()
+	//{
+	//	$this->attach_parent();
+	//	$this->page = -1;
+	//}
 	//
 	// Handle Attachments (Add/Delete/Edit/Show) - This is the first function called from every message handler
 	//
