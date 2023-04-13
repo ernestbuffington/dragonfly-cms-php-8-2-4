@@ -15,13 +15,13 @@
 **********************************************/
 if (!defined('ADMIN_MOD_INSTALL')) { exit; }
 class Your_Account {
-	var $radmin;
-	var $version;
-	var $modname;
-	var $description;
-	var $author;
-	var $website;
-	var $dbtables;
+	public $radmin;
+	public $version;
+	public $modname;
+	public $description;
+	public $author;
+	public $website;
+	public $dbtables;
 	function __construct() {
 		$this->radmin = false;
 		$this->version = '1.2';
