@@ -97,10 +97,10 @@ echo'<noscript>
 <a href="'.adminlink('&amp;do=extensions&amp;mode=forbidden').'">'.$lang['Forbidden_extensions'].'</a>&nbsp;
 </noscript></td></tr></table>';
 }
-$file = (isset($_GET['do']) ? $_GET['do'] : (isset($_POST['do']) ? $_POST['do'] : false));
+$file = ($_GET['do'] ?? $_POST['do'] ?? false);
 if (!$file) $file = 'index';
 else $file = "admin_$file";
-if (!ereg('^([a-zA-Z0-9_\-]+)$', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BBFORUMS)), _SEC_ERROR); }
+if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $file)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_BBFORUMS)), _SEC_ERROR); }
 
 if ($CLASS['member']->demo && $file == 'admin_users') $file = 'index';
 
