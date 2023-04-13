@@ -191,16 +191,14 @@ function renumber_order($mode, $cat = 0)
 // Begin program proper
 if( isset($_POST['addforum']) || isset($_POST['addcategory']) )
 {
-        $mode = ( isset($_POST['addforum']) ) ? "addforum" : "addcat";
-
-        if( $mode == "addforum" )
-        {
-			 foreach (array_keys($_POST['addforum']) as $cat_id)
-             $cat_id = intval($cat_id);
-             // stripslashes needs to be run on this because slashes are added when the forum name is posted
-             $forumname = stripslashes($_POST['forumname'][$cat_id]);
-        }
-
+  $mode = ( isset($_POST['addforum']) ) ? "addforum" : "addcat";
+  if( $mode == "addforum" )
+  {
+    foreach (array_keys($_POST['addforum']) as $cat_id)
+    $cat_id = intval($cat_id);
+    // stripslashes needs to be run on this because slashes are added when the forum name is posted
+    $forumname = stripslashes($_POST['forumname'][$cat_id]);
+   }
 }
 
 if( !empty($mode) ) {
