@@ -236,7 +236,11 @@ return static function (RectorConfig $rectorConfig): void {
 		  //////__DIR__ . '/modules/News/functions.php',
 		  //////__DIR__ . '/modules/News/index.php',
 		  //////__DIR__ . '/modules/News/submissions.php',
-		  __DIR__ . '/modules/News/topics.php',
+		  //////__DIR__ . '/modules/News/topics.php',
+
+
+		  //////__DIR__ . '/modules/Your_Account/blocks/*',
+		  __DIR__ . '/modules/Your_Account/*',
 		  
 		  //////__DIR__ . '/rss/*',
 
