@@ -11,7 +11,7 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
   **************************************************************************
-  $Header: /cvs/html/includes/coppermine/init.inc,v 9.9 2007/12/12 12:54:18 nanocaiordo Exp $
+  $Header: /public_html/includes/coppermine/init.inc,v 9.9 2007/12/12 12:54:18 nanocaiordo Exp $
 ****************************************************************************/
 if (!defined('CPG_NUKE')) { die("You can't access this file directly..."); }
 

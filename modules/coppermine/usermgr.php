@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/usermgr.php,v $
+  $Source: /public_html/modules/coppermine/usermgr.php,v $
   $Revision: 9.13 $
   $Author: brennor $
   $Date: 2006/02/24 19:14:03 $

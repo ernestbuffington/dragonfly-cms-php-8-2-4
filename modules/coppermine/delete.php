@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/delete.php,v $
+  $Source: /public_html/modules/coppermine/delete.php,v $
   $Revision: 9.3 $
   $Author: djmaze $
   $Date: 2005/10/14 14:49:39 $

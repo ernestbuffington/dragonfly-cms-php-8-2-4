@@ -12,7 +12,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/search.php,v $
+  $Source: /public_html/modules/coppermine/search.php,v $
   $Revision: 9.0 $
   $Author: djmaze $
   $Date: 2005/01/12 03:32:54 $

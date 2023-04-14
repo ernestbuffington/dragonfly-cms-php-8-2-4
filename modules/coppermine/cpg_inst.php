@@ -5,7 +5,7 @@
   Copyright (c) 2004 by CPG-Nuke Dev Team
   http://www.cpgnuke.com
 
-  $Source: /cvs/html/modules/coppermine/cpg_inst.php,v $
+  $Source: /public_html/modules/coppermine/cpg_inst.php,v $
   $Revision: 9.10 $
   $Author: nanocaiordo $
   $Date: 2006/10/04 15:03:29 $

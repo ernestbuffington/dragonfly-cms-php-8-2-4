@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/reviewcom.php,v $
+  $Source: /public_html/modules/coppermine/reviewcom.php,v $
   $Revision: 9.3 $
   $Author: djmaze $
   $Date: 2006/02/09 23:47:21 $

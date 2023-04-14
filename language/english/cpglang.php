@@ -9,7 +9,7 @@
   of the GNU GPL version 2 or any later version
   CPG-lang ©2004 Akamu Akamai
   
-  $Source: /cvs/html/language/english/cpglang.php,v $
+  $Source: /public_html/language/english/cpglang.php,v $
   $Revision: 9.5 $
   $Author: djmaze $
   $Date: 2006/02/10 13:48:21 $

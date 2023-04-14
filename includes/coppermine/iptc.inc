@@ -12,7 +12,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/includes/coppermine/iptc.inc,v $
+  $Source: /public_html/includes/coppermine/iptc.inc,v $
   $Revision: 9.1 $
   $Author: trevor $
   $Date: 2005/02/18 00:16:16 $

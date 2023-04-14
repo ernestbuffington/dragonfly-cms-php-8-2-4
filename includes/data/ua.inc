@@ -7,7 +7,7 @@
 	by the MOO Development Group; either version 1 of the License, or
 	(at your option) any later version.
 
-  $Source: /cvs/html/includes/data/ua.inc,v $
+  $Source: /public_html/includes/data/ua.inc,v $
   $Revision: 1.3 $
   $Author: nanocaiordo $
   $Date: 2007/08/20 04:28:54 $

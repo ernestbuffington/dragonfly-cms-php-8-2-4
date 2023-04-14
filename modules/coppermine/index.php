@@ -11,7 +11,7 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
   **************************************************************************
-  $Source: /cvs/html/modules/coppermine/index.php,v $
+  $Source: /public_html/modules/coppermine/index.php,v $
   $Revision: 9.18 $
   $Author: nanocaiordo $
   $Date: 2007/07/31 05:43:06 $

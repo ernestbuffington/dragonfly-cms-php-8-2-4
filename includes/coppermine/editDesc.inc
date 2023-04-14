@@ -12,7 +12,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/includes/coppermine/editDesc.inc,v $
+  $Source: /public_html/includes/coppermine/editDesc.inc,v $
   $Revision: 9.4 $
   $Author: akamu $
   $Date: 2006/01/07 01:13:27 $

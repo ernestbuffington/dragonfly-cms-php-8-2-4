@@ -10,7 +10,7 @@
 
   Original copyright : (C) 2001 The phpBB Group
 
-  $Source: /cvs/html/modules/Private_Messages/index.php,v $
+  $Source: /public_html/modules/Private_Messages/index.php,v $
   $Revision: 9.26 $
   $Author: nanocaiordo $
   $Date: 2007/12/12 12:54:27 $

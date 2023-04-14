@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/addfav.php,v $
+  $Source: /public_html/modules/coppermine/addfav.php,v $
   $Revision: 9.1 $
   $Author: djmaze $
   $Date: 2005/09/11 02:07:44 $

@@ -3,7 +3,7 @@
   CPG Dragonfly™ CMS
   ********************************************
   Copyright © 2004-2005 by CPG-Nuke Dev Team
-  http://www.dragonflycms.com
+  https://www.dragonfly.coders.exchange
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
@@ -11,7 +11,7 @@
   Our_Sponsors module
   © 2004 cpgnuke dev team akamu
   
-  $Source: /cvs/html/language/english/our_sponsors.php,v $
+  $Source: /public_html/language/english/our_sponsors.php,v $
   $Revision: 9.5 $
   $Author: trevor $
   $Date: 2005/02/26 15:06:43 $

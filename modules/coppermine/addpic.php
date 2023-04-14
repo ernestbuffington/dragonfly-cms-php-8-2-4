@@ -13,7 +13,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/addpic.php,v $
+  $Source: /public_html/modules/coppermine/addpic.php,v $
   $Revision: 9.2 $
   $Author: djmaze $
   $Date: 2005/02/17 08:22:57 $

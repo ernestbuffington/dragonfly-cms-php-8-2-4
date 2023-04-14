@@ -8,7 +8,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/includes/classes/blocks.php,v $
+  $Source: /public_html/includes/classes/blocks.php,v $
   $Revision: 1.11 $
   $Author: nanocaiordo $
   $Date: 2008/01/15 10:50:16 $

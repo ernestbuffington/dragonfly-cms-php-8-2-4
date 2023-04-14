@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/ecard.php,v $
+  $Source: /public_html/modules/coppermine/ecard.php,v $
   $Revision: 9.4 $
   $Author: djmaze $
   $Date: 2005/09/11 02:07:45 $

@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/upload.php,v $
+  $Source: /public_html/modules/coppermine/upload.php,v $
   $Revision: 9.2 $
   $Author: djmaze $
   $Date: 2005/01/31 10:31:58 $

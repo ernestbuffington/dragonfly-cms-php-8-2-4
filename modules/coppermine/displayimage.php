@@ -12,7 +12,7 @@
    the Free Software Foundation; either version 2 of the License, or		  
    (at your option) any later version.										   
   **************************************************************************  
-  $Header: /cvs/html/modules/coppermine/displayimage.php,v 9.19 2007/08/04 13:14:37 nanocaiordo Exp $			
+  $Header: /public_html/modules/coppermine/displayimage.php,v 9.19 2007/08/04 13:14:37 nanocaiordo Exp $			
 ****************************************************************************/
 if (!defined('CPG_NUKE')) { exit; }
 

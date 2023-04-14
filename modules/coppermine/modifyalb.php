@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/modifyalb.php,v $
+  $Source: /public_html/modules/coppermine/modifyalb.php,v $
   $Revision: 9.6 $
   $Author: djmaze $
   $Date: 2007/02/17 12:31:01 $

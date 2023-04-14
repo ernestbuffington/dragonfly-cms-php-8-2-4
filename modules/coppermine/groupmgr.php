@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/groupmgr.php,v $
+  $Source: /public_html/modules/coppermine/groupmgr.php,v $
   $Revision: 9.7 $
   $Author: nanocaiordo $
   $Date: 2007/08/27 02:34:40 $

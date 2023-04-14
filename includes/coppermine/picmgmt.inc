@@ -12,7 +12,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/includes/coppermine/picmgmt.inc,v $
+  $Source: /public_html/includes/coppermine/picmgmt.inc,v $
   $Revision: 9.14 $
   $Author: nanocaiordo $
   $Date: 2007/12/12 12:54:18 $

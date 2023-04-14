@@ -7,7 +7,7 @@
  *	 email		  : support@phpbb.com
  *
   Last modification notes:
-  $Source: /cvs/html/modules/Members_List/index.php,v $
+  $Source: /public_html/modules/Members_List/index.php,v $
   $Revision: 9.18 $
   $Author: phoenix $
   $Date: 2007/08/27 12:26:11 $

@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/albmgr.php,v $
+  $Source: /public_html/modules/coppermine/albmgr.php,v $
   $Revision: 9.2 $
   $Author: nanocaiordo $
   $Date: 2007/01/20 02:42:26 $

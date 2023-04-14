@@ -2,13 +2,13 @@
 /*********************************************
   CPG Dragonfly™ CMS
   ********************************************
-  Copyright © 2004 - 2005 by CPG-Nuke Dev Team
+  Copyright © 2004 - 2023 by CPG-Nuke Dev Team
   http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/themes/dragonfly/bbcode.inc,v $
+  $Source: /public_html/themes/dragonfly/bbcode.inc,v $
   $Revision: 9.4 $
   $Author: nanocaiordo $
   $Date: 2008/01/14 13:12:11 $

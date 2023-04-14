@@ -11,7 +11,7 @@ $content = '<?php
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/install/config.php,v $
+  $Source: /public_html/install/config.php,v $
   $Revision: 9.5 $
   $Author: nanocaiordo $
   $Date: 2007/04/23 10:43:36 $

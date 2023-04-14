@@ -12,7 +12,7 @@
    the Free Software Foundation; either version 2 of the License, or          
    (at your option) any later version.                                        
   **************************************************************************  
-  $Header: /cvs/html/modules/coppermine/include/exif.inc,v 9.1 2005/02/18 00:16:16 trevor Exp $            
+  $Header: /public_html/modules/coppermine/include/exif.inc,v 9.1 2005/02/18 00:16:16 trevor Exp $            
   ****************************************************************************/
 if (!defined('IN_COPPERMINE')) die('Not in Coppermine...');
 /**

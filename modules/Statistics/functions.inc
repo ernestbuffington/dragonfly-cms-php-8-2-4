@@ -2,8 +2,8 @@
 /*********************************************
   CPG Dragonfly™ CMS
   ********************************************
-  Copyright © 2004 - 2005 by CPG-Nuke Dev Team
-  http://www.dragonflycms.com
+  Copyright © 2004 - 2023 by CPG-Nuke Dev Team
+  https://www.dragonfly.coders.exchange
   
   Enhanced with NukeStats Module Version 1.0
    Sudirman <sudirman@akademika.net>
@@ -12,7 +12,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/modules/Statistics/functions.inc,v $
+  $Source: /public_html/modules/Statistics/functions.inc,v $
   $Revision: 1.4 $
   $Author: phoenix $
   $Date: 2007/09/11 11:26:08 $

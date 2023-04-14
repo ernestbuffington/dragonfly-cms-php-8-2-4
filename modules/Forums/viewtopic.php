@@ -7,7 +7,7 @@
  *	 email				: support@phpbb.com
  *
   Last modification notes:
-  $Source: /cvs/html/modules/Forums/viewtopic.php,v $
+  $Source: /public_html/modules/Forums/viewtopic.php,v $
   $Revision: 9.39 $
   $Author: phoenix $
   $Date: 2007/09/18 01:22:51 $

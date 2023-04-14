@@ -5,7 +5,7 @@
   Copyright © 2004 - 2007 by CPG-Nuke Dev Team
   http://dragonflycms.org
 
-  $Source: /cvs/html/index.php,v $
+  $Source: /public_html/index.php,v $
   $Revision: 9.37 $
   $Author: phoenix $
   $Date: 2007/10/04 03:04:30 $

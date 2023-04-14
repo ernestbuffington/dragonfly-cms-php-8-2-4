@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/catmgr.php,v $
+  $Source: /public_html/modules/coppermine/catmgr.php,v $
   $Revision: 9.3 $
   $Author: brennor $
   $Date: 2006/02/08 19:12:25 $

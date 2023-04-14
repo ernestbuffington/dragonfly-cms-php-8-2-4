@@ -8,7 +8,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/includes/classes/cpg_ftpfake.php,v $
+  $Source: /public_html/includes/classes/cpg_ftpfake.php,v $
   $Revision: 9.4 $
   $Author: akamu $
   $Date: 2007/04/23 11:15:38 $

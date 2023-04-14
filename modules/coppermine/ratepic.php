@@ -12,7 +12,7 @@
    (at your option) any later version.										
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/ratepic.php,v $
+  $Source: /public_html/modules/coppermine/ratepic.php,v $
   $Revision: 9.2 $
   $Author: nanocaiordo $
   $Date: 2007/08/27 02:39:23 $

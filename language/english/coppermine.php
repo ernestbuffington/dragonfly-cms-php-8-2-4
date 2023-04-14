@@ -11,7 +11,7 @@
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
   ********************************************
-  $Source: /cvs/html/language/english/coppermine.php,v $
+  $Source: /public_html/language/english/coppermine.php,v $
   $Revision: 9.10 $
   $Author: akamu $
   $Date: 2006/03/02 00:08:29 $

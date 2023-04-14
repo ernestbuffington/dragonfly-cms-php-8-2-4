@@ -12,7 +12,7 @@
    (at your option) any later version.										
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/includes/coppermine/functions.inc,v $
+  $Source: /public_html/includes/coppermine/functions.inc,v $
   $Revision: 9.46 $
   $Author: nanocaiordo $
   $Date: 2008/01/31 15:22:41 $

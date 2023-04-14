@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/displayimagepopup.php,v $
+  $Source: /public_html/modules/coppermine/displayimagepopup.php,v $
   $Revision: 9.4 $
   $Author: nanocaiordo $
   $Date: 2007/04/06 10:52:34 $

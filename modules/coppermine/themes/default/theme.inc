@@ -13,7 +13,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/themes/default/theme.inc,v $
+  $Source: /public_html/modules/coppermine/themes/default/theme.inc,v $
   $Revision: 9.5 $
   $Author: nanocaiordo $
   $Date: 2007/04/06 12:35:47 $

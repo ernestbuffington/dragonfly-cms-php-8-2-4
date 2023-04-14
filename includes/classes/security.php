@@ -7,7 +7,7 @@
 	by the MOO Development Group; either version 1 of the License, or
 	(at your option) any later version.
 
-  $Source: /cvs/html/includes/classes/security.php,v $
+  $Source: /public_html/includes/classes/security.php,v $
   $Revision: 9.56 $
   $Author: djmaze $
   $Date: 2007/12/16 22:16:14 $

@@ -6,7 +6,7 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   $Source: /cvs/html/language/english/Forums/lang_bbcode.php,v $
+ *   $Source: /public_html/language/english/Forums/lang_bbcode.php,v $
  *   $Revision: 9.2 $
  *   $Author: akamu $
  *   $Date: 2005/01/20 11:32:59 $

@@ -13,7 +13,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/themes/maze/main_menu.inc,v $
+  $Source: /public_html/modules/coppermine/themes/maze/main_menu.inc,v $
   $Revision: 9.0 $
   $Author: djmaze $
   $Date: 2005/01/12 03:32:59 $

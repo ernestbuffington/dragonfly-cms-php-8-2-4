@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/admin/index.inc,v $
+  $Source: /public_html/modules/coppermine/admin/index.inc,v $
   $Revision: 1.7 $
   $Author: nanocaiordo $
   $Date: 2007/05/28 11:38:47 $

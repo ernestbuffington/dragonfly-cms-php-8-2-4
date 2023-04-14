@@ -7,7 +7,7 @@
  *	 email		  : support@phpbb.com
  *
   Last modification notes:
-  $Source: /cvs/html/modules/Forums/profile.php,v $
+  $Source: /public_html/modules/Forums/profile.php,v $
   $Revision: 9.1 $
   $Author: trevor $
   $Date: 2005/02/24 16:09:22 $

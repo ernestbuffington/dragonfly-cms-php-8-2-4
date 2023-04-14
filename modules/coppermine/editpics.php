@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/editpics.php,v $
+  $Source: /public_html/modules/coppermine/editpics.php,v $
   $Revision: 9.7 $
   $Author: akamu $
   $Date: 2006/01/07 01:15:57 $

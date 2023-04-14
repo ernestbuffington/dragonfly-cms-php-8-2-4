@@ -8,7 +8,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/admin/modules/ranks.php,v $
+  $Source: /public_html/admin/modules/ranks.php,v $
   $Revision: 9.9 $
   $Author: phoenix $
   $Date: 2007/05/15 00:02:32 $

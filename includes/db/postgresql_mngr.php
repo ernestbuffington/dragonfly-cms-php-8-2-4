@@ -8,7 +8,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/includes/db/postgresql_mngr.php,v $
+  $Source: /public_html/includes/db/postgresql_mngr.php,v $
   $Revision: 9.37 $
   $Author: nanocaiordo $
   $Date: 2007/12/18 22:35:27 $

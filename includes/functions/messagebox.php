@@ -8,7 +8,7 @@
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/includes/functions/messagebox.php,v $
+  $Source: /public_html/includes/functions/messagebox.php,v $
   $Revision: 9.11 $
   $Author: phoenix $
   $Date: 2007/10/18 14:38:06 $

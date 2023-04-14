@@ -13,7 +13,7 @@
    (at your option) any later version.										
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/db_input.php,v $
+  $Source: /public_html/modules/coppermine/db_input.php,v $
   $Revision: 9.25 $
   $Author: nanocaiordo $
   $Date: 2007/12/12 12:54:31 $

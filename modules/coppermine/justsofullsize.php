@@ -12,7 +12,7 @@
    (at your option) any later version.                                        
   **************************************************************************  
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/justsofullsize.php,v $
+  $Source: /public_html/modules/coppermine/justsofullsize.php,v $
   $Revision: 9.3 $
   $Author: nanocaiordo $
   $Date: 2006/12/21 16:57:57 $

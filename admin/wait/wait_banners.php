@@ -2,13 +2,13 @@
 /*********************************************
   CPG Dragonfly™ CMS
   ********************************************
-  Copyright © 2004 - 2005 by CPG-Nuke Dev Team
+  Copyright © 2004 - 2023 by CPG-Nuke Dev Team
   http://dragonflycms.org
 
   Dragonfly is released under the terms and conditions
   of the GNU GPL version 2 or any later version
 
-  $Source: /cvs/html/admin/wait/wait_banners.php,v $
+  $Source: /public_html/admin/wait/wait_banners.php,v $
   $Revision: 9.6 $
   $Author: phoenix $
   $Date: 2007/09/12 02:32:43 $

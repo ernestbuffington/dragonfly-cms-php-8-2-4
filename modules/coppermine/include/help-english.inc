@@ -12,7 +12,7 @@
    (at your option) any later version.
   **************************************************************************
   Last modification notes:
-  $Source: /cvs/html/modules/coppermine/include/help-english.inc,v $
+  $Source: /public_html/modules/coppermine/include/help-english.inc,v $
   $Revision: 9.3 $
   $Author: trevor $
   $Date: 2005/05/10 20:27:33 $
