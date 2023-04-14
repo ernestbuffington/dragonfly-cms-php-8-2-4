@@ -65,7 +65,7 @@ if(is_user()) {
 	} else {
 		$avatar = $MAIN_CFG['avatar']['gallery_path'].'/'.$MAIN_CFG['avatar']['default'];
 	}
-	$content .= "<img src=\"$avatar\" alt=\"\" />";
+	$content .= "<img style=\"border-radius: 15px; max-width: 150px; max-height: 150px;\" src=\"$avatar\" alt=\"\" />";
 	$content .= '<br />'._BWEL.' <b>'.$userinfo['username'].'</b><br /><img src="images/spacer.gif" style="height:8px;" alt="" /></div>';
 	if ($pm_active) {
 		$pm = $userinfo['user_new_privmsg']+$userinfo['user_unread_privmsg'];
