@@ -716,8 +716,8 @@ function cpg_error($message, $title='ERROR', $redirect=false) {
 		<meta name="robots" content="noarchive" />';
 		if (!defined('HEADER_OPEN')) { require_once(BASEDIR.'header.php'); }
 		OpenTable();
-		echo '<center>'.$message.'<br /><br />';
-		$link = ($redirect) ? '<a href="'.$redirect.'">'._GO.'</a>' : '[ <a href="'.$mainindex.'">'._HOME.'</a> ] '._GOBACK.'</center>';
+		echo '<div align="center">'.$message.'<br /><br />';
+		$link = ($redirect) ? '<a href="'.$redirect.'">'._GO.'</a>' : '[ <a href="'.$mainindex.'">'._HOME.'</a> ] '._GOBACK.'</div>';
 		echo $link;
 		CloseTable();
 		if (is_admin() && $MAIN_CFG['debug']['session'] && !empty($CPG_SESS)) {
@@ -729,7 +729,7 @@ function cpg_error($message, $title='ERROR', $redirect=false) {
 	} else {
 		require_once(BASEDIR.'includes/cpg_page.php');
 		$errorpage = cpg_header($title);
-		$errorpage .= "<center>$message</center>";
+		$errorpage .= "<div align=\"center\">$message</div>";
 		$errorpage .= cpg_footer();
 		if (isset($SESS)) $SESS->write_close();
 		if (is_object($db)) $db->sql_close();
