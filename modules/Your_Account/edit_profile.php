@@ -15,7 +15,7 @@
 **********************************************/
 if (!defined('CPG_NUKE')) { exit; }
 function edituser(&$userinfo) {
-	$rank_select = [];
+ $rank_select = [];
  $sel = [];
  $section = null;
  global $db, $prefix, $user_prefix, $pagetitle, $allowmailchange, $allowusertheme;
