@@ -113,7 +113,7 @@ class cpg_template
 	function _tpl_load(&$handle)
 	{
 		$pos = null;
-  // If we don't have a file assigned to this handle, die.
+        // If we don't have a file assigned to this handle, die.
 		if (!isset($this->files[$handle])) {
 			trigger_error("template->_tpl_load(): No file specified for handle $handle", E_USER_ERROR);
 		}
