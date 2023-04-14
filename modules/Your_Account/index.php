@@ -237,8 +237,7 @@ elseif ($op == 'userinfo' && isset($_GET['username']) && !empty($_GET['username'
 }
 elseif ($op == 'logout') {
 	$pagetitle .= ' '._BC_DELIM.' '._LOGOUT;
-	$redir = (isset($_GET['redirect']) ? $CPG_SESS['user']['uri'] : $mainindex);
-	cpg_error(_YOUARELOGGEDOUT, _YOUARELOGGEDOUT, $redir);
+	url_redirect('index.php');
 }
 elseif (is_user()) {
 	if (isset($_POST['avatargallery']) || isset($_GET['avatargallery'])) {
