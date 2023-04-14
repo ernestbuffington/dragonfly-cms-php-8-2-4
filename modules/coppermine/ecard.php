@@ -22,6 +22,10 @@ if (!defined('CPG_NUKE')) { die("You can't access this file directly..."); }
 define('ECARDS_PHP', true);
 require("modules/" . $module_name . "/include/load.inc");
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 if (!USER_CAN_SEND_ECARDS) cpg_die(_ERROR, ACCESS_DENIED, __FILE__, __LINE__);
 // ecard security fix
 // $max_anon_ecards = (!isset($_COOKIE['ecard'])?1:($_COOKIE['ecard']);
@@ -74,9 +78,8 @@ if (!filter_var($recipient_email, FILTER_VALIDATE_EMAIL)) {
 if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email != false) {
 	global $nukeurl, $CONFIG;
 
-// mailer
-	require("includes/classes/phpmailer.php");
-	$mail = new PHPMailer(true);
+    // mailer
+	if ( ! ( $mail instanceof PHPMailer ) ) { $mail = new PHPMailer(true); }
 	$mail->SetLanguage();
 	$mail->From	 = $sender_email;
 	$mail->FromName = $sender_name;

@@ -24,6 +24,11 @@ define('DB_INPUT_PHP', true);
 require("modules/$module_name/include/load.inc");
 global $MAIN_CFG,$CLASS;
 require('includes/coppermine/picmgmt.inc');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 $IMG_TYPES = array(
 	1 => 'GIF',
 	2 => 'JPG',
@@ -85,12 +90,9 @@ switch ($event) {
 			$host     = $MAIN_CFG['server']['domain'].$MAIN_CFG['server']['path'];
 			if ($CONFIG['comment_email_notification']&&!GALLERY_ADMIN_MODE) {
 				$mail_body = 'Comment Updated '.$msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
-				require_once("includes/classes/phpmailer.php");
+
+				if ( ! ( $CLASS['mail'] instanceof PHPMailer ) ) { $CLASS['mail'] = new PHPMailer(true); }
 				$CLASS['mail']->ClearAll();
-				
-				//$mail = new PHPMailer();
-				$CLASS['mail'] = new PHPMailer(true);
-				
 				$CLASS['mail']->SetLanguage();
 				$CLASS['mail']->From     = $CONFIG['gallery_admin_email'];
 				$CLASS['mail']->FromName = $MAIN_CFG['global']['sitename'];
@@ -166,7 +168,8 @@ switch ($event) {
 			$host =  $MAIN_CFG['server']['domain'].$MAIN_CFG['server']['path'];
 			if ($CONFIG['comment_email_notification']) {
 				$mail_body = $msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
-				require_once('includes/classes/phpmailer.php');
+				//require_once('includes/classes/phpmailer.php');
+				if ( ! ( $CLASS['mail'] instanceof PHPMailer ) ) { $CLASS['mail'] = new PHPMailer(true); }
 				$CLASS['mail']->ClearAll();
 				
 				///$mail = new PHPMailer(true);
@@ -207,12 +210,9 @@ switch ($event) {
 			$host =  $MAIN_CFG['server']['domain'].$MAIN_CFG['server']['path'];
 			if ($CONFIG['comment_email_notification']) {
 				$mail_body = $msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
-				require_once("includes/classes/phpmailer.php");
+				
+				if ( ! ( $CLASS['mail'] instanceof PHPMailer ) ) { $CLASS['mail'] = new PHPMailer(true); }
 				$CLASS['mail']->ClearAll();
-				
-				//$mail = new PHPMailer();
-				$CLASS['mail'] = new PHPMailer(true);
-				
 				$CLASS['mail']->SetLanguage();
 				$CLASS['mail']->FromName = $MAIN_CFG['global']['sitename'];
 				$CLASS['mail']->From	 = $CONFIG['gallery_admin_email'];

@@ -293,6 +293,10 @@ function removecrlf($str) {
   )
 
 *******************************************************************************/
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 function send_mail(&$mailer_message, $message, $html = 0, $subject = '', $to = '', $to_name = '', $from = '', $from_name = '', $custom_headers = false) {
 	global $MAIN_CFG, $module_name, $PHPMAILER_LANG, $CLASS;
 
@@ -311,7 +315,7 @@ function send_mail(&$mailer_message, $message, $html = 0, $subject = '', $to = '
 		global $PHPMAILER_LANG;
 		include_once(BASEDIR.'language/english/main.php');
 	}
-	require_once(CORE_PATH.'classes/phpmailer.php');
+	if ( ! ( $CLASS['mail'] instanceof PHPMailer ) ) { $CLASS['mail'] = new PHPMailer(true); }
 	$CLASS['mail']->ClearAll();
 	$CLASS['mail']->SetLanguage();
 	if ($MAIN_CFG['email']['smtp_on']) {

@@ -14,6 +14,11 @@
   $Date: 2007/12/16 22:13:14 $
 *************************************************/
 if (!defined('CPG_NUKE')) { exit; }
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 $pagetitle .= $subject = $MAIN_CFG['global']['sitename'] .' '. _FEEDBACKTITLE;
 if (!defined('_SUCCESS_MESSAGE_SENT')) get_lang('Contact');
 
@@ -336,7 +341,7 @@ echo'<tr style="background-color:#FFFFE6"><td style="padding: 3px">'.$lng.'</td>
       $mailcontent .= "$key = $val \n";
       //}
   }
-		require_once(BASEDIR.'includes/classes/phpmailer.php');
+		if ( ! ( $mail instanceof PHPMailer ) ) { $mail = new PHPMailer(true); }
 		$CLASS['mail']->ClearAll();
 		$sender_name = removecrlf($sender_name);
 		$sender_email = removecrlf($sender_email);
