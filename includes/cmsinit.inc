@@ -136,6 +136,8 @@ if (!defined('XMLFEED')) {
 	require_once(CORE_PATH.'classes/template.php');
 }
 
+global $MAIN_CFG;
+
 if (!Cache::array_load('MAIN_CFG')) {
 	$result = $db->sql_query('SELECT * FROM '.$prefix.'_config_custom', true);
 	if (!$result) { url_redirect('install.php'); }
@@ -145,6 +147,7 @@ if (!Cache::array_load('MAIN_CFG')) {
 	Cache::array_save('MAIN_CFG');
 	$db->sql_freeresult($result);
 }
+
 if (version_compare($MAIN_CFG['global']['Version_Num'], CPG_NUKE, '<')) {
 	cpg_error('<strong>We are currently upgrading our website.<br />Please be patient; we should be back shortly.</strong>', 'Maintenance');
 }
