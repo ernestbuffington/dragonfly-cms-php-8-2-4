@@ -81,7 +81,7 @@ switch ($mode) {
 	case 'BackupDB':
 		if (empty($tablelist)) { cpg_error('No tables found'); }
 		require_once(CORE_PATH.'classes/sqlctrl.php');
-		SQLCtrl::backup($database, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']), $full);
+		(new SQLCtrl)->backup($database, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']), $full);
 		break;
 
 	case 'OptimizeDB':
