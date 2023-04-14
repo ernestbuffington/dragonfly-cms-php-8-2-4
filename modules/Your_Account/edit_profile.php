@@ -119,7 +119,7 @@ elseif ($mode == 'avatar') {
 	}
 	echo '<tr>
 		<td class="row1" width="40%"><span class="gensmall">'._AVATAR_INFO.'</span></td>
-		<td class="row1" align="center"><span class="gen">'._CURRENT_IMAGE.'</span><br /><br /><img src="'.$avatar.'" name="avatar" alt="" /><br /><br />';
+		<td class="row1" align="center"><span class="gen">'._CURRENT_IMAGE.'</span><br /><br /><img style="border-radius: 15px; max-width: 200px; max-height: 200px;" src="'.$avatar.'" name="avatar" alt="" /><br /><br />';
 	if ($user_avatar_type != 0) {
 		echo '<input type="checkbox" name="avatardel" />&nbsp;<span class="gensmall">'._DELETE_IMAGE.'</span>';
 	}
