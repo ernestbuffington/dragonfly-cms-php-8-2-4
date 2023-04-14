@@ -713,13 +713,13 @@ for ($i = 0; $i < $total_posts; $i++) {
 		switch( $postrow[$i]['user_avatar_type'] )
 		{
 			case USER_AVATAR_UPLOAD:
-				$poster_avatar = ( $MAIN_CFG['avatar']['allow_upload'] ) ? '<img src="'.$MAIN_CFG['avatar']['path'].'/'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
+				$poster_avatar = ( $MAIN_CFG['avatar']['allow_upload'] ) ? '<img style="border-radius: 15px; max-width: 200px; max-height: 200px;" src="'.$MAIN_CFG['avatar']['path'].'/'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
 				break;
 			case USER_AVATAR_REMOTE:
-				$poster_avatar = ( $MAIN_CFG['avatar']['allow_remote'] ) ? '<img src="'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
+				$poster_avatar = ( $MAIN_CFG['avatar']['allow_remote'] ) ? '<img style="border-radius: 15px; max-width: 200px; max-height: 200px;" src="'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
 				break;
 			case USER_AVATAR_GALLERY:
-				$poster_avatar = ( $MAIN_CFG['avatar']['allow_local'] ) ? '<img src="'.$MAIN_CFG['avatar']['gallery_path'].'/'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
+				$poster_avatar = ( $MAIN_CFG['avatar']['allow_local'] ) ? '<img style="border-radius: 15px; max-width: 200px; max-height: 200px;" src="'.$MAIN_CFG['avatar']['gallery_path'].'/'.$postrow[$i]['user_avatar'].'" alt="" style="border:0;" />' : '';
 				break;
 		}
 	}
