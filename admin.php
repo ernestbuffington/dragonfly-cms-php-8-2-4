@@ -71,8 +71,8 @@ function login() {
 		echo '<label for="gfx_check" class="ulog">'._SECURITYCODE.':</label>'.generate_secimg(7).'<br />
 		<label for="gfx_check" class="ulog">'._TYPESECCODE.':</label><input class="set" type="text" name="gfx_check" id="gfx_check" size="10" maxlength="8" /><br />';
 	}
-	echo '<label for="persistent" class="ulog">'._LOGIN_REMEMBERME.'</label><input type="checkbox" name="persistent" id="persistent" value="1" /><br />
-	<div align="center"><input type="submit" class="sub" value="'._LOGIN.'" /></div>'.
+	//echo '<label for="persistent" class="ulog">'._LOGIN_REMEMBERME.'</label><input type="checkbox" name="persistent" id="persistent" value="1" /><br />
+	echo '<div align="center"><input type="submit" class="sub" value="'._LOGIN.'" /></div>'.
 	close_form();
 	echo '<script type="text/javascript">document.getElementById("alogin").focus();</script>';
 	CloseTable();
