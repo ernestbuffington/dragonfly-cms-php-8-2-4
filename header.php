@@ -75,7 +75,7 @@ function head() {
 	} else if (file_exists('favicon.ico')) {
 		$header .= '<link rel="shortcut icon" href="'.$BASEHREF.'favicon.ico" type="image/x-icon" />'."\n";
 	}
-//	$header .= '<script type="text/javascript" src="includes/javascript/MM_funcs.js"></script>'."\n\n";
+
 	if ($MAIN_CFG['global']['block_frames']) {
 		$header .= '<script type="text/javascript">if (self != top) top.location.replace(self.location)</script>'."\n";
 	}
@@ -83,19 +83,12 @@ function head() {
 		$header .= '<script type="text/javascript" src="includes/javascript/infobox.js"></script>'."\n";
 	}
 	$header .= '<script type="text/javascript" src="includes/javascript/blockscript.js"></script>
-'.$modheader.'
-<link rel="copyright" href="'.getlink('credits').'" title="Copyrights" />
-<link rel="author" href="'.getlink('Members_List').'" title="'._Members_ListLANG.'" />
-<link rel="alternate" type="application/rss+xml" title="RSS" href="rss/news2.php" />
-';
-/*
-	$languages = lang_selectbox('', '', false, true);
-	for ($i=0; $i < sizeof($languages); $i++) {
-		if ($languages[$i] != '') {
-			$header .= '<link rel="alternate" type="text/html" href="?newlang='.$languages[$i].'" hreflang="'.get_langcode($languages[$i]).'" lang="'.get_langcode($languages[$i]).'" title="Version '.ucfirst($languages[$i]).'" />'."\n";
-		}
-	}
-*/
+    '.$modheader.'
+    <link rel="copyright" href="'.getlink('credits').'" title="Copyrights" />
+    <link rel="author" href="'.getlink('Members_List').'" title="'._Members_ListLANG.'" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss/news2.php" />
+    ';
+
 	if ($module_name != 'Private_Messages' && is_user() && is_active('Private_Messages') && $userinfo['user_popup_pm'] && $userinfo['user_new_privmsg']) {
 		$header .= '
 <script type="text/javascript">
