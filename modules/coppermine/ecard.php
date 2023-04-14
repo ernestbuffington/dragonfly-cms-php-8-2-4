@@ -48,18 +48,30 @@ $recipient_email_warning = '';
 
 $result = $db->sql_query("SELECT * FROM {$CONFIG['TABLE_PICTURES']} AS p INNER JOIN {$CONFIG['TABLE_ALBUMS']} ON visibility IN (0,".USER_IN_GROUPS.") WHERE pid='".$pid."' GROUP BY pid");
 if (!$db->sql_numrows($result)) cpg_die(_ERROR, NON_EXIST_AP);
+
 $row = $db->sql_fetchrow($result);
 $thumb_pic_url = get_pic_url($row, 'thumb');
-// Check supplied email address
-$valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
-$valid_sender_email = preg_match('#' . preg_quote($valid_email_pattern, '#') . '#mi', $sender_email);
-$valid_recipient_email = preg_match('#' . preg_quote($valid_email_pattern, '#') . '#mi', $recipient_email);
-$invalid_email = '<font size="1">' . INVALID_EMAIL . '</font>';
-if (!$valid_sender_email && count($_POST) > 0) $sender_email_warning = $invalid_email;
-if (!$valid_recipient_email && count($_POST) > 0) $recipient_email_warning = $invalid_email;
+
+$valid_sender_email = true;
+$valid_recipient_email =  true;
+
+// Check supplied email addresses
+if (!filter_var($sender_email, FILTER_VALIDATE_EMAIL)) {
+    // invalid emailaddress
+	$valid_sender_email = false;
+    $invalid_email = '<span style="font-size: 1px">' . INVALID_EMAIL . '</span>';
+    $sender_email_warning = $invalid_email;
+}
+
+if (!filter_var($recipient_email, FILTER_VALIDATE_EMAIL)) {
+    // invalid emailaddress
+	$valid_recipient_email = false;
+    $invalid_email = '<span style="font-size: 1px">' . INVALID_EMAIL . '</span>';
+    $recipient_email_warning = $invalid_email;
+}
 
 // Create and send the e-card
-if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email) {
+if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email != false) {
 	global $nukeurl, $CONFIG;
 
 // mailer
@@ -106,6 +118,7 @@ if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email) {
 		'g' => $greetings,
 		'm' => $message,
 	);
+	if (!defined('CPG_TEXT_DIR')) { define('CPG_TEXT_DIR', 'ltr'); }
 	$encoded_data = urlencode(base64_encode(serialize($data)));
 	$params = array('{LANG_DIR}' => CPG_TEXT_DIR,
 		'{TITLE}' => sprintf(E_ECARD_TITLE, $sender_name),

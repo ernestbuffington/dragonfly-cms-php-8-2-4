@@ -39,6 +39,7 @@ $path  = $MAIN_CFG['server']['domain'].$MAIN_CFG['server']['path'];
 $host = ($_SERVER['SERVER_PORT'] != 443 ? 'http' : 'https') . '://'.$path;
 //$link = $CONFIG['ecards_more_pic_target'] . $CPG_M_URL;
 $link = getlink($module_name,1,1);
+if (!defined('CPG_TEXT_DIR')) { define('CPG_TEXT_DIR', 'ltr'); }
 $params = array('{LANG_DIR}' => CPG_TEXT_DIR,
     '{BASE}' => $host,
     '{TITLE}' => sprintf(E_ECARD_TITLE, $data['sn']),

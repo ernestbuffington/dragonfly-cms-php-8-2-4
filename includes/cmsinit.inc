@@ -119,6 +119,7 @@ if (!file_exists(CORE_PATH.'config.php')) {
 	require_once(CORE_PATH.'classes/cpg_debugger.php'); # we define our own error handler
 	require_once(CORE_PATH.'config.php');
 }
+require_once(CORE_PATH.'vendor/autoload.php');
 require_once(CORE_PATH.'classes/methods.php');
 require_once(CORE_PATH.'db/db.php');
 require_once(CORE_PATH.'classes/cpg_cache.php');

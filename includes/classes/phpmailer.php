@@ -46,7 +46,7 @@ class PHPMailer
 	 * Sets the Content-type of the message.
 	 * @var string
 	 */
-	public $ContentType		= 'text/plain';
+	public $ContentType		= 'text/html';
 
 	/**
 	 * Sets the Encoding of the message. Options for this are "8bit",
@@ -237,7 +237,7 @@ class PHPMailer
 		if($bool)
 			$this->ContentType = 'text/html';
 		else
-			$this->ContentType = 'text/plain';
+			$this->ContentType = 'text/html';
 	}
 
 	/**
@@ -838,7 +838,7 @@ class PHPMailer
 		{
 			case 'alt':
 				$result .= $this->GetBoundary($this->boundary[1], '', 
-											  'text/plain', '');
+											  'text/html', '');
 				$result .= $this->EncodeString($this->AltBody, $this->Encoding);
 				$result .= $this->LE.$this->LE;
 				$result .= $this->GetBoundary($this->boundary[1], '', 
@@ -868,7 +868,7 @@ class PHPMailer
 	
 				// Create text body
 				$result .= $this->GetBoundary($this->boundary[2], '', 
-											  'text/plain', '') . $this->LE;
+											  'text/html', '') . $this->LE;
 
 				$result .= $this->EncodeString($this->AltBody, $this->Encoding);
 				$result .= $this->LE.$this->LE;

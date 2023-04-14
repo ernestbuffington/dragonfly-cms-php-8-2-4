@@ -35,8 +35,8 @@ class DBCtrl {
 	function query_file($file, &$error, $replace_prefix=false)
 	{
 		$tmp = [];
-  $filedata = null;
-  $error = false;
+        $filedata = null;
+        $error = false;
 		if (!is_array($file)) {
 			$tmp['name'] = $tmp['tmp_name'] = $file;
 			$tmp['type'] = preg_match("/\.gz$/is", $file) ? 'application/x-gzip' : 'text/plain';
