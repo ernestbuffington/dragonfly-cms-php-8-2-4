@@ -221,9 +221,9 @@ else {
 
 function saveuser(&$userinfo) {
 	$mailer_message = null;
- $section = null;
- $new_password = null;
- global $db, $user_prefix, $MAIN_CFG, $allowusertheme, $CPG_SESS, $SESS;
+    $section = null;
+    $new_password = null;
+    global $db, $user_prefix, $MAIN_CFG, $allowusertheme, $CPG_SESS, $SESS;
 	$mode = $_POST['save'] ?? 'profile';
 	if ($mode == 'admin' && !defined('ADMIN_PAGES')) $mode = 'profile';
 	if ($mode == 'profile') {
