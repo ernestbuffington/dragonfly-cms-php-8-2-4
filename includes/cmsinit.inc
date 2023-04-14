@@ -634,7 +634,7 @@ function decode_ip($ip) {
 	} else if (preg_match('#^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#', $ip, $match)) {
 		return $match[1];
 	}
-	return long2ip($ip);
+	return long2ip((int) $ip);
 }
 
 # Caching
