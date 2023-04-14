@@ -102,7 +102,8 @@ global $CPG_SESS, $mainindex;
 if ($op == 'logout') {
 	unset($CPG_SESS['admin']);
 	$redir = $_SERVER['HTTP_REFERER'] ?? $mainindex;
-	cpg_error(_YOUARELOGGEDOUT, _ADMINMENU_LOGOUT, $redir);
+	//cpg_error(_YOUARELOGGEDOUT, _ADMINMENU_LOGOUT, $redir);
+	url_redirect('index.php');
 }
 else if ($CLASS['member']->admin_id) {
 	if (!preg_match('#^([a-zA-Z0-9_\\\\\-]+)$#m', $op)) { cpg_error(sprintf(_ERROR_BAD_CHAR, strtolower(_ADMIN)), _SEC_ERROR); }
