@@ -58,8 +58,8 @@ function avatar_size($image, $delete=false) {
 
 function avatar_upload($remote, &$userinfo, $avatar_filename, $avatar)
 {
-	$new_filename = null;
- require_once(CORE_PATH.'classes/cpg_file.php');
+	//$new_filename = null;
+    require_once(CORE_PATH.'classes/cpg_file.php');
 	global $MAIN_CFG, $db, $lang;
 	if ($remote) {
 		if (!preg_match('/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/(.*)$/', $avatar_filename, $url_ary) || empty($url_ary[4])) {
@@ -77,7 +77,7 @@ function avatar_upload($remote, &$userinfo, $avatar_filename, $avatar)
 		if ($avatar['size'] > 0 && $avatar['size'] < $MAIN_CFG['avatar']['filesize']) {
 			$new_filename = $userinfo['user_id'].'_'.uniqid(random_int(0, mt_getrandmax())).$imgtype;
 			$avatar_filename = $MAIN_CFG['avatar']['path']."/$new_filename";
-			if (CPG_File::write($avatar_filename, $avatar['data']) != $avatar['size']) {
+			if ((new CPG_File)->write($avatar_filename, $avatar['data']) != $avatar['size']) {
 				trigger_error('Could not write avatar to local storage', E_USER_ERROR);
 			}
 		}
@@ -87,7 +87,7 @@ function avatar_upload($remote, &$userinfo, $avatar_filename, $avatar)
 		$imgtype = check_image_type($avatar_filetype);
 		$new_filename = $userinfo['user_id'].'_'.uniqid(random_int(0, mt_getrandmax())).$imgtype;
 		$avatar_filename = $MAIN_CFG['avatar']['path']."/$new_filename";
-		if (!CPG_File::move_upload($avatar, $avatar_filename)) {
+		if (!(new CPG_File)->move_upload($avatar, $avatar_filename)) {
 			trigger_error('Could not copy avatar to local storage', E_USER_ERROR);
 		}
 		if (!$MAIN_CFG['avatar']['animated'] && $fp = fopen($avatar_filename, 'rb')) {
