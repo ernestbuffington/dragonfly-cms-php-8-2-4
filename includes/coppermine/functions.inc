@@ -179,7 +179,7 @@ function pagefooter()
 	require("footer.php");
 }
 // Display a localised date
-function localised_date($timestamp = -1, $datefmt)
+function localised_date($timestamp = -1, $datefmt = '') // check later datefmt = ''
 {
 	return formatDateTime($timestamp, $datefmt);
 }
@@ -689,7 +689,8 @@ function get_album_name($aid)
 		$row = $db->sql_fetchrow($result);
 		return $row['title'];
 	} else {
-		cpg_die(_ERROR,NON_EXIST_AP.' '.$aid, __FILE__, __LINE__);
+		url_redirect('index.php?name=coppermine');
+		//cpg_die(_ERROR,NON_EXIST_AP.' '.$aid, __FILE__, __LINE__);
 	} 
 } 
 // Return the name of a user
@@ -1106,7 +1107,7 @@ function init_cpg_count() {
 	return $data;
 }
 
-function resolve_cpg_count(&$stats, &$data, $pic_count=0, $album_count=0, $parent, $cat) {
+function resolve_cpg_count(&$stats, &$data, $pic_count = 0, $album_count = 0, $parent = '', $cat = '') {
 	global $db, $CONFIG;
 	$data[$cat]['parent'] = $parent;
 	$data[$cat]['category'] = $cat;
