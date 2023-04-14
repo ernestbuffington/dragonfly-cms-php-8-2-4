@@ -295,7 +295,7 @@ class Security
 		return ($bot === false) ? false : array('ua' => 'bot', 'bot' => $bot[0], 'engine' => 'bot', 'banned' => (($bot[2] == -1) ? 410 : null));
 	}
 
-	public static function _flood_log($ip, $update=false, $delay, $gmtime, $log, $times)
+	public static function _flood_log($ip, $update = false, $delay = '', $gmtime = '', $log = '', $times = '')
 	{
 		global $MAIN_CFG;
 		$timeout = ((($times+1)*2)/$delay)+$gmtime;
