@@ -1,0 +1,78 @@
+/**
+* CPG Dragonfly CMS
+* Copyright © 2004 - 2006 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: BACKUP.txt,v 1.7 2006/10/07 07:54:09 nanocaiordo Exp $
+*/
+
+If you have SSH access to your webspace then it's easy to create a backup
+
+Login to the server through SSH and browse to your public_html
+
+For example:
+
+    ls /home/MYNAME/public_html
+
+Create a backup of your 'admin' directory to a compressed file:
+
+    tar czvpf admin.tar.gz admin
+
+This won't include "dotfiles" (the files or directories with names starting
+with a dot). To tar everything:
+
+   tar cvzf ../website.tgz  *  .[a-zA-Z]* *.[a-zA-Z]*
+
+This will backup all of your files, but be aware that this file is publicly
+available, so it's best to pack it somewhere else OR move (mv) the file
+
+When you move the file outside public_html:
+
+   mv website.tgz ../website.tgz
+
+Or make the backup somewhere else like:
+
+   tar cvzf /home/MYNAME/website.tgz  *  .[a-zA-Z]* *.[a-zA-Z]*
+
+
+Of course you can also restore the backup by using the command:
+
+   tar -xvzf website.tgz
+
+
+Note: It doesn't matter if you use the file extension 'tar.gz' OR 'tgz'
+
+
+Backup MySQL Database
+---------------------
+
+You can backup/restore your database easily through SSH
+
+To create a backup:
+
+   mysqldump -f -hlocalhost -u<USERNAME> -p<PASSWORD> <DBNAME> --add-drop-table
+    | gzip -9c >/home/MYNAME/mysqlbackup.sql.gz
+
+To restore the gzipped backup:
+
+   gunzip < mysqlbackup.sql.gz | mysql -u<USERNAME> -p<PASSWORD> <DBNAME>
+
+You can also restore a normal .sql file:
+
+   mysql -u<USERNAME> -p<PASSWORD> <DBNAME> < mysqlbackup.sql
+
+Don't forget to replace <USERNAME>, <PASSWORD> and <DBNAME> with your database
+settings
+
+
+No SSH Access
+-------------
+
+If you don't have SSH access it's no problem. Maybe you have luck and you can
+run exec() or system() commands through PHP to accomplish above tasks
+
+<?php
+  exec('<command>');
+?>
+
+Of course replace <command> with one of the above mentioned commands and try to
+run the script (in public_html, example: http://example.com/db_backup.php)

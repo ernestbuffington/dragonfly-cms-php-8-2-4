@@ -1,0 +1,110 @@
+/**
+* CPG Dragonfly CMS
+* Copyright © 2004 - 2006 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: INSTALL.txt,v 1.17 2006/12/23 03:27:00 nanocaiordo Exp $
+*/
+
+In-depth installation instructions can be found on our website:
+http://dragonflycms.org/Wiki/id=47.html
+
+
+Base Requirements
+-----------------
+
+In order to setup CPG Dragonfly CMS, the following prerequisites are necessary:
+
+- a web server (Apache prefered)
+- PHP 4.1 or higher (4.3.x prefered)
+- an SQL server (MySQL 4.x and PostgreSQL 7.3.x or later are supported)
+
+Setup of these required packages is beyond the scope of this document and if
+you are unsure you should check with each of the appropriate web sites for
+further details.
+
+
+Installing the Package
+----------------------
+
+If you are going to upgrade your website start at step two...
+See http://dragonflycms.org/Wiki/id=40.html for info on starting a cvs site.
+
+1) Create a new database, for example, 'dragonfly': mysqladmin create dragonfly
+   OR add a database through your web control panel.
+
+2) Upload all content from the /html directory to your webspace.
+
+3) CHMOD the following file to 600 (622 if 600 fails):
+   - cpg_error.log
+
+4) CHMOD the following directories to 755 (777 if 755 fails):
+   - cache
+   - modules/coppermine/albums
+   - modules/coppermine/albums/userpics
+   - uploads/avatars
+   - uploads/forums
+
+5) In your web browser go to http://example.com/install.php
+   The setup will install/update your database.
+
+   After the database is created you will be prompted to insert additional
+   information and, if it's a new install, to create the super user account.
+   Create your super user following the on-screen instructions.
+
+6) Login following the admin link (http://example.com/admin.php)
+
+   Now click on "Main Settings" and change whatever you want to fit your site
+   info. All the options you need to change are in the Settings menu.
+
+7) After installing, delete install.php and the /install directory!
+
+
+Testing the Installation
+------------------------
+
+Go to your homepage, for example:
+
+    http://example.com/index.php
+    
+To login as administrator:
+
+    http://example.com/admin.php
+    
+    This will give you full administrator privileges to your installation of
+    CPG Dragonfly CMS.
+
+    Remember to logout from admin after you use it. From this area you can
+    delete or add content on your site, so never leave your computer without
+    logging out from the admin account.
+
+    We recommend the use of MySQL-Front or phpMyAdmin. Those are good
+    administration systems for MySQL databases.
+    dragonflycms.org/downloads/mysqlfront25.exe (free version)
+    www.mysqlfront.de (30 days free)
+    www.phpmyadmin.net/home_page
+
+    We also recommend setting a password for your MySQL access. This is
+    important as some data in the nuke database is not encrypted, so for
+    security reasons you need to set a password. Not only that, it's a
+    good practice!
+
+
+Final Notes
+-----------    
+
+  That's it! You're done with CPG Dragonfly CMS. Just navigate around, play with it, 
+abuse it and if you like CPG Dragonfly CMS, use it. Spend some time getting used to the 
+administration interface.
+
+  To change your site's logo, go to the /themes directory and make a custom
+logo for each individual theme. Just navigate around all themes and change
+the graphics you want.
+
+PS: When you e-mail us asking something, just remember that we receive A LOT
+of e-mails a day! We don't answer, but for sure we'll read it.
+Your best bet is to visit the forums at dragonflycms.org/Forums.html and post
+your questions there.
+
+** A special thank you to all the people who have helped is in CREDITS.txt **
+
+Enjoy!

@@ -1,0 +1,48 @@
+/**
+* CPG Dragonfly CMS
+* Copyright © 2004 - 2006 by CPG-Nuke Dev Team, dragonflycms.org
+* Released under the GNU GPL version 2 or any later version
+* $Id: UPGRADE.txt,v 1.6 2007/01/29 23:50:59 phoenix Exp $
+*/
+
+To upgrade from PHP-Nuke 5.5-7.6, CPG-Nuke 8.x or 9.0.6.1
+
+1. It is highly advised to do a full site back-up and database backup before
+   upgrading on the slight possibility something may go wrong.
+
+2. For security reasons, if the following file exists please delete it:
+    - modules/Your_Account/admin.php
+
+3. Keep a separate copy of the information in your old "config.php" - you will 
+   need this information while upgrading through install.php.
+
+4. Upload ALL the files of the 'html' directory to your website keeping
+   the directory structure intact. (ex: admin->admin, modules->modules etc.)
+
+5. Follow the steps in INSTALL.txt starting with step #3.
+
+Notes:
+======
+
+A. If you are upgrading from a PHP-Nuke install it is advised you deactivate all
+   blocks before upgrading. This may help avoid compatibility issues immediately
+   after install and allow you to turn one block on at a time to see if it will
+   work correctly under CPG Dragonfly CMS.
+
+B. Some blocks will work as they are with CPG Dragonfly CMS but some will need 
+   'porting' before they work properly. Please read
+   http://dragonflycms.org/FAQ/index/id_cat=1.html for more information
+
+C. Themes may also need some 'porting' before they will work properly, it is
+   highly recommended you test your themes by changing it in your account before
+   changing it to your default theme.  Ensure you update theme templates.
+
+D. Please be sure to check the 'add-ons' folder for files you may need
+   (downloads, weblinks, etc.) (more info about this in the INSTALL.txt file)
+
+E. If you plan on using the attach-mod or other phpBB mods found on
+   dragonflycms.org please look in the 'phpBB mods' folder.
+
+F. More information about porting PHP-Nuke and other php applications is
+   available here http://dragonflycms.org/Forums/viewtopic/t=2016.html
+   and here http://dragonflycms.org/FAQ/index/id_cat=1.html
