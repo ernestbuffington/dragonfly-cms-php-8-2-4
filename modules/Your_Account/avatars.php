@@ -27,13 +27,20 @@ function check_image_type($filetype)
 //Support for JPC, JP2, JPX, JB2, XBM, and WBMP became available in PHP 4.3.2
 //Support for SWC exists as of PHP 4.3.0 and TIFF support was added in PHP 4.2.0
 	switch ($type) {
+		
 		case 'jpeg':
 		case 'pjpeg':
 		case 'jpg':
-			return '.jpg';
-			break;
-		case 'gif': return '.gif'; break;
-		case 'png': return '.png'; break;
+	    return '.jpg';
+		break;
+		
+		case 'gif': 
+		return '.gif'; 
+		break;
+		
+		case 'png': 
+		return '.png'; 
+		break;
 	}
 	cpg_error(sprintf(_AVATAR_ERR_IMTYPE, $filetype));
 }
@@ -113,8 +120,8 @@ function avatar_upload($remote, &$userinfo, $avatar_filename, $avatar)
 function display_avatar_gallery(&$userinfo)
 {
 	$avatar_name = [];
- $buttons = null;
- global $MAIN_CFG;
+    $buttons = null;
+    global $MAIN_CFG;
 	$category = (!empty($_POST['avatarcategory'])) ? $_POST['avatarcategory'] : '';
 	$avatar_path = $MAIN_CFG['avatar']['gallery_path'];
 	$dir = opendir($avatar_path);
@@ -173,7 +180,7 @@ function display_avatar_gallery(&$userinfo)
 			$buttons = '';
 			echo '<tr>';
 		}
-		echo '	<td class="row1" align="center"><img src="'.$avatar_path.'/'.$avatar_images[$category][$i].'" alt="'.$avatar_name[$category][$i].'" title="'.$avatar_name[$category][$i].'" /></td>'."\n";
+		echo '	<td class="row1" align="center"><img style="border-radius: 15px; max-width: 150px; max-height: 150px;" src="'.$avatar_path.'/'.$avatar_images[$category][$i].'" alt="'.$avatar_name[$category][$i].'" title="'.$avatar_name[$category][$i].'" /></td>'."\n";
 		$buttons .= '  <td class="row2" align="center"><input type="radio" name="avatarselect" value="'.$avatar_images[$category][$i].'" /></td>'."\n";
 		if ($i%5 == 4) {
 			echo '</tr><tr>'.$buttons.'</tr>';
