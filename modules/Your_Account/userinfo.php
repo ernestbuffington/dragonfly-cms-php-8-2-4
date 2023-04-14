@@ -17,8 +17,8 @@ if (!defined('CPG_NUKE')) { exit; }
 
 function userinfo($username) {
 	$board_config = [];
- $blockslist = [];
- global $db, $prefix, $user_prefix, $currentlang, $pagetitle, $MAIN_CFG, $CPG_SESS, $CLASS;
+    $blockslist = [];
+    global $db, $prefix, $user_prefix, $currentlang, $pagetitle, $MAIN_CFG, $CPG_SESS, $CLASS;
 	$owninfo = (is_user() && ($username == is_user() || strtolower($username) == strtolower($CLASS['member']->members[is_user()]['username'])));
 	if ($owninfo) {
 		$userinfo =& $CLASS['member']->members[is_user()];
@@ -64,7 +64,7 @@ function userinfo($username) {
 		$avatar = $MAIN_CFG['avatar']['gallery_path'].'/'.$MAIN_CFG['avatar']['default'];
 	}
 	if ($avatar) {
-		$avatar = '<img src="'.$avatar.'" alt="" />';
+		$avatar = '<img style="border-radius: 15px; max-width: 200px; max-height: 200px;" src="'.$avatar.'" alt="" />';
 	}
 	if ($userinfo['user_website']) {
 		if (!preg_match('#http:\/\/#mi', $userinfo['user_website'])) { $userinfo['user_website'] = "http://$userinfo[user_website]"; } 
