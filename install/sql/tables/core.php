@@ -272,7 +272,7 @@ $indexes['modules_links'] = array(
 );
 
 $tables['referer'] = array(
-	'url' => array('Type' => 'VARCHAR(100)', 'Null' => 0, 'Default' => ''),
+	'url' => array('Type' => 'VARCHAR(255)', 'Null' => 0, 'Default' => ''),
 	'lasttime' => array('Type' => DBFT_INT4, 'Null' => 0, 'Default' => 0),
 );
 $indexes['referer'] = array(

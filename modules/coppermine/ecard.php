@@ -64,7 +64,7 @@ if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email) {
 
 // mailer
 	require("includes/classes/phpmailer.php");
-	$mail = new PHPMailer();
+	$mail = new PHPMailer(true);
 	$mail->SetLanguage();
 	$mail->From	 = $sender_email;
 	$mail->FromName = $sender_name;

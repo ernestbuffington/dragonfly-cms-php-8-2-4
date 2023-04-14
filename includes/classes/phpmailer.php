@@ -1003,8 +1003,8 @@ class PHPMailer
 	 */
 	function AttachAll() {
 		$string = null;
-  $path = null;
-  // Return text of body
+        $path = null;
+        // Return text of body
 		$mime = array();
 
 		// Add all attachments
@@ -1478,4 +1478,4 @@ class PHPMailer
 }
 
 global $CLASS;
-$CLASS['mail'] = new PHPMailer();
+$CLASS['mail'] = new PHPMailer(true);

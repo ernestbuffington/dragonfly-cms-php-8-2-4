@@ -292,7 +292,7 @@ function removecrlf($str) {
   )
 
 *******************************************************************************/
-function send_mail(&$mailer_message, $message, $html=0, $subject='', $to='', $to_name='', $from='', $from_name='', $custom_headers=false) {
+function send_mail(&$mailer_message, $message, $html = 0, $subject = '', $to = '', $to_name = '', $from = '', $from_name = '', $custom_headers = false) {
 	global $MAIN_CFG, $module_name, $PHPMAILER_LANG, $CLASS;
 
 	if ($module_name != 'Contact' && function_exists('get_lang')) { get_lang('Contact'); }

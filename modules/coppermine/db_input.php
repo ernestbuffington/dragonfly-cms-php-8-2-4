@@ -87,7 +87,10 @@ switch ($event) {
 				$mail_body = 'Comment Updated '.$msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
 				require_once("includes/classes/phpmailer.php");
 				$CLASS['mail']->ClearAll();
+				
 				//$mail = new PHPMailer();
+				$CLASS['mail'] = new PHPMailer(true);
+				
 				$CLASS['mail']->SetLanguage();
 				$CLASS['mail']->From     = $CONFIG['gallery_admin_email'];
 				$CLASS['mail']->FromName = $MAIN_CFG['global']['sitename'];
@@ -165,7 +168,10 @@ switch ($event) {
 				$mail_body = $msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
 				require_once('includes/classes/phpmailer.php');
 				$CLASS['mail']->ClearAll();
-				$mail = new PHPMailer();
+				
+				///$mail = new PHPMailer(true);
+				$CLASS['mail'] = new PHPMailer(true);
+				
 				$CLASS['mail']->SetLanguage();
 				$CLASS['mail']->FromName = $MAIN_CFG['global']['sitename'];
 				$CLASS['mail']->From	 = $CONFIG['gallery_admin_email'];
@@ -203,7 +209,10 @@ switch ($event) {
 				$mail_body = $msg_body . "\n\r ".COM_ADDED." @ http://" . $host  .''. $redirect;
 				require_once("includes/classes/phpmailer.php");
 				$CLASS['mail']->ClearAll();
+				
 				//$mail = new PHPMailer();
+				$CLASS['mail'] = new PHPMailer(true);
+				
 				$CLASS['mail']->SetLanguage();
 				$CLASS['mail']->FromName = $MAIN_CFG['global']['sitename'];
 				$CLASS['mail']->From	 = $CONFIG['gallery_admin_email'];

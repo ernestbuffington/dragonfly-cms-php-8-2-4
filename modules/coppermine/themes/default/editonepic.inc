@@ -1,4 +1,7 @@
 <?php
+if (!isset($CURRENT_PIC['pid']))
+$CURRENT_PIC['pid'] = '';
+
 $template_edit_one_pic = '
 <!-- BEGIN header -->
 <SCRIPT LANGUAGE="JavaScript">
@@ -8,7 +11,7 @@ function textCounter(field, maxlimit) {
 }
 </script>
         <form method="post">
-        <input type="hidden" name="id" value="'.$CURRENT_PIC[pid].'" />
+        <input type="hidden" name="id" value="'.$CURRENT_PIC['pid'].'" />
         <tr>
             <td class="tableh2" colspan="3">
                 <b>'.$filename.'</b>
@@ -32,7 +35,7 @@ function textCounter(field, maxlimit) {
                 '.TITLE.'
             </td>
             <td width="100%" class="tableb" valign="top">
-                <input type="text" style="width: 100%" name="title" maxlength="255" value="'.$CURRENT_PIC[title].'" class="textinput" />
+                <input type="text" style="width: 100%" name="title" maxlength="255" value="'.$CURRENT_PIC['title'].'" class="textinput" />
             </td>
         </tr>
 
@@ -41,7 +44,7 @@ function textCounter(field, maxlimit) {
                 '.DESCRIPTION.'
             </td>
             <td class="tableb" valign="top">
-                <textarea name="caption" rows="5" cols="40" wrap="virtual"  class="textinput" style="width: 100%;" onkeydown="textCounter(this, '.$CONFIG[max_img_desc_length].');" onkeyup="textCounter(this, '.$CONFIG[max_img_desc_length].');">'.$CURRENT_PIC[caption].'</textarea>
+                <textarea name="caption" rows="5" cols="40" wrap="virtual"  class="textinput" style="width: 100%;" onkeydown="textCounter(this, '.$CONFIG['max_img_desc_length'].');" onkeyup="textCounter(this, '.$CONFIG['max_img_desc_length'].');">'.$CURRENT_PIC['caption'].'</textarea>
             </td>
         </tr>
         <tr>
@@ -49,7 +52,7 @@ function textCounter(field, maxlimit) {
                 '.KEYWORDS.'
             </td>
             <td class="tableb" valign="top" width="100%">
-                <input type="text" style="width: 100%" name="keywords" maxlength="255" value="'.$CURRENT_PIC[keywords].'" class="textinput" />
+                <input type="text" style="width: 100%" name="keywords" maxlength="255" value="'.$CURRENT_PIC['keywords'].'" class="textinput" />
             </td>
         </tr>
 <!-- END main -->
