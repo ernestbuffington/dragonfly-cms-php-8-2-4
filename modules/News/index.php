@@ -128,6 +128,7 @@ else {
 //	$result = $db->sql_query($sql.' LIMIT 0,'.$storynum);
 
 	require_once('includes/nbbcode.php');
+	
 	while ($row = $db->sql_fetchrow($result, SQL_ASSOC)) {
 		$title = $row['title'];
 		$row['hometext'] = decode_bb_all($row['hometext'], 1, true);
@@ -136,26 +137,46 @@ else {
 		$datetime = formatDateTime($row['time'], _DATESTRING);
 		$story_link = '<a href="'.getlink('News&amp;file=article&amp;sid='.$row['sid']).'">';
 		$morelink = $commentlink = $catlink = '';
+		
 		if ($morecount > 0 || $comments > 0) {
 			$morelink .= $story_link.'<b>'._READMORE.'</b></a>';
 			if ($morecount > 0) { $morelink .= ' ('.filesize_to_human($morecount).') | '; }
 			else { $morelink .= ' | '; }
 		}
+		
 		if ($row['acomm']) {
-			if ($comments == 0) { $commentlink = $story_link._COMMENTSQ.'</a> | '; }
-			elseif ($comments == 1) { $commentlink = $story_link.$comments.' '._COMMENT.'</a> | '; }
-			elseif ($comments > 1) { $commentlink = $story_link.$comments.' '._COMMENTS.'</a> | '; }
+			if ($comments == 0) { 
+			  $commentlink = $story_link._COMMENTSQ.'</a> | '; 
+			}
+			elseif ($comments == 1) { 
+			  $commentlink = $story_link.$comments.' '._COMMENT.'</a> | '; 
+			}
+			elseif ($comments > 1) { 
+			  $commentlink = $story_link.$comments.' '._COMMENTS.'</a> | '; 
+			}
 		}
+		else
+		{
+		list($votes) = $db->sql_ufetchrow("SELECT ratings FROM ".$prefix."_stories WHERE sid=".$row['sid']." $querylang ORDER BY counter DESC LIMIT 0,1");
+		$commentlink = $story_link.'Click To Vote</a> | '.$votes.' Vote</a> | '; 	
+		if($votes > 1)
+		$commentlink = $story_link.'Click To Vote</a> | '.$votes.' Votes</a> | '; 	
+		}
+		
 		$printlink = '<a href="'.getlink('News&amp;file=print&amp;sid='.$row['sid']).'"><img src="images/news/print.gif" alt="'._PRINTER.'" title="'._PRINTER.'" /></a>';
 		$friendlink = '&nbsp;&nbsp;<a href="'.getlink('News&amp;file=friend&amp;sid='.$row['sid']).'"><img src="images/news/friend.gif" alt="'._FRIEND.'" title="'._FRIEND.'" /></a> | ';
+		
 		if ($row['catid'] != 0) {
 			$title = '<a href="'.getlink('News&amp;catid='.$row['catid']).'">'.$row['cattitle'].'</a> : '.$title;
 			$catlink = '<a href="'.getlink('News&amp;catid='.$row['catid']).'">'.$row['cattitle'].'</a> | ';
 		}
+		
 		$rated = 0;
+		
 		if ($row['score'] != 0) {
 			$rated = substr($row['score'] / $row['ratings'], 0, 4);
 		}
+		
 		$scorelink = _SCORE.' '.$rated;
 		$row['topicimage'] = ($row['topicimage'] !='') ? $row['topicimage'] : 'AllTopics.gif';
 		$row['topictext'] = htmlprepare($row['topictext']);
@@ -183,7 +204,7 @@ else {
 			'S_TOPIC'     => $row['topictext'],
 			'S_WRITES'    => _WRITES,
 			'S_SID'       => $row['sid'],
-			'U_NEWTOPIC'  => getlink("News&amp;topic=$row[topic]")
+			'U_NEWTOPIC'  => getlink("News&amp;topic=".$row['topic'])
 		));
 	}
 	$db->sql_freeresult($result);
