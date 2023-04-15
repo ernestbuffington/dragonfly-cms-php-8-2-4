@@ -22,7 +22,7 @@ $email = false;
 # to activate error logging, you must CHMOD cpg_error.log 600 (622 if 600 fails)
 $error_log = false;
 $sitename = 'My Web Site';
-$returnLink = 'Please <a href="http://'.$returnsite.'">return to the homepage</a>';
+$returnLink = 'Please <a href="https://'.$returnsite.'">return to the homepage</a>';
 $image = '/images/error.gif';
 
 $client['request'] = str_replace('<', '&lt;', $_SERVER['REQUEST_URI']);
