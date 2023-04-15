@@ -35,7 +35,19 @@ elseif (isset($_POST['mode'])) {
 		$hometext = Fix_Quotes($_POST['hometext']);
 		$bodytext = Fix_Quotes($_POST['bodytext']);
 		$notes = Fix_Quotes($_POST['notes']);
-		$associated = implode(',', $_POST['assotop']);
+		
+		//$associated = implode(',', $_POST['assotop']);
+		
+        $checked_array = $_POST['assotop'];
+		foreach ($_POST['assotop'] as $key => $value) 
+		{
+           if (in_array($_POST['assotop'][$key], $checked_array)) 
+		   {
+              $associated = array_push($_POST['assotop'][$key]);      // Push the values 
+              $associated = implode(" ", $associated);                // Do your work !!
+           }
+        }
+		
 		$catid = intval($_POST['catid']);
 		$ihome = intval($_POST['ihome']);
 		$acomm = intval($_POST['acomm']);
@@ -172,7 +184,7 @@ else if (isset($_GET['edit'])) {
 	echo select_box('topic', $topic, $topics).'<br /><br />';
 
 	if (substr($associated, -1) == '-') $associated = substr($associated, 0, -1);
-	$associated = ereg_replace('-', ',', $associated);
+    $associated = preg_replace('#\-#m', ',', $associated);
 	$associated = explode(',', $associated);
 	echo "<table border='0' width='100%' cellspacing='0'><tr><td width='20%'><strong>"._ASSOTOPIC."</strong></td><td width='100%'>"
 		."<table border='0' cellspacing='3' cellpadding='8'><tr>";
