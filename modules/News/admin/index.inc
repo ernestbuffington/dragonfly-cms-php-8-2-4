@@ -36,7 +36,7 @@ elseif (isset($_POST['mode'])) {
 		$bodytext = Fix_Quotes($_POST['bodytext']);
 		$notes = Fix_Quotes($_POST['notes']);
 		
-		$associated = $_POST['assotop'] ?? [];
+		$associated = $_POST['assotop'] ?? []; 
 		$associated = implode(',', $associated);
 		
 		$catid = intval($_POST['catid']);
