@@ -158,9 +158,9 @@ else {
 		else
 		{
 		list($votes) = $db->sql_ufetchrow("SELECT ratings FROM ".$prefix."_stories WHERE sid=".$row['sid']." $querylang ORDER BY counter DESC LIMIT 0,1");
-		$commentlink = $story_link.'Click To Vote</a> | '.$votes.' Vote</a> | '; 	
+		$commentlink = $story_link.'Click To Vote</a> | <strong>'.$votes.'</strong> Vote</a> | '; 	
 		if($votes > 1)
-		$commentlink = $story_link.'Click To Vote</a> | '.$votes.' Votes</a> | '; 	
+		$commentlink = $story_link.'Click To Vote</a> | <strong>'.$votes.'</strong> Votes</a> | '; 	
 		}
 		
 		$printlink = '<a href="'.getlink('News&amp;file=print&amp;sid='.$row['sid']).'"><img src="images/news/print.gif" alt="'._PRINTER.'" title="'._PRINTER.'" /></a>';
@@ -177,7 +177,7 @@ else {
 			$rated = substr($row['score'] / $row['ratings'], 0, 4);
 		}
 		
-		$scorelink = _SCORE.' '.$rated;
+		$scorelink = _SCORE.' <strong>'.$rated.'</strong> of <strong>5</strong> Stars';
 		$row['topicimage'] = ($row['topicimage'] !='') ? $row['topicimage'] : 'AllTopics.gif';
 		$row['topictext'] = htmlprepare($row['topictext']);
 		$row['informant'] = (($row['informant'] != '') ? '<a href="'.getlink("Your_Account&amp;profile=$row[informant]")."\">$row[informant]</a>" : _ANONYMOUS);
