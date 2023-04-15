@@ -127,7 +127,7 @@ function theme_close_form() {
 ************************************************************************************/
 function theme_yesno_option($name, $value=0) {
 	$sel = [];
- $sel[(!$value)] = '';
+    $sel[(!$value)] = '';
 	$sel[$value] = ' selected="selected"';
 	$select = '<select class="set" name="'.$name.'" id="'.$name."\">\n";
 	$select .= '<option value="1"'.$sel[1].">"._YES."</option>\n";
@@ -146,7 +146,7 @@ function theme_yesno_option($name, $value=0) {
 ************************************************************************************/
 function theme_select_option($name, $value, $array) {
 	$sel = [];
- $sel[$value] = ' selected="selected"';
+    $sel[$value] = ' selected="selected"';
 	$select = '<select class="set" name="'.$name.'" id="'.$name."\">\n";
 	foreach($array as $var) {
 		$select .= '<option'.($sel[$var] ?? '').">$var</option>\n";
