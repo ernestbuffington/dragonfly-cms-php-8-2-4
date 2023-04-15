@@ -133,14 +133,16 @@ if (is_active('Surveys') && $story['haspoll']) {
 }
 
 $content = '<span class="content">';
-$result = $db->sql_query("SELECT name, url FROM ".$prefix."_related WHERE tid=$story[topic]");
+$result = $db->sql_query("SELECT name, url FROM ".$prefix."_related WHERE tid=".$story['topic']."");
 while (list($name, $url) = $db->sql_fetchrow($result)) {
 	$content .= '<b>&#8226;</b>&nbsp;<a href="'.$url.'" target="_blank">'.$name.'</a><br />';
 }
 $db->sql_freeresult($result);
 
 $querylang = ($multilingual) ? "AND (alanguage='$currentlang' OR alanguage='')" : '';
-list($topstory, $ttitle) = $db->sql_ufetchrow("SELECT sid, title FROM ".$prefix."_stories WHERE topic=$story[topic] $querylang ORDER BY counter DESC LIMIT 0,1");
+
+list($topstory, $ttitle) = $db->sql_ufetchrow("SELECT sid, title FROM ".$prefix."_stories WHERE topic=".$story['topic']." $querylang ORDER BY counter DESC LIMIT 0,1");
+
 $content .= '<b>&#8226;</b>&nbsp;<a href="'.getlink('&amp;topic='.$story['topic']).'">'._MOREABOUT.' '.$story['topictext'].'</a>
 </span><br /><hr style="width:95%;" /><div style="text-align:center;" class="content"><b>'._MOSTREAD.' '.$story['topictext'].':</b><br />
 <a href="'.getlink('&amp;file=article&amp;sid='.$topstory).'">'.$ttitle.'</a></div>';
@@ -161,7 +163,7 @@ if ($story['ratings'] > 0) {
 	$rate = 0;
 	$the_image = '<br />';
 }
-$content = "<div style=\"text-align:center;\">"._AVERAGESCORE.": <b>$rate</b><br />"._VOTES.": <b>$story[ratings]</b>$the_image"._RATETHISARTICLE."</div><br />";
+$content = "<div style=\"text-align:center;\">"._AVERAGESCORE.": <b>$rate</b><br />"._VOTES.": <b>".$story['ratings']."</b>$the_image"._RATETHISARTICLE."</div><br />";
 $content .= '<form action="'.getlink().'" method="post"><div>';
 $content .= '<input type="hidden" name="sid" value="'.$sid.'" />';
 $content .= '<input type="radio" name="score" value="5" /> <img src="'.(file_exists('themes/'.$CPG_SESS['theme'].'/images/news/stars-5.gif') ? 'themes/'.$CPG_SESS['theme'].'/images/news/stars-5.gif' : 'images/news/stars-5.gif').'" alt="'._EXCELLENT.'" title="'._EXCELLENT.'" /><br />';
