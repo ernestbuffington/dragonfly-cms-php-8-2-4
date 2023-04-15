@@ -217,4 +217,4 @@ You may choose moderators, toggle open/closed group status and set the group nam
 }
 
 echo '</div>';
-CloseTable();
+//CloseTable();
