@@ -20,6 +20,7 @@ function userinfo($username) {
     $blockslist = [];
     global $db, $prefix, $user_prefix, $currentlang, $pagetitle, $MAIN_CFG, $CPG_SESS, $CLASS;
 	$owninfo = (is_user() && ($username == is_user() || strtolower($username) == strtolower($CLASS['member']->members[is_user()]['username'])));
+	require('modules/Your_Account/functions.php');
 	if ($owninfo) {
 		$userinfo =& $CLASS['member']->members[is_user()];
 		global $Blocks;
