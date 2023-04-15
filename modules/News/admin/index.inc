@@ -36,17 +36,8 @@ elseif (isset($_POST['mode'])) {
 		$bodytext = Fix_Quotes($_POST['bodytext']);
 		$notes = Fix_Quotes($_POST['notes']);
 		
-		//$associated = implode(',', $_POST['assotop']);
-		
-        $checked_array = $_POST['assotop'];
-		foreach ($_POST['assotop'] as $key => $value) 
-		{
-           if (in_array($_POST['assotop'][$key], $checked_array)) 
-		   {
-              $associated = array_push($_POST['assotop'][$key]);      // Push the values 
-              $associated = implode(" ", $associated);                // Do your work !!
-           }
-        }
+		$associated = $_POST['assotop'] ?? [];
+		$associated = implode(',', $associated);
 		
 		$catid = intval($_POST['catid']);
 		$ihome = intval($_POST['ihome']);
